@@ -4,35 +4,35 @@ import UrgencyCard from "./UrgencyCard";
 const reviews = [
   {
     initials: "PS",
-    name: "Paule' S.",
-    location: "Oklahoma City, OK",
+    name: "Paula S.",
+    location: "Orlando, FL",
     time: "about 20 hours ago",
     rating: 5,
-    text: "I can't say enough wonderful things about this lady and her cleaning and patience and overall knowledge! She was amazing and can't wait for her to come again! Highly, highly recommend!",
+    text: "Carlos was amazing! My pool went from green to crystal clear in one visit. He explained everything he did and even gave me tips for maintaining the pH levels. Highly recommend!",
   },
   {
     initials: "BG",
     name: "Brad G.",
-    location: "Denver, CO",
+    location: "Winter Park, FL",
     time: "2 days ago",
     rating: 5,
-    text: "Absolutely fantastic service! My apartment has never looked this clean. The attention to detail was incredible, from the baseboards to the ceiling fans. Will definitely be booking again!",
+    text: "Best pool service in Orlando. The technician arrived on time, was super professional, and my pool has never looked this clean. The chemicals are perfectly balanced now.",
   },
   {
     initials: "MR",
     name: "Maria R.",
-    location: "Austin, TX",
+    location: "Kissimmee, FL",
     time: "3 days ago",
     rating: 5,
-    text: "Professional, thorough, and so friendly! She went above and beyond what I expected. My kitchen sparkles now. The $19 intro deal is an absolute steal.",
+    text: "Professional, thorough, and so friendly! He went above and beyond, even cleaning the pool deck. The $49 intro deal is amazing for the quality of service.",
   },
   {
     initials: "JK",
     name: "James K.",
-    location: "Seattle, WA",
+    location: "Lake Nona, FL",
     time: "4 days ago",
     rating: 5,
-    text: "Best cleaning service I've ever used. They were on time, efficient, and left my home smelling fresh. The booking process was simple and the price was unbeatable.",
+    text: "Finally found a reliable pool service! They were on time, efficient, and my water is perfectly clear. The booking app is simple and prices are unbeatable.",
   },
 ];
 
@@ -58,7 +58,7 @@ const ReviewsSection = () => {
                     ))}
                   </div>
                   <p className="text-sm text-muted-foreground">
-                    4,849 Homeaglow ratings
+                    2,847 Orlando's Oasis ratings
                   </p>
                 </div>
                 <div className="ml-auto">

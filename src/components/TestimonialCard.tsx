@@ -1,5 +1,5 @@
 import { Star } from "lucide-react";
-import cleanKitchen from "@/assets/clean-kitchen.jpg";
+import poolImage from "@/assets/pool-testimonial.jpg";
 
 const TestimonialCard = () => {
   return (
@@ -9,8 +9,8 @@ const TestimonialCard = () => {
           {/* Image */}
           <div className="rounded-xl overflow-hidden shadow-lg">
             <img
-              src={cleanKitchen}
-              alt="Sparkling clean kitchen"
+              src={poolImage}
+              alt="Crystal clear swimming pool"
               className="w-full h-[300px] md:h-[400px] object-cover"
             />
           </div>
@@ -23,10 +23,10 @@ const TestimonialCard = () => {
               ))}
             </div>
             <blockquote className="text-xl md:text-2xl font-medium text-navy mb-4 leading-relaxed">
-              "Honestly, I have never seen my stove so clean. It looked brand new!"
+              "My pool has never been this clear. The water literally sparkles now!"
             </blockquote>
             <cite className="text-muted-foreground not-italic">
-              - Thomas Y, Cheney, KS
+              - Thomas Y, Orlando, FL
             </cite>
           </div>
         </div>

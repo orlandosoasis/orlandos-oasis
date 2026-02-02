@@ -32,7 +32,7 @@ const UrgencyCard = () => {
       {/* Alert Banner */}
       <div className="bg-primary/10 border border-primary rounded-lg p-4 mb-6 text-center">
         <p className="text-sm font-semibold text-navy">
-          Limited quantities—lock in your savings now.
+          Limited spots—lock in your savings now.
         </p>
         <p className="text-sm text-navy">
           100% refundable if not used!
@@ -44,7 +44,7 @@ const UrgencyCard = () => {
         <div className="text-center">
           <Tag className="h-5 w-5 mx-auto mb-1 text-muted-foreground" />
           <p className="text-sm text-muted-foreground">Only</p>
-          <p className="font-bold text-navy">7 Discount Vouchers</p>
+          <p className="font-bold text-navy">7 Intro Deals</p>
           <p className="text-sm text-muted-foreground">Remaining</p>
         </div>
         <div className="text-center">
@@ -58,9 +58,9 @@ const UrgencyCard = () => {
 
       {/* CTA */}
       <div className="text-center mb-6">
-        <h3 className="text-xl font-bold text-navy mb-2">Get a Discount Voucher</h3>
+        <h3 className="text-xl font-bold text-navy mb-2">Get Your $49 Pool Cleaning</h3>
         <p className="text-sm text-muted-foreground">
-          Two, Three, Four, or Six Hours of Cleaning from Homeaglow (Up to 82% Off)
+          Professional pool service from Orlando's Oasis (Up to 60% Off)
         </p>
       </div>
 

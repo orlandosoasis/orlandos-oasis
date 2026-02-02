@@ -1,20 +1,20 @@
-import { Calendar, UserCheck, Sparkles } from "lucide-react";
+import { Calendar, UserCheck, Waves } from "lucide-react";
 
 const steps = [
   {
     icon: Calendar,
     title: "Book Online",
-    description: "Choose your date and time. We'll match you with a top-rated cleaner in your area.",
+    description: "Choose your date and time. We'll match you with a certified pool technician in your area.",
   },
   {
     icon: UserCheck,
-    title: "Meet Your Cleaner",
-    description: "Your vetted, background-checked professional arrives at your door, ready to work.",
+    title: "Meet Your Tech",
+    description: "Your vetted, background-checked pool professional arrives at your home, ready to work.",
   },
   {
-    icon: Sparkles,
-    title: "Enjoy Your Clean Home",
-    description: "Relax while your home is transformed. 100% satisfaction guaranteed.",
+    icon: Waves,
+    title: "Enjoy Your Pool",
+    description: "Dive into crystal-clear water. 100% satisfaction guaranteed on every service.",
   },
 ];
 
@@ -26,7 +26,7 @@ const HowItWorks = () => {
           How It Works
         </h2>
         <p className="text-muted-foreground text-center mb-12 max-w-2xl mx-auto">
-          Getting your home cleaned has never been easier. Book in under 60 seconds.
+          Getting your pool serviced has never been easier. Book in under 60 seconds.
         </p>
 
         <div className="grid md:grid-cols-3 gap-8">

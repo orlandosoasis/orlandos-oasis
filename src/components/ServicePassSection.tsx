@@ -84,7 +84,7 @@ const ServicePassSection = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <div id="discount-voucher" className="space-y-6">
       {/* Top Assurance Banner */}
       <div className="bg-primary rounded-2xl py-5 px-6 text-center">
         <p className="text-lg font-bold text-primary-foreground leading-tight">

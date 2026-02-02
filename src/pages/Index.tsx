@@ -14,9 +14,25 @@ const Index = () => {
       <Header />
       <main className="flex-1">
         <HeroSection />
-        <ServicePassSection />
+        
+        {/* Two-column layout: Reviews left, Pricing right */}
+        <section className="py-12 px-4 bg-background">
+          <div className="container max-w-6xl mx-auto">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+              {/* Left: Reviews */}
+              <div>
+                <ReviewsSection />
+              </div>
+              
+              {/* Right: Service Pass Pricing */}
+              <div className="lg:sticky lg:top-8">
+                <ServicePassSection />
+              </div>
+            </div>
+          </div>
+        </section>
+        
         <TestimonialCard />
-        <ReviewsSection />
         <HowItWorks />
       </main>
       <Footer />

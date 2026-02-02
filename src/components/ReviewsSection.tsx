@@ -1,5 +1,4 @@
 import { Star } from "lucide-react";
-import UrgencyCard from "./UrgencyCard";
 
 const reviews = [
   {
@@ -38,76 +37,62 @@ const reviews = [
 
 const ReviewsSection = () => {
   return (
-    <section className="py-12 md:py-16 bg-muted/50">
-      <div className="container max-w-6xl mx-auto px-4 md:px-8">
-        <h2 className="text-2xl md:text-3xl font-bold text-navy text-center mb-8">
-          Verified Customer Reviews
-        </h2>
-
-        <div className="grid lg:grid-cols-3 gap-8">
-          {/* Reviews Column */}
-          <div className="lg:col-span-2 space-y-4">
-            {/* Rating Summary */}
-            <div className="bg-card rounded-xl p-6 shadow-sm border border-border">
-              <div className="flex items-center gap-4 flex-wrap">
-                <span className="text-4xl font-bold text-navy">4.8</span>
-                <div>
-                  <div className="flex gap-1 mb-1">
-                    {[...Array(5)].map((_, i) => (
-                      <Star key={i} className="h-5 w-5 fill-primary text-primary" />
-                    ))}
-                  </div>
-                  <p className="text-sm text-muted-foreground">
-                    2,847 Orlando's Oasis ratings
-                  </p>
-                </div>
-                <div className="ml-auto">
-                  <span className="inline-flex items-center gap-1 text-sm font-medium text-trust">
-                    <span className="w-2 h-2 rounded-full bg-trust" />
-                    100% Verified Reviews
-                  </span>
-                </div>
-              </div>
+    <div className="space-y-4">
+      <h2 className="text-2xl md:text-3xl font-bold text-navy mb-6">
+        Verified Customer Reviews
+      </h2>
+      
+      {/* Rating Summary */}
+      <div className="bg-card rounded-xl p-6 shadow-sm border border-border">
+        <div className="flex items-center gap-4 flex-wrap">
+          <span className="text-4xl font-bold text-navy">4.8</span>
+          <div>
+            <div className="flex gap-1 mb-1">
+              {[...Array(5)].map((_, i) => (
+                <Star key={i} className="h-5 w-5 fill-primary text-primary" />
+              ))}
             </div>
-
-            {/* Review Cards */}
-            {reviews.map((review, index) => (
-              <div
-                key={index}
-                className="bg-card rounded-xl p-6 shadow-sm border border-border animate-fade-in"
-                style={{ animationDelay: `${index * 100}ms` }}
-              >
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center text-navy font-semibold shrink-0">
-                    {review.initials}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center justify-between gap-2 mb-1 flex-wrap">
-                      <h4 className="font-semibold text-navy">{review.name}</h4>
-                      <span className="text-xs text-muted-foreground">{review.time}</span>
-                    </div>
-                    <p className="text-sm text-muted-foreground mb-2">{review.location}</p>
-                    <div className="flex gap-0.5 mb-3">
-                      {[...Array(review.rating)].map((_, i) => (
-                        <Star key={i} className="h-4 w-4 fill-primary text-primary" />
-                      ))}
-                    </div>
-                    <p className="text-navy leading-relaxed">{review.text}</p>
-                  </div>
-                </div>
-              </div>
-            ))}
+            <p className="text-sm text-muted-foreground">
+              2,847 Orlando's Oasis ratings
+            </p>
           </div>
-
-          {/* Urgency Card */}
-          <div className="lg:col-span-1">
-            <div className="sticky top-4">
-              <UrgencyCard />
-            </div>
+          <div className="ml-auto">
+            <span className="inline-flex items-center gap-1 text-sm font-medium text-trust">
+              <span className="w-2 h-2 rounded-full bg-trust" />
+              100% Verified Reviews
+            </span>
           </div>
         </div>
       </div>
-    </section>
+
+      {/* Review Cards */}
+      {reviews.map((review, index) => (
+        <div
+          key={index}
+          className="bg-card rounded-xl p-6 shadow-sm border border-border animate-fade-in"
+          style={{ animationDelay: `${index * 100}ms` }}
+        >
+          <div className="flex items-start gap-4">
+            <div className="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center text-navy font-semibold shrink-0">
+              {review.initials}
+            </div>
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center justify-between gap-2 mb-1 flex-wrap">
+                <h4 className="font-semibold text-navy">{review.name}</h4>
+                <span className="text-xs text-muted-foreground">{review.time}</span>
+              </div>
+              <p className="text-sm text-muted-foreground mb-2">{review.location}</p>
+              <div className="flex gap-0.5 mb-3">
+                {[...Array(review.rating)].map((_, i) => (
+                  <Star key={i} className="h-4 w-4 fill-primary text-primary" />
+                ))}
+              </div>
+              <p className="text-navy leading-relaxed">{review.text}</p>
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
   );
 };
 

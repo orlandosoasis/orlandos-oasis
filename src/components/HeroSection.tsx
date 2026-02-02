@@ -22,7 +22,7 @@ const HeroSection = () => {
           <img
             src={heroImage}
             alt="Professional pool technician at work"
-            className="absolute inset-0 w-full h-full object-cover"
+            className="absolute inset-0 w-full h-full object-cover scale-x-[-1]"
           />
           
           {/* Overlay for mobile readability */}

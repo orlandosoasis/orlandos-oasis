@@ -5,6 +5,7 @@ import ServicePassSection from "@/components/ServicePassSection";
 import TestimonialCard from "@/components/TestimonialCard";
 import ReviewsSection from "@/components/ReviewsSection";
 import HowItWorks from "@/components/HowItWorks";
+import ServiceDetailsSection from "@/components/ServiceDetailsSection";
 import Footer from "@/components/Footer";
 
 const Index = () => {
@@ -34,6 +35,7 @@ const Index = () => {
         
         <TestimonialCard />
         <HowItWorks />
+        <ServiceDetailsSection />
       </main>
       <Footer />
     </div>

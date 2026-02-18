@@ -61,6 +61,10 @@ export default {
           light: "hsl(var(--oasis-navy-light))",
         },
         trust: "hsl(var(--trust-green))",
+        "cta-yellow": {
+          DEFAULT: "hsl(var(--cta-yellow))",
+          foreground: "hsl(var(--cta-yellow-foreground))",
+        },
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
           foreground: "hsl(var(--sidebar-foreground))",

@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
-import { Clock, Bell, Check } from "lucide-react";
+import { Clock, Bell, Check, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
 
 interface PassOption {
   id: string;
@@ -58,8 +59,146 @@ const PASS_OPTIONS: PassOption[] = [
   },
 ];
 
+/* ──────────────────────────── Step 2 ──────────────────────────── */
+
+interface Step2Props {
+  selectedPass: PassOption;
+  timeLeft: { minutes: number; seconds: number };
+  vouchersRemaining: number;
+  onBack: () => void;
+}
+
+const Step2Form = ({ selectedPass, timeLeft, vouchersRemaining, onBack }: Step2Props) => {
+  const [form, setForm] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    zipcode: "",
+    phone: "",
+  });
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  };
+
+  const handleSubmit = () => {
+    console.log("Step 2 submitted:", { pass: selectedPass.id, ...form });
+  };
+
+  return (
+    <div className="space-y-5 animate-fade-in">
+      {/* Confirmation Banner */}
+      <div className="bg-primary rounded-2xl py-5 px-6 text-center">
+        <p className="text-lg font-bold text-primary-foreground leading-tight">
+          Limited quantities—lock in your savings now.
+        </p>
+        <p className="text-lg font-bold text-primary-foreground">
+          100% refundable if not used!
+        </p>
+      </div>
+
+      {/* Scarcity + Timer */}
+      <div className="flex items-center justify-center divide-x divide-border">
+        <div className="flex-1 text-center px-4 py-2">
+          <Bell className="h-6 w-6 mx-auto mb-2 text-muted-foreground" strokeWidth={1.5} />
+          <p className="text-sm text-foreground">
+            Only <span className="font-bold">{vouchersRemaining} Discount Vouchers</span>
+          </p>
+          <p className="text-sm text-foreground">Remaining</p>
+        </div>
+        <div className="flex-1 text-center px-4 py-2">
+          <Clock className="h-6 w-6 mx-auto mb-2 text-muted-foreground" strokeWidth={1.5} />
+          <p className="text-sm text-foreground">Time Left</p>
+          <p className="text-lg font-semibold text-foreground tabular-nums">
+            {String(timeLeft.minutes).padStart(2, "0")}:{String(timeLeft.seconds).padStart(2, "0")}
+          </p>
+        </div>
+      </div>
+
+      {/* Selected Package Summary */}
+      <div className="border-2 border-primary rounded-xl p-4">
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="font-semibold text-foreground text-lg">{selectedPass.label}</p>
+            <p className="text-sm text-muted-foreground">{selectedPass.description}</p>
+          </div>
+          <div className="text-right shrink-0">
+            <p className="text-muted-foreground">
+              <span className="line-through">${selectedPass.originalPrice}</span>{" "}
+              <span className="text-xl font-bold text-foreground">${selectedPass.discountPrice}</span>
+            </p>
+            <p className="text-sm font-semibold text-muted-foreground uppercase">
+              {selectedPass.percentOff}% OFF
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* Form Fields */}
+      <div className="space-y-3">
+        <div className="grid grid-cols-2 gap-3">
+          <Input
+            name="firstName"
+            placeholder="First Name"
+            value={form.firstName}
+            onChange={handleChange}
+          />
+          <Input
+            name="lastName"
+            placeholder="Last Name"
+            value={form.lastName}
+            onChange={handleChange}
+          />
+        </div>
+        <Input
+          name="email"
+          type="email"
+          placeholder="Email"
+          value={form.email}
+          onChange={handleChange}
+        />
+        <div className="grid grid-cols-2 gap-3">
+          <Input
+            name="zipcode"
+            placeholder="Zipcode"
+            value={form.zipcode}
+            onChange={handleChange}
+          />
+          <Input
+            name="phone"
+            type="tel"
+            placeholder="Phone Number"
+            value={form.phone}
+            onChange={handleChange}
+          />
+        </div>
+      </div>
+
+      {/* Yellow CTA */}
+      <Button
+        onClick={handleSubmit}
+        className="w-full h-14 text-lg font-semibold rounded-full bg-cta-yellow text-cta-yellow-foreground hover:bg-cta-yellow/90 shadow-md hover:shadow-lg"
+      >
+        Lock in your discount
+      </Button>
+
+      {/* Back link */}
+      <button
+        onClick={onBack}
+        className="flex items-center gap-1 mx-auto text-sm text-muted-foreground hover:text-foreground transition-colors"
+      >
+        <ArrowLeft className="h-4 w-4" />
+        Change selection
+      </button>
+    </div>
+  );
+};
+
+/* ──────────────────────────── Main ──────────────────────────── */
+
 const ServicePassSection = () => {
   const [selectedPass, setSelectedPass] = useState<string>("pass-3");
+  const [step, setStep] = useState<1 | 2>(1);
   const [timeLeft, setTimeLeft] = useState({ minutes: 9, seconds: 59 });
   const [vouchersRemaining] = useState(31);
 
@@ -79,9 +218,23 @@ const ServicePassSection = () => {
   }, []);
 
   const handleGetPass = () => {
-    console.log("Selected pass:", selectedPass);
-    // Navigate to checkout or booking flow
+    setStep(2);
   };
+
+  const selectedPassData = PASS_OPTIONS.find((p) => p.id === selectedPass)!;
+
+  if (step === 2) {
+    return (
+      <div id="discount-voucher">
+        <Step2Form
+          selectedPass={selectedPassData}
+          timeLeft={timeLeft}
+          vouchersRemaining={vouchersRemaining}
+          onBack={() => setStep(1)}
+        />
+      </div>
+    );
+  }
 
   return (
     <div id="discount-voucher" className="space-y-6">

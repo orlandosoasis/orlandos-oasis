@@ -15,6 +15,7 @@ const Index = () => {
       <Header />
       <main className="flex-1">
         <HeroSection />
+        <div id="step-indicator-portal" className="container max-w-6xl mx-auto px-4" />
         
         {/* Two-column layout: Reviews left, Pricing right */}
         <section className="py-12 px-4 bg-background">

@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { Clock, Bell, Check, ArrowLeft, Pencil } from "lucide-react";
+import Step4Checkout from "@/components/Step4Checkout";
 import StepProgressIndicator from "@/components/StepProgressIndicator";
 import { Button } from "@/components/ui/button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -276,9 +277,10 @@ const Step2Form = ({ selectedPass, timeLeft, vouchersRemaining, onBack, onChange
 interface Step3Props {
   selectedPass: PassOption;
   onChangePass: (passId: string) => void;
+  onContinue: () => void;
 }
 
-const Step3Membership = ({ selectedPass, onChangePass }: Step3Props) => {
+const Step3Membership = ({ selectedPass, onChangePass, onContinue }: Step3Props) => {
   const [editOpen, setEditOpen] = useState(false);
   const hourlyRate = 19;
 
@@ -349,7 +351,7 @@ const Step3Membership = ({ selectedPass, onChangePass }: Step3Props) => {
       </div>
 
       {/* CTA */}
-      <Button className="w-full h-14 text-[17px] font-bold rounded-full shadow-md hover:shadow-lg">
+      <Button onClick={onContinue} className="w-full h-14 text-[17px] font-bold rounded-full shadow-md hover:shadow-lg">
         Continue
       </Button>
 
@@ -454,6 +456,23 @@ const ServicePassSection = () => {
     ? createPortal(<StepProgressIndicator currentStep={step} onStepClick={(s) => setStep(s as 1 | 2 | 3 | 4 | 5)} />, portalTarget)
     : null;
 
+  if (step === 4) {
+    return (
+      <>
+        {stepIndicator}
+        <div id="discount-voucher">
+          <Step4Checkout
+            selectedPass={selectedPassData}
+            timeLeft={timeLeft}
+            email={formData.email}
+            onChangePass={setSelectedPass}
+            passOptions={PASS_OPTIONS}
+          />
+        </div>
+      </>
+    );
+  }
+
   if (step === 3) {
     return (
       <>
@@ -462,6 +481,7 @@ const ServicePassSection = () => {
           <Step3Membership
             selectedPass={selectedPassData}
             onChangePass={setSelectedPass}
+            onContinue={() => setStep(4)}
           />
         </div>
       </>

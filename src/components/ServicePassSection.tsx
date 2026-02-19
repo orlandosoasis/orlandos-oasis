@@ -310,7 +310,7 @@ const Step3Membership = ({ selectedPass, onChangePass }: Step3Props) => {
             "This discount voucher requires a 6-month Orlando's Oasis membership",
             <>For only $59/month book unlimited pool services at your <strong className="text-foreground">discounted rate of ${hourlyRate}/hr * - saving you {selectedPass.percentOff}% off.</strong></>,
             <>The discount voucher is fully refundable until used. <strong className="text-foreground">Your membership begins after your first cleaning.</strong></>,
-            "Cancelling before 6 months results in your first cleaning being charged at full price.",
+            "Cancelling before 6 months results in your first pool service being charged at full price.",
           ].map((text, i) => (
             <div key={i} className="flex gap-3 items-start">
               <Check className="h-4 w-4 text-primary shrink-0 mt-0.5" strokeWidth={2.5} />

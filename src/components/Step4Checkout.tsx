@@ -1,8 +1,9 @@
 import { useState } from "react";
-import { Clock, Pencil, Check } from "lucide-react";
+import { Clock, Pencil, Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
 import {
   Dialog,
   DialogContent,
@@ -90,49 +91,82 @@ const Step4Checkout = ({ selectedPass, timeLeft, email, onChangePass, passOption
 
       <div className="border border-border rounded-xl overflow-hidden">
         {/* Credit/Debit Card */}
-        <button
-          type="button"
-          onClick={() => setPaymentMethod("card")}
-          className={`w-full flex items-center gap-3.5 px-5 py-4 transition-colors border-b border-border ${
-            paymentMethod === "card" ? "bg-muted/50" : "hover:bg-muted/30"
-          }`}
-        >
-          <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 transition-colors ${
-            paymentMethod === "card" ? "border-primary" : "border-muted-foreground/40"
-          }`}>
-            {paymentMethod === "card" && (
-              <div className="w-2.5 h-2.5 rounded-full bg-primary" />
-            )}
-          </div>
-          <span className="text-[15px] font-medium text-foreground flex-1 text-left">Use credit or debit card</span>
-          <div className="flex items-center gap-1.5">
-            <span className="text-[11px] font-extrabold italic text-[#1a1f71]">VISA</span>
-            <div className="w-7 h-[18px] bg-gradient-to-br from-[#eb001b] to-[#f79e1b] rounded-[3px]" />
-            <span className="text-[10px] font-bold text-muted-foreground">AMEX</span>
-          </div>
-        </button>
+        <div className={`border-b border-border ${paymentMethod === "card" ? "bg-muted/30" : ""}`}>
+          <button
+            type="button"
+            onClick={() => setPaymentMethod("card")}
+            className="w-full flex items-center gap-3.5 px-5 py-4 transition-colors hover:bg-muted/30"
+          >
+            <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 transition-colors ${
+              paymentMethod === "card" ? "border-foreground" : "border-muted-foreground/40"
+            }`}>
+              {paymentMethod === "card" && (
+                <div className="w-2.5 h-2.5 rounded-full bg-foreground" />
+              )}
+            </div>
+            <span className="text-[15px] font-medium text-foreground flex-1 text-left">Use credit or debit card</span>
+            <div className="flex items-center gap-1.5 flex-wrap justify-end">
+              <span className="text-[11px] font-extrabold italic text-[#1a1f71]">VISA</span>
+              <div className="w-7 h-[18px] bg-gradient-to-br from-[#eb001b] to-[#f79e1b] rounded-[3px]" />
+              <span className="text-[10px] font-bold text-muted-foreground">AMEX</span>
+            </div>
+          </button>
+          {paymentMethod === "card" && (
+            <div className="px-5 pb-4 space-y-3 animate-fade-in">
+              <Input
+                placeholder="Credit Card Number"
+                className="h-12 rounded-lg border-border bg-background text-sm"
+              />
+              <div className="flex gap-3">
+                <Input
+                  placeholder="Expiration"
+                  className="h-12 rounded-lg border-border bg-background text-sm flex-1"
+                />
+                <div className="relative flex-1">
+                  <Input
+                    placeholder="CVC"
+                    className="h-12 rounded-lg border-border bg-background text-sm pr-10"
+                  />
+                  <Lock className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
 
         {/* PayPal */}
-        <button
-          type="button"
-          onClick={() => setPaymentMethod("paypal")}
-          className={`w-full flex items-center gap-3.5 px-5 py-4 transition-colors ${
-            paymentMethod === "paypal" ? "bg-muted/50" : "hover:bg-muted/30"
-          }`}
-        >
-          <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 transition-colors ${
-            paymentMethod === "paypal" ? "border-primary" : "border-muted-foreground/40"
-          }`}>
-            {paymentMethod === "paypal" && (
-              <div className="w-2.5 h-2.5 rounded-full bg-primary" />
-            )}
-          </div>
-          <span className="text-[15px] font-medium text-foreground flex-1 text-left">Use PayPal account</span>
-          <span className="text-[15px] font-extrabold">
-            <span className="text-[#003087]">Pay</span>
-            <span className="text-[#009cde]">Pal</span>
-          </span>
-        </button>
+        <div className={`${paymentMethod === "paypal" ? "bg-muted/30" : ""}`}>
+          <button
+            type="button"
+            onClick={() => setPaymentMethod("paypal")}
+            className="w-full flex items-center gap-3.5 px-5 py-4 transition-colors hover:bg-muted/30"
+          >
+            <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 transition-colors ${
+              paymentMethod === "paypal" ? "border-foreground" : "border-muted-foreground/40"
+            }`}>
+              {paymentMethod === "paypal" && (
+                <div className="w-2.5 h-2.5 rounded-full bg-foreground" />
+              )}
+            </div>
+            <span className="text-[15px] font-medium text-foreground flex-1 text-left">Use PayPal account</span>
+            <span className="text-[15px] font-extrabold">
+              <span className="text-[#003087]">Pay</span>
+              <span className="text-[#009cde]">Pal</span>
+            </span>
+          </button>
+          {paymentMethod === "paypal" && (
+            <div className="px-5 pb-4 animate-fade-in">
+              <button
+                type="button"
+                className="w-full h-12 rounded-lg font-bold text-[16px] text-[#003087] transition-opacity hover:opacity-90"
+                style={{ backgroundColor: "#FFC439" }}
+              >
+                <span className="text-[#003087]">Pay</span>
+                <span className="text-[#009cde]">Pal</span>
+              </button>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Email */}

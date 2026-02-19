@@ -303,7 +303,7 @@ const Step3Membership = ({ selectedPass, onChangePass }: Step3Props) => {
 
         <div className="flex flex-col gap-3.5 mb-4">
           {[
-            "This discount voucher requires a 6-month ForeverClean membership",
+            "This discount voucher requires a 6-month Orlando's Oasis membership",
             <>For only $59/month book unlimited cleanings at your <strong className="text-foreground">discounted rate of ${hourlyRate}/hr * - saving you {selectedPass.percentOff}% off.</strong></>,
             <>The discount voucher is fully refundable until used. <strong className="text-foreground">Your membership begins after your first cleaning.</strong></>,
             "Cancelling before 6 months results in your first cleaning being charged at full price.",

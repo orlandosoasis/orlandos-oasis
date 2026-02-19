@@ -89,107 +89,119 @@ const Step2Form = ({ selectedPass, timeLeft, vouchersRemaining, onBack }: Step2P
     <div className="space-y-5 animate-fade-in">
       {/* Confirmation Banner */}
       <div className="bg-primary rounded-2xl py-5 px-6 text-center">
-        <p className="text-lg font-bold text-primary-foreground leading-tight">
-          Limited quantities—lock in your savings now.
-        </p>
-        <p className="text-lg font-bold text-primary-foreground">
-          100% refundable if not used!
+        <p className="text-base font-bold text-primary-foreground leading-relaxed">
+          Congratulations, you reserved one of our last<br />remaining discount vouchers for…
         </p>
       </div>
 
       {/* Scarcity + Timer */}
-      <div className="flex items-center justify-center divide-x divide-border">
-        <div className="flex-1 text-center px-4 py-2">
-          <Bell className="h-6 w-6 mx-auto mb-2 text-muted-foreground" strokeWidth={1.5} />
-          <p className="text-sm text-foreground">
-            Only <span className="font-bold">{vouchersRemaining} Discount Vouchers</span>
+      <div className="flex items-stretch bg-background rounded-xl shadow-sm overflow-hidden border border-border">
+        <div className="flex-1 flex flex-col items-center gap-1.5 px-4 py-4 border-r border-border">
+          <Bell className="h-5 w-5 text-muted-foreground" strokeWidth={1.8} />
+          <p className="text-[13px] text-muted-foreground">
+            Only <span className="font-bold text-foreground">{vouchersRemaining} Discount Vouchers</span>
           </p>
-          <p className="text-sm text-foreground">Remaining</p>
+          <p className="text-[13px] text-muted-foreground">Remaining</p>
         </div>
-        <div className="flex-1 text-center px-4 py-2">
-          <Clock className="h-6 w-6 mx-auto mb-2 text-muted-foreground" strokeWidth={1.5} />
-          <p className="text-sm text-foreground">Time Left</p>
-          <p className="text-lg font-semibold text-foreground tabular-nums">
+        <div className="flex-1 flex flex-col items-center gap-1.5 px-4 py-4">
+          <Clock className="h-5 w-5 text-muted-foreground" strokeWidth={1.8} />
+          <p className="text-[13px] text-muted-foreground">Time Left</p>
+          <p className="text-[22px] font-extrabold text-foreground tabular-nums tracking-wide">
             {String(timeLeft.minutes).padStart(2, "0")}:{String(timeLeft.seconds).padStart(2, "0")}
           </p>
         </div>
       </div>
 
-      {/* Selected Package Summary */}
-      <div className="border-2 border-primary rounded-xl p-4">
-        <div className="flex items-center justify-between">
-          <div>
-            <p className="font-semibold text-foreground text-lg">{selectedPass.label}</p>
-            <p className="text-sm text-muted-foreground">{selectedPass.description}</p>
-          </div>
-          <div className="text-right shrink-0">
-            <p className="text-muted-foreground">
-              <span className="line-through">${selectedPass.originalPrice}</span>{" "}
-              <span className="text-xl font-bold text-foreground">${selectedPass.discountPrice}</span>
-            </p>
-            <p className="text-sm font-semibold text-muted-foreground uppercase">
-              {selectedPass.percentOff}% OFF
-            </p>
-          </div>
-        </div>
+      {/* Heading */}
+      <div className="text-center">
+        <h2 className="text-2xl font-extrabold text-foreground">Enter Your Details</h2>
+        <p className="text-sm text-muted-foreground mt-2 max-w-[340px] mx-auto leading-relaxed">
+          {selectedPass.label} — {selectedPass.percentOff}% off. Lock in your discount today.
+        </p>
       </div>
 
       {/* Form Fields */}
-      <div className="space-y-3">
-        <div className="grid grid-cols-2 gap-3">
-          <Input
-            name="firstName"
-            placeholder="First Name"
-            value={form.firstName}
-            onChange={handleChange}
-          />
-          <Input
-            name="lastName"
-            placeholder="Last Name"
-            value={form.lastName}
-            onChange={handleChange}
-          />
-        </div>
+      <div className="space-y-2.5">
+        <Input
+          name="firstName"
+          placeholder="First Name"
+          value={form.firstName}
+          onChange={handleChange}
+          className="h-12 rounded-xl border-[1.5px] border-border bg-background shadow-sm text-[15px] placeholder:text-muted-foreground/60 focus-visible:ring-primary focus-visible:border-primary"
+        />
+        <Input
+          name="lastName"
+          placeholder="Last Name"
+          value={form.lastName}
+          onChange={handleChange}
+          className="h-12 rounded-xl border-[1.5px] border-border bg-background shadow-sm text-[15px] placeholder:text-muted-foreground/60 focus-visible:ring-primary focus-visible:border-primary"
+        />
         <Input
           name="email"
           type="email"
-          placeholder="Email"
+          placeholder="Email Address"
           value={form.email}
           onChange={handleChange}
+          className="h-12 rounded-xl border-[1.5px] border-border bg-background shadow-sm text-[15px] placeholder:text-muted-foreground/60 focus-visible:ring-primary focus-visible:border-primary"
         />
-        <div className="grid grid-cols-2 gap-3">
-          <Input
-            name="zipcode"
-            placeholder="Zipcode"
-            value={form.zipcode}
-            onChange={handleChange}
-          />
-          <Input
-            name="phone"
-            type="tel"
-            placeholder="Phone Number"
-            value={form.phone}
-            onChange={handleChange}
-          />
+        <Input
+          name="zipcode"
+          placeholder="Zipcode"
+          value={form.zipcode}
+          onChange={handleChange}
+          className="h-12 rounded-xl border-[1.5px] border-border bg-background shadow-sm text-[15px] placeholder:text-muted-foreground/60 focus-visible:ring-primary focus-visible:border-primary"
+        />
+        <Input
+          name="phone"
+          type="tel"
+          placeholder="Phone Number"
+          value={form.phone}
+          onChange={handleChange}
+          className="h-12 rounded-xl border-[1.5px] border-border bg-background shadow-sm text-[15px] placeholder:text-muted-foreground/60 focus-visible:ring-primary focus-visible:border-primary"
+        />
+      </div>
+
+      {/* Consent */}
+      <p className="text-xs text-muted-foreground text-center leading-relaxed px-1">
+        <span className="font-semibold text-muted-foreground/80">Get exclusive deals and updates by signing up!</span>{" "}
+        By submitting your details, you agree to <span className="font-semibold text-muted-foreground/80">receive our best discounts</span> — via emails, phone calls, and automated SMS and you agree to our{" "}
+        <a href="#" className="text-primary hover:underline">Terms</a> and{" "}
+        <a href="#" className="text-primary hover:underline">Privacy Policy</a>.{" "}
+        <span className="font-semibold text-muted-foreground/80">Opt-out anytime.</span>
+      </p>
+
+      {/* Order Summary */}
+      <div className="bg-background rounded-xl p-4 px-5 flex items-center justify-between shadow-sm border border-border">
+        <div>
+          <p className="text-xs text-muted-foreground mb-1">You're Getting</p>
+          <div className="flex items-center gap-2.5">
+            <p className="text-[15px] font-bold text-foreground">{selectedPass.label}</p>
+            <button
+              onClick={onBack}
+              className="inline-flex items-center gap-1 text-xs font-medium text-muted-foreground border border-border rounded-full px-3 py-1 hover:border-primary hover:text-primary transition-colors"
+            >
+              ✏️ Edit
+            </button>
+          </div>
+        </div>
+        <div className="text-right">
+          <div className="flex items-baseline gap-1.5 justify-end">
+            <span className="text-sm text-muted-foreground line-through">${selectedPass.originalPrice}</span>
+            <span className="text-[22px] font-extrabold text-foreground">${selectedPass.discountPrice}</span>
+          </div>
+          <p className="text-[11px] font-bold text-muted-foreground tracking-wide mt-0.5">
+            {selectedPass.percentOff}% OFF
+          </p>
         </div>
       </div>
 
-      {/* Yellow CTA */}
+      {/* CTA */}
       <Button
         onClick={handleSubmit}
-        className="w-full h-14 text-lg font-semibold rounded-full bg-cta-yellow text-cta-yellow-foreground hover:bg-cta-yellow/90 shadow-md hover:shadow-lg"
+        className="w-full h-14 text-[17px] font-bold rounded-full shadow-md hover:shadow-lg"
       >
-        Lock in your discount
+        Lock in your discount!
       </Button>
-
-      {/* Back link */}
-      <button
-        onClick={onBack}
-        className="flex items-center gap-1 mx-auto text-sm text-muted-foreground hover:text-foreground transition-colors"
-      >
-        <ArrowLeft className="h-4 w-4" />
-        Change selection
-      </button>
     </div>
   );
 };

@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { Clock, Bell, Check, ArrowLeft, Pencil } from "lucide-react";
 import StepProgressIndicator from "@/components/StepProgressIndicator";
 import { Button } from "@/components/ui/button";
@@ -447,33 +448,43 @@ const ServicePassSection = () => {
 
   const selectedPassData = PASS_OPTIONS.find((p) => p.id === selectedPass)!;
 
+  // Render step indicator via portal callback
+  const portalTarget = typeof document !== "undefined" ? document.getElementById("step-indicator-portal") : null;
+  const stepIndicator = step >= 2 && portalTarget
+    ? createPortal(<StepProgressIndicator currentStep={step} onStepClick={(s) => setStep(s as 1 | 2 | 3 | 4 | 5)} />, portalTarget)
+    : null;
+
   if (step === 3) {
     return (
-      <div id="discount-voucher">
-        <StepProgressIndicator currentStep={3} onStepClick={(s) => setStep(s as 1 | 2 | 3 | 4 | 5)} />
-        <Step3Membership
-          selectedPass={selectedPassData}
-          onChangePass={setSelectedPass}
-        />
-      </div>
+      <>
+        {stepIndicator}
+        <div id="discount-voucher">
+          <Step3Membership
+            selectedPass={selectedPassData}
+            onChangePass={setSelectedPass}
+          />
+        </div>
+      </>
     );
   }
 
   if (step === 2) {
     return (
-      <div id="discount-voucher">
-        <StepProgressIndicator currentStep={2} onStepClick={(s) => setStep(s as 1 | 2 | 3 | 4 | 5)} />
-        <Step2Form
-          selectedPass={selectedPassData}
-          timeLeft={timeLeft}
-          vouchersRemaining={vouchersRemaining}
-          onBack={() => setStep(1)}
-          onChangePass={setSelectedPass}
-          formData={formData}
-          onFormDataChange={setFormData}
-          onSubmit={() => setStep(3)}
-        />
-      </div>
+      <>
+        {stepIndicator}
+        <div id="discount-voucher">
+          <Step2Form
+            selectedPass={selectedPassData}
+            timeLeft={timeLeft}
+            vouchersRemaining={vouchersRemaining}
+            onBack={() => setStep(1)}
+            onChangePass={setSelectedPass}
+            formData={formData}
+            onFormDataChange={setFormData}
+            onSubmit={() => setStep(3)}
+          />
+        </div>
+      </>
     );
   }
 

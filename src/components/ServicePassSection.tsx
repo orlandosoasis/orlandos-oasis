@@ -297,7 +297,7 @@ const Step3Membership = ({ selectedPass, onChangePass }: Step3Props) => {
           <span className="text-primary">discounted rate of ${hourlyRate}/hr * — a {selectedPass.percentOff}% savings!</span>
         </h2>
 
-        <p className="text-[13px] font-bold text-foreground tracking-wide mb-4">
+        <p className="text-base font-bold text-foreground tracking-wide mb-4">
           Discount Voucher and Membership Details
         </p>
 

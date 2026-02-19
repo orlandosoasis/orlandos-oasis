@@ -315,7 +315,7 @@ const Step3Membership = ({ selectedPass, onChangePass }: Step3Props) => {
           ))}
         </div>
 
-        <p className="text-[11.5px] text-muted-foreground italic">
+        <p className="text-sm text-muted-foreground italic">
           *Last 30-day average price based on your zip code
         </p>
       </div>

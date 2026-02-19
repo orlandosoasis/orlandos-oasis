@@ -101,6 +101,17 @@ const Step2Form = ({ selectedPass, timeLeft, vouchersRemaining, onBack }: Step2P
         </p>
       </div>
 
+      {/* Hold Notice */}
+      <div className="flex items-center justify-center gap-2">
+        <Clock className="h-4 w-4 text-muted-foreground shrink-0" strokeWidth={1.8} />
+        <p className="text-sm text-muted-foreground">
+          We'll hold it for you for the next
+        </p>
+        <span className="text-sm font-bold text-foreground tabular-nums ml-0.5">
+          {String(timeLeft.minutes).padStart(2, "0")}:{String(timeLeft.seconds).padStart(2, "0")}
+        </span>
+      </div>
+
       {/* Scarcity + Timer */}
       <div className="flex items-stretch bg-background rounded-xl shadow-sm overflow-hidden border border-border">
         <div className="flex-1 flex flex-col items-center gap-1.5 py-4 border-r border-border text-base px-0">

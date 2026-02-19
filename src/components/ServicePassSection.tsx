@@ -87,37 +87,40 @@ const Step2Form = ({ selectedPass, timeLeft, vouchersRemaining, onBack }: Step2P
 
   return (
     <div className="space-y-5 animate-fade-in">
-      {/* Confirmation Banner */}
+      {/* Banner */}
       <div className="bg-primary rounded-2xl py-5 px-6 text-center">
         <p className="text-base font-bold text-primary-foreground leading-relaxed">
-          Congratulations, you reserved one of our last<br />remaining discount vouchers for…
+          Congratulations, you reserved one of our last<br />remaining discount vouchers!
         </p>
       </div>
 
-      {/* Scarcity + Timer */}
-      <div className="flex items-stretch bg-background rounded-xl shadow-sm overflow-hidden border border-border">
-        <div className="flex-1 flex flex-col items-center gap-1.5 px-4 py-4 border-r border-border">
-          <Bell className="h-5 w-5 text-muted-foreground" strokeWidth={1.8} />
-          <p className="text-[13px] text-muted-foreground">
-            Only <span className="font-bold text-foreground">{vouchersRemaining} Discount Vouchers</span>
-          </p>
-          <p className="text-[13px] text-muted-foreground">Remaining</p>
-        </div>
-        <div className="flex-1 flex flex-col items-center gap-1.5 px-4 py-4">
-          <Clock className="h-5 w-5 text-muted-foreground" strokeWidth={1.8} />
-          <p className="text-[13px] text-muted-foreground">Time Left</p>
-          <p className="text-[22px] font-extrabold text-foreground tabular-nums tracking-wide">
+      {/* Offer Summary */}
+      <div className="bg-background rounded-xl shadow-sm border border-border p-5 text-center">
+        <p className="text-2xl font-extrabold text-foreground">
+          {selectedPass.hours} Hours of Pool Service for ${selectedPass.discountPrice}
+        </p>
+        <p className="text-base font-bold text-primary mt-1">
+          {selectedPass.percentOff}% OFF
+        </p>
+        <p className="text-sm text-muted-foreground line-through mt-0.5">
+          Was ${selectedPass.originalPrice}
+        </p>
+      </div>
+
+      {/* Countdown */}
+      <div className="flex items-center justify-center gap-2 py-3">
+        <Clock className="h-5 w-5 text-muted-foreground" strokeWidth={1.8} />
+        <p className="text-sm text-muted-foreground">
+          We'll hold it for you for the next{" "}
+          <span className="font-extrabold text-foreground tabular-nums text-lg">
             {String(timeLeft.minutes).padStart(2, "0")}:{String(timeLeft.seconds).padStart(2, "0")}
-          </p>
-        </div>
+          </span>
+        </p>
       </div>
 
       {/* Heading */}
       <div className="text-center">
         <h2 className="text-2xl font-extrabold text-foreground">Enter Your Details</h2>
-        <p className="text-sm text-muted-foreground mt-2 max-w-[340px] mx-auto leading-relaxed">
-          {selectedPass.label} — {selectedPass.percentOff}% off. Lock in your discount today.
-        </p>
       </div>
 
       {/* Form Fields */}

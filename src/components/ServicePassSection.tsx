@@ -114,7 +114,7 @@ const Step2Form = ({ selectedPass, timeLeft, vouchersRemaining, onBack }: Step2P
 
 
       {/* Heading */}
-      <div className="text-center">
+      <div>
         <h2 className="text-2xl font-extrabold text-foreground">Enter Your Details</h2>
       </div>
 

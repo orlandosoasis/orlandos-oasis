@@ -106,7 +106,7 @@ const Step2Form = ({ selectedPass, timeLeft, vouchersRemaining, onBack, onChange
       {/* Package Summary */}
       <div className="bg-muted rounded-xl py-3 px-5 text-center">
         <p className="text-[15px] font-bold text-foreground">
-          {selectedPass.hours} Hours of Cleaning for ${selectedPass.discountPrice} – {selectedPass.percentOff}% Off
+          {selectedPass.label} for ${selectedPass.discountPrice} – {selectedPass.percentOff}% Off
         </p>
       </div>
 

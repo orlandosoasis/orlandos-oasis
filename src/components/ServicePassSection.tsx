@@ -94,6 +94,13 @@ const Step2Form = ({ selectedPass, timeLeft, vouchersRemaining, onBack }: Step2P
         </p>
       </div>
 
+      {/* Package Summary */}
+      <div className="bg-muted rounded-xl py-3 px-5 text-center">
+        <p className="text-[15px] font-bold text-foreground">
+          {selectedPass.hours} Hours of Cleaning for ${selectedPass.discountPrice} – {selectedPass.percentOff}% Off
+        </p>
+      </div>
+
       {/* Scarcity + Timer */}
       <div className="flex items-stretch bg-background rounded-xl shadow-sm overflow-hidden border border-border">
         <div className="flex-1 flex flex-col items-center gap-1.5 py-4 border-r border-border text-base px-0">

@@ -115,9 +115,6 @@ const Step2Form = ({ selectedPass, timeLeft, vouchersRemaining, onBack }: Step2P
       {/* Heading */}
       <div className="text-center">
         <h2 className="text-2xl font-extrabold text-foreground">Enter Your Details</h2>
-        <p className="text-sm text-muted-foreground mt-2 max-w-[340px] mx-auto leading-relaxed">
-          {selectedPass.label} — {selectedPass.percentOff}% off. Lock in your discount today.
-        </p>
       </div>
 
       {/* Form Fields */}

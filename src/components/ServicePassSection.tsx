@@ -295,8 +295,8 @@ const Step3Membership = ({ selectedPass, onChangePass }: Step3Props) => {
       {/* Card */}
       <div className="bg-card rounded-2xl p-7 border border-border">
         <h2 className="text-[22px] font-bold text-foreground text-center leading-snug mb-6" style={{ fontFamily: 'inherit' }}>
-          Get unlimited follow-up cleanings at your{" "}
-          <span className="text-primary">discounted rate of ${hourlyRate}/hr *</span>
+          Get unlimited follow-up pool services at your{" "}
+           <span className="text-primary">discounted rate of ${hourlyRate}/hr *</span>
           <br />
           <span className="text-primary">— a {selectedPass.percentOff}% savings!</span>
         </h2>

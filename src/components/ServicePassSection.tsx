@@ -68,30 +68,30 @@ const PASS_OPTIONS: PassOption[] = [
 
 /* ──────────────────────────── Step 2 ──────────────────────────── */
 
+interface FormData {
+  firstName: string;
+  lastName: string;
+  email: string;
+  zipcode: string;
+  phone: string;
+}
+
 interface Step2Props {
   selectedPass: PassOption;
   timeLeft: {minutes: number;seconds: number;};
   vouchersRemaining: number;
   onBack: () => void;
   onChangePass: (passId: string) => void;
+  formData: FormData;
+  onFormDataChange: (data: FormData) => void;
+  onSubmit: () => void;
 }
 
-const Step2Form = ({ selectedPass, timeLeft, vouchersRemaining, onBack, onChangePass }: Step2Props) => {
-  const [form, setForm] = useState({
-    firstName: "",
-    lastName: "",
-    email: "",
-    zipcode: "",
-    phone: ""
-  });
+const Step2Form = ({ selectedPass, timeLeft, vouchersRemaining, onBack, onChangePass, formData, onFormDataChange, onSubmit }: Step2Props) => {
   const [editOpen, setEditOpen] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
-  };
-
-  const handleSubmit = () => {
-    console.log("Step 2 submitted:", { pass: selectedPass.id, ...form });
+    onFormDataChange({ ...formData, [e.target.name]: e.target.value });
   };
 
   return (
@@ -133,13 +133,13 @@ const Step2Form = ({ selectedPass, timeLeft, vouchersRemaining, onBack, onChange
           <Input
             name="firstName"
             placeholder="First Name"
-            value={form.firstName}
+            value={formData.firstName}
             onChange={handleChange}
             className="h-12 rounded-xl border-[1.5px] border-border bg-background shadow-sm text-[15px] placeholder:text-muted-foreground/60 focus-visible:ring-primary focus-visible:border-primary" />
           <Input
             name="lastName"
             placeholder="Last Name"
-            value={form.lastName}
+            value={formData.lastName}
             onChange={handleChange}
             className="h-12 rounded-xl border-[1.5px] border-border bg-background shadow-sm text-[15px] placeholder:text-muted-foreground/60 focus-visible:ring-primary focus-visible:border-primary" />
         </div>
@@ -148,14 +148,14 @@ const Step2Form = ({ selectedPass, timeLeft, vouchersRemaining, onBack, onChange
           name="email"
           type="email"
           placeholder="Email Address"
-          value={form.email}
+          value={formData.email}
           onChange={handleChange}
           className="h-12 rounded-xl border-[1.5px] border-border bg-background shadow-sm text-[15px] placeholder:text-muted-foreground/60 focus-visible:ring-primary focus-visible:border-primary" />
 
         <Input
           name="zipcode"
           placeholder="Zipcode"
-          value={form.zipcode}
+          value={formData.zipcode}
           onChange={handleChange}
           className="h-12 rounded-xl border-[1.5px] border-border bg-background shadow-sm text-[15px] placeholder:text-muted-foreground/60 focus-visible:ring-primary focus-visible:border-primary" />
 
@@ -163,7 +163,7 @@ const Step2Form = ({ selectedPass, timeLeft, vouchersRemaining, onBack, onChange
           name="phone"
           type="tel"
           placeholder="Phone Number"
-          value={form.phone}
+          value={formData.phone}
           onChange={handleChange}
           className="h-12 rounded-xl border-[1.5px] border-border bg-background shadow-sm text-[15px] placeholder:text-muted-foreground/60 focus-visible:ring-primary focus-visible:border-primary" />
 
@@ -205,7 +205,7 @@ const Step2Form = ({ selectedPass, timeLeft, vouchersRemaining, onBack, onChange
 
       {/* CTA */}
       <Button
-        onClick={handleSubmit}
+        onClick={onSubmit}
         className="w-full h-14 text-[17px] font-bold rounded-full shadow-md hover:shadow-lg">
         Lock in your discount!
       </Button>
@@ -269,13 +269,159 @@ const Step2Form = ({ selectedPass, timeLeft, vouchersRemaining, onBack, onChange
 
 };
 
+/* ──────────────────────────── Step 3 ──────────────────────────── */
+
+interface Step3Props {
+  selectedPass: PassOption;
+  onChangePass: (passId: string) => void;
+}
+
+const Step3Membership = ({ selectedPass, onChangePass }: Step3Props) => {
+  const [editOpen, setEditOpen] = useState(false);
+  const hourlyRate = Math.round(selectedPass.discountPrice / selectedPass.hours);
+
+  return (
+    <div className="space-y-4 animate-fade-in">
+      {/* Banner */}
+      <div className="bg-primary rounded-2xl py-5 px-6 text-center">
+        <p className="text-[15px] font-medium text-primary-foreground leading-relaxed">
+          Congratulations, your first {selectedPass.hours}-hour cleaning will be covered by your{" "}
+          <strong>${selectedPass.discountPrice} voucher!</strong> If you like your cleaner...
+        </p>
+      </div>
+
+      {/* Card */}
+      <div className="bg-card rounded-2xl p-7 border border-border">
+        <h2 className="text-[22px] font-bold text-foreground text-center leading-snug mb-6" style={{ fontFamily: 'inherit' }}>
+          Get unlimited follow-up cleanings at your{" "}
+          <span className="text-primary">discounted rate of ${hourlyRate}/hr * — a {selectedPass.percentOff}% savings!</span>
+        </h2>
+
+        <p className="text-[13px] font-bold text-foreground tracking-wide mb-4">
+          Discount Voucher and Membership Details
+        </p>
+
+        <div className="flex flex-col gap-3.5 mb-4">
+          {[
+            "This discount voucher requires a 6-month ForeverClean membership",
+            <>For only $59/month book unlimited cleanings at your <strong className="text-foreground">discounted rate of ${hourlyRate}/hr * - saving you {selectedPass.percentOff}% off.</strong></>,
+            <>The discount voucher is fully refundable until used. <strong className="text-foreground">Your membership begins after your first cleaning.</strong></>,
+            "Cancelling before 6 months results in your first cleaning being charged at full price.",
+          ].map((text, i) => (
+            <div key={i} className="flex gap-3 items-start">
+              <Check className="h-4 w-4 text-primary shrink-0 mt-0.5" strokeWidth={2.5} />
+              <p className="text-sm text-muted-foreground leading-relaxed">{text}</p>
+            </div>
+          ))}
+        </div>
+
+        <p className="text-[11.5px] text-muted-foreground italic">
+          *Last 30-day average price based on your zip code
+        </p>
+      </div>
+
+      {/* Divider */}
+      <div className="h-px bg-border" />
+
+      {/* Summary */}
+      <div className="flex items-center justify-between px-1">
+        <div>
+          <p className="text-[11px] text-muted-foreground font-medium uppercase tracking-widest mb-0.5">You're Getting</p>
+          <div className="flex items-center gap-2.5">
+            <p className="text-[15px] font-bold text-foreground">{selectedPass.label}</p>
+            <button
+              onClick={() => setEditOpen(true)}
+              className="inline-flex items-center gap-1 text-xs font-medium text-muted-foreground border border-border rounded-full px-3 py-1 hover:border-primary hover:text-primary transition-colors">
+              <Pencil className="h-3 w-3" />
+              Edit
+            </button>
+          </div>
+        </div>
+        <div className="text-right">
+          <p className="text-sm text-muted-foreground line-through">${selectedPass.originalPrice}</p>
+          <p className="text-[22px] font-extrabold text-foreground">${selectedPass.discountPrice}</p>
+          <p className="text-[11px] font-bold text-primary tracking-wide">{selectedPass.percentOff}% OFF</p>
+        </div>
+      </div>
+
+      {/* CTA */}
+      <Button className="w-full h-14 text-[17px] font-bold rounded-full shadow-md hover:shadow-lg">
+        Continue
+      </Button>
+
+      {/* Edit Package Dialog */}
+      <Dialog open={editOpen} onOpenChange={setEditOpen}>
+        <DialogContent className="max-w-md p-6 rounded-2xl">
+          <DialogHeader>
+            <DialogTitle className="text-xl font-bold text-foreground">Change Package</DialogTitle>
+            <DialogDescription className="text-sm text-muted-foreground">Select your preferred service package</DialogDescription>
+          </DialogHeader>
+          <RadioGroup
+            value={selectedPass.id}
+            onValueChange={(val) => {
+              onChangePass(val);
+              setEditOpen(false);
+            }}
+            className="space-y-3 mt-2"
+          >
+            {PASS_OPTIONS.map((pass) => (
+              <label
+                key={pass.id}
+                className={`relative flex items-center gap-4 p-4 rounded-xl border-2 cursor-pointer transition-all duration-200 ${
+                  selectedPass.id === pass.id
+                    ? "border-foreground bg-background shadow-sm"
+                    : "border-border bg-background hover:border-muted-foreground"
+                }`}
+              >
+                {pass.isMostPopular && (
+                  <Badge className="absolute -top-3 left-4 bg-primary text-primary-foreground text-xs px-3 py-1 rounded-full">
+                    Most Popular
+                  </Badge>
+                )}
+                <RadioGroupItem
+                  value={pass.id}
+                  className="h-5 w-5 border-2 border-muted-foreground data-[state=checked]:border-foreground data-[state=checked]:bg-foreground"
+                />
+                <div className="flex-1 min-w-0">
+                  <p className="font-semibold text-foreground text-[15px]">{pass.label}</p>
+                  <p className="text-sm text-muted-foreground">{pass.description}</p>
+                </div>
+                <div className="text-right shrink-0">
+                  <p className="text-muted-foreground">
+                    <span className="line-through">${pass.originalPrice}</span>{" "}
+                    <span className="text-lg font-bold text-foreground">${pass.discountPrice}</span>
+                    <span className="text-foreground">*</span>
+                  </p>
+                  <p className="text-xs font-semibold text-muted-foreground uppercase">
+                    {pass.percentOff}% OFF
+                  </p>
+                </div>
+              </label>
+            ))}
+          </RadioGroup>
+          <p className="text-xs text-muted-foreground text-center px-2 mt-1">
+            *Vouchers cover the full price of your first pool service. Don't worry - your technician will be paid in full!
+          </p>
+        </DialogContent>
+      </Dialog>
+    </div>
+  );
+};
+
 /* ──────────────────────────── Main ──────────────────────────── */
 
 const ServicePassSection = () => {
   const [selectedPass, setSelectedPass] = useState<string>("pass-3");
-  const [step, setStep] = useState<1 | 2>(1);
+  const [step, setStep] = useState<1 | 2 | 3>(1);
   const [timeLeft, setTimeLeft] = useState({ minutes: 9, seconds: 59 });
   const [vouchersRemaining] = useState(31);
+  const [formData, setFormData] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    zipcode: "",
+    phone: "",
+  });
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -298,6 +444,17 @@ const ServicePassSection = () => {
 
   const selectedPassData = PASS_OPTIONS.find((p) => p.id === selectedPass)!;
 
+  if (step === 3) {
+    return (
+      <div id="discount-voucher">
+        <Step3Membership
+          selectedPass={selectedPassData}
+          onChangePass={setSelectedPass}
+        />
+      </div>
+    );
+  }
+
   if (step === 2) {
     return (
       <div id="discount-voucher">
@@ -306,10 +463,13 @@ const ServicePassSection = () => {
           timeLeft={timeLeft}
           vouchersRemaining={vouchersRemaining}
           onBack={() => setStep(1)}
-          onChangePass={setSelectedPass} />
-
-      </div>);
-
+          onChangePass={setSelectedPass}
+          formData={formData}
+          onFormDataChange={setFormData}
+          onSubmit={() => setStep(3)}
+        />
+      </div>
+    );
   }
 
   return (

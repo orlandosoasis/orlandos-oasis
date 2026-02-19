@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Clock, Bell, Check, ArrowLeft, Pencil } from "lucide-react";
+import StepProgressIndicator from "@/components/StepProgressIndicator";
 import { Button } from "@/components/ui/button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Badge } from "@/components/ui/badge";
@@ -414,7 +415,7 @@ const Step3Membership = ({ selectedPass, onChangePass }: Step3Props) => {
 
 const ServicePassSection = () => {
   const [selectedPass, setSelectedPass] = useState<string>("pass-3");
-  const [step, setStep] = useState<1 | 2 | 3>(1);
+  const [step, setStep] = useState<1 | 2 | 3 | 4 | 5>(1);
   const [timeLeft, setTimeLeft] = useState({ minutes: 9, seconds: 59 });
   const [vouchersRemaining] = useState(31);
   const [formData, setFormData] = useState({
@@ -449,6 +450,7 @@ const ServicePassSection = () => {
   if (step === 3) {
     return (
       <div id="discount-voucher">
+        <StepProgressIndicator currentStep={3} onStepClick={(s) => setStep(s as 1 | 2 | 3 | 4 | 5)} />
         <Step3Membership
           selectedPass={selectedPassData}
           onChangePass={setSelectedPass}
@@ -460,6 +462,7 @@ const ServicePassSection = () => {
   if (step === 2) {
     return (
       <div id="discount-voucher">
+        <StepProgressIndicator currentStep={2} onStepClick={(s) => setStep(s as 1 | 2 | 3 | 4 | 5)} />
         <Step2Form
           selectedPass={selectedPassData}
           timeLeft={timeLeft}

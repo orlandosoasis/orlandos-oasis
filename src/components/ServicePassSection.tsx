@@ -95,7 +95,7 @@ const Step2Form = ({ selectedPass, timeLeft, vouchersRemaining, onBack }: Step2P
       </div>
 
       {/* Offer Summary */}
-      <div className="bg-background rounded-xl shadow-sm border border-border p-5 text-center">
+      <div className="bg-muted rounded-2xl py-[18px] px-6 text-center max-w-[600px] mx-auto">
         <p className="text-2xl font-extrabold text-foreground">
           {selectedPass.hours} Hours of Pool Service for ${selectedPass.discountPrice}
         </p>

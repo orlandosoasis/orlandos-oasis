@@ -17,53 +17,53 @@ interface PassOption {
 }
 
 const PASS_OPTIONS: PassOption[] = [
-  {
-    id: "pass-2",
-    hours: 2,
-    label: "2 Hours of pool service",
-    description: "Ideal for a quick touch up",
-    originalPrice: 50,
-    discountPrice: 9,
-    percentOff: 82,
-    isMostPopular: false,
-  },
-  {
-    id: "pass-3",
-    hours: 3,
-    label: "3 Hours of pool service",
-    description: "Ideal for standard-sized pools",
-    originalPrice: 75,
-    discountPrice: 19,
-    percentOff: 75,
-    isMostPopular: true,
-  },
-  {
-    id: "pass-4",
-    hours: 4,
-    label: "4 Hours of pool service",
-    description: "Ideal for larger pools",
-    originalPrice: 100,
-    discountPrice: 39,
-    percentOff: 61,
-    isMostPopular: false,
-  },
-  {
-    id: "pass-6",
-    hours: 6,
-    label: "6 Hours of pool service",
-    description: "Ideal for neglected or extra-large pools",
-    originalPrice: 150,
-    discountPrice: 79,
-    percentOff: 47,
-    isMostPopular: false,
-  },
-];
+{
+  id: "pass-2",
+  hours: 2,
+  label: "2 Hours of pool service",
+  description: "Ideal for a quick touch up",
+  originalPrice: 50,
+  discountPrice: 9,
+  percentOff: 82,
+  isMostPopular: false
+},
+{
+  id: "pass-3",
+  hours: 3,
+  label: "3 Hours of pool service",
+  description: "Ideal for standard-sized pools",
+  originalPrice: 75,
+  discountPrice: 19,
+  percentOff: 75,
+  isMostPopular: true
+},
+{
+  id: "pass-4",
+  hours: 4,
+  label: "4 Hours of pool service",
+  description: "Ideal for larger pools",
+  originalPrice: 100,
+  discountPrice: 39,
+  percentOff: 61,
+  isMostPopular: false
+},
+{
+  id: "pass-6",
+  hours: 6,
+  label: "6 Hours of pool service",
+  description: "Ideal for neglected or extra-large pools",
+  originalPrice: 150,
+  discountPrice: 79,
+  percentOff: 47,
+  isMostPopular: false
+}];
+
 
 /* ──────────────────────────── Step 2 ──────────────────────────── */
 
 interface Step2Props {
   selectedPass: PassOption;
-  timeLeft: { minutes: number; seconds: number };
+  timeLeft: {minutes: number;seconds: number;};
   vouchersRemaining: number;
   onBack: () => void;
 }
@@ -74,7 +74,7 @@ const Step2Form = ({ selectedPass, timeLeft, vouchersRemaining, onBack }: Step2P
     lastName: "",
     email: "",
     zipcode: "",
-    phone: "",
+    phone: ""
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -87,40 +87,37 @@ const Step2Form = ({ selectedPass, timeLeft, vouchersRemaining, onBack }: Step2P
 
   return (
     <div className="space-y-5 animate-fade-in">
-      {/* Banner */}
+      {/* Confirmation Banner */}
       <div className="bg-primary rounded-2xl py-5 px-6 text-center">
         <p className="text-base font-bold text-primary-foreground leading-relaxed">
-          Congratulations, you reserved one of our last<br />remaining discount vouchers!
+          Congratulations, you reserved one of our last<br />remaining discount vouchers for…
         </p>
       </div>
 
-      {/* Offer Summary */}
-      <div className="bg-muted rounded-2xl py-[18px] px-6 text-center max-w-[600px] mx-auto">
-        <p className="text-2xl font-extrabold text-foreground">
-          {selectedPass.hours} Hours of Pool Service for ${selectedPass.discountPrice}
-        </p>
-        <p className="text-base font-bold text-primary mt-1">
-          {selectedPass.percentOff}% OFF
-        </p>
-        <p className="text-sm text-muted-foreground line-through mt-0.5">
-          Was ${selectedPass.originalPrice}
-        </p>
-      </div>
-
-      {/* Countdown */}
-      <div className="flex items-center justify-center gap-2 py-3">
-        <Clock className="h-4 w-4 text-muted-foreground" strokeWidth={1.8} />
-        <p className="text-sm text-muted-foreground">
-          We'll hold it for you for the next{" "}
-          <span className="font-extrabold text-foreground tabular-nums text-lg">
+      {/* Scarcity + Timer */}
+      <div className="flex items-stretch bg-background rounded-xl shadow-sm overflow-hidden border border-border">
+        <div className="flex-1 flex flex-col items-center gap-1.5 py-4 border-r border-border text-base px-0">
+          <Bell className="h-5 w-5 text-muted-foreground" strokeWidth={1.8} />
+          <p className="text-[13px] text-muted-foreground">
+            Only <span className="font-bold text-foreground">{vouchersRemaining} Discount Vouchers</span>
+          </p>
+          <p className="text-[13px] text-muted-foreground">Remaining</p>
+        </div>
+        <div className="flex-1 flex flex-col items-center gap-1.5 px-4 py-4">
+          <Clock className="h-5 w-5 text-muted-foreground" strokeWidth={1.8} />
+          <p className="text-[13px] text-muted-foreground">Time Left</p>
+          <p className="text-[22px] font-extrabold text-foreground tabular-nums tracking-wide">
             {String(timeLeft.minutes).padStart(2, "0")}:{String(timeLeft.seconds).padStart(2, "0")}
-          </span>
-        </p>
+          </p>
+        </div>
       </div>
 
       {/* Heading */}
       <div className="text-center">
         <h2 className="text-2xl font-extrabold text-foreground">Enter Your Details</h2>
+        <p className="text-sm text-muted-foreground mt-2 max-w-[340px] mx-auto leading-relaxed">
+          {selectedPass.label} — {selectedPass.percentOff}% off. Lock in your discount today.
+        </p>
       </div>
 
       {/* Form Fields */}
@@ -130,38 +127,38 @@ const Step2Form = ({ selectedPass, timeLeft, vouchersRemaining, onBack }: Step2P
           placeholder="First Name"
           value={form.firstName}
           onChange={handleChange}
-          className="h-12 rounded-xl border-[1.5px] border-border bg-background shadow-sm text-[15px] placeholder:text-muted-foreground/60 focus-visible:ring-primary focus-visible:border-primary"
-        />
+          className="h-12 rounded-xl border-[1.5px] border-border bg-background shadow-sm text-[15px] placeholder:text-muted-foreground/60 focus-visible:ring-primary focus-visible:border-primary" />
+
         <Input
           name="lastName"
           placeholder="Last Name"
           value={form.lastName}
           onChange={handleChange}
-          className="h-12 rounded-xl border-[1.5px] border-border bg-background shadow-sm text-[15px] placeholder:text-muted-foreground/60 focus-visible:ring-primary focus-visible:border-primary"
-        />
+          className="h-12 rounded-xl border-[1.5px] border-border bg-background shadow-sm text-[15px] placeholder:text-muted-foreground/60 focus-visible:ring-primary focus-visible:border-primary" />
+
         <Input
           name="email"
           type="email"
           placeholder="Email Address"
           value={form.email}
           onChange={handleChange}
-          className="h-12 rounded-xl border-[1.5px] border-border bg-background shadow-sm text-[15px] placeholder:text-muted-foreground/60 focus-visible:ring-primary focus-visible:border-primary"
-        />
+          className="h-12 rounded-xl border-[1.5px] border-border bg-background shadow-sm text-[15px] placeholder:text-muted-foreground/60 focus-visible:ring-primary focus-visible:border-primary" />
+
         <Input
           name="zipcode"
           placeholder="Zipcode"
           value={form.zipcode}
           onChange={handleChange}
-          className="h-12 rounded-xl border-[1.5px] border-border bg-background shadow-sm text-[15px] placeholder:text-muted-foreground/60 focus-visible:ring-primary focus-visible:border-primary"
-        />
+          className="h-12 rounded-xl border-[1.5px] border-border bg-background shadow-sm text-[15px] placeholder:text-muted-foreground/60 focus-visible:ring-primary focus-visible:border-primary" />
+
         <Input
           name="phone"
           type="tel"
           placeholder="Phone Number"
           value={form.phone}
           onChange={handleChange}
-          className="h-12 rounded-xl border-[1.5px] border-border bg-background shadow-sm text-[15px] placeholder:text-muted-foreground/60 focus-visible:ring-primary focus-visible:border-primary"
-        />
+          className="h-12 rounded-xl border-[1.5px] border-border bg-background shadow-sm text-[15px] placeholder:text-muted-foreground/60 focus-visible:ring-primary focus-visible:border-primary" />
+
       </div>
 
       {/* Consent */}
@@ -181,8 +178,8 @@ const Step2Form = ({ selectedPass, timeLeft, vouchersRemaining, onBack }: Step2P
             <p className="text-[15px] font-bold text-foreground">{selectedPass.label}</p>
             <button
               onClick={onBack}
-              className="inline-flex items-center gap-1 text-xs font-medium text-muted-foreground border border-border rounded-full px-3 py-1 hover:border-primary hover:text-primary transition-colors"
-            >
+              className="inline-flex items-center gap-1 text-xs font-medium text-muted-foreground border border-border rounded-full px-3 py-1 hover:border-primary hover:text-primary transition-colors">
+
               ✏️ Edit
             </button>
           </div>
@@ -201,12 +198,12 @@ const Step2Form = ({ selectedPass, timeLeft, vouchersRemaining, onBack }: Step2P
       {/* CTA */}
       <Button
         onClick={handleSubmit}
-        className="w-full h-14 text-[17px] font-bold rounded-full shadow-md hover:shadow-lg"
-      >
+        className="w-full h-14 text-[17px] font-bold rounded-full shadow-md hover:shadow-lg">
+
         Lock in your discount!
       </Button>
-    </div>
-  );
+    </div>);
+
 };
 
 /* ──────────────────────────── Main ──────────────────────────── */
@@ -245,10 +242,10 @@ const ServicePassSection = () => {
           selectedPass={selectedPassData}
           timeLeft={timeLeft}
           vouchersRemaining={vouchersRemaining}
-          onBack={() => setStep(1)}
-        />
-      </div>
-    );
+          onBack={() => setStep(1)} />
+
+      </div>);
+
   }
 
   return (
@@ -293,27 +290,27 @@ const ServicePassSection = () => {
       <RadioGroup
         value={selectedPass}
         onValueChange={setSelectedPass}
-        className="space-y-3"
-      >
-        {PASS_OPTIONS.map((pass) => (
-          <label
-            key={pass.id}
-            className={`relative flex items-center gap-4 p-4 rounded-xl border-2 cursor-pointer transition-all duration-200 ${
-              selectedPass === pass.id
-                ? "border-foreground bg-background shadow-sm"
-                : "border-border bg-background hover:border-muted-foreground"
-            }`}
-          >
-            {pass.isMostPopular && (
-              <Badge className="absolute -top-3 left-4 bg-primary text-primary-foreground text-xs px-3 py-1 rounded-full">
+        className="space-y-3">
+
+        {PASS_OPTIONS.map((pass) =>
+        <label
+          key={pass.id}
+          className={`relative flex items-center gap-4 p-4 rounded-xl border-2 cursor-pointer transition-all duration-200 ${
+          selectedPass === pass.id ?
+          "border-foreground bg-background shadow-sm" :
+          "border-border bg-background hover:border-muted-foreground"}`
+          }>
+
+            {pass.isMostPopular &&
+          <Badge className="absolute -top-3 left-4 bg-primary text-primary-foreground text-xs px-3 py-1 rounded-full">
                 Most Popular
               </Badge>
-            )}
+          }
             
-            <RadioGroupItem 
-              value={pass.id} 
-              className="h-5 w-5 border-2 border-muted-foreground data-[state=checked]:border-foreground data-[state=checked]:bg-foreground" 
-            />
+            <RadioGroupItem
+            value={pass.id}
+            className="h-5 w-5 border-2 border-muted-foreground data-[state=checked]:border-foreground data-[state=checked]:bg-foreground" />
+
             
             <div className="flex-1 min-w-0">
               <p className="font-semibold text-foreground text-lg">{pass.label}</p>
@@ -333,7 +330,7 @@ const ServicePassSection = () => {
               </p>
             </div>
           </label>
-        ))}
+        )}
       </RadioGroup>
 
       {/* Trust Footnote */}
@@ -344,12 +341,12 @@ const ServicePassSection = () => {
       {/* CTA Button */}
       <Button
         onClick={handleGetPass}
-        className="w-full h-14 text-lg font-semibold rounded-full"
-      >
+        className="w-full h-14 text-lg font-semibold rounded-full">
+
         Get your pool cleaned!
       </Button>
-    </div>
-  );
+    </div>);
+
 };
 
 export default ServicePassSection;

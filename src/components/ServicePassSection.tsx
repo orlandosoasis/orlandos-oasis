@@ -108,14 +108,14 @@ const Step2Form = ({ selectedPass, timeLeft, vouchersRemaining, onBack }: Step2P
       </div>
 
       {/* Countdown */}
-      <div className="flex flex-col items-center justify-center gap-0 py-3">
+      <div className="flex items-center justify-center gap-2 py-3">
         <Clock className="h-4 w-4 text-muted-foreground" strokeWidth={1.8} />
         <p className="text-sm text-muted-foreground">
-          We'll hold it for you for the next
-        </p>
-        <span className="font-extrabold text-foreground tabular-nums text-lg mt-1">
+          We'll hold it for you for the next{" "}
+          <span className="font-extrabold text-foreground tabular-nums text-lg">
             {String(timeLeft.minutes).padStart(2, "0")}:{String(timeLeft.seconds).padStart(2, "0")}
-        </span>
+          </span>
+        </p>
       </div>
 
       {/* Heading */}

@@ -278,7 +278,7 @@ interface Step3Props {
 
 const Step3Membership = ({ selectedPass, onChangePass }: Step3Props) => {
   const [editOpen, setEditOpen] = useState(false);
-  const hourlyRate = Math.round(selectedPass.discountPrice / selectedPass.hours);
+  const hourlyRate = 19;
 
   return (
     <div className="space-y-4 animate-fade-in">

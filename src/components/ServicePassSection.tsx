@@ -292,9 +292,11 @@ const Step3Membership = ({ selectedPass, onChangePass }: Step3Props) => {
 
       {/* Card */}
       <div className="bg-card rounded-2xl p-7 border border-border">
-        <h2 className="text-[22px] font-bold text-foreground text-left leading-snug mb-6" style={{ fontFamily: 'inherit' }}>
+        <h2 className="text-[22px] font-bold text-foreground text-center leading-snug mb-6" style={{ fontFamily: 'inherit' }}>
           Get unlimited follow-up cleanings at your{" "}
-          <span className="text-primary">discounted rate of ${hourlyRate}/hr * — a {selectedPass.percentOff}% savings!</span>
+          <span className="text-primary">discounted rate of ${hourlyRate}/hr *</span>
+          <br />
+          <span className="text-primary">— a {selectedPass.percentOff}% savings!</span>
         </h2>
 
         <p className="text-base font-bold text-foreground tracking-wide mb-4">

@@ -1,9 +1,16 @@
 import { useState, useEffect } from "react";
-import { Clock, Bell, Check, ArrowLeft } from "lucide-react";
+import { Clock, Bell, Check, ArrowLeft, Pencil } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
 
 interface PassOption {
   id: string;
@@ -66,9 +73,10 @@ interface Step2Props {
   timeLeft: {minutes: number;seconds: number;};
   vouchersRemaining: number;
   onBack: () => void;
+  onChangePass: (passId: string) => void;
 }
 
-const Step2Form = ({ selectedPass, timeLeft, vouchersRemaining, onBack }: Step2Props) => {
+const Step2Form = ({ selectedPass, timeLeft, vouchersRemaining, onBack, onChangePass }: Step2Props) => {
   const [form, setForm] = useState({
     firstName: "",
     lastName: "",
@@ -76,6 +84,7 @@ const Step2Form = ({ selectedPass, timeLeft, vouchersRemaining, onBack }: Step2P
     zipcode: "",
     phone: ""
   });
+  const [editOpen, setEditOpen] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -176,10 +185,10 @@ const Step2Form = ({ selectedPass, timeLeft, vouchersRemaining, onBack }: Step2P
           <div className="flex items-center gap-2.5">
             <p className="text-[15px] font-bold text-foreground">{selectedPass.label}</p>
             <button
-              onClick={onBack}
+              onClick={() => setEditOpen(true)}
               className="inline-flex items-center gap-1 text-xs font-medium text-muted-foreground border border-border rounded-full px-3 py-1 hover:border-primary hover:text-primary transition-colors">
-
-              ✏️ Edit
+              <Pencil className="h-3 w-3" />
+              Edit
             </button>
           </div>
         </div>
@@ -198,9 +207,64 @@ const Step2Form = ({ selectedPass, timeLeft, vouchersRemaining, onBack }: Step2P
       <Button
         onClick={handleSubmit}
         className="w-full h-14 text-[17px] font-bold rounded-full shadow-md hover:shadow-lg">
-
         Lock in your discount!
       </Button>
+
+      {/* Edit Package Dialog */}
+      <Dialog open={editOpen} onOpenChange={setEditOpen}>
+        <DialogContent className="max-w-md p-6 rounded-2xl">
+          <DialogHeader>
+            <DialogTitle className="text-xl font-bold text-foreground">Change Package</DialogTitle>
+            <DialogDescription className="text-sm text-muted-foreground">Select your preferred service package</DialogDescription>
+          </DialogHeader>
+          <RadioGroup
+            value={selectedPass.id}
+            onValueChange={(val) => {
+              onChangePass(val);
+              setEditOpen(false);
+            }}
+            className="space-y-3 mt-2"
+          >
+            {PASS_OPTIONS.map((pass) => (
+              <label
+                key={pass.id}
+                className={`relative flex items-center gap-4 p-4 rounded-xl border-2 cursor-pointer transition-all duration-200 ${
+                  selectedPass.id === pass.id
+                    ? "border-foreground bg-background shadow-sm"
+                    : "border-border bg-background hover:border-muted-foreground"
+                }`}
+              >
+                {pass.isMostPopular && (
+                  <Badge className="absolute -top-3 left-4 bg-primary text-primary-foreground text-xs px-3 py-1 rounded-full">
+                    Most Popular
+                  </Badge>
+                )}
+                <RadioGroupItem
+                  value={pass.id}
+                  className="h-5 w-5 border-2 border-muted-foreground data-[state=checked]:border-foreground data-[state=checked]:bg-foreground"
+                />
+                <div className="flex-1 min-w-0">
+                  <p className="font-semibold text-foreground text-[15px]">{pass.label}</p>
+                  <p className="text-sm text-muted-foreground">{pass.description}</p>
+                </div>
+                <div className="text-right shrink-0">
+                  <p className="text-muted-foreground">
+                    <span className="line-through">${pass.originalPrice}</span>{" "}
+                    <span className="text-lg font-bold text-foreground">${pass.discountPrice}</span>
+                    <span className="text-foreground">*</span>
+                  </p>
+                  <p className="text-xs font-semibold text-muted-foreground uppercase">
+                    {pass.percentOff}% OFF
+                  </p>
+                </div>
+              </label>
+            ))}
+          </RadioGroup>
+          <p className="text-xs text-muted-foreground text-center px-2 mt-1">
+            *Vouchers cover the full price of your first pool service. Don't worry - your technician will be paid in full!
+          </p>
+        </DialogContent>
+      </Dialog>
     </div>);
 
 };
@@ -241,7 +305,8 @@ const ServicePassSection = () => {
           selectedPass={selectedPassData}
           timeLeft={timeLeft}
           vouchersRemaining={vouchersRemaining}
-          onBack={() => setStep(1)} />
+          onBack={() => setStep(1)}
+          onChangePass={setSelectedPass} />
 
       </div>);
 

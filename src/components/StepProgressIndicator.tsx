@@ -23,27 +23,27 @@ const StepProgressIndicator = ({ currentStep, onStepClick }: StepProgressIndicat
         const isCompleted = step.number < currentStep;
         const isCurrent = step.number === currentStep;
         const isDisabled = step.number > 3;
-        const isClickable = step.number <= 3 && step.number <= currentStep;
+        const isClickable = isCompleted;
 
         return (
           <button
             key={step.number}
             onClick={() => isClickable && onStepClick(step.number)}
-            disabled={isDisabled}
+            disabled={!isCurrent && !isClickable}
             className={`flex items-center gap-1.5 px-2 py-1.5 rounded-full transition-colors text-sm whitespace-nowrap ${
               isCurrent
-                ? "cursor-pointer"
+                ? "cursor-default"
                 : isClickable
                 ? "cursor-pointer hover:bg-muted"
-                : "cursor-default"
-            } ${isDisabled ? "opacity-40" : ""}`}
+                : "cursor-default opacity-40"
+            }`}
           >
             <span
               className={`inline-flex items-center justify-center h-6 w-6 rounded-full text-xs font-bold shrink-0 ${
                 isCurrent
                   ? "bg-foreground text-background"
                   : isCompleted
-                  ? "bg-foreground text-background"
+                  ? "bg-muted text-muted-foreground"
                   : "bg-muted text-muted-foreground"
               }`}
             >
@@ -54,7 +54,7 @@ const StepProgressIndicator = ({ currentStep, onStepClick }: StepProgressIndicat
                 isCurrent
                   ? "text-foreground font-bold"
                   : isCompleted
-                  ? "text-foreground"
+                  ? "text-muted-foreground"
                   : "text-muted-foreground"
               }`}
             >

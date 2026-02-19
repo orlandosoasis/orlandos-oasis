@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { Clock, Bell, Check, ArrowLeft, Pencil } from "lucide-react";
+import StepProgressIndicator from "@/components/StepProgressIndicator";
 import { Button } from "@/components/ui/button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Badge } from "@/components/ui/badge";
@@ -106,7 +108,7 @@ const Step2Form = ({ selectedPass, timeLeft, vouchersRemaining, onBack, onChange
       {/* Package Summary */}
       <div className="bg-muted rounded-xl py-3 px-5 text-center">
         <p className="text-[15px] font-bold text-foreground">
-          {selectedPass.hours} Hours of Cleaning for ${selectedPass.discountPrice} – {selectedPass.percentOff}% Off
+          {selectedPass.label} for ${selectedPass.discountPrice} – {selectedPass.percentOff}% Off
         </p>
       </div>
 
@@ -292,9 +294,11 @@ const Step3Membership = ({ selectedPass, onChangePass }: Step3Props) => {
 
       {/* Card */}
       <div className="bg-card rounded-2xl p-7 border border-border">
-        <h2 className="text-[22px] font-bold text-foreground text-left leading-snug mb-6" style={{ fontFamily: 'inherit' }}>
+        <h2 className="text-[22px] font-bold text-foreground text-center leading-snug mb-6" style={{ fontFamily: 'inherit' }}>
           Get unlimited follow-up cleanings at your{" "}
-          <span className="text-primary">discounted rate of ${hourlyRate}/hr * — a {selectedPass.percentOff}% savings!</span>
+          <span className="text-primary">discounted rate of ${hourlyRate}/hr *</span>
+          <br />
+          <span className="text-primary">— a {selectedPass.percentOff}% savings!</span>
         </h2>
 
         <p className="text-base font-bold text-foreground tracking-wide mb-4">
@@ -303,7 +307,7 @@ const Step3Membership = ({ selectedPass, onChangePass }: Step3Props) => {
 
         <div className="flex flex-col gap-3.5 mb-4">
           {[
-            "This discount voucher requires a 6-month ForeverClean membership",
+            "This discount voucher requires a 6-month Orlando's Oasis membership",
             <>For only $59/month book unlimited cleanings at your <strong className="text-foreground">discounted rate of ${hourlyRate}/hr * - saving you {selectedPass.percentOff}% off.</strong></>,
             <>The discount voucher is fully refundable until used. <strong className="text-foreground">Your membership begins after your first cleaning.</strong></>,
             "Cancelling before 6 months results in your first cleaning being charged at full price.",
@@ -412,7 +416,7 @@ const Step3Membership = ({ selectedPass, onChangePass }: Step3Props) => {
 
 const ServicePassSection = () => {
   const [selectedPass, setSelectedPass] = useState<string>("pass-3");
-  const [step, setStep] = useState<1 | 2 | 3>(1);
+  const [step, setStep] = useState<1 | 2 | 3 | 4 | 5>(1);
   const [timeLeft, setTimeLeft] = useState({ minutes: 9, seconds: 59 });
   const [vouchersRemaining] = useState(31);
   const [formData, setFormData] = useState({
@@ -444,31 +448,43 @@ const ServicePassSection = () => {
 
   const selectedPassData = PASS_OPTIONS.find((p) => p.id === selectedPass)!;
 
+  // Render step indicator via portal callback
+  const portalTarget = typeof document !== "undefined" ? document.getElementById("step-indicator-portal") : null;
+  const stepIndicator = step >= 2 && portalTarget
+    ? createPortal(<StepProgressIndicator currentStep={step} onStepClick={(s) => setStep(s as 1 | 2 | 3 | 4 | 5)} />, portalTarget)
+    : null;
+
   if (step === 3) {
     return (
-      <div id="discount-voucher">
-        <Step3Membership
-          selectedPass={selectedPassData}
-          onChangePass={setSelectedPass}
-        />
-      </div>
+      <>
+        {stepIndicator}
+        <div id="discount-voucher">
+          <Step3Membership
+            selectedPass={selectedPassData}
+            onChangePass={setSelectedPass}
+          />
+        </div>
+      </>
     );
   }
 
   if (step === 2) {
     return (
-      <div id="discount-voucher">
-        <Step2Form
-          selectedPass={selectedPassData}
-          timeLeft={timeLeft}
-          vouchersRemaining={vouchersRemaining}
-          onBack={() => setStep(1)}
-          onChangePass={setSelectedPass}
-          formData={formData}
-          onFormDataChange={setFormData}
-          onSubmit={() => setStep(3)}
-        />
-      </div>
+      <>
+        {stepIndicator}
+        <div id="discount-voucher">
+          <Step2Form
+            selectedPass={selectedPassData}
+            timeLeft={timeLeft}
+            vouchersRemaining={vouchersRemaining}
+            onBack={() => setStep(1)}
+            onChangePass={setSelectedPass}
+            formData={formData}
+            onFormDataChange={setFormData}
+            onSubmit={() => setStep(3)}
+          />
+        </div>
+      </>
     );
   }
 

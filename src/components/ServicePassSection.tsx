@@ -112,23 +112,6 @@ const Step2Form = ({ selectedPass, timeLeft, vouchersRemaining, onBack }: Step2P
         </span>
       </div>
 
-      {/* Scarcity + Timer */}
-      <div className="flex items-stretch bg-background rounded-xl shadow-sm overflow-hidden border border-border">
-        <div className="flex-1 flex flex-col items-center gap-1.5 py-4 border-r border-border text-base px-0">
-          <Bell className="h-5 w-5 text-muted-foreground" strokeWidth={1.8} />
-          <p className="text-[13px] text-muted-foreground">
-            Only <span className="font-bold text-foreground">{vouchersRemaining} Discount Vouchers</span>
-          </p>
-          <p className="text-[13px] text-muted-foreground">Remaining</p>
-        </div>
-        <div className="flex-1 flex flex-col items-center gap-1.5 px-4 py-4">
-          <Clock className="h-5 w-5 text-muted-foreground" strokeWidth={1.8} />
-          <p className="text-[13px] text-muted-foreground">Time Left</p>
-          <p className="text-[22px] font-extrabold text-foreground tabular-nums tracking-wide">
-            {String(timeLeft.minutes).padStart(2, "0")}:{String(timeLeft.seconds).padStart(2, "0")}
-          </p>
-        </div>
-      </div>
 
       {/* Heading */}
       <div className="text-center">

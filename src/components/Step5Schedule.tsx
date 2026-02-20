@@ -122,7 +122,8 @@ const Step5Schedule = ({ selectedPass, onChangePass, passOptions }: Step5Props) 
   };
 
   const fullDayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-  const earliestLabel = `${MONTHS[earliestDate.getMonth()].slice(0, 3)} ${earliestDate.getDate()}, ${earliestDate.getFullYear()} ${fullDayNames[earliestDate.getDay()]}`;
+  const formatDateLabel = (d: Date) => `${MONTHS[d.getMonth()].slice(0, 3)} ${d.getDate()}, ${d.getFullYear()} ${fullDayNames[d.getDay()]}`;
+  const displayLabel = selectedDate ? formatDateLabel(selectedDate) : formatDateLabel(earliestDate);
 
   return (
     <div className="space-y-4 animate-fade-in">
@@ -230,7 +231,7 @@ const Step5Schedule = ({ selectedPass, onChangePass, passOptions }: Step5Props) 
           </div>
         </div>
 
-        <p className="flex items-center gap-1.5 text-secondary-foreground text-sm">Next available: <strong>{earliestLabel}</strong>
+        <p className="flex items-center gap-1.5 text-secondary-foreground text-sm">{selectedDate ? "Selected" : "Next available"}: <strong>{displayLabel}</strong>
         </p>
       </div>
 

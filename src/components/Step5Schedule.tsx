@@ -35,17 +35,17 @@ interface AddonItem {
 }
 
 const ADDONS: AddonItem[] = [
-  { id: "chemical", name: "Chemical Balance Treatment", desc: "pH test + chemical balancing for safe, clear water", price: 25, badge: "Most Popular" },
-  { id: "filter", name: "Filter Deep Clean", desc: "Full cartridge or DE filter cleaning & inspection", price: 35 },
-  { id: "tile", name: "Tile Scrub & Waterline Clean", desc: "Removes calcium deposits & waterline buildup", price: 20 },
-  { id: "algae", name: "Algae Prevention Dose", desc: "Algaecide treatment to keep your pool cleaner, longer", price: 15 },
-];
+{ id: "chemical", name: "Chemical Balance Treatment", desc: "pH test + chemical balancing for safe, clear water", price: 25, badge: "Most Popular" },
+{ id: "filter", name: "Filter Deep Clean", desc: "Full cartridge or DE filter cleaning & inspection", price: 35 },
+{ id: "tile", name: "Tile Scrub & Waterline Clean", desc: "Removes calcium deposits & waterline buildup", price: 20 },
+{ id: "algae", name: "Algae Prevention Dose", desc: "Algaecide treatment to keep your pool cleaner, longer", price: 15 }];
+
 
 const DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 const MONTHS = [
-  "January", "February", "March", "April", "May", "June",
-  "July", "August", "September", "October", "November", "December",
-];
+"January", "February", "March", "April", "May", "June",
+"July", "August", "September", "October", "November", "December"];
+
 
 const Step5Schedule = ({ selectedPass, onChangePass, passOptions }: Step5Props) => {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
@@ -82,19 +82,19 @@ const Step5Schedule = ({ selectedPass, onChangePass, passOptions }: Step5Props) 
   const firstDayOfWeek = new Date(calYear, calMonth, 1).getDay();
 
   const prevMonth = () => {
-    if (calMonth === 0) { setCalMonth(11); setCalYear(calYear - 1); }
-    else setCalMonth(calMonth - 1);
+    if (calMonth === 0) {setCalMonth(11);setCalYear(calYear - 1);} else
+    setCalMonth(calMonth - 1);
   };
 
   const nextMonth = () => {
-    if (calMonth === 11) { setCalMonth(0); setCalYear(calYear + 1); }
-    else setCalMonth(calMonth + 1);
+    if (calMonth === 11) {setCalMonth(0);setCalYear(calYear + 1);} else
+    setCalMonth(calMonth + 1);
   };
 
   const isPrevDisabled = calYear === today.getFullYear() && calMonth === today.getMonth();
 
   const isSameDay = (a: Date, b: Date) =>
-    a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
+  a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
 
   const toggleAddon = (id: string) => {
     setAddons((prev) => prev.includes(id) ? prev.filter((a) => a !== id) : [...prev, id]);
@@ -145,7 +145,7 @@ const Step5Schedule = ({ selectedPass, onChangePass, passOptions }: Step5Props) 
         <p className="text-[11px] font-medium tracking-[1.2px] uppercase text-muted-foreground mb-3.5">Your Purchased Service</p>
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-lg font-semibold text-foreground">{selectedPass.label}</p>
+            <p className="font-semibold text-foreground text-base">{selectedPass.label}</p>
             <p className="text-[13px] text-muted-foreground mt-0.5">Professional cleaning &amp; treatment</p>
           </div>
           <div className="text-right">
@@ -163,8 +163,8 @@ const Step5Schedule = ({ selectedPass, onChangePass, passOptions }: Step5Props) 
       {/* ③ Choose Date */}
       <div className="bg-card rounded-2xl border border-border p-6 shadow-sm">
         <p className="text-[11px] font-medium tracking-[1.2px] uppercase text-muted-foreground mb-3.5">Step 1</p>
-        <h3 className="text-[17px] font-semibold text-foreground mb-1">Choose Your Service Date</h3>
-        <p className="text-xs text-muted-foreground mb-4">🌊 Earlier appointments fill quickly.</p>
+        <h3 className="font-semibold text-foreground mb-1 text-base">Choose Your Service Date</h3>
+        <p className="text-muted-foreground mb-4 text-sm">Earlier appointments fill quickly.</p>
 
         {/* Calendar */}
         <div className="mb-4">
@@ -172,28 +172,28 @@ const Step5Schedule = ({ selectedPass, onChangePass, passOptions }: Step5Props) 
             <button
               onClick={prevMonth}
               disabled={isPrevDisabled}
-              className="w-[30px] h-[30px] rounded-lg bg-primary/10 flex items-center justify-center text-primary hover:bg-primary/20 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
-            >
+              className="w-[30px] h-[30px] rounded-lg bg-primary/10 flex items-center justify-center text-primary hover:bg-primary/20 transition-colors disabled:opacity-30 disabled:cursor-not-allowed">
+
               <ChevronLeft className="h-3.5 w-3.5" />
             </button>
             <span className="text-[15px] font-semibold text-foreground">{MONTHS[calMonth]} {calYear}</span>
             <button
               onClick={nextMonth}
-              className="w-[30px] h-[30px] rounded-lg bg-primary/10 flex items-center justify-center text-primary hover:bg-primary/20 transition-colors"
-            >
+              className="w-[30px] h-[30px] rounded-lg bg-primary/10 flex items-center justify-center text-primary hover:bg-primary/20 transition-colors">
+
               <ChevronRight className="h-3.5 w-3.5" />
             </button>
           </div>
 
           <div className="grid grid-cols-7 gap-1">
-            {DAYS.map((d) => (
-              <div key={d} className="text-center text-[10px] font-medium tracking-[0.6px] text-muted-foreground py-1 pb-2">
+            {DAYS.map((d) =>
+            <div key={d} className="text-center text-[10px] font-medium tracking-[0.6px] text-muted-foreground py-1 pb-2">
                 {d}
               </div>
-            ))}
-            {Array.from({ length: firstDayOfWeek }).map((_, i) => (
-              <div key={`empty-${i}`} className="aspect-square" />
-            ))}
+            )}
+            {Array.from({ length: firstDayOfWeek }).map((_, i) =>
+            <div key={`empty-${i}`} className="aspect-square" />
+            )}
             {Array.from({ length: daysInMonth }).map((_, i) => {
               const day = i + 1;
               const thisDate = new Date(calYear, calMonth, day);
@@ -208,74 +208,74 @@ const Step5Schedule = ({ selectedPass, onChangePass, passOptions }: Step5Props) 
                   disabled={isPast}
                   onClick={() => !isPast && setSelectedDate(thisDate)}
                   className={`aspect-square flex items-center justify-center rounded-[10px] text-[13px] transition-all border-2 relative ${
-                    isPast
-                      ? "text-muted-foreground/25 cursor-not-allowed border-transparent"
-                      : isSelected
-                      ? "bg-primary text-primary-foreground font-semibold border-primary shadow-md"
-                      : isEarliest
-                      ? "bg-primary/10 border-primary/40 text-primary font-medium"
-                      : isToday
-                      ? "font-semibold text-primary border-transparent"
-                      : "text-foreground border-transparent hover:bg-primary/10 hover:text-primary cursor-pointer"
-                  }`}
-                >
+                  isPast ?
+                  "text-muted-foreground/25 cursor-not-allowed border-transparent" :
+                  isSelected ?
+                  "bg-primary text-primary-foreground font-semibold border-primary shadow-md" :
+                  isEarliest ?
+                  "bg-primary/10 border-primary/40 text-primary font-medium" :
+                  isToday ?
+                  "font-semibold text-primary border-transparent" :
+                  "text-foreground border-transparent hover:bg-primary/10 hover:text-primary cursor-pointer"}`
+                  }>
+
                   {day}
-                  {isEarliest && !isPast && !isSelected && (
-                    <span className="absolute bottom-0.5 text-[5px] text-primary">●</span>
-                  )}
-                </button>
-              );
+                  {isEarliest && !isPast && !isSelected &&
+                  <span className="absolute bottom-0.5 text-[5px] text-primary">●</span>
+                  }
+                </button>);
+
             })}
           </div>
         </div>
 
-        <p className="text-xs text-primary flex items-center gap-1.5">
-          🏊 Next available: <strong>{earliestLabel}</strong>
+        <p className="flex items-center gap-1.5 text-secondary-foreground text-sm">Next available:
+Feb 23<strong>{earliestLabel}</strong>
         </p>
       </div>
 
       {/* ④ Arrival Window */}
       <div className="bg-card rounded-2xl border border-border p-6 shadow-sm">
         <p className="text-[11px] font-medium tracking-[1.2px] uppercase text-muted-foreground mb-3.5">Step 2</p>
-        <h3 className="text-[17px] font-semibold text-foreground mb-3.5">Select Arrival Window</h3>
+        <h3 className="font-semibold text-foreground mb-3.5 text-base">Select Arrival Window</h3>
         <div className="grid grid-cols-3 gap-2.5">
           {([
-            { value: "morning", icon: "🌅", label: "8am–12pm" },
-            { value: "afternoon", icon: "☀️", label: "12pm–4pm" },
-            { value: "evening", icon: "🌤️", label: "4pm–6pm" },
-          ] as const).map((opt) => (
-            <button
-              key={opt.value}
-              type="button"
-              onClick={() => setTimeWindow(opt.value)}
-              className={`flex flex-col items-center justify-center rounded-xl border-2 py-3.5 px-2 transition-all text-center ${
-                timeWindow === opt.value
-                  ? "border-primary bg-primary/[0.07] text-primary"
-                  : "border-border hover:border-primary/40 hover:bg-primary/5"
-              }`}
-            >
+          { value: "morning", icon: "🌅", label: "8am–12pm" },
+          { value: "afternoon", icon: "☀️", label: "12pm–4pm" },
+          { value: "evening", icon: "🌤️", label: "4pm–6pm" }] as
+          const).map((opt) =>
+          <button
+            key={opt.value}
+            type="button"
+            onClick={() => setTimeWindow(opt.value)}
+            className={`flex flex-col items-center justify-center rounded-xl border-2 py-3.5 px-2 transition-all text-center ${
+            timeWindow === opt.value ?
+            "border-primary bg-primary/[0.07] text-primary" :
+            "border-border hover:border-primary/40 hover:bg-primary/5"}`
+            }>
+
               <span className="text-xl mb-1">{opt.icon}</span>
               <span className="text-[15px] font-semibold">{opt.label}</span>
             </button>
-          ))}
+          )}
         </div>
       </div>
 
       {/* ⑤ Pool & Property Details */}
       <div className="bg-card rounded-2xl border border-border p-6 shadow-sm">
         <p className="text-[11px] font-medium tracking-[1.2px] uppercase text-muted-foreground mb-3.5">Step 3</p>
-        <h3 className="text-[17px] font-semibold text-foreground mb-4">Pool &amp; Property Details</h3>
+        <h3 className="font-semibold text-foreground mb-4 text-base">Pool Details</h3>
 
         {/* A — Pool Information */}
-        <p className="text-[11px] font-semibold tracking-[0.8px] uppercase text-muted-foreground mb-2.5">A — Pool Information</p>
+        <p className="text-[11px] font-semibold tracking-[0.8px] uppercase text-muted-foreground mb-2.5">POOL INFORMATION</p>
         <div className="grid grid-cols-2 gap-3 mb-3">
           <div className="flex flex-col gap-1.5">
             <label className="text-xs font-medium text-muted-foreground">Pool Type</label>
             <select
               value={poolType}
               onChange={(e) => setPoolType(e.target.value)}
-              className="h-10 rounded-[10px] border-2 border-border bg-muted/30 px-3 text-sm text-foreground outline-none focus:border-primary/40 focus:bg-background transition-colors appearance-none"
-            >
+              className="h-10 rounded-[10px] border-2 border-border bg-muted/30 px-3 text-sm text-foreground outline-none focus:border-primary/40 focus:bg-background transition-colors appearance-none">
+
               <option>Inground</option>
               <option>Above Ground</option>
               <option>Lap Pool</option>
@@ -287,8 +287,8 @@ const Step5Schedule = ({ selectedPass, onChangePass, passOptions }: Step5Props) 
             <select
               value={poolSize}
               onChange={(e) => setPoolSize(e.target.value)}
-              className="h-10 rounded-[10px] border-2 border-border bg-muted/30 px-3 text-sm text-foreground outline-none focus:border-primary/40 focus:bg-background transition-colors appearance-none"
-            >
+              className="h-10 rounded-[10px] border-2 border-border bg-muted/30 px-3 text-sm text-foreground outline-none focus:border-primary/40 focus:bg-background transition-colors appearance-none">
+
               <option>Small (&lt;10k gal)</option>
               <option>Medium (10–20k)</option>
               <option>Large (20k+)</option>
@@ -309,30 +309,30 @@ const Step5Schedule = ({ selectedPass, onChangePass, passOptions }: Step5Props) 
           <p className="text-[13px] text-muted-foreground mb-3">How will we access your pool?</p>
           <div className="grid grid-cols-2 gap-2.5">
             {([
-              { value: "home", icon: "🏠", label: "I will be home" },
-              { value: "gate", icon: "🔢", label: "Gate code provided" },
-              { value: "key", icon: "🗝️", label: "Key on property" },
-              { value: "other", icon: "📝", label: "Other instructions" },
-            ] as const).map((opt) => (
-              <button
-                key={opt.value}
-                type="button"
-                onClick={() => setAccessMethod(opt.value)}
-                className={`flex flex-col items-start gap-1.5 rounded-xl border-2 p-3.5 transition-all text-left ${
-                  accessMethod === opt.value
-                    ? "border-primary bg-primary/[0.06]"
-                    : "border-border hover:border-primary/40 hover:bg-primary/5"
-                }`}
-              >
+            { value: "home", icon: "🏠", label: "I will be home" },
+            { value: "gate", icon: "🔢", label: "Gate code provided" },
+            { value: "key", icon: "🗝️", label: "Key on property" },
+            { value: "other", icon: "📝", label: "Other instructions" }] as
+            const).map((opt) =>
+            <button
+              key={opt.value}
+              type="button"
+              onClick={() => setAccessMethod(opt.value)}
+              className={`flex flex-col items-start gap-1.5 rounded-xl border-2 p-3.5 transition-all text-left ${
+              accessMethod === opt.value ?
+              "border-primary bg-primary/[0.06]" :
+              "border-border hover:border-primary/40 hover:bg-primary/5"}`
+              }>
+
                 <span className="text-xl leading-none">{opt.icon}</span>
                 <span className="text-[13px] font-medium text-foreground leading-snug">{opt.label}</span>
               </button>
-            ))}
+            )}
           </div>
 
           {/* Conditional: Gate */}
-          {accessMethod === "gate" && (
-            <div className="mt-3.5 flex flex-col gap-2.5 animate-fade-in">
+          {accessMethod === "gate" &&
+          <div className="mt-3.5 flex flex-col gap-2.5 animate-fade-in">
               <div className="flex flex-col gap-1.5">
                 <label className="text-xs font-medium text-muted-foreground">Gate Code <span className="text-destructive">*</span></label>
                 <Input placeholder="e.g. 4821" value={gateCode} onChange={(e) => setGateCode(e.target.value)} maxLength={12} className="h-10 rounded-[10px] border-2 border-border bg-muted/30 text-sm" />
@@ -342,27 +342,27 @@ const Step5Schedule = ({ selectedPass, onChangePass, passOptions }: Step5Props) 
                 <Input placeholder="e.g. Blue door on left side of house" value={gateNotes} onChange={(e) => setGateNotes(e.target.value)} className="h-10 rounded-[10px] border-2 border-border bg-muted/30 text-sm" />
               </div>
             </div>
-          )}
+          }
 
           {/* Conditional: Key */}
-          {accessMethod === "key" && (
-            <div className="mt-3.5 animate-fade-in">
+          {accessMethod === "key" &&
+          <div className="mt-3.5 animate-fade-in">
               <div className="flex flex-col gap-1.5">
                 <label className="text-xs font-medium text-muted-foreground">Where is the key located? <span className="text-destructive">*</span></label>
                 <Input placeholder="e.g. Under the welcome mat, front door" value={keyLocation} onChange={(e) => setKeyLocation(e.target.value)} className="h-10 rounded-[10px] border-2 border-border bg-muted/30 text-sm" />
               </div>
             </div>
-          )}
+          }
 
           {/* Conditional: Other */}
-          {accessMethod === "other" && (
-            <div className="mt-3.5 animate-fade-in">
+          {accessMethod === "other" &&
+          <div className="mt-3.5 animate-fade-in">
               <div className="flex flex-col gap-1.5">
                 <label className="text-xs font-medium text-muted-foreground">Access Instructions <span className="text-destructive">*</span></label>
                 <Textarea placeholder="Describe how our technician should access the pool…" value={otherInstructions} onChange={(e) => setOtherInstructions(e.target.value)} rows={3} className="rounded-[10px] border-2 border-border bg-muted/30 text-sm resize-y min-h-[72px]" />
               </div>
             </div>
-          )}
+          }
         </div>
 
         {/* Special Instructions */}
@@ -389,28 +389,28 @@ const Step5Schedule = ({ selectedPass, onChangePass, passOptions }: Step5Props) 
                 type="button"
                 onClick={() => toggleAddon(addon.id)}
                 className={`flex items-center gap-3.5 rounded-xl border-2 p-4 transition-all text-left select-none ${
-                  isSelected
-                    ? "border-primary bg-primary/[0.06]"
-                    : "border-border hover:border-primary/40 hover:bg-primary/5"
-                }`}
-              >
+                isSelected ?
+                "border-primary bg-primary/[0.06]" :
+                "border-border hover:border-primary/40 hover:bg-primary/5"}`
+                }>
+
                 <div className={`w-[22px] h-[22px] rounded-md border-2 flex items-center justify-center shrink-0 text-xs transition-all ${
-                  isSelected ? "bg-primary border-primary text-primary-foreground" : "border-border text-transparent"
-                }`}>
+                isSelected ? "bg-primary border-primary text-primary-foreground" : "border-border text-transparent"}`
+                }>
                   ✓
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium text-foreground mb-0.5">{addon.name}</p>
                   <p className="text-xs text-muted-foreground">{addon.desc}</p>
-                  {addon.badge && (
-                    <span className="inline-block mt-1 text-[10px] font-medium bg-amber-500/[0.18] text-amber-700 border border-amber-500/40 rounded-full px-[7px] py-[2px]">
+                  {addon.badge &&
+                  <span className="inline-block mt-1 text-[10px] font-medium bg-amber-500/[0.18] text-amber-700 border border-amber-500/40 rounded-full px-[7px] py-[2px]">
                       {addon.badge}
                     </span>
-                  )}
+                  }
                 </div>
                 <span className="text-[15px] font-semibold text-primary whitespace-nowrap">+${addon.price}</span>
-              </button>
-            );
+              </button>);
+
           })}
         </div>
 
@@ -428,21 +428,21 @@ const Step5Schedule = ({ selectedPass, onChangePass, passOptions }: Step5Props) 
           onClick={handleSubmit}
           disabled={!isFormValid() || isSubmitting || isConfirmed}
           className={`w-full h-14 text-[17px] font-bold rounded-2xl shadow-lg hover:shadow-xl transition-all ${
-            isConfirmed ? "bg-green-600 hover:bg-green-600" : ""
-          }`}
-        >
-          {isSubmitting
-            ? "Confirming..."
-            : isConfirmed
-            ? "Confirmed! ✓ See you soon"
-            : "Confirm My First Cleaning 🏊"}
+          isConfirmed ? "bg-green-600 hover:bg-green-600" : ""}`
+          }>
+
+          {isSubmitting ?
+          "Confirming..." :
+          isConfirmed ?
+          "Confirmed! ✓ See you soon" :
+          "Confirm My First Cleaning 🏊"}
         </Button>
         <p className="text-center text-xs text-muted-foreground mt-2.5">
           You'll receive a confirmation text &amp; email.
         </p>
       </div>
-    </div>
-  );
+    </div>);
+
 };
 
 export default Step5Schedule;

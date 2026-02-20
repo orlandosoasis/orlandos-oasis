@@ -415,7 +415,7 @@ const Step5Schedule = ({ selectedPass, onChangePass, passOptions }: Step5Props) 
           "Confirming..." :
           isConfirmed ?
           "Confirmed! ✓ See you soon" :
-          "Confirm My First Cleaning 🏊"}
+          "Confirm My First Cleaning"}
         </Button>
         <p className="text-center text-xs text-muted-foreground mt-2.5">
           You'll receive a confirmation text &amp; email.

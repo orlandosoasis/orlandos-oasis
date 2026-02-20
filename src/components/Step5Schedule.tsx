@@ -229,7 +229,7 @@ const Step5Schedule = ({ selectedPass, onChangePass, passOptions }: Step5Props) 
           </div>
         </div>
 
-        <p className="flex items-center gap-1.5 text-secondary-foreground text-sm">Next available:
+        <p className="flex items-center gap-1.5 text-secondary-foreground text-sm">Next available: 
 Feb 23<strong>{earliestLabel}</strong>
         </p>
       </div>

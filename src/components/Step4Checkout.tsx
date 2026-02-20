@@ -29,11 +29,12 @@ interface Step4Props {
   email: string;
   onChangePass: (passId: string) => void;
   passOptions: PassOption[];
+  onContinue: () => void;
 }
 
 type PaymentMethod = "card" | "paypal" | "gpay" | null;
 
-const Step4Checkout = ({ selectedPass, timeLeft, email, onChangePass, passOptions }: Step4Props) => {
+const Step4Checkout = ({ selectedPass, timeLeft, email, onChangePass, passOptions, onContinue }: Step4Props) => {
   const [editOpen, setEditOpen] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>(null);
 
@@ -195,6 +196,7 @@ const Step4Checkout = ({ selectedPass, timeLeft, email, onChangePass, passOption
       {/* CTA */}
       <Button
         disabled={!paymentMethod}
+        onClick={onContinue}
         className="w-full h-14 text-[17px] font-bold rounded-full shadow-md hover:shadow-lg"
       >
         {paymentMethod ? "Purchase & schedule" : "Select a payment method"}

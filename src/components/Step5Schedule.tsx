@@ -121,7 +121,7 @@ const Step5Schedule = ({ selectedPass, onChangePass, passOptions }: Step5Props) 
     setIsConfirmed(true);
   };
 
-  const earliestLabel = `${MONTHS[earliestDate.getMonth()].slice(0, 3)} ${earliestDate.getDate()}`;
+  const earliestLabel = `${DAYS[earliestDate.getDay()]}, ${MONTHS[earliestDate.getMonth()].slice(0, 3)} ${earliestDate.getDate()}, ${earliestDate.getFullYear()}`;
 
   return (
     <div className="space-y-4 animate-fade-in">
@@ -229,8 +229,7 @@ const Step5Schedule = ({ selectedPass, onChangePass, passOptions }: Step5Props) 
           </div>
         </div>
 
-        <p className="flex items-center gap-1.5 text-secondary-foreground text-sm">Next available: 
-Feb 23<strong>{earliestLabel}</strong>
+        <p className="flex items-center gap-1.5 text-secondary-foreground text-sm">Next available: <strong>{earliestLabel}</strong>
         </p>
       </div>
 

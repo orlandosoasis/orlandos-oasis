@@ -346,7 +346,7 @@ const Step5Schedule = ({ selectedPass, onChangePass, passOptions }: Step5Props) 
       {/* ⑥ Add-Ons */}
       <div className="bg-card rounded-2xl border border-border p-6 shadow-sm">
         <p className="text-[11px] font-medium tracking-[1.2px] uppercase text-muted-foreground mb-3.5">Step 4 — Optional</p>
-        <h3 className="text-[17px] font-semibold text-foreground mb-1">Upgrade Your Clean</h3>
+        <h3 className="text-[17px] font-semibold text-foreground mb-1">Select Add-Ons</h3>
         <p className="text-xs text-muted-foreground mb-4">Add extras at a discounted rate while booking.</p>
 
         {/* Purchased Service Summary */}

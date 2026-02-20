@@ -127,19 +127,17 @@ const Step5Schedule = ({ selectedPass, onChangePass, passOptions }: Step5Props) 
 
   return (
     <div className="space-y-4 animate-fade-in">
-      {/* ① Confirmation Banner */}
-      <div className="bg-primary rounded-2xl py-7 px-7 text-center relative overflow-hidden">
-        <div className="absolute -top-10 -right-10 w-44 h-44 rounded-full bg-primary-foreground/[0.07] pointer-events-none" />
-        <div className="absolute bottom-[-20px] right-[60px] w-[100px] h-[100px] rounded-full bg-primary-foreground/[0.05] pointer-events-none" />
-        <h2 className="text-[26px] font-bold text-primary-foreground leading-[1.2] mb-1.5 tracking-[-0.3px]">
-          Payment confirmed 🎉
-        </h2>
-        <p className="text-sm text-primary-foreground/90 mb-3 leading-relaxed">
-          Your {selectedPass.hours}-hour pool service is secured.
-        </p>
-        <span className="inline-flex items-center gap-1.5 bg-primary-foreground/15 border border-primary-foreground/25 rounded-full px-3 py-1 text-xs font-medium text-primary-foreground">
-          <Lock className="h-3 w-3" /> This discounted rate is locked in.
-        </span>
+      {/* ① Confirmation Alert */}
+      <div className="flex items-center gap-3 rounded-xl border border-green-500/30 bg-green-500/10 px-4 py-3">
+        <span className="text-lg leading-none">🎉</span>
+        <div className="flex-1 min-w-0">
+          <p className="text-sm font-semibold text-foreground">
+            Payment confirmed — your {selectedPass.hours}-hour pool service is secured.
+          </p>
+          <p className="text-xs text-muted-foreground mt-0.5 flex items-center gap-1">
+            <Lock className="h-3 w-3" /> This discounted rate is locked in.
+          </p>
+        </div>
       </div>
 
       {/* ② Order Summary */}

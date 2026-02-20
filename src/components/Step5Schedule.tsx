@@ -153,14 +153,6 @@ const Step5Schedule = ({ selectedPass, onChangePass, passOptions }: Step5Props) 
             <p className="text-[22px] font-bold text-primary">${selectedPass.discountPrice}</p>
           </div>
         </div>
-        <div className="flex gap-1.5 mt-3">
-          <Badge variant="outline" className="text-[11px] font-medium bg-green-500/10 text-green-700 border-green-500/30 rounded-full px-2.5 py-0.5">
-            ✓ Paid
-          </Badge>
-          <Badge variant="outline" className="text-[11px] font-medium bg-amber-500/15 text-amber-700 border-amber-500/35 rounded-full px-2.5 py-0.5">
-            {selectedPass.percentOff}% OFF
-          </Badge>
-        </div>
         <div className="border-t border-border mt-3.5 pt-3.5">
           <p className="text-xs text-muted-foreground">
             Need to upgrade? <a href="#" className="text-primary hover:underline">Contact support.</a>

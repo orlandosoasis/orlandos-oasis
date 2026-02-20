@@ -140,26 +140,6 @@ const Step5Schedule = ({ selectedPass, onChangePass, passOptions }: Step5Props) 
         </div>
       </div>
 
-      {/* ② Order Summary */}
-      <div className="bg-card rounded-2xl border border-border p-6 shadow-sm">
-        <p className="text-[11px] font-medium tracking-[1.2px] uppercase text-muted-foreground mb-3.5">Your Purchased Service</p>
-        <div className="flex items-center justify-between">
-          <div>
-            <p className="font-semibold text-foreground text-base">{selectedPass.label}</p>
-            <p className="text-[13px] text-muted-foreground mt-0.5">Professional cleaning &amp; treatment</p>
-          </div>
-          <div className="text-right">
-            <p className="text-[13px] text-muted-foreground line-through">${selectedPass.originalPrice}</p>
-            <p className="text-[22px] font-bold text-primary">${selectedPass.discountPrice}</p>
-          </div>
-        </div>
-        <div className="border-t border-border mt-3.5 pt-3.5">
-          <p className="text-xs text-muted-foreground">
-            Need to upgrade? <a href="#" className="text-primary hover:underline">Contact support.</a>
-          </p>
-        </div>
-      </div>
-
       {/* ③ Choose Date */}
       <div className="bg-card rounded-2xl border border-border p-6 shadow-sm">
         <p className="text-[11px] font-medium tracking-[1.2px] uppercase text-muted-foreground mb-3.5">Step 1</p>

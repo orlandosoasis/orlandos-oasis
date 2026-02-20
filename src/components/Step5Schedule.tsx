@@ -134,9 +134,6 @@ const Step5Schedule = ({ selectedPass, onChangePass, passOptions }: Step5Props) 
           <p className="text-sm font-semibold text-foreground">
             Payment confirmed — your {selectedPass.hours}-hour pool service is secured.
           </p>
-          <p className="text-xs text-muted-foreground mt-0.5 flex items-center gap-1">
-            <Lock className="h-3 w-3" /> This discounted rate is locked in.
-          </p>
         </div>
       </div>
 

@@ -121,7 +121,8 @@ const Step5Schedule = ({ selectedPass, onChangePass, passOptions }: Step5Props) 
     setIsConfirmed(true);
   };
 
-  const earliestLabel = `${DAYS[earliestDate.getDay()]}, ${MONTHS[earliestDate.getMonth()].slice(0, 3)} ${earliestDate.getDate()}, ${earliestDate.getFullYear()}`;
+  const fullDayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+  const earliestLabel = `${MONTHS[earliestDate.getMonth()].slice(0, 3)} ${earliestDate.getDate()}, ${earliestDate.getFullYear()} ${fullDayNames[earliestDate.getDay()]}`;
 
   return (
     <div className="space-y-4 animate-fade-in">

@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { Clock, Bell, Check, ArrowLeft, Pencil } from "lucide-react";
 import Step4Checkout from "@/components/Step4Checkout";
+import Step5Schedule from "@/components/Step5Schedule";
 import StepProgressIndicator from "@/components/StepProgressIndicator";
 import { Button } from "@/components/ui/button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -456,6 +457,21 @@ const ServicePassSection = () => {
     ? createPortal(<StepProgressIndicator currentStep={step} onStepClick={(s) => setStep(s as 1 | 2 | 3 | 4 | 5)} />, portalTarget)
     : null;
 
+  if (step === 5) {
+    return (
+      <>
+        {stepIndicator}
+        <div id="discount-voucher">
+          <Step5Schedule
+            selectedPass={selectedPassData}
+            onChangePass={setSelectedPass}
+            passOptions={PASS_OPTIONS}
+          />
+        </div>
+      </>
+    );
+  }
+
   if (step === 4) {
     return (
       <>
@@ -467,6 +483,7 @@ const ServicePassSection = () => {
             email={formData.email}
             onChangePass={setSelectedPass}
             passOptions={PASS_OPTIONS}
+            onContinue={() => setStep(5)}
           />
         </div>
       </>

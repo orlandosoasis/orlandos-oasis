@@ -357,14 +357,10 @@ const Step5Schedule = ({ selectedPass, onChangePass, passOptions }: Step5Props) 
         <p className="text-xs text-muted-foreground mb-4">Add extras at a discounted rate while booking.</p>
 
         {/* Purchased Service Summary */}
-        <div className="flex items-center justify-between rounded-lg bg-muted/40 border border-border px-4 py-3 mb-4">
+        <div className="flex items-center rounded-lg bg-muted/40 border border-border px-4 py-3 mb-4">
           <div>
             <p className="text-xs text-muted-foreground">Your service</p>
             <p className="text-sm font-medium text-foreground">{selectedPass.label}</p>
-          </div>
-          <div className="text-right">
-            <p className="text-[11px] text-muted-foreground line-through">${selectedPass.originalPrice}</p>
-            <p className="text-sm font-bold text-primary">${selectedPass.discountPrice}</p>
           </div>
         </div>
 

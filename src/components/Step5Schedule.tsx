@@ -271,13 +271,6 @@ const Step5Schedule = ({ selectedPass, onChangePass, passOptions }: Step5Props) 
             </select>
           </div>
         </div>
-        <div className="flex items-center justify-between">
-          <label className="text-xs font-medium text-muted-foreground">Pets on Property</label>
-          <div className="flex items-center gap-2.5">
-            <span className="text-sm text-muted-foreground min-w-[24px] text-right">{hasPets ? "Yes" : "No"}</span>
-            <Switch checked={hasPets} onCheckedChange={setHasPets} />
-          </div>
-        </div>
 
         {/* B — Pool Access */}
         <div className="mt-5 pt-[18px] border-t border-border">

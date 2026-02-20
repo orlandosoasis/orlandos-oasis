@@ -132,7 +132,7 @@ const Step5Schedule = ({ selectedPass, onChangePass, passOptions }: Step5Props) 
         <span className="text-lg leading-none">🎉</span>
         <div className="flex-1 min-w-0">
           <p className="text-sm font-semibold text-foreground">
-            Payment confirmed — your {selectedPass.hours}-hour pool service is secured.
+            Success! Your payment is confirmed.
           </p>
         </div>
       </div>

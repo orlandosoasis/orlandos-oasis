@@ -35,7 +35,7 @@ const HeroSection = () => {
           <div className="relative flex items-center justify-end h-full min-h-[500px] md:min-h-[550px] p-4 md:p-8">
             <div className="w-full md:w-[420px] bg-card rounded-xl shadow-2xl p-6 md:p-8 animate-fade-in">
               <h1 className="text-2xl md:text-3xl font-bold text-navy leading-tight mb-3">
-                Crystal-clear pools, zero hassle. Now serving Florida
+                Crystal clear pools with zero hassle. Now serving Florida
               </h1>
               
               <p className="text-muted-foreground mb-4">

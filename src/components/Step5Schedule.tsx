@@ -217,7 +217,7 @@ const Step5Schedule = ({ selectedPass, onChangePass, passOptions }: Step5Props) 
                 >
                   {isEarliest && !isPast && (
                     <span className="absolute -top-1 left-1/2 -translate-x-1/2 text-[9px] font-bold text-primary-foreground bg-primary px-1.5 py-px rounded-full whitespace-nowrap">
-                      Best
+                      Recommended
                     </span>
                   )}
                   {day}
@@ -373,15 +373,12 @@ const Step5Schedule = ({ selectedPass, onChangePass, passOptions }: Step5Props) 
       <Dialog open={editOpen} onOpenChange={setEditOpen}>
         <DialogContent className="max-w-md p-6 rounded-2xl">
           <DialogHeader>
-            <DialogTitle className="text-xl font-bold text-foreground">Change Package</DialogTitle>
-            <DialogDescription className="text-sm text-muted-foreground">Select your preferred service package</DialogDescription>
+            <DialogTitle className="text-xl font-bold text-foreground">Select Your Package</DialogTitle>
+            <DialogDescription className="text-sm text-muted-foreground">Choose your preferred service package</DialogDescription>
           </DialogHeader>
           <RadioGroup
             value={selectedPass.id}
-            onValueChange={(val) => {
-              onChangePass(val);
-              setEditOpen(false);
-            }}
+            onValueChange={onChangePass}
             className="space-y-3 mt-2"
           >
             {passOptions.map((pass) => (
@@ -422,6 +419,12 @@ const Step5Schedule = ({ selectedPass, onChangePass, passOptions }: Step5Props) 
           <p className="text-xs text-muted-foreground text-center px-2 mt-1">
             *Vouchers cover the full price of your first pool service. Don't worry - your technician will be paid in full!
           </p>
+          <Button
+            onClick={() => setEditOpen(false)}
+            className="w-full h-12 text-[15px] font-semibold rounded-xl mt-2"
+          >
+            Confirm Selection
+          </Button>
         </DialogContent>
       </Dialog>
     </div>

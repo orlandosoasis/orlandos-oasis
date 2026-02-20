@@ -305,7 +305,7 @@ Feb 23<strong>{earliestLabel}</strong>
 
         {/* B — Pool Access */}
         <div className="mt-5 pt-[18px] border-t border-border">
-          <p className="text-[11px] font-semibold tracking-[0.8px] uppercase text-muted-foreground mb-2.5">B — Pool Access</p>
+          <p className="text-[11px] font-semibold tracking-[0.8px] uppercase text-muted-foreground mb-2.5">POOL ACCESS</p>
           <p className="text-[13px] text-muted-foreground mb-3">How will we access your pool?</p>
           <div className="grid grid-cols-2 gap-2.5">
             {([

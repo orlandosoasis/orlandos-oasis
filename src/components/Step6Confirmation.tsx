@@ -73,11 +73,10 @@ const Step6Confirmation = ({ selectedPass, scheduleData }: Step6Props) => {
           <Check className="h-7 w-7 text-primary-foreground" strokeWidth={2.5} />
         </div>
         <h1 className="text-[28px] sm:text-[36px] font-bold text-foreground leading-tight tracking-tight mb-3">
-          Your First Cleaning<br />Is Scheduled
+          Your First Pool Service<br />Is Scheduled
         </h1>
         <p className="text-base sm:text-lg text-muted-foreground max-w-[520px] mx-auto leading-relaxed">
-          {formattedDate.split(",")[0]}, {MONTHS[d.getMonth()]} {d.getDate()}th is locked in.
-          You can manage everything — timing, access, add-ons — from your dashboard.
+          You're scheduled for {formattedDate.split(",")[0]}, {MONTHS[d.getMonth()]} {d.getDate()}. Update timing, access details, or add premium add-ons from your dashboard anytime.
         </p>
       </div>
 

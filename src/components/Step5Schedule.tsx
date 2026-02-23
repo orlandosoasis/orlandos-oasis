@@ -270,20 +270,8 @@ const Step5Schedule = ({ selectedPass, onChangePass, passOptions, onConfirm }: S
         <p className="text-[11px] font-medium tracking-[1.2px] uppercase text-muted-foreground mb-3.5">Step 3</p>
         <h3 className="font-semibold text-foreground mb-4 text-base">Service Details </h3>
 
-        {/* Service Location */}
-        <p className="text-[11px] font-semibold tracking-[0.8px] uppercase text-muted-foreground mb-2.5">SERVICE LOCATION</p>
-        <div className="flex flex-col gap-1.5 mb-5">
-          <label className="text-xs font-medium text-muted-foreground">Full Address</label>
-          <input
-            type="text"
-            placeholder="Street, City, State ZIP"
-            className="h-10 rounded-[10px] border-2 border-border bg-muted/30 px-3 text-sm text-foreground outline-none focus:border-primary/40 focus:bg-background transition-colors"
-          />
-        </div>
-
         {/* A — Pool Information */}
-        <div className="pt-[18px] border-t border-border">
-        <p className="text-[11px] font-semibold tracking-[0.8px] uppercase text-muted-foreground mb-2.5">POOL INFORMATION</p>
+        <p className="text-[11px] font-semibold tracking-[0.8px] uppercase text-muted-foreground mb-2.5">LOCATION</p>
         <div className="grid grid-cols-2 gap-3 mb-3">
           <div className="flex flex-col gap-1.5">
             <label className="text-xs font-medium text-muted-foreground">Pool Type</label>
@@ -310,7 +298,6 @@ const Step5Schedule = ({ selectedPass, onChangePass, passOptions, onConfirm }: S
               <option>Large (20k+)</option>
             </select>
           </div>
-        </div>
         </div>
 
         {/* B — Pool Access */}

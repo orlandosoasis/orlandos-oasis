@@ -185,7 +185,7 @@ const Step2Form = ({ selectedPass, timeLeft, vouchersRemaining, onBack, onChange
       {/* Order Summary */}
       <div className="bg-background rounded-xl p-4 px-5 flex items-center justify-between shadow-sm border border-border">
         <div>
-          <p className="text-xs text-muted-foreground mb-1">You're Getting</p>
+          <p className="text-[11px] text-muted-foreground font-medium uppercase tracking-widest mb-0.5">You're Getting</p>
           <div className="flex items-center gap-2.5">
             <p className="text-[15px] font-bold text-foreground">{selectedPass.label}</p>
             <button

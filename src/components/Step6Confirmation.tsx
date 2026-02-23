@@ -75,10 +75,6 @@ const Step6Confirmation = ({ selectedPass, scheduleData }: Step6Props) => {
         <h1 className="text-[28px] sm:text-[36px] font-bold text-foreground leading-tight tracking-tight mb-3">
           Your First Cleaning<br />Is Scheduled
         </h1>
-        <p className="text-base sm:text-lg text-muted-foreground max-w-[520px] mx-auto leading-relaxed">
-          {formattedDate.split(",")[0]}, {MONTHS[d.getMonth()]} {d.getDate()}th is locked in.
-          You can manage everything — timing, access, add-ons — from your dashboard.
-        </p>
       </div>
 
       {/* Booking Card */}

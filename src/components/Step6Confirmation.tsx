@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Check, ArrowRight, Mail } from "lucide-react";
+import { Check, ArrowRight, Mail, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface PassOption {
@@ -54,6 +54,7 @@ const ACCESS_LABELS: Record<string, string> = {
 
 const Step6Confirmation = ({ selectedPass, scheduleData }: Step6Props) => {
   const [toastVisible, setToastVisible] = useState(false);
+  const [breakdownOpen, setBreakdownOpen] = useState(false);
 
   const d = scheduleData.selectedDate;
   const formattedDate = `${FULL_DAYS[d.getDay()]}, ${MONTHS[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`;
@@ -145,14 +146,48 @@ const Step6Confirmation = ({ selectedPass, scheduleData }: Step6Props) => {
         </div>
 
         {/* Payment Strip */}
-        <div className="bg-muted/50 border-t border-border px-6 py-5 flex items-center justify-between gap-4 flex-wrap">
-          <div>
-            <p className="text-[13px] text-muted-foreground">Total charged</p>
-            <p className="text-[28px] font-bold text-foreground tracking-tight">${totalCharged}</p>
+        <div className="bg-muted/50 border-t border-border px-6 py-5">
+          <div className="flex items-center justify-between gap-4 flex-wrap">
+            <div>
+              <p className="text-[13px] text-muted-foreground">Total charged</p>
+              <p className="text-[28px] font-bold text-foreground tracking-tight">${totalCharged}</p>
+            </div>
+            <button
+              onClick={() => setBreakdownOpen(!breakdownOpen)}
+              className="flex items-center gap-1 text-[13px] font-medium text-primary hover:underline whitespace-nowrap transition-colors"
+            >
+              {breakdownOpen ? "Hide payment breakdown" : "View payment breakdown"}
+              <ChevronDown
+                className={`h-4 w-4 transition-transform duration-300 ease-out ${breakdownOpen ? "rotate-180" : ""}`}
+              />
+            </button>
           </div>
-          <button className="text-[13px] font-medium text-primary hover:underline whitespace-nowrap">
-            View payment breakdown →
-          </button>
+
+          {/* Breakdown Accordion */}
+          <div
+            className={`grid transition-all duration-300 ease-out ${
+              breakdownOpen ? "grid-rows-[1fr] opacity-100 mt-4" : "grid-rows-[0fr] opacity-0 mt-0"
+            }`}
+          >
+            <div className="overflow-hidden">
+              <div className="border-t border-border pt-4 space-y-2.5">
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-muted-foreground">{selectedPass.label}</span>
+                  <span className="text-foreground font-medium">${selectedPass.discountPrice}</span>
+                </div>
+                {scheduleData.addons.map((addon) => (
+                  <div key={addon.id} className="flex items-center justify-between text-sm">
+                    <span className="text-muted-foreground">{addon.name}</span>
+                    <span className="text-foreground font-medium">+${addon.price}</span>
+                  </div>
+                ))}
+                <div className="flex items-center justify-between text-sm pt-2.5 border-t border-border">
+                  <span className="font-semibold text-foreground">Total</span>
+                  <span className="font-bold text-foreground">${totalCharged}</span>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 

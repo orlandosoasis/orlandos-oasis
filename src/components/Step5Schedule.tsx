@@ -22,6 +22,7 @@ interface ScheduleData {
   timeWindow: "morning" | "afternoon" | "evening";
   accessMethod: "home" | "gate" | "key" | "other";
   accessDetail: string;
+  address: string;
   addons: { id: string; name: string; price: number }[];
   addonsTotal: number;
 }
@@ -70,6 +71,7 @@ const Step5Schedule = ({ selectedPass, onChangePass, passOptions, onConfirm }: S
   const [keyLocation, setKeyLocation] = useState("");
   const [otherInstructions, setOtherInstructions] = useState("");
   const [specialNotes, setSpecialNotes] = useState("");
+  const [address, setAddress] = useState("");
   const [poolType, setPoolType] = useState("Inground");
   const [poolSize, setPoolSize] = useState("Small (<10k gal)");
   const [hasPets, setHasPets] = useState(false);
@@ -151,6 +153,7 @@ const Step5Schedule = ({ selectedPass, onChangePass, passOptions, onConfirm }: S
           timeWindow,
           accessMethod,
           accessDetail,
+          address,
           addons: selectedAddons,
           addonsTotal,
         });
@@ -265,9 +268,24 @@ const Step5Schedule = ({ selectedPass, onChangePass, passOptions, onConfirm }: S
         </div>
       </div>
 
-      {/* ⑤ Pool & Property Details */}
+      {/* ④b Service Address */}
       <div className="bg-card rounded-2xl border border-border p-6 shadow-sm">
         <p className="text-[11px] font-medium tracking-[1.2px] uppercase text-muted-foreground mb-3.5">Step 3</p>
+        <h3 className="font-semibold text-foreground mb-1 text-base">Service Address</h3>
+        <p className="text-muted-foreground mb-4 text-sm">Where should we send the technician?</p>
+        <div className="flex flex-col gap-1.5">
+          <Input
+            placeholder="e.g. 1234 Pool Lane, Orlando, FL 32801"
+            value={address}
+            onChange={(e) => setAddress(e.target.value)}
+            className="h-10 rounded-[10px] border-2 border-border bg-muted/30 text-sm"
+          />
+        </div>
+      </div>
+
+      {/* ⑤ Pool & Property Details */}
+      <div className="bg-card rounded-2xl border border-border p-6 shadow-sm">
+        <p className="text-[11px] font-medium tracking-[1.2px] uppercase text-muted-foreground mb-3.5">Step 4</p>
         <h3 className="font-semibold text-foreground mb-4 text-base">Pool Details</h3>
 
         {/* A — Pool Information */}
@@ -373,7 +391,7 @@ const Step5Schedule = ({ selectedPass, onChangePass, passOptions, onConfirm }: S
 
       {/* ⑥ Add-Ons */}
       <div className="bg-card rounded-2xl border border-border p-6 shadow-sm">
-        <p className="text-[11px] font-medium tracking-[1.2px] uppercase text-muted-foreground mb-3.5">Step 4 — Optional</p>
+        <p className="text-[11px] font-medium tracking-[1.2px] uppercase text-muted-foreground mb-3.5">Step 5 — Optional</p>
         <h3 className="text-[17px] font-semibold text-foreground mb-1">Select Add-Ons</h3>
         <p className="text-xs text-muted-foreground mb-4">Add extras at a discounted rate while booking.</p>
 

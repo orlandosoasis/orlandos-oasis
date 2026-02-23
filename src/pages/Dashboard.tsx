@@ -83,7 +83,6 @@ const Dashboard = () => {
           </div>
 
           <div className="flex flex-col gap-3 mt-5">
-            <Button className="w-full rounded-xl h-12 font-semibold">Load more</Button>
             <Button
               variant="outline"
               className="w-full rounded-xl h-12 font-semibold"

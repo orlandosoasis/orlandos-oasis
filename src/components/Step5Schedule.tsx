@@ -59,10 +59,10 @@ const MONTHS = [
 
 const Step5Schedule = ({ selectedPass, onChangePass, passOptions, onConfirm }: Step5Props) => {
   const [selectedDate, setSelectedDate] = useState<Date | null>(() => {
-    const tomorrow = new Date();
-    tomorrow.setHours(0, 0, 0, 0);
-    tomorrow.setDate(tomorrow.getDate() + 1);
-    return tomorrow;
+    const d = new Date();
+    d.setHours(0, 0, 0, 0);
+    d.setDate(d.getDate() + 3);
+    return d;
   });
   const [timeWindow, setTimeWindow] = useState<TimeWindow>("morning");
   const [accessMethod, setAccessMethod] = useState<AccessMethod>(null);
@@ -215,8 +215,6 @@ const Step5Schedule = ({ selectedPass, onChangePass, passOptions, onConfirm }: S
               const thisDate = new Date(calYear, calMonth, day);
               const isPast = thisDate < today;
               const isSelected = selectedDate && isSameDay(thisDate, selectedDate);
-              const isEarliest = isSameDay(thisDate, earliestDate);
-              const isToday = isSameDay(thisDate, today);
 
               return (
                 <button
@@ -228,17 +226,10 @@ const Step5Schedule = ({ selectedPass, onChangePass, passOptions, onConfirm }: S
                   "text-muted-foreground/25 cursor-not-allowed border-transparent" :
                   isSelected ?
                   "bg-primary text-primary-foreground font-semibold border-primary shadow-md" :
-                  isEarliest ?
-                  "bg-primary/10 border-primary/40 text-primary font-medium" :
-                  isToday ?
-                  "font-semibold text-primary border-transparent" :
                   "text-foreground border-transparent hover:bg-primary/10 hover:text-primary cursor-pointer"}`
                   }>
 
                   {day}
-                  {isEarliest && !isPast && !isSelected &&
-                  <span className="absolute bottom-0.5 text-[5px] text-primary">●</span>
-                  }
                 </button>);
 
             })}

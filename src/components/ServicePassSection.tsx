@@ -3,6 +3,7 @@ import { createPortal } from "react-dom";
 import { Clock, Bell, Check, ArrowLeft, Pencil } from "lucide-react";
 import Step4Checkout from "@/components/Step4Checkout";
 import Step5Schedule from "@/components/Step5Schedule";
+import Step6Confirmation from "@/components/Step6Confirmation";
 import StepProgressIndicator from "@/components/StepProgressIndicator";
 import { Button } from "@/components/ui/button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -419,7 +420,7 @@ const Step3Membership = ({ selectedPass, onChangePass, onContinue }: Step3Props)
 
 const ServicePassSection = () => {
   const [selectedPass, setSelectedPass] = useState<string>("pass-3");
-  const [step, setStep] = useState<1 | 2 | 3 | 4 | 5>(1);
+  const [step, setStep] = useState<1 | 2 | 3 | 4 | 5 | 6>(1);
   const [timeLeft, setTimeLeft] = useState({ minutes: 9, seconds: 59 });
   const [vouchersRemaining] = useState(31);
   const [formData, setFormData] = useState({
@@ -429,6 +430,7 @@ const ServicePassSection = () => {
     zipcode: "",
     phone: "",
   });
+  const [scheduleData, setScheduleData] = useState<any>(null);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -453,9 +455,20 @@ const ServicePassSection = () => {
 
   // Render step indicator via portal callback
   const portalTarget = typeof document !== "undefined" ? document.getElementById("step-indicator-portal") : null;
-  const stepIndicator = step >= 2 && portalTarget
-    ? createPortal(<StepProgressIndicator currentStep={step} onStepClick={(s) => setStep(s as 1 | 2 | 3 | 4 | 5)} />, portalTarget)
+  const stepIndicator = step >= 2 && step <= 5 && portalTarget
+    ? createPortal(<StepProgressIndicator currentStep={step} onStepClick={(s) => setStep(s as 1 | 2 | 3 | 4 | 5 | 6)} />, portalTarget)
     : null;
+
+  if (step === 6 && scheduleData) {
+    return (
+      <div id="discount-voucher">
+        <Step6Confirmation
+          selectedPass={selectedPassData}
+          scheduleData={scheduleData}
+        />
+      </div>
+    );
+  }
 
   if (step === 5) {
     return (
@@ -466,6 +479,10 @@ const ServicePassSection = () => {
             selectedPass={selectedPassData}
             onChangePass={setSelectedPass}
             passOptions={PASS_OPTIONS}
+            onConfirm={(data) => {
+              setScheduleData(data);
+              setStep(6);
+            }}
           />
         </div>
       </>

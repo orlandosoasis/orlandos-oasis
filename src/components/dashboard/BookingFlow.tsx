@@ -1,9 +1,10 @@
 import { useState, useMemo } from "react";
-import { ChevronLeft, ChevronRight, Check, ArrowLeft } from "lucide-react";
+import { ChevronLeft, ChevronRight, Check, ArrowLeft, CreditCard, CheckCircle2, Loader2, Shield } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
+import { Checkbox } from "@/components/ui/checkbox";
 import { useBooking, matchTechnician } from "@/contexts/BookingContext";
 import type { PassOption, ScheduleData } from "@/contexts/BookingContext";
 
@@ -69,6 +70,13 @@ const BookingFlow = ({ onClose, onComplete }: BookingFlowProps) => {
   // Step 5 — Add-ons
   const [addons, setAddons] = useState<string[]>([]);
 
+  // Step 6 — Payment
+  type PaymentMethod = "google_pay" | "card" | "paypal";
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod | null>(null);
+  const [savePayment, setSavePayment] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [paymentSuccess, setPaymentSuccess] = useState(false);
+
   const selectedPass = DURATION_OPTIONS.find(o => o.id === selectedDuration)!;
   const addonsTotal = addons.reduce((s, id) => s + (ADDONS.find(a => a.id === id)?.price || 0), 0);
   const totalPrice = selectedPass.discountPrice + addonsTotal;
@@ -94,10 +102,25 @@ const BookingFlow = ({ onClose, onComplete }: BookingFlowProps) => {
       if (accessMethod === "other" && !otherInstructions.trim()) return false;
       return true;
     }
+    if (step === 6) return !!paymentMethod;
     return true;
   };
 
-  const handleConfirm = () => {
+  const TIME_LABELS: Record<string, string> = {
+    morning: "8:00 AM – 12:00 PM",
+    afternoon: "12:00 PM – 4:00 PM",
+    evening: "4:00 PM – 6:00 PM",
+  };
+
+  const handlePayment = async () => {
+    if (!paymentMethod) return;
+    setIsProcessing(true);
+    // Simulate payment processing
+    await new Promise(r => setTimeout(r, 2200));
+    setIsProcessing(false);
+    setPaymentSuccess(true);
+
+    // Build booking data and persist
     let accessDetail = "";
     if (accessMethod === "gate") accessDetail = gateCode + (gateNotes ? ` · ${gateNotes}` : "");
     else if (accessMethod === "key") accessDetail = keyLocation;
@@ -117,11 +140,57 @@ const BookingFlow = ({ onClose, onComplete }: BookingFlowProps) => {
       scheduleData,
       technician: matchTechnician(),
     });
-
-    onComplete();
   };
 
-  const STEP_LABELS = ["Duration", "Date", "Arrival", "Details", "Add-Ons"];
+  const TOTAL_STEPS = 6;
+  const STEP_LABELS = ["Duration", "Date", "Arrival", "Details", "Add-Ons", "Payment"];
+
+  // Success screen
+  if (paymentSuccess) {
+    return (
+      <div className="fixed inset-0 z-50 bg-background overflow-y-auto">
+        <div className="max-w-[760px] mx-auto px-5 py-12 flex flex-col items-center text-center">
+          <div className="w-16 h-16 rounded-full bg-green-500/15 flex items-center justify-center mb-5">
+            <CheckCircle2 className="h-8 w-8 text-green-600" />
+          </div>
+          <h2 className="text-xl font-bold text-foreground mb-1">Payment Successful!</h2>
+          <p className="text-sm text-muted-foreground mb-8">Your pool service has been booked.</p>
+
+          <div className="w-full bg-card rounded-2xl border border-border p-6 shadow-sm text-left space-y-3 mb-8">
+            <h3 className="text-sm font-semibold text-foreground mb-3">Booking Summary</h3>
+            <div className="flex justify-between text-sm">
+              <span className="text-muted-foreground">Service</span>
+              <span className="font-medium text-foreground">{selectedPass.label}</span>
+            </div>
+            <div className="flex justify-between text-sm">
+              <span className="text-muted-foreground">Date</span>
+              <span className="font-medium text-foreground">{FULL_DAYS[selectedDate.getDay()]}, {MONTHS[selectedDate.getMonth()].slice(0,3)} {selectedDate.getDate()}, {selectedDate.getFullYear()}</span>
+            </div>
+            <div className="flex justify-between text-sm">
+              <span className="text-muted-foreground">Arrival Window</span>
+              <span className="font-medium text-foreground">{TIME_LABELS[timeWindow]}</span>
+            </div>
+            {addons.length > 0 && (
+              <div className="flex justify-between text-sm">
+                <span className="text-muted-foreground">Add-Ons</span>
+                <span className="font-medium text-foreground">
+                  {ADDONS.filter(a => addons.includes(a.id)).map(a => a.name).join(", ")}
+                </span>
+              </div>
+            )}
+            <div className="border-t border-border pt-3 flex justify-between text-sm">
+              <span className="font-semibold text-foreground">Total Paid</span>
+              <span className="text-lg font-bold text-primary">${totalPrice}</span>
+            </div>
+          </div>
+
+          <Button onClick={onComplete} className="w-full h-14 text-[17px] font-bold rounded-2xl shadow-lg">
+            Go to Dashboard
+          </Button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="fixed inset-0 z-50 bg-background overflow-y-auto">
@@ -132,11 +201,10 @@ const BookingFlow = ({ onClose, onComplete }: BookingFlowProps) => {
             <ArrowLeft className="h-4 w-4 text-foreground" />
           </button>
           <span className="text-sm font-semibold text-foreground flex-1">Book a Service</span>
-          <span className="text-xs text-muted-foreground">Step {step} of 5</span>
+          <span className="text-xs text-muted-foreground">Step {step} of {TOTAL_STEPS}</span>
         </div>
-        {/* Progress bar */}
         <div className="h-1 bg-muted">
-          <div className="h-full bg-primary transition-all duration-300" style={{ width: `${(step / 5) * 100}%` }} />
+          <div className="h-full bg-primary transition-all duration-300" style={{ width: `${(step / TOTAL_STEPS) * 100}%` }} />
         </div>
       </div>
 
@@ -408,25 +476,103 @@ const BookingFlow = ({ onClose, onComplete }: BookingFlowProps) => {
             </div>
           </div>
         )}
+
+        {/* ── Step 6: Payment ── */}
+        {step === 6 && (
+          <div className="space-y-4 animate-fade-in">
+            <div>
+              <h2 className="text-lg font-semibold text-foreground mb-1">Payment</h2>
+              <p className="text-sm text-muted-foreground">Select a payment method to complete your booking.</p>
+            </div>
+
+            {/* Order summary */}
+            <div className="bg-card rounded-2xl border border-border p-5 shadow-sm">
+              <p className="text-[11px] font-semibold tracking-[0.8px] uppercase text-muted-foreground mb-3">ORDER SUMMARY</p>
+              <div className="space-y-2 text-sm">
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">{selectedPass.label}</span>
+                  <span className="font-medium text-foreground">${selectedPass.discountPrice}</span>
+                </div>
+                {addons.length > 0 && ADDONS.filter(a => addons.includes(a.id)).map(a => (
+                  <div key={a.id} className="flex justify-between">
+                    <span className="text-muted-foreground">{a.name}</span>
+                    <span className="font-medium text-foreground">${a.price}</span>
+                  </div>
+                ))}
+                <div className="border-t border-border pt-2 flex justify-between">
+                  <span className="font-semibold text-foreground">Total</span>
+                  <span className="text-lg font-bold text-primary">${totalPrice}</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Payment methods */}
+            <div className="flex flex-col gap-2.5">
+              {([
+                { value: "google_pay" as const, icon: "🅖", label: "Google Pay", sub: "Fast & secure checkout" },
+                { value: "card" as const, icon: "💳", label: "Credit / Debit Card", sub: "Visa, Mastercard, Amex" },
+                { value: "paypal" as const, icon: "🅿️", label: "PayPal", sub: "Pay with your PayPal account" },
+              ]).map(opt => {
+                const isSelected = paymentMethod === opt.value;
+                return (
+                  <button key={opt.value} type="button" onClick={() => setPaymentMethod(opt.value)}
+                    className={`flex items-center gap-3.5 rounded-xl border-2 p-4 transition-all text-left select-none ${
+                      isSelected ? "border-primary bg-primary/[0.06]" : "border-border hover:border-primary/40 hover:bg-primary/5"
+                    }`}>
+                    <div className={`w-[22px] h-[22px] rounded-full border-2 flex items-center justify-center shrink-0 transition-all ${
+                      isSelected ? "bg-primary border-primary text-primary-foreground" : "border-border text-transparent"
+                    }`}>
+                      <Check className="h-3 w-3" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-semibold text-foreground">{opt.label}</p>
+                      <p className="text-xs text-muted-foreground">{opt.sub}</p>
+                    </div>
+                    <span className="text-xl">{opt.icon}</span>
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Save payment */}
+            <label className="flex items-center gap-3 rounded-xl border border-border p-4 cursor-pointer hover:bg-muted/30 transition-colors">
+              <Checkbox checked={savePayment} onCheckedChange={(v) => setSavePayment(v === true)} />
+              <div>
+                <p className="text-sm font-medium text-foreground">Save this payment method</p>
+                <p className="text-xs text-muted-foreground">For faster checkout on future bookings</p>
+              </div>
+            </label>
+
+            <div className="flex items-center gap-2 text-xs text-muted-foreground px-1">
+              <Shield className="h-3.5 w-3.5 shrink-0" />
+              <span>Your payment info is encrypted and securely processed.</span>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Sticky footer */}
       <div className="fixed bottom-0 left-0 right-0 bg-card border-t border-border">
         <div className="max-w-[760px] mx-auto px-5 py-4">
-          {/* Price summary */}
           <div className="flex items-center justify-between mb-3">
             <span className="text-sm text-muted-foreground">
               {selectedPass.hours}h service{addonsTotal > 0 ? ` + add-ons` : ""}
             </span>
             <span className="text-lg font-bold text-foreground">${totalPrice}</span>
           </div>
-          {step < 5 ? (
+          {step < 6 ? (
             <Button onClick={() => setStep(step + 1)} disabled={!canProceed()} className="w-full h-12 text-[15px] font-bold rounded-xl">
-              Continue
+              {step === 5 ? "Proceed to Payment" : "Continue"}
             </Button>
           ) : (
-            <Button onClick={handleConfirm} className="w-full h-14 text-[17px] font-bold rounded-2xl shadow-lg">
-              Confirm Booking — ${totalPrice}
+            <Button onClick={handlePayment} disabled={!canProceed() || isProcessing} className="w-full h-14 text-[17px] font-bold rounded-2xl shadow-lg">
+              {isProcessing ? (
+                <span className="flex items-center gap-2">
+                  <Loader2 className="h-5 w-5 animate-spin" /> Processing…
+                </span>
+              ) : (
+                `Pay $${totalPrice}`
+              )}
             </Button>
           )}
         </div>

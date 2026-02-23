@@ -59,7 +59,6 @@ const Dashboard = () => {
         {/* Upcoming Section */}
         <section className="mb-10">
           <h2 className="text-[1.35rem] font-semibold text-foreground mb-1">Upcoming services</h2>
-          <div className="w-11 h-[3px] bg-primary rounded-sm mb-5" />
 
           {booking ? (
             <UpcomingCard booking={booking} />
@@ -148,7 +147,7 @@ const UpcomingCard = ({ booking }: UpcomingCardProps) => {
       <div className="px-[18px] py-4 flex items-start justify-between">
         <div className="flex-1">
           <p className="font-semibold text-foreground text-base mb-1">
-            {selectedPass.hours} {selectedPass.hours === 1 ? "Hour" : "Hours"} of pool service
+            {selectedPass.label} for {selectedPass.hours} {selectedPass.hours === 1 ? "hour" : "hours"}
           </p>
           <p className="font-semibold text-foreground text-[0.875rem] mb-0.5">{shortDate}</p>
           <p className="text-[0.825rem] text-muted-foreground leading-relaxed">

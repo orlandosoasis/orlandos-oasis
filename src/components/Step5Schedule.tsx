@@ -61,7 +61,7 @@ const Step5Schedule = ({ selectedPass, onChangePass, passOptions, onConfirm }: S
   const [selectedDate, setSelectedDate] = useState<Date | null>(() => {
     const d = new Date();
     d.setHours(0, 0, 0, 0);
-    d.setDate(d.getDate() + 3);
+    d.setDate(d.getDate() + 1);
     return d;
   });
   const [timeWindow, setTimeWindow] = useState<TimeWindow>("morning");
@@ -86,7 +86,7 @@ const Step5Schedule = ({ selectedPass, onChangePass, passOptions, onConfirm }: S
 
   const earliestDate = useMemo(() => {
     const d = new Date(today);
-    d.setDate(d.getDate() + 3);
+    d.setDate(d.getDate() + 1);
     return d;
   }, [today]);
 

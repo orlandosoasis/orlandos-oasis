@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Waves, Calendar, ChevronRight, User, Clock, MapPin, LogOut, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
@@ -119,12 +119,13 @@ interface UpcomingCardProps {
 }
 
 const UpcomingCard = ({ booking }: UpcomingCardProps) => {
+  const navigate = useNavigate();
   const { selectedPass, scheduleData, technician } = booking;
   const d = scheduleData.selectedDate;
   const shortDate = `${FULL_DAYS[d.getDay()]}, ${SHORT_MONTHS[d.getMonth()]} ${d.getDate()}`;
 
   return (
-    <div className="bg-card rounded-2xl border border-border overflow-hidden shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer group">
+    <div onClick={() => navigate("/service-details")} className="bg-card rounded-2xl border border-border overflow-hidden shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer group">
       {/* Hero illustration */}
       <div className="relative h-[190px] overflow-hidden">
         <PoolSceneHero />

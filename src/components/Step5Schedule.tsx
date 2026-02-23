@@ -22,7 +22,7 @@ interface ScheduleData {
   timeWindow: "morning" | "afternoon" | "evening";
   accessMethod: "home" | "gate" | "key" | "other";
   accessDetail: string;
-  addons: { id: string; name: string; price: number }[];
+  addons: {id: string;name: string;price: number;}[];
   addonsTotal: number;
 }
 
@@ -135,12 +135,12 @@ const Step5Schedule = ({ selectedPass, onChangePass, passOptions, onConfirm }: S
 
     // Build access detail string
     let accessDetail = "";
-    if (accessMethod === "gate") accessDetail = gateCode + (gateNotes ? ` · ${gateNotes}` : "");
-    else if (accessMethod === "key") accessDetail = keyLocation;
-    else if (accessMethod === "other") accessDetail = otherInstructions;
+    if (accessMethod === "gate") accessDetail = gateCode + (gateNotes ? ` · ${gateNotes}` : "");else
+    if (accessMethod === "key") accessDetail = keyLocation;else
+    if (accessMethod === "other") accessDetail = otherInstructions;
 
     const selectedAddons = ADDONS.filter((a) => addons.includes(a.id)).map((a) => ({
-      id: a.id, name: a.name, price: a.price,
+      id: a.id, name: a.name, price: a.price
     }));
 
     if (onConfirm && selectedDate && timeWindow && accessMethod) {
@@ -152,7 +152,7 @@ const Step5Schedule = ({ selectedPass, onChangePass, passOptions, onConfirm }: S
           accessMethod,
           accessDetail,
           addons: selectedAddons,
-          addonsTotal,
+          addonsTotal
         });
       }, 1200);
     }
@@ -268,7 +268,7 @@ const Step5Schedule = ({ selectedPass, onChangePass, passOptions, onConfirm }: S
       {/* ⑤ Pool & Property Details */}
       <div className="bg-card rounded-2xl border border-border p-6 shadow-sm">
         <p className="text-[11px] font-medium tracking-[1.2px] uppercase text-muted-foreground mb-3.5">Step 3</p>
-        <h3 className="font-semibold text-foreground mb-4 text-base">Pool Details</h3>
+        <h3 className="font-semibold text-foreground mb-4 text-base">Service Details </h3>
 
         {/* A — Pool Information */}
         <p className="text-[11px] font-semibold tracking-[0.8px] uppercase text-muted-foreground mb-2.5">POOL INFORMATION</p>

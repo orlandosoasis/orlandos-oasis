@@ -77,7 +77,7 @@ const Dashboard = () => {
         <section>
           <h2 className="text-[1.35rem] font-semibold text-foreground mb-1">Past services</h2>
 
-          <div className="bg-card rounded-2xl border border-border p-8 text-center">
+          <div className="bg-card rounded-2xl p-8 text-center">
             <p className="text-muted-foreground text-sm">No past services to show.</p>
           </div>
 

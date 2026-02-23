@@ -35,21 +35,21 @@ interface Step6Props {
 
 const FULL_DAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 const MONTHS = [
-  "January", "February", "March", "April", "May", "June",
-  "July", "August", "September", "October", "November", "December",
-];
+"January", "February", "March", "April", "May", "June",
+"July", "August", "September", "October", "November", "December"];
+
 
 const TIME_LABELS: Record<string, string> = {
   morning: "8:00 AM – 12:00 PM",
   afternoon: "12:00 PM – 4:00 PM",
-  evening: "4:00 PM – 6:00 PM",
+  evening: "4:00 PM – 6:00 PM"
 };
 
 const ACCESS_LABELS: Record<string, string> = {
   home: "Owner will be home",
   gate: "Gate code provided",
   key: "Key on property",
-  other: "Custom instructions provided",
+  other: "Custom instructions provided"
 };
 
 const Step6Confirmation = ({ selectedPass, scheduleData }: Step6Props) => {
@@ -73,10 +73,11 @@ const Step6Confirmation = ({ selectedPass, scheduleData }: Step6Props) => {
           <Check className="h-7 w-7 text-primary-foreground" strokeWidth={2.5} />
         </div>
         <h1 className="text-[28px] sm:text-[36px] font-bold text-foreground leading-tight tracking-tight mb-3">
-          Your First Pool Service<br />Is Scheduled
+          Your First Cleaning<br />Is Scheduled
         </h1>
         <p className="text-base sm:text-lg text-muted-foreground max-w-[520px] mx-auto leading-relaxed">
-          You're scheduled for {formattedDate.split(",")[0]}, {MONTHS[d.getMonth()]} {d.getDate()}. Update timing, access details, or add premium add-ons from your dashboard anytime.
+          {formattedDate.split(",")[0]}, {MONTHS[d.getMonth()]} {d.getDate()}th is locked in.
+          You can manage everything — timing, access, add-ons — from your dashboard.
         </p>
       </div>
 
@@ -125,23 +126,23 @@ const Step6Confirmation = ({ selectedPass, scheduleData }: Step6Props) => {
           </div>
 
           {/* Add-ons */}
-          {scheduleData.addons.length > 0 && (
-            <div className="flex items-start justify-between py-4 gap-4">
+          {scheduleData.addons.length > 0 &&
+          <div className="flex items-start justify-between py-4 gap-4">
               <span className="text-[13px] font-medium uppercase tracking-[0.06em] text-muted-foreground pt-0.5 whitespace-nowrap">
                 Add-ons
               </span>
               <div className="flex flex-wrap gap-1.5 justify-end">
-                {scheduleData.addons.map((addon) => (
-                  <span
-                    key={addon.id}
-                    className="bg-primary/10 text-primary text-xs font-medium px-2.5 py-1 rounded-full whitespace-nowrap"
-                  >
+                {scheduleData.addons.map((addon) =>
+              <span
+                key={addon.id}
+                className="bg-primary/10 text-primary text-xs font-medium px-2.5 py-1 rounded-full whitespace-nowrap">
+
                     {addon.name}
                   </span>
-                ))}
+              )}
               </div>
             </div>
-          )}
+          }
         </div>
 
         {/* Payment Strip */}
@@ -153,33 +154,33 @@ const Step6Confirmation = ({ selectedPass, scheduleData }: Step6Props) => {
             </div>
             <button
               onClick={() => setBreakdownOpen(!breakdownOpen)}
-              className="flex items-center gap-1 text-[13px] font-medium text-primary hover:underline whitespace-nowrap transition-colors"
-            >
+              className="flex items-center gap-1 text-[13px] font-medium text-primary hover:underline whitespace-nowrap transition-colors">
+
               {breakdownOpen ? "Hide payment breakdown" : "View payment breakdown"}
               <ChevronDown
-                className={`h-4 w-4 transition-transform duration-300 ease-out ${breakdownOpen ? "rotate-180" : ""}`}
-              />
+                className={`h-4 w-4 transition-transform duration-300 ease-out ${breakdownOpen ? "rotate-180" : ""}`} />
+
             </button>
           </div>
 
           {/* Breakdown Accordion */}
           <div
             className={`grid transition-all duration-300 ease-out ${
-              breakdownOpen ? "grid-rows-[1fr] opacity-100 mt-4" : "grid-rows-[0fr] opacity-0 mt-0"
-            }`}
-          >
+            breakdownOpen ? "grid-rows-[1fr] opacity-100 mt-4" : "grid-rows-[0fr] opacity-0 mt-0"}`
+            }>
+
             <div className="overflow-hidden">
               <div className="border-t border-border pt-4 space-y-2.5">
                 <div className="flex items-center justify-between text-sm">
                   <span className="text-muted-foreground">{selectedPass.label}</span>
                   <span className="text-foreground font-medium">${selectedPass.discountPrice}</span>
                 </div>
-                {scheduleData.addons.map((addon) => (
-                  <div key={addon.id} className="flex items-center justify-between text-sm">
+                {scheduleData.addons.map((addon) =>
+                <div key={addon.id} className="flex items-center justify-between text-sm">
                     <span className="text-muted-foreground">{addon.name}</span>
                     <span className="text-foreground font-medium">+${addon.price}</span>
                   </div>
-                ))}
+                )}
                 <div className="flex items-center justify-between text-sm pt-2.5 border-t border-border">
                   <span className="font-semibold text-foreground">Total</span>
                   <span className="font-bold text-foreground">${totalCharged}</span>
@@ -191,14 +192,11 @@ const Step6Confirmation = ({ selectedPass, scheduleData }: Step6Props) => {
       </div>
 
       {/* CTA */}
-      <div>
-        <p className="text-center text-[13px] text-muted-foreground mb-2.5">
-          Update your service time, pool access details, or premium add-ons anytime from your dashboard.
-        </p>
+      <div className="text-sm text-secondary-foreground">
         <Button
           onClick={handleDashboardClick}
-          className="w-full h-14 text-[17px] font-bold rounded-2xl shadow-lg hover:shadow-xl transition-all gap-2"
-        >
+          className="w-full h-14 text-[17px] font-bold rounded-2xl shadow-lg hover:shadow-xl transition-all gap-2">
+
           Access My Dashboard
           <ArrowRight className="h-[18px] w-[18px]" strokeWidth={2} />
         </Button>
@@ -210,11 +208,11 @@ const Step6Confirmation = ({ selectedPass, scheduleData }: Step6Props) => {
       {/* Toast */}
       <div
         className={`fixed top-5 right-5 bg-card rounded-xl shadow-xl border border-border p-3.5 flex items-center gap-2.5 max-w-[320px] z-[9999] transition-all duration-300 ${
-          toastVisible
-            ? "opacity-100 translate-x-0"
-            : "opacity-0 translate-x-[calc(100%+24px)] pointer-events-none"
-        }`}
-      >
+        toastVisible ?
+        "opacity-100 translate-x-0" :
+        "opacity-0 translate-x-[calc(100%+24px)] pointer-events-none"}`
+        }>
+
         <div className="w-8 h-8 shrink-0 bg-primary/10 rounded-lg flex items-center justify-center">
           <Mail className="h-4 w-4 text-primary" strokeWidth={2} />
         </div>
@@ -223,8 +221,8 @@ const Step6Confirmation = ({ selectedPass, scheduleData }: Step6Props) => {
           <p className="text-xs text-muted-foreground mt-0.5">Check your inbox to enter your dashboard.</p>
         </div>
       </div>
-    </div>
-  );
+    </div>);
+
 };
 
 export default Step6Confirmation;

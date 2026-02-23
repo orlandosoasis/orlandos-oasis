@@ -26,6 +26,7 @@ interface ScheduleData {
   timeWindow: "morning" | "afternoon" | "evening";
   accessMethod: "home" | "gate" | "key" | "other";
   accessDetail: string;
+  address: string;
   addons: AddonItem[];
   addonsTotal: number;
 }

@@ -289,7 +289,7 @@ const Step3Membership = ({ selectedPass, onChangePass, onContinue }: Step3Props)
     <div className="space-y-4 animate-fade-in">
       {/* Banner */}
       <div className="bg-primary rounded-2xl py-5 px-6 text-center">
-        <p className="text-[15px] font-medium text-primary-foreground leading-relaxed">
+        <p className="text-base font-bold text-primary-foreground leading-relaxed">
           Congratulations, your first {selectedPass.hours}-hour cleaning will be covered by your{" "}
           <strong>${selectedPass.discountPrice} voucher!</strong> If you like your cleaner...
         </p>

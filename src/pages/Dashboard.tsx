@@ -12,14 +12,14 @@ const SHORT_MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "S
 const TIME_LABELS: Record<string, string> = {
   morning: "8:00 AM – 12:00 PM",
   afternoon: "12:00 PM – 4:00 PM",
-  evening: "4:00 PM – 6:00 PM"
+  evening: "4:00 PM – 6:00 PM",
 };
 
 const ACCESS_LABELS: Record<string, string> = {
   home: "Owner will be home",
   gate: "Gate code provided",
   key: "Key on property",
-  other: "Custom instructions provided"
+  other: "Custom instructions provided",
 };
 
 const Dashboard = () => {
@@ -45,11 +45,11 @@ const Dashboard = () => {
               <Calendar className="h-4 w-4 mr-1.5" />
               Book Service
             </Button>
-            {user &&
-            <Button variant="ghost" size="icon" onClick={logout} title="Sign out">
+            {user && (
+              <Button variant="ghost" size="icon" onClick={logout} title="Sign out">
                 <LogOut className="h-4 w-4" />
               </Button>
-            }
+            )}
           </div>
         </div>
       </header>
@@ -60,16 +60,16 @@ const Dashboard = () => {
         <section className="mb-10">
           <h2 className="text-[1.35rem] font-semibold text-foreground mb-1">Upcoming services</h2>
 
-          {booking ?
-          <UpcomingCard booking={booking} /> :
-
-          <div className="bg-card rounded-2xl border border-border p-8 text-center">
+          {booking ? (
+            <UpcomingCard booking={booking} />
+          ) : (
+            <div className="bg-card rounded-2xl border border-border p-8 text-center">
               <p className="text-muted-foreground">No upcoming services yet.</p>
               <Link to="/passes">
                 <Button className="mt-4">Book Your First Service</Button>
               </Link>
             </div>
-          }
+          )}
         </section>
 
         {/* Past Section */}
@@ -85,8 +85,8 @@ const Dashboard = () => {
             <Button
               variant="outline"
               className="w-full rounded-xl h-12 font-semibold"
-              onClick={() => setShowCancelled(!showCancelled)}>
-
+              onClick={() => setShowCancelled(!showCancelled)}
+            >
               {showCancelled ? "Hide cancelled appointments" : "Show cancelled appointments"}
             </Button>
           </div>
@@ -97,11 +97,11 @@ const Dashboard = () => {
           <a href="#" className="text-primary hover:underline">Terms</a>
           <a href="#" className="text-primary hover:underline">Privacy</a>
           <a href="#" className="text-primary hover:underline">Do Not Sell My Personal Information</a>
-          <p className="mt-3">© Orlando's Oasis 2026</p>
+          <p className="mt-3">© Orlando's Oasis 2015 – 2026</p>
         </footer>
       </main>
-    </div>);
-
+    </div>
+  );
 };
 
 /* ── Upcoming Service Card ── */
@@ -130,14 +130,14 @@ const UpcomingCard = ({ booking }: UpcomingCardProps) => {
               {technician.isAssigned ? technician.name : "TBD"}
             </span>
             <span className="text-[0.72rem] text-muted-foreground flex items-center gap-1">
-              {technician.isAssigned ?
-              <>
+              {technician.isAssigned ? (
+                <>
                   <Star className="h-3 w-3 fill-cta-yellow text-cta-yellow" />
                   {technician.rating}
-                </> :
-
-              "Assigning soon"
-              }
+                </>
+              ) : (
+                "Assigning soon"
+              )}
             </span>
           </div>
         </div>
@@ -147,7 +147,7 @@ const UpcomingCard = ({ booking }: UpcomingCardProps) => {
       <div className="px-[18px] py-4 flex items-start justify-between">
         <div className="flex-1">
           <p className="font-semibold text-foreground text-base mb-1">
-            {selectedPass.hours} {selectedPass.hours === 1 ? "hour" : "hours"} of pool service
+            {selectedPass.label} for {selectedPass.hours} {selectedPass.hours === 1 ? "hour" : "hours"}
           </p>
           <p className="font-semibold text-foreground text-[0.875rem] mb-0.5">{shortDate}</p>
           <p className="text-[0.825rem] text-muted-foreground leading-relaxed">
@@ -156,23 +156,23 @@ const UpcomingCard = ({ booking }: UpcomingCardProps) => {
             Pool Access: {ACCESS_LABELS[scheduleData.accessMethod]}
             {scheduleData.accessDetail && ` · ${scheduleData.accessDetail}`}
           </p>
-          {scheduleData.addons.length > 0 &&
-          <div className="flex flex-wrap gap-1.5 mt-2">
-              {scheduleData.addons.map((addon) =>
-            <span
-              key={addon.id}
-              className="bg-primary/10 text-primary text-xs font-medium px-2.5 py-0.5 rounded-full">
-
+          {scheduleData.addons.length > 0 && (
+            <div className="flex flex-wrap gap-1.5 mt-2">
+              {scheduleData.addons.map((addon) => (
+                <span
+                  key={addon.id}
+                  className="bg-primary/10 text-primary text-xs font-medium px-2.5 py-0.5 rounded-full"
+                >
                   {addon.name}
                 </span>
-            )}
+              ))}
             </div>
-          }
+          )}
         </div>
         <ChevronRight className="h-5 w-5 text-muted-foreground mt-1 shrink-0 group-hover:translate-x-0.5 transition-transform" />
       </div>
-    </div>);
-
+    </div>
+  );
 };
 
 export default Dashboard;

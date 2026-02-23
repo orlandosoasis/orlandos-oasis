@@ -236,7 +236,7 @@ const Step5Schedule = ({ selectedPass, onChangePass, passOptions, onConfirm }: S
           </div>
         </div>
 
-        <p className="flex items-center gap-1.5 text-secondary-foreground text-sm">{selectedDate ? "Selected" : "Next available"}: <strong>{displayLabel}</strong>
+        <p className="flex items-center gap-1.5 text-secondary-foreground text-sm">Next available: <strong>{displayLabel}</strong>
         </p>
       </div>
 

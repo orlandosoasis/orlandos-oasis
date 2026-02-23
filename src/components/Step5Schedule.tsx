@@ -17,10 +17,20 @@ interface PassOption {
   isMostPopular: boolean;
 }
 
+interface ScheduleData {
+  selectedDate: Date;
+  timeWindow: "morning" | "afternoon" | "evening";
+  accessMethod: "home" | "gate" | "key" | "other";
+  accessDetail: string;
+  addons: { id: string; name: string; price: number }[];
+  addonsTotal: number;
+}
+
 interface Step5Props {
   selectedPass: PassOption;
   onChangePass: (passId: string) => void;
   passOptions: PassOption[];
+  onConfirm?: (data: ScheduleData) => void;
 }
 
 type TimeWindow = "morning" | "afternoon" | "evening" | null;
@@ -47,7 +57,7 @@ const MONTHS = [
 "July", "August", "September", "October", "November", "December"];
 
 
-const Step5Schedule = ({ selectedPass, onChangePass, passOptions }: Step5Props) => {
+const Step5Schedule = ({ selectedPass, onChangePass, passOptions, onConfirm }: Step5Props) => {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [timeWindow, setTimeWindow] = useState<TimeWindow>("morning");
   const [accessMethod, setAccessMethod] = useState<AccessMethod>(null);
@@ -119,6 +129,30 @@ const Step5Schedule = ({ selectedPass, onChangePass, passOptions }: Step5Props) 
     await new Promise((r) => setTimeout(r, 1800));
     setIsSubmitting(false);
     setIsConfirmed(true);
+
+    // Build access detail string
+    let accessDetail = "";
+    if (accessMethod === "gate") accessDetail = gateCode + (gateNotes ? ` · ${gateNotes}` : "");
+    else if (accessMethod === "key") accessDetail = keyLocation;
+    else if (accessMethod === "other") accessDetail = otherInstructions;
+
+    const selectedAddons = ADDONS.filter((a) => addons.includes(a.id)).map((a) => ({
+      id: a.id, name: a.name, price: a.price,
+    }));
+
+    if (onConfirm && selectedDate && timeWindow && accessMethod) {
+      // Small delay so user sees the confirmed state briefly
+      setTimeout(() => {
+        onConfirm({
+          selectedDate,
+          timeWindow,
+          accessMethod,
+          accessDetail,
+          addons: selectedAddons,
+          addonsTotal,
+        });
+      }, 1200);
+    }
   };
 
   const fullDayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];

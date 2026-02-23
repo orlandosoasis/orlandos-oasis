@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
 import { useBooking } from "@/contexts/BookingContext";
 import PoolSceneHero from "@/components/dashboard/PoolSceneHero";
+import BookingFlow from "@/components/dashboard/BookingFlow";
 
 const FULL_DAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 const SHORT_MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -26,6 +27,7 @@ const Dashboard = () => {
   const { user, logout } = useAuth();
   const { booking } = useBooking();
   const [showCancelled, setShowCancelled] = useState(false);
+  const [showBooking, setShowBooking] = useState(false);
 
   const formatShortDate = (date: Date) => {
     return `${FULL_DAYS[date.getDay()]}, ${SHORT_MONTHS[date.getMonth()]} ${date.getDate()}`;
@@ -41,7 +43,7 @@ const Dashboard = () => {
             <span className="text-[1.25rem] font-bold text-navy tracking-tight">Orlando's Oasis</span>
           </Link>
           <div className="flex items-center gap-3">
-            <Button size="sm" className="font-semibold text-sm rounded-lg px-5 py-2">
+            <Button size="sm" className="font-semibold text-sm rounded-lg px-5 py-2" onClick={() => setShowBooking(true)}>
               <Calendar className="h-4 w-4 mr-1.5" />
               Book Service
             </Button>
@@ -100,6 +102,13 @@ const Dashboard = () => {
           <p className="mt-3">© Orlando's Oasis 2015 – 2026</p>
         </footer>
       </main>
+
+      {showBooking && (
+        <BookingFlow
+          onClose={() => setShowBooking(false)}
+          onComplete={() => setShowBooking(false)}
+        />
+      )}
     </div>
   );
 };

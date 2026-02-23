@@ -59,7 +59,7 @@ const Dashboard = () => {
         {/* Upcoming Section */}
         <section className="mb-10">
           <h2 className="text-[1.35rem] font-semibold text-foreground mb-1">Upcoming services</h2>
-          <div className="w-11 h-[3px] bg-primary rounded-sm mb-5" />
+          
 
           {booking ? (
             <UpcomingCard booking={booking} />

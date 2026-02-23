@@ -186,7 +186,7 @@ const BookingFlow = ({ onClose, onComplete }: BookingFlowProps) => {
             </div>
           </div>
 
-          <Button onClick={() => { onComplete(); navigate("/dashboard"); }} className="w-full h-14 text-[17px] font-bold rounded-2xl shadow-lg">
+          <Button onClick={() => { onComplete(); }} className="w-full h-14 text-[17px] font-bold rounded-2xl shadow-lg">
             Go to Dashboard
           </Button>
         </div>

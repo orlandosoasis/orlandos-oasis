@@ -1,4 +1,5 @@
 import { useState, useMemo } from "react";
+import { useNavigate } from "react-router-dom";
 import { ChevronLeft, ChevronRight, Check, ArrowLeft, CreditCard, CheckCircle2, Loader2, Shield } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -38,6 +39,7 @@ interface BookingFlowProps {
 }
 
 const BookingFlow = ({ onClose, onComplete }: BookingFlowProps) => {
+  const navigate = useNavigate();
   const { setBooking } = useBooking();
   const [step, setStep] = useState(1);
 
@@ -184,7 +186,7 @@ const BookingFlow = ({ onClose, onComplete }: BookingFlowProps) => {
             </div>
           </div>
 
-          <Button onClick={onComplete} className="w-full h-14 text-[17px] font-bold rounded-2xl shadow-lg">
+          <Button onClick={() => { onComplete(); navigate("/dashboard"); }} className="w-full h-14 text-[17px] font-bold rounded-2xl shadow-lg">
             Go to Dashboard
           </Button>
         </div>

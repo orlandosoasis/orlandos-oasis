@@ -199,7 +199,7 @@ const Step4Checkout = ({ selectedPass, timeLeft, email, onChangePass, passOption
         onClick={onContinue}
         className="w-full h-14 text-[17px] font-bold rounded-full shadow-md hover:shadow-lg"
       >
-        {paymentMethod ? "Purchase & schedule" : "Select a payment method"}
+        Purchase &amp; schedule
       </Button>
 
       {/* Divider */}

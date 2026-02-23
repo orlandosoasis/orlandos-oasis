@@ -58,7 +58,12 @@ const MONTHS = [
 
 
 const Step5Schedule = ({ selectedPass, onChangePass, passOptions, onConfirm }: Step5Props) => {
-  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [selectedDate, setSelectedDate] = useState<Date | null>(() => {
+    const tomorrow = new Date();
+    tomorrow.setHours(0, 0, 0, 0);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    return tomorrow;
+  });
   const [timeWindow, setTimeWindow] = useState<TimeWindow>("morning");
   const [accessMethod, setAccessMethod] = useState<AccessMethod>(null);
   const [gateCode, setGateCode] = useState("");

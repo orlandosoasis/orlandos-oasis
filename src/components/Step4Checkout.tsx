@@ -48,7 +48,7 @@ const Step4Checkout = ({ selectedPass, timeLeft, email, onChangePass, passOption
       </div>
 
       {/* Deal Row */}
-      <div className="border-2 border-border rounded-xl py-3.5 px-5 text-center">
+      <div className="bg-muted rounded-xl py-3.5 px-5 text-center">
         <p className="text-base font-bold text-foreground">
           {selectedPass.label} for ${selectedPass.discountPrice} – {selectedPass.percentOff}% off!
         </p>

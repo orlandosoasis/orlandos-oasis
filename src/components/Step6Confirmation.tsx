@@ -192,6 +192,9 @@ const Step6Confirmation = ({ selectedPass, scheduleData }: Step6Props) => {
 
       {/* CTA */}
       <div>
+        <p className="text-center text-[13px] text-muted-foreground mb-2.5">
+          Update your service time, pool access details, or premium add-ons anytime from your dashboard.
+        </p>
         <Button
           onClick={handleDashboardClick}
           className="w-full h-14 text-[17px] font-bold rounded-2xl shadow-lg hover:shadow-xl transition-all gap-2"

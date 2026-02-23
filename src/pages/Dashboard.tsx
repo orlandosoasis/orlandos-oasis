@@ -155,6 +155,8 @@ const UpcomingCard = ({ booking }: UpcomingCardProps) => {
             <br />
             Pool Access: {ACCESS_LABELS[scheduleData.accessMethod]}
             {scheduleData.accessDetail && ` · ${scheduleData.accessDetail}`}
+            <br />
+            123 Main Street, Miami, FL 33101
           </p>
           {scheduleData.addons.length > 0 && (
             <div className="flex flex-wrap gap-1.5 mt-2">

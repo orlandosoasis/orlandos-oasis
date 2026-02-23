@@ -152,12 +152,6 @@ const UpcomingCard = ({ booking }: UpcomingCardProps) => {
           <p className="font-semibold text-foreground text-[0.875rem] mb-0.5">{shortDate}</p>
           <p className="text-[0.825rem] text-muted-foreground leading-relaxed">
             Expected arrival {TIME_LABELS[scheduleData.timeWindow]}
-            {scheduleData.address && (
-              <>
-                <br />
-                {scheduleData.address}
-              </>
-            )}
             <br />
             Pool Access: {ACCESS_LABELS[scheduleData.accessMethod]}
             {scheduleData.accessDetail && ` · ${scheduleData.accessDetail}`}

@@ -88,7 +88,7 @@ const Step6Confirmation = ({ selectedPass, scheduleData }: Step6Props) => {
             <span className="text-[13px] font-medium uppercase tracking-[0.06em] text-muted-foreground pt-0.5 whitespace-nowrap">
               Service Date
             </span>
-            <span className="text-[15px] font-medium text-foreground text-right leading-snug">
+            <span className="text-[15px] font-bold text-foreground text-right leading-snug">
               {formattedDate}
             </span>
           </div>
@@ -108,7 +108,7 @@ const Step6Confirmation = ({ selectedPass, scheduleData }: Step6Props) => {
             <span className="text-[13px] font-medium uppercase tracking-[0.06em] text-muted-foreground pt-0.5 whitespace-nowrap">
               Pool Access
             </span>
-            <span className="text-[15px] font-normal text-muted-foreground text-right">
+            <span className="text-[15px] font-medium text-foreground text-right">
               {ACCESS_LABELS[scheduleData.accessMethod]}
               {scheduleData.accessDetail && ` · ${scheduleData.accessDetail}`}
             </span>

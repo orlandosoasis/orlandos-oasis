@@ -148,7 +148,7 @@ const UpcomingCard = ({ booking }: UpcomingCardProps) => {
       <div className="px-[18px] py-4 flex items-start justify-between">
         <div className="flex-1">
           <p className="font-semibold text-foreground text-base mb-1">
-            {selectedPass.label} for {selectedPass.hours} {selectedPass.hours === 1 ? "hour" : "hours"}
+            {selectedPass.hours} {selectedPass.hours === 1 ? "Hour" : "Hours"} of pool service
           </p>
           <p className="font-semibold text-foreground text-[0.875rem] mb-0.5">{shortDate}</p>
           <p className="text-[0.825rem] text-muted-foreground leading-relaxed">

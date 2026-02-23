@@ -427,16 +427,10 @@ const Step5Schedule = ({ selectedPass, onChangePass, passOptions, onConfirm }: S
       <div className="pt-1">
         <Button
           onClick={handleSubmit}
-          disabled={!isFormValid() || isSubmitting || isConfirmed}
-          className={`w-full h-14 text-[17px] font-bold rounded-2xl shadow-lg hover:shadow-xl transition-all ${
-          isConfirmed ? "bg-green-600 hover:bg-green-600" : ""}`
-          }>
+          disabled={!isFormValid() || isSubmitting}
+          className="w-full h-14 text-[17px] font-bold rounded-2xl shadow-lg hover:shadow-xl transition-all">
 
-          {isSubmitting ?
-          "Confirming..." :
-          isConfirmed ?
-          "Confirmed! ✓ See you soon" :
-          "Confirm My First Cleaning"}
+          {isSubmitting ? "Confirming..." : "Confirm My First Cleaning"}
         </Button>
         <p className="text-center text-xs text-muted-foreground mt-2.5">
           You'll receive a confirmation text &amp; email.

@@ -270,8 +270,33 @@ const Step5Schedule = ({ selectedPass, onChangePass, passOptions, onConfirm }: S
         <p className="text-[11px] font-medium tracking-[1.2px] uppercase text-muted-foreground mb-3.5">Step 3</p>
         <h3 className="font-semibold text-foreground mb-4 text-base">Service Details </h3>
 
-        {/* A — Pool Information */}
-        <p className="text-[11px] font-semibold tracking-[0.8px] uppercase text-muted-foreground mb-2.5">LOCATION</p>
+        {/* Service Location */}
+        <p className="text-[11px] font-semibold tracking-[0.8px] uppercase text-muted-foreground mb-2.5">SERVICE LOCATION</p>
+        <div className="flex flex-col gap-3 mb-5">
+          <div className="flex flex-col gap-1.5">
+            <label className="text-xs font-medium text-muted-foreground">Address</label>
+            <Input readOnly placeholder="Street address" defaultValue="123 Main Street" className="h-10 rounded-[10px] border-2 border-border bg-muted/30 text-sm cursor-default" />
+          </div>
+          <div className="grid grid-cols-3 gap-3">
+            <div className="flex flex-col gap-1.5">
+              <label className="text-xs font-medium text-muted-foreground">City</label>
+              <Input readOnly placeholder="City" defaultValue="Miami" className="h-10 rounded-[10px] border-2 border-border bg-muted/30 text-sm cursor-default" />
+            </div>
+            <div className="flex flex-col gap-1.5">
+              <label className="text-xs font-medium text-muted-foreground">State / Province</label>
+              <Input readOnly placeholder="State" defaultValue="FL" className="h-10 rounded-[10px] border-2 border-border bg-muted/30 text-sm cursor-default" />
+            </div>
+            <div className="flex flex-col gap-1.5">
+              <label className="text-xs font-medium text-muted-foreground">ZIP / Postal Code</label>
+              <Input readOnly placeholder="ZIP" defaultValue="33101" className="h-10 rounded-[10px] border-2 border-border bg-muted/30 text-sm cursor-default" />
+            </div>
+          </div>
+        </div>
+
+        <div className="mb-5 border-t border-border" />
+
+        {/* Pool Information */}
+        <p className="text-[11px] font-semibold tracking-[0.8px] uppercase text-muted-foreground mb-2.5">POOL INFORMATION</p>
         <div className="grid grid-cols-2 gap-3 mb-3">
           <div className="flex flex-col gap-1.5">
             <label className="text-xs font-medium text-muted-foreground">Pool Type</label>

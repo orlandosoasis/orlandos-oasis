@@ -1,6 +1,8 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Check, ArrowRight, Mail, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useBooking, matchTechnician } from "@/contexts/BookingContext";
 
 interface PassOption {
   id: string;
@@ -55,14 +57,17 @@ const ACCESS_LABELS: Record<string, string> = {
 const Step6Confirmation = ({ selectedPass, scheduleData }: Step6Props) => {
   const [toastVisible, setToastVisible] = useState(false);
   const [breakdownOpen, setBreakdownOpen] = useState(false);
+  const navigate = useNavigate();
+  const { setBooking } = useBooking();
 
   const d = scheduleData.selectedDate;
   const formattedDate = `${FULL_DAYS[d.getDay()]}, ${MONTHS[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`;
   const totalCharged = selectedPass.discountPrice + scheduleData.addonsTotal;
 
   const handleDashboardClick = () => {
-    setToastVisible(true);
-    setTimeout(() => setToastVisible(false), 4500);
+    const technician = matchTechnician();
+    setBooking({ selectedPass, scheduleData, technician });
+    navigate("/dashboard");
   };
 
   return (

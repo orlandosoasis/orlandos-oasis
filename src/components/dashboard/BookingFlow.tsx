@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import { ChevronLeft, ChevronRight, Check, ArrowLeft, CreditCard, CheckCircle2, Loader2, Shield } from "lucide-react";
+import { ChevronLeft, ChevronRight, Check, ArrowLeft, CreditCard, CheckCircle2, Loader2, Shield, Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -610,25 +610,53 @@ const BookingFlow = ({ onClose, onComplete }: BookingFlowProps) => {
               {/* Card & PayPal options */}
               <div className="bg-card rounded-2xl border border-border overflow-hidden shadow-sm">
                 {/* Credit / Debit Card */}
-                <button
-                  type="button"
-                  onClick={() => setPaymentMethod("card")}
-                  className={`w-full flex items-center gap-3.5 p-4 transition-all text-left select-none ${
-                    paymentMethod === "card" ? "bg-primary/[0.04]" : "hover:bg-muted/40"
-                  }`}
-                >
-                  <div className={`w-[22px] h-[22px] rounded-full border-2 flex items-center justify-center shrink-0 transition-all ${
-                    paymentMethod === "card" ? "bg-primary border-primary text-primary-foreground" : "border-border text-transparent"
-                  }`}>
-                    <Check className="h-3 w-3" />
-                  </div>
-                  <span className="text-sm font-medium text-foreground flex-1">Use credit or debit card</span>
-                  <div className="flex items-center gap-1.5">
-                    <span className="text-xs font-bold tracking-wide text-[#1a1f71]">VISA</span>
-                    <span className="w-6 h-4 rounded-[3px] bg-gradient-to-br from-[#f79e1b] to-[#ea001b]" />
-                    <span className="text-xs font-bold tracking-wide text-muted-foreground">AMEX</span>
-                  </div>
-                </button>
+                <div>
+                  <button
+                    type="button"
+                    onClick={() => setPaymentMethod("card")}
+                    className={`w-full flex items-center gap-3.5 p-4 transition-all text-left select-none ${
+                      paymentMethod === "card" ? "bg-primary/[0.04]" : "hover:bg-muted/40"
+                    }`}
+                  >
+                    <div className={`w-[22px] h-[22px] rounded-full border-2 flex items-center justify-center shrink-0 transition-all ${
+                      paymentMethod === "card" ? "bg-primary border-primary text-primary-foreground" : "border-border text-transparent"
+                    }`}>
+                      <Check className="h-3 w-3" />
+                    </div>
+                    <span className="text-sm font-medium text-foreground flex-1">Use credit or debit card</span>
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-xs font-bold tracking-wide text-[#1a1f71]">VISA</span>
+                      <span className="w-6 h-4 rounded-[3px] bg-gradient-to-br from-[#f79e1b] to-[#ea001b]" />
+                      <span className="text-xs font-bold tracking-wide text-muted-foreground">AMEX</span>
+                    </div>
+                  </button>
+
+                  {/* Card input fields — shown when selected */}
+                  {paymentMethod === "card" && (
+                    <div className="px-4 pb-4 space-y-3 animate-fade-in">
+                      <Input
+                        placeholder="Credit Card Number"
+                        className="h-12 rounded-xl border-2 border-border bg-muted/30 text-sm"
+                        maxLength={19}
+                      />
+                      <div className="grid grid-cols-2 gap-3">
+                        <Input
+                          placeholder="Expiration"
+                          className="h-12 rounded-xl border-2 border-border bg-muted/30 text-sm"
+                          maxLength={5}
+                        />
+                        <div className="relative">
+                          <Input
+                            placeholder="CVC"
+                            className="h-12 rounded-xl border-2 border-border bg-muted/30 text-sm pr-10"
+                            maxLength={4}
+                          />
+                          <Lock className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
 
                 <div className="h-px bg-border mx-4" />
 

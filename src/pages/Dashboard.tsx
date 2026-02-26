@@ -72,9 +72,7 @@ const Dashboard = () => {
           ) : (
             <div className="bg-card rounded-2xl border border-border p-8 text-center">
               <p className="text-muted-foreground">No upcoming services yet.</p>
-              <Link to="/passes">
-                <Button className="mt-4">Book Your First Service</Button>
-              </Link>
+              <Button className="mt-4" onClick={() => setShowBooking(true)}>Book Your First Service</Button>
             </div>
           )}
         </section>

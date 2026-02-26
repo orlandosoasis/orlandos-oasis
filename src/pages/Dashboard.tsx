@@ -70,7 +70,7 @@ const Dashboard = () => {
               <UpcomingCard booking={booking} />
             </>
           ) : (
-            <div className="bg-card rounded-2xl border border-border p-8 text-center">
+            <div className="bg-card rounded-2xl p-8 text-center">
               <p className="text-muted-foreground">No upcoming services yet.</p>
               <button className="mt-4 text-primary font-bold text-sm hover:underline" onClick={() => setShowBooking(true)}>Book Your First Service</button>
             </div>

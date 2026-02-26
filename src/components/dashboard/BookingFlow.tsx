@@ -47,12 +47,10 @@ const BookingFlow = ({ onClose, onComplete }: BookingFlowProps) => {
   const [timeWindow, setTimeWindow] = useState<TimeWindow>("morning");
 
   // Step 2 — Pool / Property
-  const [selectedPoolId, setSelectedPoolId] = useState<string | null>("pool-1");
-  const [showNewPool, setShowNewPool] = useState(false);
-  const [address, setAddress] = useState("123 Main Street");
-  const [city, setCity] = useState("Miami");
-  const [state, setState] = useState("FL");
-  const [zip, setZip] = useState("33101");
+  const [address, setAddress] = useState("");
+  const [city, setCity] = useState("");
+  const [state, setState] = useState("");
+  const [zip, setZip] = useState("");
   const [poolType, setPoolType] = useState("Inground");
   const [poolSize, setPoolSize] = useState("Small (<10k gal)");
   const [accessMethod, setAccessMethod] = useState<AccessMethod>("home");
@@ -69,11 +67,6 @@ const BookingFlow = ({ onClose, onComplete }: BookingFlowProps) => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [paymentSuccess, setPaymentSuccess] = useState(false);
 
-  // Mock existing pools
-  const existingPools = [
-    { id: "pool-1", label: "Pool A — 123 Main St", address: "123 Main Street", city: "Miami", state: "FL", zip: "33101", poolType: "Inground", poolSize: "Medium (10–20k)", accessMethod: "home" as AccessMethod, accessDetail: "" },
-  ];
-
   const selectedPass = DURATION_OPTIONS.find(o => o.id === selectedDuration)!;
   const totalPrice = selectedPass.discountPrice;
 
@@ -88,12 +81,10 @@ const BookingFlow = ({ onClose, onComplete }: BookingFlowProps) => {
   const canProceed = () => {
     if (step === 1) return true;
     if (step === 2) {
-      if (showNewPool) {
-        if (!address.trim()) return false;
-        if (accessMethod === "gate" && !gateCode.trim()) return false;
-        if (accessMethod === "key" && !keyLocation.trim()) return false;
-        if (accessMethod === "other" && !otherInstructions.trim()) return false;
-      }
+      if (!address.trim()) return false;
+      if (accessMethod === "gate" && !gateCode.trim()) return false;
+      if (accessMethod === "key" && !keyLocation.trim()) return false;
+      if (accessMethod === "other" && !otherInstructions.trim()) return false;
       return true;
     }
     if (step === 3) return !!paymentMethod;
@@ -380,141 +371,101 @@ const BookingFlow = ({ onClose, onComplete }: BookingFlowProps) => {
               <p className="text-sm text-muted-foreground">Select an existing pool or add a new one.</p>
             </div>
 
-            {/* Pool selector */}
-            <div className="flex flex-col gap-2.5">
-              {existingPools.map(pool => (
-                <button key={pool.id} type="button"
-                  onClick={() => { setSelectedPoolId(pool.id); setShowNewPool(false); }}
-                  className={`flex items-center gap-3.5 rounded-xl border-2 p-4 transition-all text-left select-none ${
-                    selectedPoolId === pool.id && !showNewPool ? "border-primary bg-primary/[0.06]" : "border-border hover:border-primary/40 hover:bg-primary/5"
-                  }`}>
-                  <div className={`w-[22px] h-[22px] rounded-full border-2 flex items-center justify-center shrink-0 transition-all ${
-                    selectedPoolId === pool.id && !showNewPool ? "bg-primary border-primary text-primary-foreground" : "border-border text-transparent"
-                  }`}>
-                    <Check className="h-3 w-3" />
+            <div className="space-y-5">
+              <div className="bg-card rounded-2xl border border-border p-6 shadow-sm">
+                <p className="text-[11px] font-semibold tracking-[0.8px] uppercase text-muted-foreground mb-2.5">ADDRESS</p>
+                <div className="flex flex-col gap-3">
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-xs font-medium text-muted-foreground">Street Address</label>
+                    <Input placeholder="Street address" value={address} onChange={e => setAddress(e.target.value)} className="h-10 rounded-[10px] border-2 border-border bg-muted/30 text-sm" />
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-semibold text-foreground">{pool.label}</p>
-                    <p className="text-xs text-muted-foreground">{pool.poolType} · {pool.poolSize}</p>
-                  </div>
-                </button>
-              ))}
-
-              <button type="button"
-                onClick={() => { setShowNewPool(true); setSelectedPoolId(null); }}
-                className={`flex items-center gap-3.5 rounded-xl border-2 p-4 transition-all text-left select-none ${
-                  showNewPool ? "border-primary bg-primary/[0.06]" : "border-border hover:border-primary/40 hover:bg-primary/5"
-                }`}>
-                <div className={`w-[22px] h-[22px] rounded-full border-2 flex items-center justify-center shrink-0 transition-all ${
-                  showNewPool ? "bg-primary border-primary text-primary-foreground" : "border-border text-transparent"
-                }`}>
-                  <Check className="h-3 w-3" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-semibold text-foreground">Add New Pool</p>
-                  <p className="text-xs text-muted-foreground">Enter a new property and pool details</p>
-                </div>
-              </button>
-            </div>
-
-            {/* New pool form */}
-            {showNewPool && (
-              <div className="space-y-5 animate-fade-in">
-                <div className="bg-card rounded-2xl border border-border p-6 shadow-sm">
-                  <p className="text-[11px] font-semibold tracking-[0.8px] uppercase text-muted-foreground mb-2.5">ADDRESS</p>
-                  <div className="flex flex-col gap-3">
+                  <div className="grid grid-cols-3 gap-3">
                     <div className="flex flex-col gap-1.5">
-                      <label className="text-xs font-medium text-muted-foreground">Street Address</label>
-                      <Input placeholder="Street address" value={address} onChange={e => setAddress(e.target.value)} className="h-10 rounded-[10px] border-2 border-border bg-muted/30 text-sm" />
-                    </div>
-                    <div className="grid grid-cols-3 gap-3">
-                      <div className="flex flex-col gap-1.5">
-                        <label className="text-xs font-medium text-muted-foreground">City</label>
-                        <Input placeholder="City" value={city} onChange={e => setCity(e.target.value)} className="h-10 rounded-[10px] border-2 border-border bg-muted/30 text-sm" />
-                      </div>
-                      <div className="flex flex-col gap-1.5">
-                        <label className="text-xs font-medium text-muted-foreground">State</label>
-                        <Input placeholder="State" value={state} onChange={e => setState(e.target.value)} className="h-10 rounded-[10px] border-2 border-border bg-muted/30 text-sm" />
-                      </div>
-                      <div className="flex flex-col gap-1.5">
-                        <label className="text-xs font-medium text-muted-foreground">ZIP</label>
-                        <Input placeholder="ZIP" value={zip} onChange={e => setZip(e.target.value)} className="h-10 rounded-[10px] border-2 border-border bg-muted/30 text-sm" />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="bg-card rounded-2xl border border-border p-6 shadow-sm">
-                  <p className="text-[11px] font-semibold tracking-[0.8px] uppercase text-muted-foreground mb-2.5">POOL DETAILS</p>
-                  <div className="grid grid-cols-2 gap-3 mb-5">
-                    <div className="flex flex-col gap-1.5">
-                      <label className="text-xs font-medium text-muted-foreground">Pool Type</label>
-                      <select value={poolType} onChange={e => setPoolType(e.target.value)}
-                        className="h-10 rounded-[10px] border-2 border-border bg-muted/30 px-3 text-sm text-foreground outline-none focus:border-primary/40 focus:bg-background transition-colors appearance-none">
-                        <option>Inground</option><option>Above Ground</option><option>Lap Pool</option><option>Spa / Hot Tub</option>
-                      </select>
+                      <label className="text-xs font-medium text-muted-foreground">City</label>
+                      <Input placeholder="City" value={city} onChange={e => setCity(e.target.value)} className="h-10 rounded-[10px] border-2 border-border bg-muted/30 text-sm" />
                     </div>
                     <div className="flex flex-col gap-1.5">
-                      <label className="text-xs font-medium text-muted-foreground">Pool Size</label>
-                      <select value={poolSize} onChange={e => setPoolSize(e.target.value)}
-                        className="h-10 rounded-[10px] border-2 border-border bg-muted/30 px-3 text-sm text-foreground outline-none focus:border-primary/40 focus:bg-background transition-colors appearance-none">
-                        <option>Small (&lt;10k gal)</option><option>Medium (10–20k)</option><option>Large (20k+)</option>
-                      </select>
+                      <label className="text-xs font-medium text-muted-foreground">State</label>
+                      <Input placeholder="State" value={state} onChange={e => setState(e.target.value)} className="h-10 rounded-[10px] border-2 border-border bg-muted/30 text-sm" />
                     </div>
-                  </div>
-
-                  <div className="border-t border-border pt-4">
-                    <p className="text-[11px] font-semibold tracking-[0.8px] uppercase text-muted-foreground mb-2.5">POOL ACCESS</p>
-                    <p className="text-[13px] text-muted-foreground mb-3">How will we access your pool?</p>
-                    <div className="grid grid-cols-2 gap-2.5">
-                      {([
-                        { value: "home" as const, icon: "🏠", label: "I will be home" },
-                        { value: "gate" as const, icon: "🔢", label: "Gate code provided" },
-                        { value: "key" as const, icon: "🗝️", label: "Key on property" },
-                        { value: "other" as const, icon: "📝", label: "Other instructions" },
-                      ]).map(opt => (
-                        <button key={opt.value} type="button" onClick={() => setAccessMethod(opt.value)}
-                          className={`flex flex-col items-start gap-1.5 rounded-xl border-2 p-3.5 transition-all text-left ${
-                            accessMethod === opt.value ? "border-primary bg-primary/[0.06]" : "border-border hover:border-primary/40 hover:bg-primary/5"
-                          }`}>
-                          <span className="text-xl leading-none">{opt.icon}</span>
-                          <span className="text-[13px] font-medium text-foreground leading-snug">{opt.label}</span>
-                        </button>
-                      ))}
+                    <div className="flex flex-col gap-1.5">
+                      <label className="text-xs font-medium text-muted-foreground">ZIP</label>
+                      <Input placeholder="ZIP" value={zip} onChange={e => setZip(e.target.value)} className="h-10 rounded-[10px] border-2 border-border bg-muted/30 text-sm" />
                     </div>
-
-                    {accessMethod === "gate" && (
-                      <div className="mt-3.5 flex flex-col gap-2.5 animate-fade-in">
-                        <div className="flex flex-col gap-1.5">
-                          <label className="text-xs font-medium text-muted-foreground">Gate Code <span className="text-destructive">*</span></label>
-                          <Input placeholder="e.g. 4821" value={gateCode} onChange={e => setGateCode(e.target.value)} maxLength={12} className="h-10 rounded-[10px] border-2 border-border bg-muted/30 text-sm" />
-                        </div>
-                        <div className="flex flex-col gap-1.5">
-                          <label className="text-xs font-medium text-muted-foreground">Additional gate notes (optional)</label>
-                          <Input placeholder="e.g. Blue door on left side" value={gateNotes} onChange={e => setGateNotes(e.target.value)} className="h-10 rounded-[10px] border-2 border-border bg-muted/30 text-sm" />
-                        </div>
-                      </div>
-                    )}
-                    {accessMethod === "key" && (
-                      <div className="mt-3.5 animate-fade-in">
-                        <div className="flex flex-col gap-1.5">
-                          <label className="text-xs font-medium text-muted-foreground">Where is the key? <span className="text-destructive">*</span></label>
-                          <Input placeholder="e.g. Under the welcome mat" value={keyLocation} onChange={e => setKeyLocation(e.target.value)} className="h-10 rounded-[10px] border-2 border-border bg-muted/30 text-sm" />
-                        </div>
-                      </div>
-                    )}
-                    {accessMethod === "other" && (
-                      <div className="mt-3.5 animate-fade-in">
-                        <div className="flex flex-col gap-1.5">
-                          <label className="text-xs font-medium text-muted-foreground">Access Instructions <span className="text-destructive">*</span></label>
-                          <Textarea placeholder="Describe how to access the pool…" value={otherInstructions} onChange={e => setOtherInstructions(e.target.value)} rows={3} className="rounded-[10px] border-2 border-border bg-muted/30 text-sm resize-y min-h-[72px]" />
-                        </div>
-                      </div>
-                    )}
                   </div>
                 </div>
               </div>
-            )}
+
+              <div className="bg-card rounded-2xl border border-border p-6 shadow-sm">
+                <p className="text-[11px] font-semibold tracking-[0.8px] uppercase text-muted-foreground mb-2.5">POOL DETAILS</p>
+                <div className="grid grid-cols-2 gap-3 mb-5">
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-xs font-medium text-muted-foreground">Pool Type</label>
+                    <select value={poolType} onChange={e => setPoolType(e.target.value)}
+                      className="h-10 rounded-[10px] border-2 border-border bg-muted/30 px-3 text-sm text-foreground outline-none focus:border-primary/40 focus:bg-background transition-colors appearance-none">
+                      <option>Inground</option><option>Above Ground</option><option>Lap Pool</option><option>Spa / Hot Tub</option>
+                    </select>
+                  </div>
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-xs font-medium text-muted-foreground">Pool Size</label>
+                    <select value={poolSize} onChange={e => setPoolSize(e.target.value)}
+                      className="h-10 rounded-[10px] border-2 border-border bg-muted/30 px-3 text-sm text-foreground outline-none focus:border-primary/40 focus:bg-background transition-colors appearance-none">
+                      <option>Small (&lt;10k gal)</option><option>Medium (10–20k)</option><option>Large (20k+)</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div className="border-t border-border pt-4">
+                  <p className="text-[11px] font-semibold tracking-[0.8px] uppercase text-muted-foreground mb-2.5">POOL ACCESS</p>
+                  <p className="text-[13px] text-muted-foreground mb-3">How will we access your pool?</p>
+                  <div className="grid grid-cols-2 gap-2.5">
+                    {([
+                      { value: "home" as const, icon: "🏠", label: "I will be home" },
+                      { value: "gate" as const, icon: "🔢", label: "Gate code provided" },
+                      { value: "key" as const, icon: "🗝️", label: "Key on property" },
+                      { value: "other" as const, icon: "📝", label: "Other instructions" },
+                    ]).map(opt => (
+                      <button key={opt.value} type="button" onClick={() => setAccessMethod(opt.value)}
+                        className={`flex flex-col items-start gap-1.5 rounded-xl border-2 p-3.5 transition-all text-left ${
+                          accessMethod === opt.value ? "border-primary bg-primary/[0.06]" : "border-border hover:border-primary/40 hover:bg-primary/5"
+                        }`}>
+                        <span className="text-xl leading-none">{opt.icon}</span>
+                        <span className="text-[13px] font-medium text-foreground leading-snug">{opt.label}</span>
+                      </button>
+                    ))}
+                  </div>
+
+                  {accessMethod === "gate" && (
+                    <div className="mt-3.5 flex flex-col gap-2.5 animate-fade-in">
+                      <div className="flex flex-col gap-1.5">
+                        <label className="text-xs font-medium text-muted-foreground">Gate Code <span className="text-destructive">*</span></label>
+                        <Input placeholder="e.g. 4821" value={gateCode} onChange={e => setGateCode(e.target.value)} maxLength={12} className="h-10 rounded-[10px] border-2 border-border bg-muted/30 text-sm" />
+                      </div>
+                      <div className="flex flex-col gap-1.5">
+                        <label className="text-xs font-medium text-muted-foreground">Additional gate notes (optional)</label>
+                        <Input placeholder="e.g. Blue door on left side" value={gateNotes} onChange={e => setGateNotes(e.target.value)} className="h-10 rounded-[10px] border-2 border-border bg-muted/30 text-sm" />
+                      </div>
+                    </div>
+                  )}
+                  {accessMethod === "key" && (
+                    <div className="mt-3.5 animate-fade-in">
+                      <div className="flex flex-col gap-1.5">
+                        <label className="text-xs font-medium text-muted-foreground">Where is the key? <span className="text-destructive">*</span></label>
+                        <Input placeholder="e.g. Under the welcome mat" value={keyLocation} onChange={e => setKeyLocation(e.target.value)} className="h-10 rounded-[10px] border-2 border-border bg-muted/30 text-sm" />
+                      </div>
+                    </div>
+                  )}
+                  {accessMethod === "other" && (
+                    <div className="mt-3.5 animate-fade-in">
+                      <div className="flex flex-col gap-1.5">
+                        <label className="text-xs font-medium text-muted-foreground">Access Instructions <span className="text-destructive">*</span></label>
+                        <Textarea placeholder="Describe how to access the pool…" value={otherInstructions} onChange={e => setOtherInstructions(e.target.value)} rows={3} className="rounded-[10px] border-2 border-border bg-muted/30 text-sm resize-y min-h-[72px]" />
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
           </div>
         )}
 

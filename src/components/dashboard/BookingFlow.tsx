@@ -378,7 +378,7 @@ const BookingFlow = ({ onClose, onComplete }: BookingFlowProps) => {
           <div className="space-y-5 animate-fade-in">
             <div>
               <h2 className="text-lg font-semibold text-foreground mb-1">Pool & Property</h2>
-              <p className="text-sm text-muted-foreground">Select an existing pool or add a new one.</p>
+              <p className="text-sm text-muted-foreground">Enter your pool details below.</p>
             </div>
 
             <div className="space-y-5">

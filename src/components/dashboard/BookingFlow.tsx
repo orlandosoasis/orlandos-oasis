@@ -6,7 +6,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useBooking, matchTechnician } from "@/contexts/BookingContext";
-import type { PassOption, MonthlyPlan, CleaningFrequency, Recurrence, TimeWindow, AccessMethod, ScheduleData } from "@/contexts/BookingContext";
+import type { PassOption, CleaningFrequency, TimeWindow, AccessMethod, ScheduleData } from "@/contexts/BookingContext";
 
 /* ── Duration options (one-time) ── */
 const DURATION_OPTIONS: PassOption[] = [
@@ -16,12 +16,6 @@ const DURATION_OPTIONS: PassOption[] = [
   { id: "hrs-6", hours: 6, label: "6-Hour Pool Service", description: "Complete restoration — ideal for neglected or green pools", originalPrice: 249, discountPrice: 249, percentOff: 0, isMostPopular: false },
 ];
 
-/* ── Monthly plans ── */
-const MONTHLY_PLANS: MonthlyPlan[] = [
-  { id: "basic", label: "Basic Monthly", description: "Skim, brush & chemical check every visit", monthlyPrice: 149, isMostPopular: false },
-  { id: "standard", label: "Standard Monthly", description: "Full clean — vacuum, brush, chemicals & filter rinse", monthlyPrice: 219, isMostPopular: true },
-  { id: "premium", label: "Premium Monthly", description: "Complete care — deep vacuum, tile scrub, filter & chemical balance", monthlyPrice: 319, isMostPopular: false },
-];
 
 const DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 const MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
@@ -45,8 +39,6 @@ const BookingFlow = ({ onClose, onComplete }: BookingFlowProps) => {
   // Step 1 — Frequency & Plan & Schedule
   const [frequency, setFrequency] = useState<CleaningFrequency>("once");
   const [selectedDuration, setSelectedDuration] = useState<string>("hrs-3");
-  const [selectedPlanId, setSelectedPlanId] = useState<string>("standard");
-  const [recurrence, setRecurrence] = useState<Recurrence>("biweekly");
 
   const today = useMemo(() => { const d = new Date(); d.setHours(0, 0, 0, 0); return d; }, []);
   const [selectedDate, setSelectedDate] = useState<Date>(today);
@@ -83,8 +75,7 @@ const BookingFlow = ({ onClose, onComplete }: BookingFlowProps) => {
   ];
 
   const selectedPass = DURATION_OPTIONS.find(o => o.id === selectedDuration)!;
-  const selectedPlan = MONTHLY_PLANS.find(p => p.id === selectedPlanId)!;
-  const totalPrice = frequency === "once" ? selectedPass.discountPrice : selectedPlan.monthlyPrice;
+  const totalPrice = selectedPass.discountPrice;
 
   // Calendar helpers
   const daysInMonth = new Date(calYear, calMonth + 1, 0).getDate();
@@ -141,9 +132,8 @@ const BookingFlow = ({ onClose, onComplete }: BookingFlowProps) => {
 
     setBooking({
       frequency,
-      selectedPass: frequency === "once" ? selectedPass : { ...selectedPass, label: selectedPlan.label, discountPrice: selectedPlan.monthlyPrice, originalPrice: selectedPlan.monthlyPrice },
-      selectedPlan: frequency === "monthly" ? selectedPlan : undefined,
-      recurrence: frequency === "monthly" ? recurrence : undefined,
+      selectedPass,
+      recurrence: frequency === "monthly" ? "monthly" : undefined,
       scheduleData,
       technician: matchTechnician(),
       specialNotes: specialNotes || undefined,
@@ -172,12 +162,12 @@ const BookingFlow = ({ onClose, onComplete }: BookingFlowProps) => {
             <h3 className="text-sm font-semibold text-foreground mb-3">Booking Summary</h3>
             <div className="flex justify-between text-sm">
               <span className="text-muted-foreground">Service</span>
-              <span className="font-medium text-foreground">{frequency === "once" ? selectedPass.label : selectedPlan.label}</span>
+              <span className="font-medium text-foreground">{selectedPass.label}</span>
             </div>
             {frequency === "monthly" && (
               <div className="flex justify-between text-sm">
                 <span className="text-muted-foreground">Recurrence</span>
-                <span className="font-medium text-foreground capitalize">{recurrence}</span>
+                <span className="font-medium text-foreground">Monthly</span>
               </div>
             )}
             <div className="flex justify-between text-sm">
@@ -283,55 +273,36 @@ const BookingFlow = ({ onClose, onComplete }: BookingFlowProps) => {
                 </div>
               </div>
             ) : (
-              <>
-                <div>
-                  <p className="text-[11px] font-semibold tracking-[0.8px] uppercase text-muted-foreground mb-2.5">MONTHLY PLAN</p>
-                  <div className="flex flex-col gap-2.5">
-                    {MONTHLY_PLANS.map(plan => {
-                      const isSelected = selectedPlanId === plan.id;
-                      return (
-                        <button key={plan.id} type="button" onClick={() => setSelectedPlanId(plan.id)}
-                          className={`relative flex items-center gap-3.5 rounded-xl border-2 p-4 transition-all text-left select-none ${
-                            isSelected ? "border-primary bg-primary/[0.06]" : "border-border hover:border-primary/40 hover:bg-primary/5"
-                          }`}>
-                          <div className={`w-[22px] h-[22px] rounded-full border-2 flex items-center justify-center shrink-0 transition-all ${
-                            isSelected ? "bg-primary border-primary text-primary-foreground" : "border-border text-transparent"
-                          }`}>
-                            <Check className="h-3 w-3" />
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <div className="flex items-center gap-2 mb-0.5">
-                              <span className="text-sm font-semibold text-foreground">{plan.label}</span>
-                              {plan.isMostPopular && (
-                                <Badge className="bg-primary text-primary-foreground text-[10px] px-1.5 py-0">Most Popular</Badge>
-                              )}
-                            </div>
-                            <p className="text-xs text-muted-foreground">{plan.description}</p>
-                          </div>
-                          <span className="text-lg font-bold text-primary whitespace-nowrap">${plan.monthlyPrice}<span className="text-xs font-normal text-muted-foreground">/mo</span></span>
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
-
-                <div>
-                  <p className="text-[11px] font-semibold tracking-[0.8px] uppercase text-muted-foreground mb-2.5">RECURRENCE</p>
-                  <div className="grid grid-cols-2 gap-2.5">
-                    {([
-                      { value: "weekly" as const, label: "Weekly" },
-                      { value: "biweekly" as const, label: "Biweekly" },
-                    ]).map(opt => (
-                      <button key={opt.value} type="button" onClick={() => setRecurrence(opt.value)}
-                        className={`flex items-center justify-center rounded-xl border-2 py-3.5 px-3 transition-all text-center ${
-                          recurrence === opt.value ? "border-primary bg-primary/[0.07]" : "border-border hover:border-primary/40 hover:bg-primary/5"
+              <div>
+                <p className="text-[11px] font-semibold tracking-[0.8px] uppercase text-muted-foreground mb-2.5">SERVICE DURATION</p>
+                <div className="flex flex-col gap-2.5">
+                  {DURATION_OPTIONS.map(opt => {
+                    const isSelected = selectedDuration === opt.id;
+                    return (
+                      <button key={opt.id} type="button" onClick={() => setSelectedDuration(opt.id)}
+                        className={`relative flex items-center gap-3.5 rounded-xl border-2 p-4 transition-all text-left select-none ${
+                          isSelected ? "border-primary bg-primary/[0.06]" : "border-border hover:border-primary/40 hover:bg-primary/5"
                         }`}>
-                        <span className="text-sm font-semibold text-foreground">{opt.label}</span>
+                        <div className={`w-[22px] h-[22px] rounded-full border-2 flex items-center justify-center shrink-0 transition-all ${
+                          isSelected ? "bg-primary border-primary text-primary-foreground" : "border-border text-transparent"
+                        }`}>
+                          <Check className="h-3 w-3" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2 mb-0.5">
+                            <span className="text-sm font-semibold text-foreground">{opt.hours} Hours</span>
+                            {opt.isMostPopular && (
+                              <Badge className="bg-primary text-primary-foreground text-[10px] px-1.5 py-0">Most Popular</Badge>
+                            )}
+                          </div>
+                          <p className="text-xs text-muted-foreground">{opt.description}</p>
+                        </div>
+                        <span className="text-lg font-bold text-primary whitespace-nowrap">${opt.discountPrice}<span className="text-xs font-normal text-muted-foreground">/mo</span></span>
                       </button>
-                    ))}
-                  </div>
+                    );
+                  })}
                 </div>
-              </>
+              </div>
             )}
 
             {/* Date picker */}
@@ -572,17 +543,9 @@ const BookingFlow = ({ onClose, onComplete }: BookingFlowProps) => {
               <p className="text-[11px] font-semibold tracking-[0.8px] uppercase text-muted-foreground mb-3">ORDER SUMMARY</p>
               <div className="space-y-2 text-sm">
                 <div className="flex justify-between">
-                  <span className="text-muted-foreground">{frequency === "once" ? selectedPass.label : selectedPlan.label}</span>
+                  <span className="text-muted-foreground">{selectedPass.label}</span>
                   <span className="font-medium text-foreground">${totalPrice}{frequency === "monthly" ? "/mo" : ""}</span>
                 </div>
-                {frequency === "monthly" && (
-                  <>
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">Recurrence</span>
-                      <span className="font-medium text-foreground capitalize">{recurrence}</span>
-                    </div>
-                  </>
-                )}
                 <div className="border-t border-border pt-2 flex justify-between">
                   <span className="font-semibold text-foreground">
                     {frequency === "once" ? "Total" : "Today's charge"}
@@ -593,7 +556,7 @@ const BookingFlow = ({ onClose, onComplete }: BookingFlowProps) => {
                   <>
                     <div className="flex justify-between text-xs">
                       <span className="text-muted-foreground">Ongoing monthly charge</span>
-                      <span className="font-medium text-foreground">${selectedPlan.monthlyPrice}/mo</span>
+                      <span className="font-medium text-foreground">${totalPrice}/mo</span>
                     </div>
                     <div className="flex justify-between text-xs">
                       <span className="text-muted-foreground">Next billing date</span>
@@ -653,7 +616,7 @@ const BookingFlow = ({ onClose, onComplete }: BookingFlowProps) => {
         <div className="max-w-[760px] mx-auto px-5 py-4">
           <div className="flex items-center justify-between mb-3">
             <span className="text-sm text-muted-foreground">
-              {frequency === "once" ? `${selectedPass.hours}h service` : `${selectedPlan.label}`}
+              {`${selectedPass.hours}h service${frequency === "monthly" ? " · Monthly" : ""}`}
             </span>
             <span className="text-lg font-bold text-foreground">${totalPrice}{frequency === "monthly" ? "/mo" : ""}</span>
           </div>

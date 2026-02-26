@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, ReactNode } from "react";
 
 export type CleaningFrequency = "once" | "monthly";
-export type Recurrence = "weekly" | "biweekly";
+export type Recurrence = "monthly" | "weekly" | "biweekly";
 export type TimeWindow = "morning" | "afternoon" | "evening";
 export type AccessMethod = "home" | "gate" | "key" | "other";
 

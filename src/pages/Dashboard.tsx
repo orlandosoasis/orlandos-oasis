@@ -44,7 +44,7 @@ const Dashboard = () => {
           </Link>
           <div className="flex items-center gap-3">
             <Button size="sm" className="font-semibold text-sm rounded-lg px-5 py-2" onClick={() => setShowBooking(true)}>
-              <Calendar className="h-4 w-4 mr-[10px]" />
+              <Calendar className="h-4 w-4 mr-1" />
               Book Service
             </Button>
             {user && (

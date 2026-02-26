@@ -499,7 +499,7 @@ const BookingFlow = ({ onClose, onComplete }: BookingFlowProps) => {
               <p className="text-sm text-muted-foreground">Confirm your details and complete your booking.</p>
             </div>
 
-            {/* Service Details */}
+            {/* Service & Pool Details */}
             <div className="bg-card rounded-2xl border border-border p-5 shadow-sm">
               <p className="text-[11px] font-semibold tracking-[0.8px] uppercase text-muted-foreground mb-3">SERVICE DETAILS</p>
               <div className="space-y-2 text-sm">
@@ -520,10 +520,9 @@ const BookingFlow = ({ onClose, onComplete }: BookingFlowProps) => {
                   <span className="font-medium text-foreground">{TIME_LABELS[timeWindow]}</span>
                 </div>
               </div>
-            </div>
 
-            {/* Pool Details */}
-            <div className="bg-card rounded-2xl border border-border p-5 shadow-sm">
+              <div className="border-t border-border my-4" />
+
               <p className="text-[11px] font-semibold tracking-[0.8px] uppercase text-muted-foreground mb-3">POOL DETAILS</p>
               <div className="space-y-2 text-sm">
                 <div className="flex justify-between">

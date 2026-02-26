@@ -128,6 +128,16 @@ const BookingFlow = ({ onClose, onComplete }: BookingFlowProps) => {
       scheduleData,
       technician: matchTechnician(),
       specialNotes: specialNotes || undefined,
+      pool: {
+        address,
+        city,
+        state,
+        zip,
+        poolType,
+        poolSize,
+        accessMethod,
+        accessDetail: getAccessDetail(),
+      },
     });
   };
 

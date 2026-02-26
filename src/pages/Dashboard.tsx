@@ -129,7 +129,7 @@ const UpcomingCard = ({ booking }: UpcomingCardProps) => {
   const shortDate = `${FULL_DAYS[d.getDay()]}, ${SHORT_MONTHS[d.getMonth()]} ${d.getDate()}`;
 
   return (
-    <div onClick={() => navigate("/service-details")} className="bg-card rounded-2xl border border-border overflow-hidden shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer group">
+    <div onClick={() => navigate("/service-details")} className="bg-card rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer group">
       {/* Hero illustration */}
       <div className="relative h-[190px] overflow-hidden">
         <PoolSceneHero />

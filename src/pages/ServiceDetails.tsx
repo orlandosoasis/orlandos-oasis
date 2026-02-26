@@ -90,79 +90,81 @@ const ServiceDetails = () => {
       {/* Content */}
       <main className="max-w-[760px] mx-auto px-5 py-6 pb-16 space-y-4">
 
-        {/* 2. Appointment Details */}
-        <div className="bg-card rounded-2xl border border-border p-6 shadow-sm">
-          <h2 className="text-[17px] font-bold text-foreground mb-4">Appointment Details</h2>
-          <div className="space-y-2.5">
-            <div className="flex items-center gap-2 text-sm text-foreground">
-              <Clock className="h-4 w-4 text-muted-foreground" />
-              <span>{selectedPass.hours} {selectedPass.hours === 1 ? "Hour" : "Hours"}</span>
+        {/* 2. Appointment Details + 3. Technician — side by side on desktop */}
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
+          {/* Appointment Details — 8 cols */}
+          <div className="md:col-span-8 bg-card rounded-2xl border border-border p-6 shadow-sm flex flex-col">
+            <h2 className="text-[17px] font-bold text-foreground mb-4">Appointment Details</h2>
+            <div className="space-y-2.5">
+              <div className="flex items-center gap-2 text-sm text-foreground">
+                <Clock className="h-4 w-4 text-muted-foreground" />
+                <span>{selectedPass.hours} {selectedPass.hours === 1 ? "Hour" : "Hours"}</span>
+              </div>
+              <div className="flex items-center gap-2 text-sm text-foreground">
+                <Calendar className="h-4 w-4 text-muted-foreground" />
+                <span>{formattedDate}</span>
+              </div>
+              <div className="flex items-center gap-2 text-sm text-foreground">
+                <Droplets className="h-4 w-4 text-muted-foreground" />
+                <span>{isMonthly ? "Monthly plan" : "One-time service"}</span>
+              </div>
             </div>
-            <div className="flex items-center gap-2 text-sm text-foreground">
-              <Calendar className="h-4 w-4 text-muted-foreground" />
-              <span>{formattedDate}</span>
-            </div>
-            <div className="flex items-center gap-2 text-sm text-foreground">
-              <Droplets className="h-4 w-4 text-muted-foreground" />
-              <span>{isMonthly ? "Monthly plan" : "One-time service"}</span>
-            </div>
+
+            {scheduleData.addons.length > 0 && (
+              <div className="mt-4">
+                <p className="text-[15px] font-bold text-foreground mb-2">Add-ons</p>
+                <div className="flex flex-wrap gap-1.5">
+                  {scheduleData.addons.map((addon) => (
+                    <span key={addon.id} className="bg-accent text-accent-foreground text-xs font-medium px-2.5 py-1 rounded-full">
+                      {addon.name} · ${addon.price}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
 
-
-          {scheduleData.addons.length > 0 && (
-            <div className="mt-4">
-              <p className="text-[15px] font-bold text-foreground mb-2">Add-ons</p>
-              <div className="flex flex-wrap gap-1.5">
-                {scheduleData.addons.map((addon) => (
-                  <span key={addon.id} className="bg-accent text-accent-foreground text-xs font-medium px-2.5 py-1 rounded-full">
-                    {addon.name} · ${addon.price}
-                  </span>
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
-
-        {/* 3. Technician */}
-        <div className="bg-card rounded-2xl border border-border p-6 shadow-sm">
-          {technician.isAssigned ? (
-            <>
-              <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-4">Your Technician</p>
-              <div className="flex gap-3.5 items-start">
-                <div className="w-[72px] h-[72px] rounded-xl bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center text-primary-foreground text-2xl font-bold shrink-0">
-                  {technician.initials}
-                </div>
-                <div>
-                  <p className="text-base font-bold text-foreground">{technician.name}</p>
-                  <div className="flex items-center gap-1 text-sm text-muted-foreground mb-2">
-                    <Star className="h-3.5 w-3.5 fill-cta-yellow text-cta-yellow" />
-                    <span>{technician.rating}</span>
+          {/* Technician — 4 cols */}
+          <div className="md:col-span-4 bg-card rounded-2xl border border-border p-6 shadow-sm flex flex-col">
+            {technician.isAssigned ? (
+              <>
+                <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-4">Your Technician</p>
+                <div className="flex flex-col items-center text-center gap-3">
+                  <div className="w-[72px] h-[72px] rounded-xl bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center text-primary-foreground text-2xl font-bold shrink-0">
+                    {technician.initials}
                   </div>
-                  <p className="text-[13px] text-muted-foreground leading-relaxed">
-                    Assigned pool care specialist for this visit.
-                  </p>
+                  <div>
+                    <p className="text-base font-bold text-foreground">{technician.name}</p>
+                    <div className="flex items-center justify-center gap-1 text-sm text-muted-foreground mb-2">
+                      <Star className="h-3.5 w-3.5 fill-cta-yellow text-cta-yellow" />
+                      <span>{technician.rating}</span>
+                    </div>
+                    <p className="text-[13px] text-muted-foreground leading-relaxed">
+                      Assigned pool care specialist for this visit.
+                    </p>
+                  </div>
                 </div>
-              </div>
-            </>
-          ) : (
-            <>
-              <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-4">Pool Technician</p>
-              <div className="flex gap-3.5 items-start">
-                <div className="w-[72px] h-[72px] rounded-xl bg-muted flex items-center justify-center shrink-0">
-                  <Droplets className="h-8 w-8 text-muted-foreground" />
+              </>
+            ) : (
+              <>
+                <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-4">Pool Technician</p>
+                <div className="flex flex-col items-center text-center gap-3">
+                  <div className="w-[72px] h-[72px] rounded-xl bg-muted flex items-center justify-center shrink-0">
+                    <Droplets className="h-8 w-8 text-muted-foreground" />
+                  </div>
+                  <div>
+                    <p className="text-base font-bold text-foreground mb-1">Assignment Pending</p>
+                    <p className="text-[13px] text-muted-foreground leading-relaxed">
+                      A licensed pool specialist will be assigned before your service.
+                    </p>
+                    <p className="text-[13px] text-muted-foreground leading-relaxed mt-1">
+                      You'll be notified once confirmed.
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <p className="text-base font-bold text-foreground mb-1">Assignment Pending</p>
-                  <p className="text-[13px] text-muted-foreground leading-relaxed">
-                    A licensed pool specialist will be assigned before your service.
-                  </p>
-                  <p className="text-[13px] text-muted-foreground leading-relaxed mt-1">
-                    You'll be notified once your technician is confirmed.
-                  </p>
-                </div>
-              </div>
-            </>
-          )}
+              </>
+            )}
+          </div>
         </div>
 
         {/* 4. Your Pool */}

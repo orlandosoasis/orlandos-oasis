@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Waves, ArrowLeft, Clock, Calendar, MapPin, Star, Key, Droplets, Camera, FileText, FlaskConical, RefreshCw, CreditCard } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -26,6 +27,27 @@ const SERVICE_INCLUDES: Record<number, string[]> = {
   3: ["Skim", "Vacuum", "Brush", "Chemicals & filter rinse"],
   4: ["Deep clean", "Tile scrub", "Full chemical balance"],
   6: ["Complete restoration", "Deep vacuum", "Tile scrub", "Full chemical balance", "Filter deep clean"],
+};
+
+const CleaningNotes = ({ notes }: { notes: string }) => {
+  const [expanded, setExpanded] = useState(false);
+
+  return (
+    <div className="mt-4">
+      <p className="text-[15px] font-bold text-foreground mb-1.5">Cleaning Notes</p>
+      <p
+        className={`text-[13.5px] text-muted-foreground leading-relaxed ${!expanded ? "line-clamp-3" : ""}`}
+      >
+        {notes}
+      </p>
+      <button
+        onClick={() => setExpanded(!expanded)}
+        className="text-primary text-[13px] font-semibold hover:underline mt-1"
+      >
+        {expanded ? "Show less" : "Read more"}
+      </button>
+    </div>
+  );
 };
 
 const ServiceDetails = () => {
@@ -121,6 +143,11 @@ const ServiceDetails = () => {
                   ))}
                 </div>
               </div>
+            )}
+
+            {/* Cleaning Notes */}
+            {booking.specialNotes && (
+              <CleaningNotes notes={booking.specialNotes} />
             )}
           </div>
 

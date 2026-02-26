@@ -583,41 +583,98 @@ const BookingFlow = ({ onClose, onComplete }: BookingFlowProps) => {
             </div>
 
             {/* Payment methods */}
-            <div className="flex flex-col gap-2.5">
-              {([
-                { value: "google_pay" as const, label: "Google Pay", sub: "Fast & secure checkout", logo: (
-                  <svg viewBox="0 0 24 24" className="h-6 w-auto" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M12.24 10.285V14.4h6.806c-.275 1.765-2.056 5.174-6.806 5.174-4.095 0-7.439-3.389-7.439-7.574s3.345-7.574 7.439-7.574c2.33 0 3.891.989 4.785 1.849l3.254-3.138C18.189 1.186 15.479 0 12.24 0c-6.635 0-12 5.365-12 12s5.365 12 12 12c6.926 0 11.52-4.869 11.52-11.726 0-.788-.085-1.39-.189-1.989H12.24z" fill="#4285F4"/>
-                  </svg>
-                )},
-                { value: "card" as const, label: "Credit / Debit Card", sub: "Visa, Mastercard, Amex", logo: (
-                  <CreditCard className="h-5 w-5 text-muted-foreground" />
-                )},
-                { value: "paypal" as const, label: "PayPal", sub: "Pay with your PayPal account", logo: (
-                  <svg viewBox="0 0 24 24" className="h-6 w-auto" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M7.076 21.337H2.47a.641.641 0 0 1-.633-.74L4.944.901C5.026.382 5.474 0 5.998 0h7.46c2.57 0 4.578.543 5.69 1.81 1.01 1.15 1.304 2.42 1.012 4.287-.023.143-.047.288-.077.437-.983 5.05-4.349 6.797-8.647 6.797h-2.19c-.524 0-.968.382-1.05.9l-1.12 7.106zm14.146-14.42a3.35 3.35 0 0 0-.607-.541c-.013.076-.026.175-.041.254-.93 4.778-4.005 7.201-9.138 7.201h-2.19a.563.563 0 0 0-.556.479l-1.187 7.527h-.506l-.24 1.516a.56.56 0 0 0 .554.647h3.882c.46 0 .85-.334.922-.788.06-.26.76-4.852.816-5.09a.932.932 0 0 1 .923-.788h.58c3.76 0 6.705-1.528 7.565-5.946.36-1.847.174-3.388-.777-4.471z" fill="#003087"/>
-                  </svg>
-                )},
-              ]).map(opt => {
-                const isSelected = paymentMethod === opt.value;
-                return (
-                  <button key={opt.value} type="button" onClick={() => setPaymentMethod(opt.value)}
-                    className={`flex items-center gap-3.5 rounded-xl border-2 p-4 transition-all text-left select-none ${
-                      isSelected ? "border-primary bg-primary/[0.06]" : "border-border hover:border-primary/40 hover:bg-primary/5"
-                    }`}>
+            <div className="space-y-4">
+              {/* Google Pay — prominent top button */}
+              <button
+                type="button"
+                onClick={() => setPaymentMethod("google_pay")}
+                className={`w-full flex items-center justify-center gap-2.5 rounded-xl h-14 text-[17px] font-bold transition-all select-none ${
+                  paymentMethod === "google_pay"
+                    ? "bg-foreground text-background ring-2 ring-primary ring-offset-2"
+                    : "bg-foreground text-background hover:opacity-90"
+                }`}
+              >
+                <svg viewBox="0 0 24 24" className="h-5 w-auto" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M12.24 10.285V14.4h6.806c-.275 1.765-2.056 5.174-6.806 5.174-4.095 0-7.439-3.389-7.439-7.574s3.345-7.574 7.439-7.574c2.33 0 3.891.989 4.785 1.849l3.254-3.138C18.189 1.186 15.479 0 12.24 0c-6.635 0-12 5.365-12 12s5.365 12 12 12c6.926 0 11.52-4.869 11.52-11.726 0-.788-.085-1.39-.189-1.989H12.24z" fill="#4285F4"/>
+                </svg>
+                Pay
+              </button>
+
+              {/* Divider */}
+              <div className="flex items-center gap-3">
+                <div className="flex-1 h-px bg-border" />
+                <span className="text-xs text-muted-foreground">Or pay with</span>
+                <div className="flex-1 h-px bg-border" />
+              </div>
+
+              {/* Card & PayPal options */}
+              <div className="bg-card rounded-2xl border border-border overflow-hidden shadow-sm">
+                {/* Credit / Debit Card */}
+                <button
+                  type="button"
+                  onClick={() => setPaymentMethod("card")}
+                  className={`w-full flex items-center gap-3.5 p-4 transition-all text-left select-none ${
+                    paymentMethod === "card" ? "bg-primary/[0.04]" : "hover:bg-muted/40"
+                  }`}
+                >
+                  <div className={`w-[22px] h-[22px] rounded-full border-2 flex items-center justify-center shrink-0 transition-all ${
+                    paymentMethod === "card" ? "bg-primary border-primary text-primary-foreground" : "border-border text-transparent"
+                  }`}>
+                    <Check className="h-3 w-3" />
+                  </div>
+                  <span className="text-sm font-medium text-foreground flex-1">Use credit or debit card</span>
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-xs font-bold tracking-wide text-[#1a1f71]">VISA</span>
+                    <span className="w-6 h-4 rounded-[3px] bg-gradient-to-br from-[#f79e1b] to-[#ea001b]" />
+                    <span className="text-xs font-bold tracking-wide text-muted-foreground">AMEX</span>
+                  </div>
+                </button>
+
+                <div className="h-px bg-border mx-4" />
+
+                {/* PayPal */}
+                <div>
+                  <button
+                    type="button"
+                    onClick={() => setPaymentMethod("paypal")}
+                    className={`w-full flex items-center gap-3.5 p-4 transition-all text-left select-none ${
+                      paymentMethod === "paypal" ? "bg-primary/[0.04]" : "hover:bg-muted/40"
+                    }`}
+                  >
                     <div className={`w-[22px] h-[22px] rounded-full border-2 flex items-center justify-center shrink-0 transition-all ${
-                      isSelected ? "bg-primary border-primary text-primary-foreground" : "border-border text-transparent"
+                      paymentMethod === "paypal" ? "bg-primary border-primary text-primary-foreground" : "border-border text-transparent"
                     }`}>
                       <Check className="h-3 w-3" />
                     </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-semibold text-foreground">{opt.label}</p>
-                      <p className="text-xs text-muted-foreground">{opt.sub}</p>
-                    </div>
-                    {opt.logo}
+                    <span className="text-sm font-medium text-foreground flex-1">Use PayPal account</span>
+                    <span className="text-sm font-bold">
+                      <span className="text-[#003087]">Pay</span><span className="text-[#009cde]">Pal</span>
+                    </span>
                   </button>
-                );
-              })}
+
+                  {/* PayPal yellow button — shown when selected */}
+                  {paymentMethod === "paypal" && (
+                    <div className="px-4 pb-4 animate-fade-in">
+                      <button
+                        type="button"
+                        onClick={handlePayment}
+                        disabled={isProcessing}
+                        className="w-full h-12 rounded-xl bg-[#ffc439] hover:bg-[#f0b72d] text-[#003087] font-bold text-base transition-colors flex items-center justify-center gap-1 disabled:opacity-60"
+                      >
+                        {isProcessing ? (
+                          <span className="flex items-center gap-2">
+                            <Loader2 className="h-5 w-5 animate-spin" /> Processing…
+                          </span>
+                        ) : (
+                          <span className="text-base font-bold">
+                            <span className="text-[#003087]">Pay</span><span className="text-[#009cde]">Pal</span>
+                          </span>
+                        )}
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </div>
             </div>
 
             <div className="flex items-center gap-2 text-xs text-muted-foreground px-1">
@@ -641,26 +698,18 @@ const BookingFlow = ({ onClose, onComplete }: BookingFlowProps) => {
             <Button onClick={() => setStep(step + 1)} disabled={!canProceed()} className="w-full h-12 text-[15px] font-bold rounded-xl">
               Continue
             </Button>
-          ) : paymentMethod === "paypal" ? (
-            <Button onClick={handlePayment} disabled={!canProceed() || isProcessing} className="w-full h-14 text-[17px] font-bold rounded-2xl shadow-lg bg-[#0070ba] hover:bg-[#005ea6] text-white">
-              {isProcessing ? (
-                <span className="flex items-center gap-2">
-                  <Loader2 className="h-5 w-5 animate-spin" /> Processing…
-                </span>
-              ) : (
-                <span className="flex items-center gap-2">
-                  Pay with
-                  <svg viewBox="0 0 24 24" className="h-5 w-auto" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M7.076 21.337H2.47a.641.641 0 0 1-.633-.74L4.944.901C5.026.382 5.474 0 5.998 0h7.46c2.57 0 4.578.543 5.69 1.81 1.01 1.15 1.304 2.42 1.012 4.287-.023.143-.047.288-.077.437-.983 5.05-4.349 6.797-8.647 6.797h-2.19c-.524 0-.968.382-1.05.9l-1.12 7.106zm14.146-14.42a3.35 3.35 0 0 0-.607-.541c-.013.076-.026.175-.041.254-.93 4.778-4.005 7.201-9.138 7.201h-2.19a.563.563 0 0 0-.556.479l-1.187 7.527h-.506l-.24 1.516a.56.56 0 0 0 .554.647h3.882c.46 0 .85-.334.922-.788.06-.26.76-4.852.816-5.09a.932.932 0 0 1 .923-.788h.58c3.76 0 6.705-1.528 7.565-5.946.36-1.847.174-3.388-.777-4.471z" fill="white"/>
-                  </svg>
-                </span>
-              )}
-            </Button>
-          ) : (
+          ) : paymentMethod === "paypal" ? null : (
             <Button onClick={handlePayment} disabled={!canProceed() || isProcessing} className="w-full h-14 text-[17px] font-bold rounded-2xl shadow-lg">
               {isProcessing ? (
                 <span className="flex items-center gap-2">
                   <Loader2 className="h-5 w-5 animate-spin" /> Processing…
+                </span>
+              ) : paymentMethod === "google_pay" ? (
+                <span className="flex items-center gap-2">
+                  <svg viewBox="0 0 24 24" className="h-5 w-auto" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12.24 10.285V14.4h6.806c-.275 1.765-2.056 5.174-6.806 5.174-4.095 0-7.439-3.389-7.439-7.574s3.345-7.574 7.439-7.574c2.33 0 3.891.989 4.785 1.849l3.254-3.138C18.189 1.186 15.479 0 12.24 0c-6.635 0-12 5.365-12 12s5.365 12 12 12c6.926 0 11.52-4.869 11.52-11.726 0-.788-.085-1.39-.189-1.989H12.24z" fill="currentColor"/>
+                  </svg>
+                  Pay
                 </span>
               ) : frequency === "once" ? (
                 `Pay $${totalPrice}`

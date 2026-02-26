@@ -215,14 +215,13 @@ const ServiceDetails = () => {
               </div>
             )}
           </div>
+          {booking.specialNotes && (
+            <>
+              <div className="border-t border-border my-4" />
+              <CleaningNotes notes={booking.specialNotes} />
+            </>
+          )}
         </div>
-
-        {/* Cleaning Notes */}
-        {booking.specialNotes && (
-          <div className="bg-card rounded-2xl border border-border p-6 shadow-sm">
-            <CleaningNotes notes={booking.specialNotes} />
-          </div>
-        )}
 
         {/* 5. Recurring Schedule (monthly only) */}
         {isMonthly && (

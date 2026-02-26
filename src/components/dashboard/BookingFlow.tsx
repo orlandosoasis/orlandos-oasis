@@ -63,7 +63,7 @@ const BookingFlow = ({ onClose, onComplete }: BookingFlowProps) => {
   const [specialNotes, setSpecialNotes] = useState("");
   type PaymentMethod = "google_pay" | "card" | "paypal";
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod | null>(null);
-  const [savePayment, setSavePayment] = useState(false);
+  
   const [isProcessing, setIsProcessing] = useState(false);
   const [paymentSuccess, setPaymentSuccess] = useState(false);
 
@@ -491,20 +491,75 @@ const BookingFlow = ({ onClose, onComplete }: BookingFlowProps) => {
           </div>
         )}
 
-        {/* ── Step 3: Notes + Payment ── */}
+        {/* ── Step 3: Payment ── */}
         {step === 3 && (
           <div className="space-y-5 animate-fade-in">
             <div>
-              <h2 className="text-lg font-semibold text-foreground mb-1">Payment</h2>
-              <p className="text-sm text-muted-foreground">Review your order and complete your booking.</p>
+              <h2 className="text-lg font-semibold text-foreground mb-1">Review & Pay</h2>
+              <p className="text-sm text-muted-foreground">Confirm your details and complete your booking.</p>
             </div>
 
-            {/* Order summary */}
+            {/* Service Details */}
             <div className="bg-card rounded-2xl border border-border p-5 shadow-sm">
-              <p className="text-[11px] font-semibold tracking-[0.8px] uppercase text-muted-foreground mb-3">ORDER SUMMARY</p>
+              <p className="text-[11px] font-semibold tracking-[0.8px] uppercase text-muted-foreground mb-3">SERVICE DETAILS</p>
               <div className="space-y-2 text-sm">
                 <div className="flex justify-between">
-                  <span className="text-muted-foreground">{selectedPass.label}</span>
+                  <span className="text-muted-foreground">Service</span>
+                  <span className="font-medium text-foreground">{selectedPass.label}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Frequency</span>
+                  <span className="font-medium text-foreground">{frequency === "monthly" ? "Monthly" : "One-time"}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">{frequency === "once" ? "Date" : "Start date"}</span>
+                  <span className="font-medium text-foreground">{FULL_DAYS[selectedDate.getDay()]}, {MONTHS[selectedDate.getMonth()].slice(0, 3)} {selectedDate.getDate()}, {selectedDate.getFullYear()}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Arrival window</span>
+                  <span className="font-medium text-foreground">{TIME_LABELS[timeWindow]}</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Pool Details */}
+            <div className="bg-card rounded-2xl border border-border p-5 shadow-sm">
+              <p className="text-[11px] font-semibold tracking-[0.8px] uppercase text-muted-foreground mb-3">POOL DETAILS</p>
+              <div className="space-y-2 text-sm">
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Address</span>
+                  <span className="font-medium text-foreground text-right max-w-[60%]">{[address, city, state, zip].filter(Boolean).join(", ")}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Pool type</span>
+                  <span className="font-medium text-foreground">{poolType}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Pool size</span>
+                  <span className="font-medium text-foreground">{poolSize}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Access</span>
+                  <span className="font-medium text-foreground">
+                    {accessMethod === "home" ? "Owner will be home" : accessMethod === "gate" ? "Gate code" : accessMethod === "key" ? "Key on property" : "Custom instructions"}
+                  </span>
+                </div>
+              </div>
+              {specialNotes && (
+                <>
+                  <div className="border-t border-border my-3" />
+                  <p className="text-[11px] font-semibold tracking-[0.8px] uppercase text-muted-foreground mb-1.5">CLEANING NOTES</p>
+                  <p className="text-[13px] text-muted-foreground leading-relaxed line-clamp-3">{specialNotes}</p>
+                </>
+              )}
+            </div>
+
+            {/* Pricing Breakdown */}
+            <div className="bg-card rounded-2xl border border-border p-5 shadow-sm">
+              <p className="text-[11px] font-semibold tracking-[0.8px] uppercase text-muted-foreground mb-3">PRICING</p>
+              <div className="space-y-2 text-sm">
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Base service</span>
                   <span className="font-medium text-foreground">${totalPrice}{frequency === "monthly" ? "/mo" : ""}</span>
                 </div>
                 <div className="border-t border-border pt-2 flex justify-between">
@@ -555,14 +610,6 @@ const BookingFlow = ({ onClose, onComplete }: BookingFlowProps) => {
                 );
               })}
             </div>
-
-            <label className="flex items-center gap-3 rounded-xl border border-border p-4 cursor-pointer hover:bg-muted/30 transition-colors">
-              <Checkbox checked={savePayment} onCheckedChange={(v) => setSavePayment(v === true)} />
-              <div>
-                <p className="text-sm font-medium text-foreground">Save this payment method</p>
-                <p className="text-xs text-muted-foreground">For faster checkout on future bookings</p>
-              </div>
-            </label>
 
             <div className="flex items-center gap-2 text-xs text-muted-foreground px-1">
               <Shield className="h-3.5 w-3.5 shrink-0" />

@@ -66,7 +66,7 @@ const Step6Confirmation = ({ selectedPass, scheduleData }: Step6Props) => {
 
   const handleDashboardClick = () => {
     const technician = matchTechnician();
-    setBooking({ selectedPass, scheduleData, technician });
+    setBooking({ frequency: "once", selectedPass, scheduleData, technician });
     navigate("/dashboard");
   };
 

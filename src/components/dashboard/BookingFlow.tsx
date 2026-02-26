@@ -585,9 +585,19 @@ const BookingFlow = ({ onClose, onComplete }: BookingFlowProps) => {
             {/* Payment methods */}
             <div className="flex flex-col gap-2.5">
               {([
-                { value: "google_pay" as const, icon: "🅖", label: "Google Pay", sub: "Fast & secure checkout" },
-                { value: "card" as const, icon: "💳", label: "Credit / Debit Card", sub: "Visa, Mastercard, Amex" },
-                { value: "paypal" as const, icon: "🅿️", label: "PayPal", sub: "Pay with your PayPal account" },
+                { value: "google_pay" as const, label: "Google Pay", sub: "Fast & secure checkout", logo: (
+                  <svg viewBox="0 0 24 24" className="h-6 w-auto" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12.24 10.285V14.4h6.806c-.275 1.765-2.056 5.174-6.806 5.174-4.095 0-7.439-3.389-7.439-7.574s3.345-7.574 7.439-7.574c2.33 0 3.891.989 4.785 1.849l3.254-3.138C18.189 1.186 15.479 0 12.24 0c-6.635 0-12 5.365-12 12s5.365 12 12 12c6.926 0 11.52-4.869 11.52-11.726 0-.788-.085-1.39-.189-1.989H12.24z" fill="#4285F4"/>
+                  </svg>
+                )},
+                { value: "card" as const, label: "Credit / Debit Card", sub: "Visa, Mastercard, Amex", logo: (
+                  <CreditCard className="h-5 w-5 text-muted-foreground" />
+                )},
+                { value: "paypal" as const, label: "PayPal", sub: "Pay with your PayPal account", logo: (
+                  <svg viewBox="0 0 24 24" className="h-6 w-auto" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M7.076 21.337H2.47a.641.641 0 0 1-.633-.74L4.944.901C5.026.382 5.474 0 5.998 0h7.46c2.57 0 4.578.543 5.69 1.81 1.01 1.15 1.304 2.42 1.012 4.287-.023.143-.047.288-.077.437-.983 5.05-4.349 6.797-8.647 6.797h-2.19c-.524 0-.968.382-1.05.9l-1.12 7.106zm14.146-14.42a3.35 3.35 0 0 0-.607-.541c-.013.076-.026.175-.041.254-.93 4.778-4.005 7.201-9.138 7.201h-2.19a.563.563 0 0 0-.556.479l-1.187 7.527h-.506l-.24 1.516a.56.56 0 0 0 .554.647h3.882c.46 0 .85-.334.922-.788.06-.26.76-4.852.816-5.09a.932.932 0 0 1 .923-.788h.58c3.76 0 6.705-1.528 7.565-5.946.36-1.847.174-3.388-.777-4.471z" fill="#003087"/>
+                  </svg>
+                )},
               ]).map(opt => {
                 const isSelected = paymentMethod === opt.value;
                 return (
@@ -604,7 +614,7 @@ const BookingFlow = ({ onClose, onComplete }: BookingFlowProps) => {
                       <p className="text-sm font-semibold text-foreground">{opt.label}</p>
                       <p className="text-xs text-muted-foreground">{opt.sub}</p>
                     </div>
-                    <span className="text-xl">{opt.icon}</span>
+                    {opt.logo}
                   </button>
                 );
               })}
@@ -630,6 +640,21 @@ const BookingFlow = ({ onClose, onComplete }: BookingFlowProps) => {
           {step < 3 ? (
             <Button onClick={() => setStep(step + 1)} disabled={!canProceed()} className="w-full h-12 text-[15px] font-bold rounded-xl">
               Continue
+            </Button>
+          ) : paymentMethod === "paypal" ? (
+            <Button onClick={handlePayment} disabled={!canProceed() || isProcessing} className="w-full h-14 text-[17px] font-bold rounded-2xl shadow-lg bg-[#0070ba] hover:bg-[#005ea6] text-white">
+              {isProcessing ? (
+                <span className="flex items-center gap-2">
+                  <Loader2 className="h-5 w-5 animate-spin" /> Processing…
+                </span>
+              ) : (
+                <span className="flex items-center gap-2">
+                  Pay with
+                  <svg viewBox="0 0 24 24" className="h-5 w-auto" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M7.076 21.337H2.47a.641.641 0 0 1-.633-.74L4.944.901C5.026.382 5.474 0 5.998 0h7.46c2.57 0 4.578.543 5.69 1.81 1.01 1.15 1.304 2.42 1.012 4.287-.023.143-.047.288-.077.437-.983 5.05-4.349 6.797-8.647 6.797h-2.19c-.524 0-.968.382-1.05.9l-1.12 7.106zm14.146-14.42a3.35 3.35 0 0 0-.607-.541c-.013.076-.026.175-.041.254-.93 4.778-4.005 7.201-9.138 7.201h-2.19a.563.563 0 0 0-.556.479l-1.187 7.527h-.506l-.24 1.516a.56.56 0 0 0 .554.647h3.882c.46 0 .85-.334.922-.788.06-.26.76-4.852.816-5.09a.932.932 0 0 1 .923-.788h.58c3.76 0 6.705-1.528 7.565-5.946.36-1.847.174-3.388-.777-4.471z" fill="white"/>
+                  </svg>
+                </span>
+              )}
             </Button>
           ) : (
             <Button onClick={handlePayment} disabled={!canProceed() || isProcessing} className="w-full h-14 text-[17px] font-bold rounded-2xl shadow-lg">

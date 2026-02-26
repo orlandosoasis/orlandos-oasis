@@ -72,7 +72,7 @@ const Dashboard = () => {
           ) : (
             <div className="bg-card rounded-2xl border border-border p-8 text-center">
               <p className="text-muted-foreground">No upcoming services yet.</p>
-              <Button className="mt-4" onClick={() => setShowBooking(true)}>Book Your First Service</Button>
+              <button className="mt-4 text-primary font-bold text-sm hover:underline" onClick={() => setShowBooking(true)}>Book Your First Service</button>
             </div>
           )}
         </section>

@@ -79,11 +79,11 @@ const ServiceDetails = () => {
         <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
         <div className="absolute bottom-0 left-0 right-0 p-6 max-w-[760px] mx-auto">
           <h1 className="text-xl font-bold text-white">{selectedPass.hours}-Hour Pool Service</h1>
+          <p className="text-sm font-semibold text-white/90 mt-1">{formattedDate}</p>
+          <p className="text-sm text-white/80">Expected arrival {TIME_LABELS[scheduleData.timeWindow]}</p>
           {isMonthly && (
             <Badge className="bg-primary/90 text-primary-foreground text-[10px] px-2 py-0.5 mt-1">Monthly Plan</Badge>
           )}
-          <p className="text-sm font-semibold text-white/90 mt-1">{formattedDate}</p>
-          <p className="text-sm text-white/80">Expected arrival {TIME_LABELS[scheduleData.timeWindow]}</p>
         </div>
       </div>
 
@@ -108,17 +108,6 @@ const ServiceDetails = () => {
             </div>
           </div>
 
-          {/* Service Includes */}
-          <div className="mt-5">
-            <p className="text-[15px] font-bold text-foreground mb-2">Service Includes</p>
-            <div className="flex flex-wrap gap-1.5">
-              {serviceIncludes.map((item) => (
-                <span key={item} className="bg-primary/10 text-primary text-xs font-medium px-2.5 py-1 rounded-full">
-                  {item}
-                </span>
-              ))}
-            </div>
-          </div>
 
           {scheduleData.addons.length > 0 && (
             <div className="mt-4">
@@ -285,10 +274,6 @@ const ServiceDetails = () => {
             <div className="flex items-center gap-3 text-sm text-foreground">
               <FileText className="h-4 w-4 text-muted-foreground shrink-0" />
               <span>Service notes included</span>
-            </div>
-            <div className="flex items-center gap-3 text-sm text-foreground">
-              <FlaskConical className="h-4 w-4 text-muted-foreground shrink-0" />
-              <span>Chemical readings recorded</span>
             </div>
           </div>
         </div>

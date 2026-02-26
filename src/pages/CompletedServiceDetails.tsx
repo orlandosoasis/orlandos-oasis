@@ -6,6 +6,8 @@ import { Badge } from "@/components/ui/badge";
 import { useBooking } from "@/contexts/BookingContext";
 import PoolSceneHero from "@/components/dashboard/PoolSceneHero";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import poolBeforeImg from "@/assets/pool-before.png";
+import poolAfterImg from "@/assets/pool-after.png";
 
 const FULL_DAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 const SHORT_MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -166,19 +168,15 @@ const CompletedServiceDetails = () => {
             {photosExpanded && (
               <div className="grid grid-cols-2 gap-3 mb-4">
                 <button onClick={() => setLightbox("before")} className="rounded-xl overflow-hidden border border-border cursor-pointer hover:ring-2 hover:ring-primary/30 transition-all">
-                  <div className="bg-muted h-[140px] flex items-center justify-center">
-                    <div className="text-center">
-                      <Camera className="h-6 w-6 text-muted-foreground mx-auto mb-1" />
-                      <p className="text-xs text-muted-foreground font-medium">Before</p>
-                    </div>
+                  <div className="relative h-[140px]">
+                    <img src={poolBeforeImg} alt="Pool before cleaning" className="w-full h-full object-cover" />
+                    <span className="absolute bottom-2 left-2 bg-black/60 text-white text-[10px] font-semibold px-2 py-0.5 rounded-md">Before</span>
                   </div>
                 </button>
                 <button onClick={() => setLightbox("after")} className="rounded-xl overflow-hidden border border-border cursor-pointer hover:ring-2 hover:ring-primary/30 transition-all">
-                  <div className="bg-primary/5 h-[140px] flex items-center justify-center">
-                    <div className="text-center">
-                      <Camera className="h-6 w-6 text-primary mx-auto mb-1" />
-                      <p className="text-xs text-primary font-medium">After</p>
-                    </div>
+                  <div className="relative h-[140px]">
+                    <img src={poolAfterImg} alt="Pool after cleaning" className="w-full h-full object-cover" />
+                    <span className="absolute bottom-2 left-2 bg-black/60 text-white text-[10px] font-semibold px-2 py-0.5 rounded-md">After</span>
                   </div>
                 </button>
               </div>
@@ -272,12 +270,11 @@ const PhotoLightbox = ({ type, open, onClose }: { type: "before" | "after"; open
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="max-w-md p-0 overflow-hidden rounded-2xl">
         <DialogTitle className="sr-only">{meta.label} Photo</DialogTitle>
-        <div className={`${type === "before" ? "bg-muted" : "bg-primary/5"} h-[300px] flex items-center justify-center`}>
-          <div className="text-center">
-            <Camera className={`h-10 w-10 ${type === "before" ? "text-muted-foreground" : "text-primary"} mx-auto mb-2`} />
-            <p className={`text-sm font-semibold ${type === "before" ? "text-muted-foreground" : "text-primary"}`}>{meta.label}</p>
-          </div>
-        </div>
+        <img
+          src={type === "before" ? poolBeforeImg : poolAfterImg}
+          alt={`Pool ${meta.label.toLowerCase()} cleaning`}
+          className="w-full max-h-[400px] object-cover"
+        />
         <div className="px-5 py-3 pb-5">
           <p className="text-sm font-semibold text-foreground">{meta.label}</p>
           <p className="text-xs text-muted-foreground mt-0.5">Taken on {meta.date} at {meta.time}</p>

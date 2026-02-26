@@ -94,7 +94,7 @@ const Dashboard = () => {
           <div className="flex flex-col gap-3 mt-5">
             <Button
               variant="outline"
-              className="w-full rounded-xl h-12 font-semibold"
+              className="w-full rounded-xl h-12 font-semibold hover:text-primary hover:border-primary"
               onClick={() => setShowCancelled(!showCancelled)}
             >
               {showCancelled ? "Hide cancelled appointments" : "Show cancelled appointments"}

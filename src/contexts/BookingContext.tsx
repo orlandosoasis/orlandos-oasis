@@ -1,5 +1,10 @@
 import React, { createContext, useContext, useState, ReactNode } from "react";
 
+export type CleaningFrequency = "once" | "monthly";
+export type Recurrence = "weekly" | "biweekly";
+export type TimeWindow = "morning" | "afternoon" | "evening";
+export type AccessMethod = "home" | "gate" | "key" | "other";
+
 export interface PassOption {
   id: string;
   hours: number;
@@ -11,18 +16,33 @@ export interface PassOption {
   isMostPopular: boolean;
 }
 
-export interface AddonItem {
+export interface MonthlyPlan {
   id: string;
-  name: string;
-  price: number;
+  label: string;
+  description: string;
+  monthlyPrice: number;
+  isMostPopular: boolean;
+}
+
+export interface PoolProfile {
+  id: string;
+  label: string;
+  address: string;
+  city: string;
+  state: string;
+  zip: string;
+  poolType: string;
+  poolSize: string;
+  accessMethod: AccessMethod;
+  accessDetail: string;
 }
 
 export interface ScheduleData {
   selectedDate: Date;
-  timeWindow: "morning" | "afternoon" | "evening";
-  accessMethod: "home" | "gate" | "key" | "other";
+  timeWindow: TimeWindow;
+  accessMethod: AccessMethod;
   accessDetail: string;
-  addons: AddonItem[];
+  addons: { id: string; name: string; price: number }[];
   addonsTotal: number;
 }
 
@@ -34,9 +54,13 @@ export interface TechnicianInfo {
 }
 
 export interface BookingData {
+  frequency: CleaningFrequency;
   selectedPass: PassOption;
+  selectedPlan?: MonthlyPlan;
+  recurrence?: Recurrence;
   scheduleData: ScheduleData;
   technician: TechnicianInfo;
+  specialNotes?: string;
 }
 
 interface BookingContextType {
@@ -56,7 +80,6 @@ const TECH_POOL: TechnicianInfo[] = [
 ];
 
 function matchTechnician(): TechnicianInfo {
-  // Simulate matching based on availability
   const index = Math.floor(Math.random() * TECH_POOL.length);
   return TECH_POOL[index];
 }

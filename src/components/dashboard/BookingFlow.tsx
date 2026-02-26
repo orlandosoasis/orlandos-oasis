@@ -474,6 +474,18 @@ const BookingFlow = ({ onClose, onComplete }: BookingFlowProps) => {
                     </div>
                   )}
                 </div>
+
+                {/* Cleaning Notes */}
+                <div className="mt-5">
+                  <p className="text-[11px] font-semibold tracking-[0.8px] uppercase text-muted-foreground mb-2.5">CLEANING NOTES (OPTIONAL)</p>
+                  <Textarea
+                    placeholder="Anything the technician should know about your pool?"
+                    value={specialNotes}
+                    onChange={e => setSpecialNotes(e.target.value)}
+                    rows={3}
+                    className="rounded-[10px] border-2 border-border bg-muted/30 text-sm resize-y min-h-[72px]"
+                  />
+                </div>
               </div>
             </div>
           </div>
@@ -483,20 +495,8 @@ const BookingFlow = ({ onClose, onComplete }: BookingFlowProps) => {
         {step === 3 && (
           <div className="space-y-5 animate-fade-in">
             <div>
-              <h2 className="text-lg font-semibold text-foreground mb-1">Notes & Payment</h2>
-              <p className="text-sm text-muted-foreground">Add any special instructions and complete your booking.</p>
-            </div>
-
-            {/* Special Notes */}
-            <div className="bg-card rounded-2xl border border-border p-5 shadow-sm">
-              <p className="text-[11px] font-semibold tracking-[0.8px] uppercase text-muted-foreground mb-2.5">SPECIAL NOTES (OPTIONAL)</p>
-              <Textarea
-                placeholder="Anything your technician should know…"
-                value={specialNotes}
-                onChange={e => setSpecialNotes(e.target.value)}
-                rows={3}
-                className="rounded-[10px] border-2 border-border bg-muted/30 text-sm resize-y min-h-[72px]"
-              />
+              <h2 className="text-lg font-semibold text-foreground mb-1">Payment</h2>
+              <p className="text-sm text-muted-foreground">Review your order and complete your booking.</p>
             </div>
 
             {/* Order summary */}

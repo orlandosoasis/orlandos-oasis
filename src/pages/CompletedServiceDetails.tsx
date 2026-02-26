@@ -1,10 +1,11 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Waves, ArrowLeft, Clock, Calendar, Star, Droplets, Camera, FileText, CheckCircle2, ChevronDown, ChevronUp } from "lucide-react";
+import { Waves, ArrowLeft, Clock, Calendar, Star, Droplets, Camera, FileText, CheckCircle2, ChevronDown, ChevronUp, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useBooking } from "@/contexts/BookingContext";
 import PoolSceneHero from "@/components/dashboard/PoolSceneHero";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 
 const FULL_DAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 const SHORT_MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -34,10 +35,18 @@ const CHEMICAL_READINGS = [
   { label: "Cyanuric Acid", value: "40 ppm", status: "good" },
 ];
 
+const TECHNICIAN_NOTES = "Skimmer basket was heavily filled with leaves. Adjusted chlorine slightly due to recent rain. Filter pressure normal. Recommend checking again next visit if weather continues.";
+
+const PHOTO_META = {
+  before: { label: "Before", date: "Feb 21, 2026", time: "10:32 AM" },
+  after: { label: "After", date: "Feb 21, 2026", time: "11:38 AM" },
+};
+
 const CompletedServiceDetails = () => {
   const navigate = useNavigate();
   const { booking } = useBooking();
-  const [photosExpanded, setPhotosExpanded] = useState(false);
+  const [photosExpanded, setPhotosExpanded] = useState(true);
+  const [lightbox, setLightbox] = useState<"before" | "after" | null>(null);
 
   if (!booking) {
     return (
@@ -110,8 +119,8 @@ const CompletedServiceDetails = () => {
                 <span>{isMonthly ? "Monthly plan" : "One-time service"}</span>
               </div>
               <div className="flex items-center gap-2 text-sm text-foreground">
-                <CheckCircle2 className="h-4 w-4 text-green-500" />
-                <span className="text-green-600 font-medium">Completed at 11:42 AM</span>
+                <CheckCircle2 className="h-4 w-4 text-muted-foreground" />
+                <span>Completed at 11:42 AM</span>
               </div>
             </div>
           </div>
@@ -129,9 +138,6 @@ const CompletedServiceDetails = () => {
                   <Star className="h-3.5 w-3.5 fill-cta-yellow text-cta-yellow" />
                   <span>{technician.isAssigned ? technician.rating : 4.9}</span>
                 </div>
-                <p className="text-[13px] text-muted-foreground leading-relaxed">
-                  Completed this service visit.
-                </p>
                 <Button variant="outline" size="sm" className="mt-2 text-xs gap-1.5 rounded-lg">
                   <Star className="h-3 w-3" />
                   Leave a Review
@@ -159,22 +165,22 @@ const CompletedServiceDetails = () => {
             </button>
             {photosExpanded && (
               <div className="grid grid-cols-2 gap-3 mb-4">
-                <div className="rounded-xl overflow-hidden border border-border">
+                <button onClick={() => setLightbox("before")} className="rounded-xl overflow-hidden border border-border cursor-pointer hover:ring-2 hover:ring-primary/30 transition-all">
                   <div className="bg-muted h-[140px] flex items-center justify-center">
                     <div className="text-center">
                       <Camera className="h-6 w-6 text-muted-foreground mx-auto mb-1" />
                       <p className="text-xs text-muted-foreground font-medium">Before</p>
                     </div>
                   </div>
-                </div>
-                <div className="rounded-xl overflow-hidden border border-border">
+                </button>
+                <button onClick={() => setLightbox("after")} className="rounded-xl overflow-hidden border border-border cursor-pointer hover:ring-2 hover:ring-primary/30 transition-all">
                   <div className="bg-primary/5 h-[140px] flex items-center justify-center">
                     <div className="text-center">
                       <Camera className="h-6 w-6 text-primary mx-auto mb-1" />
                       <p className="text-xs text-primary font-medium">After</p>
                     </div>
                   </div>
-                </div>
+                </button>
               </div>
             )}
           </div>
@@ -190,12 +196,28 @@ const CompletedServiceDetails = () => {
             <div className="space-y-2">
               {COMPLETED_CHECKLIST.map((item, i) => (
                 <div key={i} className="flex items-center gap-2.5">
-                  <CheckCircle2 className="h-4 w-4 text-green-500 shrink-0" />
+                  <CheckCircle2 className="h-4 w-4 text-primary shrink-0" />
                   <span className="text-sm text-foreground">{item.task}</span>
                 </div>
               ))}
             </div>
           </div>
+
+          {/* Other Notes */}
+          {TECHNICIAN_NOTES && (
+            <>
+              <div className="border-t border-border my-4" />
+              <div>
+                <div className="flex items-center gap-2 mb-3">
+                  <FileText className="h-4 w-4 text-muted-foreground" />
+                  <span className="text-sm font-semibold text-foreground">Other Notes</span>
+                </div>
+                <div className="bg-muted/50 rounded-xl px-4 py-3">
+                  <p className="text-sm text-muted-foreground leading-relaxed">{TECHNICIAN_NOTES}</p>
+                </div>
+              </div>
+            </>
+          )}
 
           <div className="border-t border-border my-4" />
 
@@ -235,7 +257,33 @@ const CompletedServiceDetails = () => {
           <p className="mt-3">© Orlando's Oasis 2015 – 2026</p>
         </footer>
       </main>
+
+      {lightbox && (
+        <PhotoLightbox type={lightbox} open={!!lightbox} onClose={() => setLightbox(null)} />
+      )}
     </div>
+  );
+};
+
+/* Photo Lightbox Modal */
+const PhotoLightbox = ({ type, open, onClose }: { type: "before" | "after"; open: boolean; onClose: () => void }) => {
+  const meta = PHOTO_META[type];
+  return (
+    <Dialog open={open} onOpenChange={onClose}>
+      <DialogContent className="max-w-md p-0 overflow-hidden rounded-2xl">
+        <DialogTitle className="sr-only">{meta.label} Photo</DialogTitle>
+        <div className={`${type === "before" ? "bg-muted" : "bg-primary/5"} h-[300px] flex items-center justify-center`}>
+          <div className="text-center">
+            <Camera className={`h-10 w-10 ${type === "before" ? "text-muted-foreground" : "text-primary"} mx-auto mb-2`} />
+            <p className={`text-sm font-semibold ${type === "before" ? "text-muted-foreground" : "text-primary"}`}>{meta.label}</p>
+          </div>
+        </div>
+        <div className="px-5 py-3 pb-5">
+          <p className="text-sm font-semibold text-foreground">{meta.label}</p>
+          <p className="text-xs text-muted-foreground mt-0.5">Taken on {meta.date} at {meta.time}</p>
+        </div>
+      </DialogContent>
+    </Dialog>
   );
 };
 

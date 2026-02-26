@@ -53,6 +53,17 @@ export interface TechnicianInfo {
   isAssigned: boolean;
 }
 
+export interface PoolData {
+  address: string;
+  city: string;
+  state: string;
+  zip: string;
+  poolType: string;
+  poolSize: string;
+  accessMethod: AccessMethod;
+  accessDetail: string;
+}
+
 export interface BookingData {
   frequency: CleaningFrequency;
   selectedPass: PassOption;
@@ -61,6 +72,7 @@ export interface BookingData {
   scheduleData: ScheduleData;
   technician: TechnicianInfo;
   specialNotes?: string;
+  pool: PoolData;
 }
 
 interface BookingContextType {

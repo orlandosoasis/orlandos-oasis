@@ -1,6 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
-import { Waves, ArrowLeft, Clock, Calendar, MapPin, Star, Droplets, Key, ShoppingBag, CreditCard } from "lucide-react";
+import { Waves, ArrowLeft, Clock, Calendar, MapPin, Star, Key, Droplets, Camera, FileText, FlaskConical, RefreshCw, CreditCard } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { useBooking } from "@/contexts/BookingContext";
 import PoolSceneHero from "@/components/dashboard/PoolSceneHero";
 
@@ -20,6 +21,13 @@ const ACCESS_LABELS: Record<string, string> = {
   other: "Custom instructions provided",
 };
 
+const SERVICE_INCLUDES: Record<number, string[]> = {
+  2: ["Skim", "Brush", "Chemical check"],
+  3: ["Skim", "Vacuum", "Brush", "Chemicals & filter rinse"],
+  4: ["Deep clean", "Tile scrub", "Full chemical balance"],
+  6: ["Complete restoration", "Deep vacuum", "Tile scrub", "Full chemical balance", "Filter deep clean"],
+};
+
 const ServiceDetails = () => {
   const navigate = useNavigate();
   const { booking } = useBooking();
@@ -33,10 +41,20 @@ const ServiceDetails = () => {
     );
   }
 
-  const { selectedPass, scheduleData, technician } = booking;
+  const { selectedPass, scheduleData, technician, frequency, pool } = booking;
   const d = scheduleData.selectedDate;
   const formattedDate = `${FULL_DAYS[d.getDay()]}, ${SHORT_MONTHS[d.getMonth()]} ${d.getDate()}`;
+  const isMonthly = frequency === "monthly";
   const totalPaid = selectedPass.discountPrice + scheduleData.addonsTotal;
+
+  const getNextServiceDate = () => {
+    const next = new Date(d);
+    next.setMonth(next.getMonth() + 1);
+    return `${FULL_DAYS[next.getDay()]}, ${SHORT_MONTHS[next.getMonth()]} ${next.getDate()}, ${next.getFullYear()}`;
+  };
+
+  const serviceIncludes = SERVICE_INCLUDES[selectedPass.hours] || SERVICE_INCLUDES[3];
+  const fullAddress = pool ? [pool.address, pool.city, pool.state, pool.zip].filter(Boolean).join(", ") : "Address not provided";
 
   return (
     <div className="min-h-screen bg-background">
@@ -49,134 +67,238 @@ const ServiceDetails = () => {
           </button>
           <Link to="/" className="flex items-center gap-1.5">
             <Waves className="h-5 w-5 text-primary" />
-            <span className="text-[1.25rem] font-bold text-navy tracking-tight">Orlando's Oasis</span>
+            <span className="text-[1.25rem] font-bold text-foreground tracking-tight">Orlando's Oasis</span>
           </Link>
           <div className="w-[60px]" />
         </div>
       </header>
 
-      {/* Hero */}
+      {/* 1. Hero */}
       <div className="relative h-[200px] overflow-hidden">
         <PoolSceneHero />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
         <div className="absolute bottom-0 left-0 right-0 p-6 max-w-[760px] mx-auto">
-          <h1 className="text-xl font-bold text-white">{selectedPass.label}</h1>
-          <p className="text-sm font-semibold text-white/90">{formattedDate}</p>
+          <h1 className="text-xl font-bold text-white">{selectedPass.hours}-Hour Pool Service</h1>
+          {isMonthly && (
+            <Badge className="bg-primary/90 text-primary-foreground text-[10px] px-2 py-0.5 mt-1">Monthly Plan</Badge>
+          )}
+          <p className="text-sm font-semibold text-white/90 mt-1">{formattedDate}</p>
           <p className="text-sm text-white/80">Expected arrival {TIME_LABELS[scheduleData.timeWindow]}</p>
         </div>
       </div>
 
       {/* Content */}
-      <main className="max-w-[760px] mx-auto px-5 py-6 pb-16">
-        {/* Two-column grid: Appointment + Technician */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-          {/* Appointment Details */}
-          <div className="bg-card rounded-2xl border border-border p-6 shadow-sm">
-            <h2 className="text-[17px] font-bold text-foreground mb-4">Appointment Details</h2>
-            <div className="flex items-center gap-2 text-sm text-foreground mb-2.5">
+      <main className="max-w-[760px] mx-auto px-5 py-6 pb-16 space-y-4">
+
+        {/* 2. Appointment Details */}
+        <div className="bg-card rounded-2xl border border-border p-6 shadow-sm">
+          <h2 className="text-[17px] font-bold text-foreground mb-4">Appointment Details</h2>
+          <div className="space-y-2.5">
+            <div className="flex items-center gap-2 text-sm text-foreground">
               <Clock className="h-4 w-4 text-muted-foreground" />
               <span>{selectedPass.hours} {selectedPass.hours === 1 ? "Hour" : "Hours"}</span>
             </div>
-            <div className="flex items-center gap-2 text-sm text-foreground mb-2.5">
+            <div className="flex items-center gap-2 text-sm text-foreground">
               <Calendar className="h-4 w-4 text-muted-foreground" />
               <span>{formattedDate}</span>
             </div>
-            <div className="flex items-center gap-2 text-sm text-foreground mb-2.5">
+            <div className="flex items-center gap-2 text-sm text-foreground">
               <Droplets className="h-4 w-4 text-muted-foreground" />
-              <span>{selectedPass.description || "Pool Cleaning Service"}</span>
+              <span>{isMonthly ? "Monthly plan" : "One-time service"}</span>
             </div>
-
-            {scheduleData.addons.length > 0 && (
-              <>
-                <p className="text-[15px] font-bold text-foreground mt-4 mb-2">Add-ons</p>
-                <div className="flex flex-wrap gap-1.5">
-                  {scheduleData.addons.map((addon) => (
-                    <span
-                      key={addon.id}
-                      className="bg-primary/10 text-primary text-xs font-medium px-2.5 py-1 rounded-full"
-                    >
-                      {addon.name} · ${addon.price}
-                    </span>
-                  ))}
-                </div>
-              </>
-            )}
           </div>
 
-          {/* Your Technician */}
-          <div className="bg-card rounded-2xl border border-border p-6 shadow-sm">
-            <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-4">Your Technician</p>
-            <div className="flex gap-3.5 items-start">
-              <div className="w-[72px] h-[72px] rounded-xl bg-gradient-to-br from-primary to-oasis-aqua flex items-center justify-center text-primary-foreground text-2xl font-bold shrink-0">
-                {technician.isAssigned ? technician.initials : "?"}
+          {/* Service Includes */}
+          <div className="mt-5">
+            <p className="text-[15px] font-bold text-foreground mb-2">Service Includes</p>
+            <div className="flex flex-wrap gap-1.5">
+              {serviceIncludes.map((item) => (
+                <span key={item} className="bg-primary/10 text-primary text-xs font-medium px-2.5 py-1 rounded-full">
+                  {item}
+                </span>
+              ))}
+            </div>
+          </div>
+
+          {scheduleData.addons.length > 0 && (
+            <div className="mt-4">
+              <p className="text-[15px] font-bold text-foreground mb-2">Add-ons</p>
+              <div className="flex flex-wrap gap-1.5">
+                {scheduleData.addons.map((addon) => (
+                  <span key={addon.id} className="bg-accent text-accent-foreground text-xs font-medium px-2.5 py-1 rounded-full">
+                    {addon.name} · ${addon.price}
+                  </span>
+                ))}
               </div>
-              <div>
-                <p className="text-base font-bold text-foreground">
-                  {technician.isAssigned ? technician.name : "To be assigned"}
-                </p>
-                {technician.isAssigned && (
+            </div>
+          )}
+        </div>
+
+        {/* 3. Technician */}
+        <div className="bg-card rounded-2xl border border-border p-6 shadow-sm">
+          {technician.isAssigned ? (
+            <>
+              <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-4">Your Technician</p>
+              <div className="flex gap-3.5 items-start">
+                <div className="w-[72px] h-[72px] rounded-xl bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center text-primary-foreground text-2xl font-bold shrink-0">
+                  {technician.initials}
+                </div>
+                <div>
+                  <p className="text-base font-bold text-foreground">{technician.name}</p>
                   <div className="flex items-center gap-1 text-sm text-muted-foreground mb-2">
                     <Star className="h-3.5 w-3.5 fill-cta-yellow text-cta-yellow" />
                     <span>{technician.rating}</span>
                   </div>
-                )}
-                <p className="text-[13px] text-muted-foreground leading-relaxed">
-                  Your assigned pool care specialist for this service visit.
-                </p>
+                  <p className="text-[13px] text-muted-foreground leading-relaxed">
+                    Assigned pool care specialist for this visit.
+                  </p>
+                </div>
               </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Your Pool */}
-        <div className="bg-card rounded-2xl border border-border p-6 shadow-sm mb-4">
-          <h2 className="text-[17px] font-bold text-foreground mb-4">Your Pool</h2>
-          <div className="flex items-center gap-2 text-sm text-foreground mb-2.5">
-            <MapPin className="h-4 w-4 text-muted-foreground" />
-            <span>123 Main Street, Miami, FL 33101</span>
-          </div>
-          <div className="flex items-center gap-2 text-sm text-foreground mb-2.5">
-            <Key className="h-4 w-4 text-muted-foreground" />
-            <span>{ACCESS_LABELS[scheduleData.accessMethod]}</span>
-          </div>
-          {scheduleData.accessDetail && (
+            </>
+          ) : (
             <>
-              <p className="text-[15px] font-bold text-foreground mt-4 mb-1.5">Access Notes</p>
-              <p className="text-[13.5px] text-muted-foreground leading-relaxed">{scheduleData.accessDetail}</p>
+              <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-4">Pool Technician</p>
+              <div className="flex gap-3.5 items-start">
+                <div className="w-[72px] h-[72px] rounded-xl bg-muted flex items-center justify-center shrink-0">
+                  <Droplets className="h-8 w-8 text-muted-foreground" />
+                </div>
+                <div>
+                  <p className="text-base font-bold text-foreground mb-1">Assignment Pending</p>
+                  <p className="text-[13px] text-muted-foreground leading-relaxed">
+                    A licensed pool specialist will be assigned before your service.
+                  </p>
+                  <p className="text-[13px] text-muted-foreground leading-relaxed mt-1">
+                    You'll be notified once your technician is confirmed.
+                  </p>
+                </div>
+              </div>
             </>
           )}
         </div>
 
-        {/* Payment + Help grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {/* Payment Details */}
-          <div className="bg-card rounded-2xl border border-border p-6 shadow-sm">
-            <h2 className="text-[17px] font-bold text-foreground mb-3">Payment Details</h2>
-            <div className="space-y-2 text-sm">
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">Base service</span>
-                <span className="text-foreground font-medium">${selectedPass.discountPrice.toFixed(2)}</span>
+        {/* 4. Your Pool */}
+        <div className="bg-card rounded-2xl border border-border p-6 shadow-sm">
+          <h2 className="text-[17px] font-bold text-foreground mb-4">Your Pool</h2>
+          <div className="space-y-2.5">
+            <div className="flex items-center gap-2 text-sm text-foreground">
+              <MapPin className="h-4 w-4 text-muted-foreground" />
+              <span>{fullAddress}</span>
+            </div>
+            {pool?.poolType && (
+              <div className="flex items-center gap-2 text-sm text-foreground">
+                <Droplets className="h-4 w-4 text-muted-foreground" />
+                <span>{pool.poolType} · {pool.poolSize}</span>
               </div>
-              {scheduleData.addons.map((addon) => (
-                <div key={addon.id} className="flex justify-between">
-                  <span className="text-muted-foreground">{addon.name}</span>
-                  <span className="text-foreground font-medium">${addon.price.toFixed(2)}</span>
-                </div>
-              ))}
-              <div className="border-t border-border pt-2 flex justify-between">
-                <span className="font-bold text-foreground">Total Paid</span>
-                <span className="font-bold text-foreground">${totalPaid.toFixed(2)}</span>
+            )}
+            <div className="flex items-center gap-2 text-sm text-foreground">
+              <Key className="h-4 w-4 text-muted-foreground" />
+              <span>{ACCESS_LABELS[pool?.accessMethod || scheduleData.accessMethod]}</span>
+            </div>
+            {(pool?.accessDetail || scheduleData.accessDetail) && (
+              <div className="mt-3">
+                <p className="text-[15px] font-bold text-foreground mb-1.5">Access Notes</p>
+                <p className="text-[13.5px] text-muted-foreground leading-relaxed">{pool?.accessDetail || scheduleData.accessDetail}</p>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* 5. Recurring Schedule (monthly only) */}
+        {isMonthly && (
+          <div className="bg-card rounded-2xl border border-border p-6 shadow-sm">
+            <h2 className="text-[17px] font-bold text-foreground mb-4">Recurring Schedule</h2>
+            <div className="space-y-2.5 text-sm">
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Frequency</span>
+                <span className="font-medium text-foreground">Monthly</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Next service date</span>
+                <span className="font-medium text-foreground">{getNextServiceDate()}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Auto-renew</span>
+                <span className="font-medium text-foreground">Yes</span>
               </div>
             </div>
+            <Button variant="outline" className="w-full mt-4" onClick={() => navigate("/dashboard")}>
+              <RefreshCw className="h-4 w-4 mr-2" />
+              Manage Plan
+            </Button>
           </div>
+        )}
 
-          {/* Need help */}
-          <div className="bg-card rounded-2xl border border-border p-6 shadow-sm">
-            <h2 className="text-[17px] font-bold text-foreground mb-3">Need more help?</h2>
-            <p className="text-[13.5px] text-muted-foreground leading-relaxed">
-              View our <a href="#" className="text-primary font-semibold hover:underline">help center</a> for more information on what to expect and how Orlando's Oasis works, or <a href="#" className="text-primary font-semibold hover:underline">report an issue</a>.
-            </p>
+        {/* 6. Payment Details */}
+        <div className="bg-card rounded-2xl border border-border p-6 shadow-sm">
+          <h2 className="text-[17px] font-bold text-foreground mb-3">Payment Details</h2>
+          <div className="space-y-2 text-sm">
+            {isMonthly ? (
+              <>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">First month total</span>
+                  <span className="text-foreground font-medium">${selectedPass.discountPrice.toFixed(2)}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Recurring amount</span>
+                  <span className="text-foreground font-medium">${selectedPass.discountPrice.toFixed(2)}/mo</span>
+                </div>
+                {scheduleData.addons.map((addon) => (
+                  <div key={addon.id} className="flex justify-between">
+                    <span className="text-muted-foreground">{addon.name}</span>
+                    <span className="text-foreground font-medium">${addon.price.toFixed(2)}</span>
+                  </div>
+                ))}
+                <div className="border-t border-border pt-2 flex justify-between">
+                  <span className="font-bold text-foreground">Total Paid</span>
+                  <span className="font-bold text-foreground">${totalPaid.toFixed(2)}</span>
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Base service</span>
+                  <span className="text-foreground font-medium">${selectedPass.discountPrice.toFixed(2)}</span>
+                </div>
+                {scheduleData.addons.map((addon) => (
+                  <div key={addon.id} className="flex justify-between">
+                    <span className="text-muted-foreground">{addon.name}</span>
+                    <span className="text-foreground font-medium">${addon.price.toFixed(2)}</span>
+                  </div>
+                ))}
+                <div className="border-t border-border pt-2 flex justify-between">
+                  <span className="font-bold text-foreground">Total Paid</span>
+                  <span className="font-bold text-foreground">${totalPaid.toFixed(2)}</span>
+                </div>
+              </>
+            )}
           </div>
+        </div>
+
+        {/* 7. After-Service Transparency */}
+        <div className="bg-card rounded-2xl border border-border p-6 shadow-sm">
+          <h2 className="text-[17px] font-bold text-foreground mb-4">After Your Service</h2>
+          <div className="space-y-3">
+            <div className="flex items-center gap-3 text-sm text-foreground">
+              <Camera className="h-4 w-4 text-muted-foreground shrink-0" />
+              <span>Before & after photos will be uploaded</span>
+            </div>
+            <div className="flex items-center gap-3 text-sm text-foreground">
+              <FileText className="h-4 w-4 text-muted-foreground shrink-0" />
+              <span>Service notes included</span>
+            </div>
+            <div className="flex items-center gap-3 text-sm text-foreground">
+              <FlaskConical className="h-4 w-4 text-muted-foreground shrink-0" />
+              <span>Chemical readings recorded</span>
+            </div>
+          </div>
+        </div>
+
+        {/* 8. Help / Support */}
+        <div className="bg-card rounded-2xl border border-border p-6 shadow-sm">
+          <h2 className="text-[17px] font-bold text-foreground mb-3">Need more help?</h2>
+          <p className="text-[13.5px] text-muted-foreground leading-relaxed">
+            View our <a href="#" className="text-primary font-semibold hover:underline">help center</a> for more information on what to expect and how Orlando's Oasis works, or <a href="#" className="text-primary font-semibold hover:underline">report an issue</a>.
+          </p>
         </div>
 
         {/* Footer */}

@@ -11,6 +11,7 @@ import Signup from "./pages/Signup";
 import Dashboard from "./pages/Dashboard";
 import ServicePass from "./pages/ServicePass";
 import ServiceDetails from "./pages/ServiceDetails";
+import CompletedServiceDetails from "./pages/CompletedServiceDetails";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -30,6 +31,7 @@ const App = () => (
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/passes" element={<ServicePass />} />
             <Route path="/service-details" element={<ServiceDetails />} />
+            <Route path="/service-details/completed" element={<CompletedServiceDetails />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

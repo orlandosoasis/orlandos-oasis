@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Waves, Calendar, ChevronRight, User, Clock, MapPin, LogOut, Star } from "lucide-react";
+import { Waves, Calendar, ChevronRight, User, Clock, MapPin, LogOut, Star, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
 import { useBooking } from "@/contexts/BookingContext";
@@ -83,9 +83,15 @@ const Dashboard = () => {
         <section>
           <h2 className="text-[1.35rem] font-semibold text-foreground mb-1">Past services</h2>
 
-          <div className="bg-card rounded-2xl p-8 text-center">
-            <p className="text-muted-foreground text-sm">No past services to show.</p>
-          </div>
+          {booking ? (
+            <div className="mt-3">
+              <CompletedCard booking={booking} />
+            </div>
+          ) : (
+            <div className="bg-card rounded-2xl p-8 text-center">
+              <p className="text-muted-foreground text-sm">No past services to show.</p>
+            </div>
+          )}
 
           <div className="flex flex-col gap-3 mt-5">
             <Button
@@ -184,6 +190,41 @@ const UpcomingCard = ({ booking }: UpcomingCardProps) => {
               ))}
             </div>
           )}
+        </div>
+        <ChevronRight className="h-5 w-5 text-muted-foreground mt-1 shrink-0 group-hover:translate-x-0.5 transition-transform" />
+      </div>
+    </div>
+  );
+};
+
+/* ── Completed Service Card ── */
+const CompletedCard = ({ booking }: UpcomingCardProps) => {
+  const navigate = useNavigate();
+  const { selectedPass, scheduleData, technician } = booking;
+
+  // Sample completed date: 5 days before the booking date
+  const completedDate = new Date(scheduleData.selectedDate);
+  completedDate.setDate(completedDate.getDate() - 5);
+  const shortDate = `${FULL_DAYS[completedDate.getDay()]}, ${SHORT_MONTHS[completedDate.getMonth()]} ${completedDate.getDate()}`;
+
+  return (
+    <div
+      onClick={() => navigate("/service-details/completed")}
+      className="bg-card rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer group"
+    >
+      <div className="px-[18px] py-4 flex items-start justify-between">
+        <div className="flex-1">
+          <div className="flex items-center gap-2 mb-1">
+            <p className="font-semibold text-foreground text-base">{selectedPass.label}</p>
+            <span className="inline-flex items-center gap-1 bg-green-500/10 text-green-600 text-[11px] font-semibold px-2 py-0.5 rounded-full">
+              <CheckCircle2 className="h-3 w-3" />
+              Completed
+            </span>
+          </div>
+          <p className="font-semibold text-foreground text-[0.875rem] mb-0.5">{shortDate}</p>
+          <p className="text-[0.825rem] text-muted-foreground leading-relaxed">
+            {technician.isAssigned ? technician.name : "Carlos M."} · {selectedPass.hours}-hour service
+          </p>
         </div>
         <ChevronRight className="h-5 w-5 text-muted-foreground mt-1 shrink-0 group-hover:translate-x-0.5 transition-transform" />
       </div>

@@ -93,7 +93,7 @@ const ServiceDetails = () => {
         {/* 2. Appointment Details + 3. Technician — side by side on desktop */}
         <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
           {/* Appointment Details */}
-          <div className="md:col-span-6 bg-card rounded-2xl border border-border p-6 shadow-sm flex flex-col">
+          <div className="md:col-span-5 bg-card rounded-2xl border border-border p-6 shadow-sm flex flex-col">
             <h2 className="text-[17px] font-bold text-foreground mb-4">Appointment Details</h2>
             <div className="space-y-2.5">
               <div className="flex items-center gap-2 text-sm text-foreground">
@@ -124,8 +124,8 @@ const ServiceDetails = () => {
             )}
           </div>
 
-          {/* Technician — 6 cols */}
-          <div className="md:col-span-6 bg-card rounded-2xl border border-border p-6 shadow-sm flex flex-col">
+          {/* Technician — 7 cols */}
+          <div className="md:col-span-7 bg-card rounded-2xl border border-border p-6 shadow-sm flex flex-col">
             {technician.isAssigned ? (
               <>
                 <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-4">Your Technician</p>

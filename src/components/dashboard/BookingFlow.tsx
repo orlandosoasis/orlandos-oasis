@@ -37,7 +37,7 @@ const BookingFlow = ({ onClose, onComplete }: BookingFlowProps) => {
   const [step, setStep] = useState(1);
 
   // Step 1 — Frequency & Plan & Schedule
-  const [frequency, setFrequency] = useState<CleaningFrequency>("once");
+  const [frequency, setFrequency] = useState<CleaningFrequency>("monthly");
   const [selectedDuration, setSelectedDuration] = useState<string>("hrs-3");
 
   const today = useMemo(() => { const d = new Date(); d.setHours(0, 0, 0, 0); return d; }, []);

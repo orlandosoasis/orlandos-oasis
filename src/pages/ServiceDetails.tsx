@@ -145,10 +145,6 @@ const ServiceDetails = () => {
               </div>
             )}
 
-            {/* Cleaning Notes */}
-            {booking.specialNotes && (
-              <CleaningNotes notes={booking.specialNotes} />
-            )}
           </div>
 
           {/* Technician — 7 cols */}
@@ -220,6 +216,13 @@ const ServiceDetails = () => {
             )}
           </div>
         </div>
+
+        {/* Cleaning Notes */}
+        {booking.specialNotes && (
+          <div className="bg-card rounded-2xl border border-border p-6 shadow-sm">
+            <CleaningNotes notes={booking.specialNotes} />
+          </div>
+        )}
 
         {/* 5. Recurring Schedule (monthly only) */}
         {isMonthly && (

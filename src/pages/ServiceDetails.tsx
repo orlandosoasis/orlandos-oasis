@@ -129,13 +129,13 @@ const ServiceDetails = () => {
             {technician.isAssigned ? (
               <>
                 <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-4">Your Technician</p>
-                <div className="flex flex-col items-center text-center gap-3">
-                  <div className="w-[72px] h-[72px] rounded-xl bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center text-primary-foreground text-2xl font-bold shrink-0">
+                <div className="flex gap-3.5 items-start">
+                  <div className="w-[56px] h-[56px] rounded-xl bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center text-primary-foreground text-lg font-bold shrink-0">
                     {technician.initials}
                   </div>
-                  <div>
+                  <div className="space-y-1">
                     <p className="text-base font-bold text-foreground">{technician.name}</p>
-                    <div className="flex items-center justify-center gap-1 text-sm text-muted-foreground mb-2">
+                    <div className="flex items-center gap-1 text-sm text-muted-foreground">
                       <Star className="h-3.5 w-3.5 fill-cta-yellow text-cta-yellow" />
                       <span>{technician.rating}</span>
                     </div>

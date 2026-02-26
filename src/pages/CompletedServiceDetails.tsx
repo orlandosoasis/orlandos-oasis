@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Waves, ArrowLeft, Clock, Calendar, MapPin, Star, Key, Droplets, Camera, FileText, CheckCircle2, RefreshCw, CreditCard, ChevronDown, ChevronUp } from "lucide-react";
+import { Waves, ArrowLeft, Clock, Calendar, Star, Droplets, Camera, FileText, CheckCircle2, ChevronDown, ChevronUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useBooking } from "@/contexts/BookingContext";
@@ -13,13 +13,6 @@ const TIME_LABELS: Record<string, string> = {
   morning: "8:00 AM – 12:00 PM",
   afternoon: "12:00 PM – 4:00 PM",
   evening: "4:00 PM – 6:00 PM",
-};
-
-const ACCESS_LABELS: Record<string, string> = {
-  home: "Owner will be home",
-  gate: "Gate code provided",
-  key: "Key on property",
-  other: "Custom instructions provided",
 };
 
 /* Mock service report data for the sample completed service */
@@ -41,19 +34,6 @@ const CHEMICAL_READINGS = [
   { label: "Cyanuric Acid", value: "40 ppm", status: "good" },
 ];
 
-const CleaningNotes = ({ notes }: { notes: string }) => {
-  const [expanded, setExpanded] = useState(false);
-  return (
-    <div className="mt-4">
-      <p className="text-[15px] font-bold text-foreground mb-1.5">Cleaning Notes</p>
-      <p className={`text-[13.5px] text-muted-foreground leading-relaxed ${!expanded ? "line-clamp-3" : ""}`}>{notes}</p>
-      <button onClick={() => setExpanded(!expanded)} className="text-primary text-[13px] font-semibold hover:underline mt-1">
-        {expanded ? "Show less" : "Read more"}
-      </button>
-    </div>
-  );
-};
-
 const CompletedServiceDetails = () => {
   const navigate = useNavigate();
   const { booking } = useBooking();
@@ -68,7 +48,7 @@ const CompletedServiceDetails = () => {
     );
   }
 
-  const { selectedPass, scheduleData, technician, frequency, pool } = booking;
+  const { selectedPass, scheduleData, technician, frequency } = booking;
 
   // The completed service happened 5 days before the booking date
   const completedDate = new Date(scheduleData.selectedDate);
@@ -76,17 +56,6 @@ const CompletedServiceDetails = () => {
   const formattedDate = `${FULL_DAYS[completedDate.getDay()]}, ${SHORT_MONTHS[completedDate.getMonth()]} ${completedDate.getDate()}, ${completedDate.getFullYear()}`;
 
   const isMonthly = frequency === "monthly";
-  const totalPaid = selectedPass.discountPrice + scheduleData.addonsTotal;
-  const fullAddress = pool ? [pool.address, pool.city, pool.state, pool.zip].filter(Boolean).join(", ") : "Address not provided";
-
-  const getNextServiceDate = () => {
-    const next = new Date(scheduleData.selectedDate);
-    return `${FULL_DAYS[next.getDay()]}, ${SHORT_MONTHS[next.getMonth()]} ${next.getDate()}, ${next.getFullYear()}`;
-  };
-
-  const paymentDate = new Date(completedDate);
-  paymentDate.setDate(paymentDate.getDate() - 1);
-  const formattedPaymentDate = `${SHORT_MONTHS[paymentDate.getMonth()]} ${paymentDate.getDate()}, ${paymentDate.getFullYear()}`;
 
   return (
     <div className="min-h-screen bg-background">
@@ -122,7 +91,57 @@ const CompletedServiceDetails = () => {
       {/* Content */}
       <main className="max-w-[760px] mx-auto px-5 py-6 pb-16 space-y-4">
 
-        {/* Service Report — Main Highlight */}
+        {/* Appointment Details + Technician */}
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
+          {/* Appointment Details */}
+          <div className="md:col-span-5 bg-card rounded-2xl border border-border p-6 shadow-sm flex flex-col">
+            <h2 className="text-[17px] font-bold text-foreground mb-4">Appointment Details</h2>
+            <div className="space-y-2.5">
+              <div className="flex items-center gap-2 text-sm text-foreground">
+                <Clock className="h-4 w-4 text-muted-foreground" />
+                <span>{selectedPass.hours} {selectedPass.hours === 1 ? "Hour" : "Hours"}</span>
+              </div>
+              <div className="flex items-center gap-2 text-sm text-foreground">
+                <Calendar className="h-4 w-4 text-muted-foreground" />
+                <span>{formattedDate}</span>
+              </div>
+              <div className="flex items-center gap-2 text-sm text-foreground">
+                <Droplets className="h-4 w-4 text-muted-foreground" />
+                <span>{isMonthly ? "Monthly plan" : "One-time service"}</span>
+              </div>
+              <div className="flex items-center gap-2 text-sm text-foreground">
+                <CheckCircle2 className="h-4 w-4 text-green-500" />
+                <span className="text-green-600 font-medium">Completed at 11:42 AM</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Technician */}
+          <div className="md:col-span-7 bg-card rounded-2xl border border-border p-6 shadow-sm flex flex-col">
+            <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-4">Your Technician</p>
+            <div className="flex gap-3.5 items-start">
+              <div className="w-[56px] h-[56px] rounded-xl bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center text-primary-foreground text-lg font-bold shrink-0">
+                {technician.isAssigned ? technician.initials : "CM"}
+              </div>
+              <div className="space-y-1">
+                <p className="text-base font-bold text-foreground">{technician.isAssigned ? technician.name : "Carlos M."}</p>
+                <div className="flex items-center gap-1 text-sm text-muted-foreground">
+                  <Star className="h-3.5 w-3.5 fill-cta-yellow text-cta-yellow" />
+                  <span>{technician.isAssigned ? technician.rating : 4.9}</span>
+                </div>
+                <p className="text-[13px] text-muted-foreground leading-relaxed">
+                  Completed this service visit.
+                </p>
+                <Button variant="outline" size="sm" className="mt-2 text-xs gap-1.5 rounded-lg">
+                  <Star className="h-3 w-3" />
+                  Leave a Review
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Service Report */}
         <div className="bg-card rounded-2xl border border-border p-6 shadow-sm">
           <h2 className="text-[17px] font-bold text-foreground mb-4">Service Report</h2>
 
@@ -200,137 +219,12 @@ const CompletedServiceDetails = () => {
           </div>
         </div>
 
-        {/* Appointment Details + Technician */}
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
-          {/* Appointment Details */}
-          <div className="md:col-span-5 bg-card rounded-2xl border border-border p-6 shadow-sm flex flex-col">
-            <h2 className="text-[17px] font-bold text-foreground mb-4">Appointment Details</h2>
-            <div className="space-y-2.5">
-              <div className="flex items-center gap-2 text-sm text-foreground">
-                <Clock className="h-4 w-4 text-muted-foreground" />
-                <span>{selectedPass.hours} {selectedPass.hours === 1 ? "Hour" : "Hours"}</span>
-              </div>
-              <div className="flex items-center gap-2 text-sm text-foreground">
-                <Calendar className="h-4 w-4 text-muted-foreground" />
-                <span>{formattedDate}</span>
-              </div>
-              <div className="flex items-center gap-2 text-sm text-foreground">
-                <Droplets className="h-4 w-4 text-muted-foreground" />
-                <span>{isMonthly ? "Monthly plan" : "One-time service"}</span>
-              </div>
-              <div className="flex items-center gap-2 text-sm text-foreground">
-                <CheckCircle2 className="h-4 w-4 text-green-500" />
-                <span className="text-green-600 font-medium">Completed at 11:42 AM</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Technician */}
-          <div className="md:col-span-7 bg-card rounded-2xl border border-border p-6 shadow-sm flex flex-col">
-            <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-4">Your Technician</p>
-            <div className="flex gap-3.5 items-start">
-              <div className="w-[56px] h-[56px] rounded-xl bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center text-primary-foreground text-lg font-bold shrink-0">
-                {technician.isAssigned ? technician.initials : "CM"}
-              </div>
-              <div className="space-y-1">
-                <p className="text-base font-bold text-foreground">{technician.isAssigned ? technician.name : "Carlos M."}</p>
-                <div className="flex items-center gap-1 text-sm text-muted-foreground">
-                  <Star className="h-3.5 w-3.5 fill-cta-yellow text-cta-yellow" />
-                  <span>{technician.isAssigned ? technician.rating : 4.9}</span>
-                </div>
-                <p className="text-[13px] text-muted-foreground leading-relaxed">
-                  Completed this service visit.
-                </p>
-                <Button variant="outline" size="sm" className="mt-2 text-xs gap-1.5 rounded-lg">
-                  <Star className="h-3 w-3" />
-                  Leave a Review
-                </Button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Your Pool */}
+        {/* Need more help? */}
         <div className="bg-card rounded-2xl border border-border p-6 shadow-sm">
-          <h2 className="text-[17px] font-bold text-foreground mb-4">Your Pool</h2>
-          <div className="space-y-2.5">
-            <div className="flex items-center gap-2 text-sm text-foreground">
-              <MapPin className="h-4 w-4 text-muted-foreground" />
-              <span>{fullAddress}</span>
-            </div>
-            {pool?.poolType && (
-              <div className="flex items-center gap-2 text-sm text-foreground">
-                <Droplets className="h-4 w-4 text-muted-foreground" />
-                <span>{pool.poolType} · {pool.poolSize}</span>
-              </div>
-            )}
-            <div className="flex items-center gap-2 text-sm text-foreground">
-              <Key className="h-4 w-4 text-muted-foreground" />
-              <span>{ACCESS_LABELS[pool?.accessMethod || scheduleData.accessMethod]}</span>
-            </div>
-          </div>
-          {booking.specialNotes && (
-            <>
-              <div className="border-t border-border my-4" />
-              <CleaningNotes notes={booking.specialNotes} />
-            </>
-          )}
-        </div>
-
-        {/* Recurring Schedule (monthly only) */}
-        {isMonthly && (
-          <div className="bg-card rounded-2xl border border-border p-6 shadow-sm">
-            <h2 className="text-[17px] font-bold text-foreground mb-4">Recurring Schedule</h2>
-            <div className="space-y-2.5 text-sm">
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">Frequency</span>
-                <span className="font-medium text-foreground">Monthly</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">Next service date</span>
-                <span className="font-medium text-foreground">{getNextServiceDate()}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">Auto-renew</span>
-                <span className="font-medium text-foreground">Yes</span>
-              </div>
-            </div>
-            <Button variant="outline" className="w-full mt-4" onClick={() => navigate("/dashboard")}>
-              <RefreshCw className="h-4 w-4 mr-2" />
-              Manage Plan
-            </Button>
-          </div>
-        )}
-
-        {/* Payment Summary */}
-        <div className="bg-card rounded-2xl border border-border p-6 shadow-sm">
-          <h2 className="text-[17px] font-bold text-foreground mb-3">Payment Summary</h2>
-          <div className="space-y-2 text-sm">
-            <div className="flex justify-between">
-              <span className="text-muted-foreground">Base service</span>
-              <span className="text-foreground font-medium">${selectedPass.discountPrice.toFixed(2)}</span>
-            </div>
-            {scheduleData.addons.map((addon) => (
-              <div key={addon.id} className="flex justify-between">
-                <span className="text-muted-foreground">{addon.name}</span>
-                <span className="text-foreground font-medium">${addon.price.toFixed(2)}</span>
-              </div>
-            ))}
-            <div className="border-t border-border pt-2 flex justify-between">
-              <span className="font-bold text-foreground">Total Paid</span>
-              <span className="font-bold text-foreground">${totalPaid.toFixed(2)}</span>
-            </div>
-            <div className="flex justify-between text-xs">
-              <span className="text-muted-foreground">Payment date</span>
-              <span className="text-muted-foreground">{formattedPaymentDate}</span>
-            </div>
-            {isMonthly && (
-              <div className="flex justify-between text-xs">
-                <span className="text-muted-foreground">Next billing date</span>
-                <span className="text-muted-foreground">{getNextServiceDate()}</span>
-              </div>
-            )}
-          </div>
+          <h2 className="text-[17px] font-bold text-foreground mb-3">Need more help?</h2>
+          <p className="text-[13.5px] text-muted-foreground leading-relaxed">
+            View our <a href="#" className="text-primary font-semibold hover:underline">help center</a> for more information on what to expect and how Orlando's Oasis works, or <a href="#" className="text-primary font-semibold hover:underline">report an issue</a>.
+          </p>
         </div>
 
         {/* Footer */}

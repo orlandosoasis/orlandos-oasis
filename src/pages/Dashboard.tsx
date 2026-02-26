@@ -60,11 +60,15 @@ const Dashboard = () => {
       <main className="max-w-[760px] mx-auto px-5 py-8 pb-16">
         {/* Upcoming Section */}
         <section className="mb-10">
-          <h2 className="text-[1.35rem] font-semibold text-foreground mb-1">Upcoming services</h2>
-          
+          <h2 className="text-[1.35rem] font-semibold text-foreground mb-4">Upcoming services</h2>
 
           {booking ? (
-            <UpcomingCard booking={booking} />
+            <>
+              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
+                {SHORT_MONTHS[booking.scheduleData.selectedDate.getMonth()]} {booking.scheduleData.selectedDate.getFullYear()}
+              </p>
+              <UpcomingCard booking={booking} />
+            </>
           ) : (
             <div className="bg-card rounded-2xl border border-border p-8 text-center">
               <p className="text-muted-foreground">No upcoming services yet.</p>

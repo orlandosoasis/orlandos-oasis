@@ -211,8 +211,6 @@ const Messages = () => {
               </p>
               
             </div>
-            {/* Unread dot */}
-            <span className="w-2 h-2 rounded-full bg-primary shrink-0" />
           </button>
 
           {/* Future contacts render here — divider ready */}

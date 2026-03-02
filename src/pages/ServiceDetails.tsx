@@ -103,7 +103,7 @@ const ServiceDetails = () => {
           <h1 className="text-xl font-bold text-white">{selectedPass.hours}-Hour Pool Service</h1>
           <p className="text-sm font-semibold text-white/90 mt-1">{formattedDate}</p>
           <p className="text-sm text-white/80">Expected arrival {TIME_LABELS[scheduleData.timeWindow]}</p>
-          <Badge className="bg-primary/90 text-primary-foreground text-[10px] px-2 py-0.5 mt-1">Scheduled</Badge>
+          <Badge className="bg-primary/90 text-primary-foreground text-[13px] px-3 py-1 mt-1">Scheduled</Badge>
         </div>
       </div>
 

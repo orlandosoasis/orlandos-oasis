@@ -103,9 +103,7 @@ const ServiceDetails = () => {
           <h1 className="text-xl font-bold text-white">{selectedPass.hours}-Hour Pool Service</h1>
           <p className="text-sm font-semibold text-white/90 mt-1">{formattedDate}</p>
           <p className="text-sm text-white/80">Expected arrival {TIME_LABELS[scheduleData.timeWindow]}</p>
-          {isMonthly && (
-            <Badge className="bg-primary/90 text-primary-foreground text-[10px] px-2 py-0.5 mt-1">Monthly Plan</Badge>
-          )}
+          <Badge className="bg-primary/90 text-primary-foreground text-[10px] px-2 py-0.5 mt-1">Scheduled</Badge>
         </div>
       </div>
 
@@ -252,45 +250,24 @@ const ServiceDetails = () => {
         <div className="bg-card rounded-2xl border border-border p-6 shadow-sm">
           <h2 className="text-[17px] font-bold text-foreground mb-3">Payment Details</h2>
           <div className="space-y-2 text-sm">
-            {isMonthly ? (
-              <>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">First month total</span>
-                  <span className="text-foreground font-medium">${selectedPass.discountPrice.toFixed(2)}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Recurring amount</span>
-                  <span className="text-foreground font-medium">${selectedPass.discountPrice.toFixed(2)}/mo</span>
-                </div>
-                {scheduleData.addons.map((addon) => (
-                  <div key={addon.id} className="flex justify-between">
-                    <span className="text-muted-foreground">{addon.name}</span>
-                    <span className="text-foreground font-medium">${addon.price.toFixed(2)}</span>
-                  </div>
-                ))}
-                <div className="border-t border-border pt-2 flex justify-between">
-                  <span className="font-bold text-foreground">Total Paid</span>
-                  <span className="font-bold text-foreground">${totalPaid.toFixed(2)}</span>
-                </div>
-              </>
-            ) : (
-              <>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Base service</span>
-                  <span className="text-foreground font-medium">${selectedPass.discountPrice.toFixed(2)}</span>
-                </div>
-                {scheduleData.addons.map((addon) => (
-                  <div key={addon.id} className="flex justify-between">
-                    <span className="text-muted-foreground">{addon.name}</span>
-                    <span className="text-foreground font-medium">${addon.price.toFixed(2)}</span>
-                  </div>
-                ))}
-                <div className="border-t border-border pt-2 flex justify-between">
-                  <span className="font-bold text-foreground">Total Paid</span>
-                  <span className="font-bold text-foreground">${totalPaid.toFixed(2)}</span>
-                </div>
-              </>
+            {isMonthly && (
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Recurring amount</span>
+                <span className="text-foreground font-medium">${selectedPass.discountPrice.toFixed(2)}/mo</span>
+              </div>
             )}
+            {!isMonthly && (
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Base service</span>
+                <span className="text-foreground font-medium">${selectedPass.discountPrice.toFixed(2)}</span>
+              </div>
+            )}
+            {scheduleData.addons.map((addon) => (
+              <div key={addon.id} className="flex justify-between">
+                <span className="text-muted-foreground">{addon.name}</span>
+                <span className="text-foreground font-medium">${addon.price.toFixed(2)}</span>
+              </div>
+            ))}
           </div>
         </div>
 

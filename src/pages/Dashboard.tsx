@@ -162,6 +162,9 @@ const Dashboard = () => {
 
           {pastBooking ? (
             <div className="mt-3">
+              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
+                {SHORT_MONTHS[(() => { const cd = new Date(pastBooking.scheduleData.selectedDate); cd.setDate(cd.getDate() - 5); return cd; })().getMonth()]} {(() => { const cd = new Date(pastBooking.scheduleData.selectedDate); cd.setDate(cd.getDate() - 5); return cd; })().getFullYear()}
+              </p>
               <ServiceCard booking={pastBooking} navigateTo="/service-details/completed" />
             </div>
           ) : (

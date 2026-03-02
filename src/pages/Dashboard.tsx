@@ -27,7 +27,7 @@ const ACCESS_LABELS: Record<string, string> = {
 /* ── Demo seed data for demo@example.com ── */
 function createDemoBookings(): { upcoming: BookingData; past: BookingData } {
   const upcomingDate = new Date(2026, 2, 18); // March 18, 2026
-  const pastDate = new Date(2026, 0, 15); // January 15, 2026
+  const pastDate = new Date(2026, 1, 18); // February 18, 2026 (one month before upcoming)
 
   const sharedPass = {
     id: "pass-2",

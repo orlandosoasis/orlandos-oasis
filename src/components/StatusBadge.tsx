@@ -10,9 +10,9 @@ const STATUS_CONFIG: Record<
   scheduled: {
     label: "Scheduled",
     icon: Clock,
-    bgClass: "bg-primary/10",
-    textClass: "text-primary",
-    borderClass: "border border-primary/25",
+    bgClass: "bg-[#DBECFF]",
+    textClass: "text-[#05204a]",
+    borderClass: "border border-[#C5DFFA]",
   },
   in_progress: {
     label: "In Progress",

@@ -174,7 +174,7 @@ const ServiceDetails = () => {
               </>
             }
             {/* Message CTA */}
-            <Button variant="outline" className="w-full mt-4 gap-1.5 hover:bg-primary hover:text-primary-foreground hover:border-primary">
+            <Button variant="outline" className="w-full mt-4 gap-1.5 hover:bg-primary hover:text-primary-foreground hover:border-primary" onClick={() => navigate("/messages")}>
               <MessagesSquare className="h-4 w-4" />
               Message
             </Button>

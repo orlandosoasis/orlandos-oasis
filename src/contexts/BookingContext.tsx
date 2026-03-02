@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, ReactNode } from "react";
+import type { ServiceStatus } from "@/components/StatusBadge";
 
 export type CleaningFrequency = "once" | "monthly";
 export type Recurrence = "monthly" | "weekly" | "biweekly";
@@ -73,6 +74,7 @@ export interface BookingData {
   technician: TechnicianInfo;
   specialNotes?: string;
   pool: PoolData;
+  status?: ServiceStatus;
 }
 
 interface BookingContextType {

@@ -97,8 +97,8 @@ const Dashboard = () => {
   const isDemoUser = user?.email === "demo@example.com";
   const demoBookings = isDemoUser ? createDemoBookings() : null;
 
-  const upcomingBooking = booking || demoBookings?.upcoming || null;
-  const pastBooking = booking ? booking : demoBookings?.past || null;
+  const upcomingBooking = booking ? { ...booking, status: booking.status || "scheduled" as const } : demoBookings?.upcoming || null;
+  const pastBooking = booking ? { ...booking, status: "completed" as const } : demoBookings?.past || null;
 
   return (
     <div className="min-h-screen bg-background">

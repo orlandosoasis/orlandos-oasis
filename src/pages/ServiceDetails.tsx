@@ -130,18 +130,6 @@ const ServiceDetails = () => {
               </div>
             </div>
 
-            {scheduleData.addons.length > 0 &&
-            <div className="mt-4">
-                <p className="text-[15px] font-bold text-foreground mb-2">Add-ons</p>
-                <div className="flex flex-wrap gap-1.5">
-                  {scheduleData.addons.map((addon) =>
-                <span key={addon.id} className="bg-accent text-accent-foreground text-xs font-medium px-2.5 py-1 rounded-full">
-                      {addon.name} · ${addon.price}
-                    </span>
-                )}
-                </div>
-              </div>
-            }
 
           </div>
 
@@ -262,12 +250,6 @@ const ServiceDetails = () => {
                 <span className="text-foreground font-medium">${selectedPass.discountPrice.toFixed(2)}</span>
               </div>
             }
-            {scheduleData.addons.map((addon) =>
-            <div key={addon.id} className="flex justify-between">
-                <span className="text-muted-foreground">{addon.name}</span>
-                <span className="text-foreground font-medium">${addon.price.toFixed(2)}</span>
-              </div>
-            )}
           </div>
         </div>
 

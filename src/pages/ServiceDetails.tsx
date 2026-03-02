@@ -201,7 +201,7 @@ const ServiceDetails = () => {
             </div>
             {(pool?.accessDetail || scheduleData.accessDetail) &&
             <div className="mt-3">
-                <p className="text-[15px] font-bold text-foreground mb-1.5">Access Notes</p>
+                <p className="font-bold text-foreground mb-1.5 text-xs">Access Notes</p>
                 <p className="text-[13.5px] text-muted-foreground leading-relaxed">{pool?.accessDetail || scheduleData.accessDetail}</p>
               </div>
             }

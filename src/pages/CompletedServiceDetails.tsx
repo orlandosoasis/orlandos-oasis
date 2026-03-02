@@ -1,4 +1,5 @@
 import { useState } from "react";
+import LeaveReviewModal from "@/components/LeaveReviewModal";
 import { Link, useNavigate } from "react-router-dom";
 import { Waves, ArrowLeft, Clock, Calendar, Star, Droplets, Camera, FileText, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -60,6 +61,8 @@ const CompletedServiceDetails = () => {
   const navigate = useNavigate();
   const { booking } = useBooking();
   const [lightboxPhoto, setLightboxPhoto] = useState<PhotoData | null>(null);
+  const [reviewOpen, setReviewOpen] = useState(false);
+  const [reviewSubmitted, setReviewSubmitted] = useState(false);
 
   if (!booking) {
     return (
@@ -148,10 +151,17 @@ const CompletedServiceDetails = () => {
                   <Star className="h-3.5 w-3.5 fill-cta-yellow text-cta-yellow" />
                   <span>{technician.isAssigned ? technician.rating : 4.9}</span>
                 </div>
-                <Button variant="outline" size="sm" className="mt-2 text-xs gap-1.5 rounded-lg">
-                  <Star className="h-3 w-3" />
-                  Leave a Review
-                </Button>
+                {reviewSubmitted ? (
+                  <Button variant="outline" size="sm" className="mt-2 text-xs gap-1.5 rounded-lg opacity-60 cursor-default" disabled>
+                    <CheckCircle2 className="h-3 w-3" />
+                    Review Submitted
+                  </Button>
+                ) : (
+                  <Button variant="outline" size="sm" className="mt-2 text-xs gap-1.5 rounded-lg" onClick={(e) => { e.stopPropagation(); setReviewOpen(true); }}>
+                    <Star className="h-3 w-3" />
+                    Leave a Review
+                  </Button>
+                )}
               </div>
             </div>
           </div>
@@ -248,6 +258,16 @@ const CompletedServiceDetails = () => {
           <p className="mt-3">© Orlando's Oasis 2015 – 2026</p>
         </footer>
       </main>
+
+      <LeaveReviewModal
+        open={reviewOpen}
+        onOpenChange={setReviewOpen}
+        technicianName={technician.isAssigned ? technician.name : "Carlos M."}
+        onSubmit={(rating, message) => {
+          setReviewSubmitted(true);
+          setReviewOpen(false);
+        }}
+      />
 
       {lightboxPhoto && (
         <Dialog open={!!lightboxPhoto} onOpenChange={() => setLightboxPhoto(null)}>

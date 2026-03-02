@@ -127,7 +127,7 @@ const Dashboard = () => {
               Book Service
             </Button>
             {user && (
-              <Button variant="ghost" size="icon" onClick={handleLogout} title="Sign out">
+              <Button variant="ghost" size="icon" onClick={handleLogout} title="Sign out" className="hover:bg-primary hover:text-primary-foreground">
                 <LogOut className="h-4 w-4" />
               </Button>
             )}

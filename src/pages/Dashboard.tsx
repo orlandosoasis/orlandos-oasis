@@ -251,18 +251,6 @@ const ServiceCard = ({ booking, navigateTo }: ServiceCardProps) => {
             Pool Access: {ACCESS_LABELS[scheduleData.accessMethod]}
             {scheduleData.accessDetail && ` · ${scheduleData.accessDetail}`}
           </p>
-          {scheduleData.addons.length > 0 && (
-            <div className="flex flex-wrap gap-1.5 mt-2">
-              {scheduleData.addons.map((addon) => (
-                <span
-                  key={addon.id}
-                  className="bg-primary/10 text-primary text-xs font-medium px-2.5 py-0.5 rounded-full"
-                >
-                  {addon.name}
-                </span>
-              ))}
-            </div>
-          )}
         </div>
         <ChevronRight className="h-5 w-5 text-muted-foreground mt-1 shrink-0 group-hover:translate-x-0.5 transition-transform" />
       </div>

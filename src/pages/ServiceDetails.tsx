@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Waves, ArrowLeft, Clock, Calendar, MapPin, Star, Key, Droplets, Camera, FileText, FlaskConical, RefreshCw, CreditCard } from "lucide-react";
+import { Waves, ArrowLeft, Clock, Calendar, MapPin, Star, Key, Droplets, Camera, FileText, FlaskConical, RefreshCw, CreditCard, MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import StatusBadge from "@/components/StatusBadge";
 import { useBooking } from "@/contexts/BookingContext";
@@ -126,7 +126,7 @@ const ServiceDetails = () => {
               </div>
               <div className="flex items-center gap-2 text-sm text-foreground">
                 <Droplets className="h-4 w-4 text-muted-foreground" />
-                <span>{isMonthly ? "Monthly plan" : "One-time service"}</span>
+                <span>Monthly plan</span>
               </div>
             </div>
 
@@ -173,6 +173,11 @@ const ServiceDetails = () => {
                 </div>
               </>
             }
+            {/* Message CTA */}
+            <Button variant="outline" className="w-full mt-4 hover:bg-primary hover:text-primary-foreground hover:border-primary">
+              <MessageCircle className="h-4 w-4 mr-2" />
+              Message
+            </Button>
           </div>
         </div>
 

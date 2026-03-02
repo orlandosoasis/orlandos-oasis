@@ -172,11 +172,14 @@ const Messages = () => {
     }
   });
 
+  // Last tech message for preview
+  const lastTechMsg = [...items].reverse().find((i) => i.type === "text" && i.sender === "tech");
+
   return (
     <div className="min-h-screen bg-background flex flex-col h-screen">
       {/* Header */}
       <header className="bg-card border-b border-border sticky top-0 z-10">
-        <div className="max-w-[760px] mx-auto px-5 h-[60px] flex items-center justify-between">
+        <div className="mx-auto px-5 h-[60px] flex items-center justify-between">
           <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-foreground hover:text-primary transition-colors">
             <ArrowLeft className="h-5 w-5" />
             <span className="font-medium text-sm">Back</span>
@@ -189,8 +192,33 @@ const Messages = () => {
         </div>
       </header>
 
-      {/* Chat Container */}
-      <div className="flex flex-1 overflow-hidden max-w-[760px] mx-auto w-full">
+      <div className="flex flex-1 overflow-hidden">
+        {/* ─── Contacts Sidebar ─── */}
+        <aside className="w-[280px] bg-card border-r border-border flex flex-col shrink-0">
+          <div className="px-4 pt-5 pb-3">
+            <h2 className="text-lg font-bold text-foreground">Messages</h2>
+          </div>
+
+          {/* Contact Item — Carlos M. (active) */}
+          <button className="w-full flex items-center gap-3 px-4 py-3 text-left bg-primary/8 border-b border-border transition-colors hover:bg-primary/12 cursor-pointer">
+            <div className="w-11 h-11 rounded-full bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center text-primary-foreground text-sm font-bold shrink-0">
+              {techInitials}
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-bold text-foreground truncate">{techName}</p>
+              <p className="text-xs text-muted-foreground truncate mt-0.5">
+                {lastTechMsg?.text || nextServiceLabel}
+              </p>
+              <p className="text-[11px] text-muted-foreground mt-0.5">{nextServiceLabel}</p>
+            </div>
+            {/* Unread dot */}
+            <span className="w-2 h-2 rounded-full bg-primary shrink-0" />
+          </button>
+
+          {/* Future contacts render here — divider ready */}
+        </aside>
+
+        {/* ─── Chat Thread ─── */}
         <div className="flex-1 flex flex-col overflow-hidden">
           {/* Chat Header */}
           <div className="bg-card border-b border-border px-5 py-3 flex items-center justify-between">
@@ -218,7 +246,6 @@ const Messages = () => {
           <div className="flex-1 overflow-y-auto px-5 py-5 bg-muted/30 space-y-1">
             {grouped.map((group) => (
               <div key={group.date}>
-                {/* Date Divider */}
                 <div className="text-center my-3">
                   <span className="text-xs text-muted-foreground font-medium bg-background px-3 py-1 rounded-full border border-border">
                     {group.date}
@@ -226,12 +253,9 @@ const Messages = () => {
                 </div>
 
                 {group.items.map((item) => {
-                  // System status message
                   if (item.type === "system") {
                     return <SystemMessage key={item.id} text={item.text!} time={item.time} />;
                   }
-
-                  // Photo grid (attached to tech bubble)
                   if (item.type === "photos") {
                     return (
                       <div key={item.id} className="flex flex-col mb-1 max-w-[75%] self-start items-start">
@@ -242,8 +266,6 @@ const Messages = () => {
                       </div>
                     );
                   }
-
-                  // Regular text message
                   const isUser = item.sender === "user";
                   const isAuto = item.sender === "automated";
                   return (

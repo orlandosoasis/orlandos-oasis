@@ -1,13 +1,17 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Waves, ArrowLeft, Clock, Calendar, Star, Droplets, Camera, FileText, CheckCircle2, ChevronDown, ChevronUp, X } from "lucide-react";
+import { Waves, ArrowLeft, Clock, Calendar, Star, Droplets, Camera, FileText, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import StatusBadge from "@/components/StatusBadge";
 import { useBooking } from "@/contexts/BookingContext";
 import PoolSceneHero from "@/components/dashboard/PoolSceneHero";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
-import poolBeforeImg from "@/assets/pool-before.png";
-import poolAfterImg from "@/assets/pool-after.png";
+import poolBefore1 from "@/assets/pool-before-1.jpg";
+import poolBefore2 from "@/assets/pool-before-2.jpg";
+import poolBefore3 from "@/assets/pool-before-3.jpg";
+import poolAfter1 from "@/assets/pool-after-1.jpg";
+import poolAfter2 from "@/assets/pool-after-2.jpg";
+import poolAfter3 from "@/assets/pool-after-3.jpg";
 
 const FULL_DAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 const SHORT_MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -30,25 +34,32 @@ const COMPLETED_CHECKLIST = [
   { task: "Tile line scrubbing", done: true },
 ];
 
-const CHEMICAL_READINGS = [
-  { label: "Free Chlorine", value: "3.0 ppm", status: "good" },
-  { label: "pH Level", value: "7.4", status: "good" },
-  { label: "Total Alkalinity", value: "95 ppm", status: "good" },
-  { label: "Cyanuric Acid", value: "40 ppm", status: "good" },
-];
-
 const TECHNICIAN_NOTES = "Skimmer basket was heavily filled with leaves. Adjusted chlorine slightly due to recent rain. Filter pressure normal. Recommend checking again next visit if weather continues.";
 
-const PHOTO_META = {
-  before: { label: "Before", date: "Feb 21, 2026", time: "10:32 AM" },
-  after: { label: "After", date: "Feb 21, 2026", time: "11:38 AM" },
-};
+interface PhotoData {
+  id: string;
+  src: string;
+  alt: string;
+  date: string;
+  time: string;
+}
+
+const BEFORE_PHOTOS: PhotoData[] = [
+  { id: "b1", src: poolBefore1, alt: "Pool surface with leaves and debris", date: "Feb 21, 2026", time: "10:28 AM" },
+  { id: "b2", src: poolBefore2, alt: "Pool walls with algae buildup", date: "Feb 21, 2026", time: "10:30 AM" },
+  { id: "b3", src: poolBefore3, alt: "Pool with fallen leaves on surface", date: "Feb 21, 2026", time: "10:32 AM" },
+];
+
+const AFTER_PHOTOS: PhotoData[] = [
+  { id: "a1", src: poolAfter1, alt: "Clean pool with crystal clear water", date: "Feb 21, 2026", time: "11:34 AM" },
+  { id: "a2", src: poolAfter2, alt: "Spotless pool tile line and steps", date: "Feb 21, 2026", time: "11:36 AM" },
+  { id: "a3", src: poolAfter3, alt: "Pristine pool sparkling in sunlight", date: "Feb 21, 2026", time: "11:38 AM" },
+];
 
 const CompletedServiceDetails = () => {
   const navigate = useNavigate();
   const { booking } = useBooking();
-  const [photosExpanded, setPhotosExpanded] = useState(true);
-  const [lightbox, setLightbox] = useState<"before" | "after" | null>(null);
+  const [lightboxPhoto, setLightboxPhoto] = useState<PhotoData | null>(null);
 
   if (!booking) {
     return (
@@ -150,34 +161,40 @@ const CompletedServiceDetails = () => {
         <div className="bg-card rounded-2xl border border-border p-6 shadow-sm">
           <h2 className="text-[17px] font-bold text-foreground mb-4">Service Report</h2>
 
-          {/* Before & After Photos */}
+          {/* Before Photos */}
           <div>
-            <button
-              onClick={() => setPhotosExpanded(!photosExpanded)}
-              className="flex items-center justify-between w-full text-left mb-3"
-            >
-              <div className="flex items-center gap-2">
-                <Camera className="h-4 w-4 text-muted-foreground" />
-                <span className="text-sm font-semibold text-foreground">Before & After Photos</span>
-              </div>
-              {photosExpanded ? <ChevronUp className="h-4 w-4 text-muted-foreground" /> : <ChevronDown className="h-4 w-4 text-muted-foreground" />}
-            </button>
-            {photosExpanded && (
-              <div className="grid grid-cols-2 gap-3 mb-4">
-                <button onClick={() => setLightbox("before")} className="rounded-xl overflow-hidden border border-border cursor-pointer hover:ring-2 hover:ring-primary/30 transition-all">
-                  <div className="relative h-[140px]">
-                    <img src={poolBeforeImg} alt="Pool before cleaning" className="w-full h-full object-cover" />
-                    <span className="absolute bottom-2 left-2 bg-black/60 text-white text-[10px] font-semibold px-2 py-0.5 rounded-md">Before</span>
+            <div className="flex items-center gap-2 mb-3">
+              <Camera className="h-4 w-4 text-muted-foreground" />
+              <span className="text-sm font-semibold text-foreground">Before Photos</span>
+            </div>
+            <div className="grid grid-cols-3 gap-3">
+              {BEFORE_PHOTOS.map((photo) => (
+                <button key={photo.id} onClick={() => setLightboxPhoto(photo)} className="rounded-xl overflow-hidden border border-border cursor-pointer hover:ring-2 hover:ring-primary/30 transition-all">
+                  <div className="relative h-[110px]">
+                    <img src={photo.src} alt={photo.alt} className="w-full h-full object-cover" loading="lazy" />
                   </div>
                 </button>
-                <button onClick={() => setLightbox("after")} className="rounded-xl overflow-hidden border border-border cursor-pointer hover:ring-2 hover:ring-primary/30 transition-all">
-                  <div className="relative h-[140px]">
-                    <img src={poolAfterImg} alt="Pool after cleaning" className="w-full h-full object-cover" />
-                    <span className="absolute bottom-2 left-2 bg-black/60 text-white text-[10px] font-semibold px-2 py-0.5 rounded-md">After</span>
+              ))}
+            </div>
+          </div>
+
+          <div className="border-t border-border my-4" />
+
+          {/* After Photos */}
+          <div>
+            <div className="flex items-center gap-2 mb-3">
+              <Camera className="h-4 w-4 text-muted-foreground" />
+              <span className="text-sm font-semibold text-foreground">After Photos</span>
+            </div>
+            <div className="grid grid-cols-3 gap-3">
+              {AFTER_PHOTOS.map((photo) => (
+                <button key={photo.id} onClick={() => setLightboxPhoto(photo)} className="rounded-xl overflow-hidden border border-border cursor-pointer hover:ring-2 hover:ring-primary/30 transition-all">
+                  <div className="relative h-[110px]">
+                    <img src={photo.src} alt={photo.alt} className="w-full h-full object-cover" loading="lazy" />
                   </div>
                 </button>
-              </div>
-            )}
+              ))}
+            </div>
           </div>
 
           <div className="border-t border-border my-4" />
@@ -213,27 +230,6 @@ const CompletedServiceDetails = () => {
               </div>
             </>
           )}
-
-          <div className="border-t border-border my-4" />
-
-          {/* Chemical Readings */}
-          <div>
-            <div className="flex items-center gap-2 mb-3">
-              <Droplets className="h-4 w-4 text-muted-foreground" />
-              <span className="text-sm font-semibold text-foreground">Chemical Readings</span>
-            </div>
-            <div className="grid grid-cols-2 gap-2.5">
-              {CHEMICAL_READINGS.map((reading, i) => (
-                <div key={i} className="bg-muted/50 rounded-xl px-3.5 py-2.5">
-                  <p className="text-xs text-muted-foreground">{reading.label}</p>
-                  <div className="flex items-center gap-1.5 mt-0.5">
-                    <span className="text-sm font-semibold text-foreground">{reading.value}</span>
-                    <span className="w-2 h-2 rounded-full bg-green-500" />
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
         </div>
 
         {/* Need more help? */}
@@ -253,31 +249,23 @@ const CompletedServiceDetails = () => {
         </footer>
       </main>
 
-      {lightbox && (
-        <PhotoLightbox type={lightbox} open={!!lightbox} onClose={() => setLightbox(null)} />
+      {lightboxPhoto && (
+        <Dialog open={!!lightboxPhoto} onOpenChange={() => setLightboxPhoto(null)}>
+          <DialogContent className="max-w-md p-0 overflow-hidden rounded-2xl">
+            <DialogTitle className="sr-only">{lightboxPhoto.alt}</DialogTitle>
+            <img
+              src={lightboxPhoto.src}
+              alt={lightboxPhoto.alt}
+              className="w-full max-h-[400px] object-cover"
+            />
+            <div className="px-5 py-3 pb-5">
+              <p className="text-sm font-semibold text-foreground">{lightboxPhoto.alt}</p>
+              <p className="text-xs text-muted-foreground mt-0.5">Taken on {lightboxPhoto.date} at {lightboxPhoto.time}</p>
+            </div>
+          </DialogContent>
+        </Dialog>
       )}
     </div>
-  );
-};
-
-/* Photo Lightbox Modal */
-const PhotoLightbox = ({ type, open, onClose }: { type: "before" | "after"; open: boolean; onClose: () => void }) => {
-  const meta = PHOTO_META[type];
-  return (
-    <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-w-md p-0 overflow-hidden rounded-2xl">
-        <DialogTitle className="sr-only">{meta.label} Photo</DialogTitle>
-        <img
-          src={type === "before" ? poolBeforeImg : poolAfterImg}
-          alt={`Pool ${meta.label.toLowerCase()} cleaning`}
-          className="w-full max-h-[400px] object-cover"
-        />
-        <div className="px-5 py-3 pb-5">
-          <p className="text-sm font-semibold text-foreground">{meta.label}</p>
-          <p className="text-xs text-muted-foreground mt-0.5">Taken on {meta.date} at {meta.time}</p>
-        </div>
-      </DialogContent>
-    </Dialog>
   );
 };
 

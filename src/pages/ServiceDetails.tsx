@@ -12,42 +12,42 @@ const SHORT_MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "S
 const TIME_LABELS: Record<string, string> = {
   morning: "8:00 AM – 12:00 PM",
   afternoon: "12:00 PM – 4:00 PM",
-  evening: "4:00 PM – 6:00 PM",
+  evening: "4:00 PM – 6:00 PM"
 };
 
 const ACCESS_LABELS: Record<string, string> = {
   home: "Owner will be home",
   gate: "Gate code provided",
   key: "Key on property",
-  other: "Custom instructions provided",
+  other: "Custom instructions provided"
 };
 
 const SERVICE_INCLUDES: Record<number, string[]> = {
   2: ["Skim", "Brush", "Chemical check"],
   3: ["Skim", "Vacuum", "Brush", "Chemicals & filter rinse"],
   4: ["Deep clean", "Tile scrub", "Full chemical balance"],
-  6: ["Complete restoration", "Deep vacuum", "Tile scrub", "Full chemical balance", "Filter deep clean"],
+  6: ["Complete restoration", "Deep vacuum", "Tile scrub", "Full chemical balance", "Filter deep clean"]
 };
 
-const CleaningNotes = ({ notes }: { notes: string }) => {
+const CleaningNotes = ({ notes }: {notes: string;}) => {
   const [expanded, setExpanded] = useState(false);
 
   return (
     <div className="mt-4">
       <p className="text-[15px] font-bold text-foreground mb-1.5">Cleaning Notes</p>
       <p
-        className={`text-[13.5px] text-muted-foreground leading-relaxed ${!expanded ? "line-clamp-3" : ""}`}
-      >
+        className={`text-[13.5px] text-muted-foreground leading-relaxed ${!expanded ? "line-clamp-3" : ""}`}>
+
         {notes}
       </p>
       <button
         onClick={() => setExpanded(!expanded)}
-        className="text-primary text-[13px] font-semibold hover:underline mt-1"
-      >
+        className="text-primary text-[13px] font-semibold hover:underline mt-1">
+
         {expanded ? "Show less" : "Read more"}
       </button>
-    </div>
-  );
+    </div>);
+
 };
 
 const ServiceDetails = () => {
@@ -59,8 +59,8 @@ const ServiceDetails = () => {
       <div className="min-h-screen bg-background flex flex-col items-center justify-center gap-4">
         <p className="text-muted-foreground">No booking found.</p>
         <Button onClick={() => navigate("/dashboard")}>Back to Dashboard</Button>
-      </div>
-    );
+      </div>);
+
   }
 
   const { selectedPass, scheduleData, technician, frequency, pool } = booking;
@@ -114,7 +114,7 @@ const ServiceDetails = () => {
         <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
           {/* Appointment Details */}
           <div className="md:col-span-5 bg-card rounded-2xl border border-border p-6 shadow-sm flex flex-col">
-            <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-4">Appointment Details</p>
+            <p className="text-xs font-bold uppercase tracking-widest mb-4 text-secondary-foreground">Appointment Details</p>
             <div className="space-y-2.5">
               <div className="flex items-center gap-2 text-sm text-foreground">
                 <Clock className="h-4 w-4 text-muted-foreground" />
@@ -130,26 +130,26 @@ const ServiceDetails = () => {
               </div>
             </div>
 
-            {scheduleData.addons.length > 0 && (
-              <div className="mt-4">
+            {scheduleData.addons.length > 0 &&
+            <div className="mt-4">
                 <p className="text-[15px] font-bold text-foreground mb-2">Add-ons</p>
                 <div className="flex flex-wrap gap-1.5">
-                  {scheduleData.addons.map((addon) => (
-                    <span key={addon.id} className="bg-accent text-accent-foreground text-xs font-medium px-2.5 py-1 rounded-full">
+                  {scheduleData.addons.map((addon) =>
+                <span key={addon.id} className="bg-accent text-accent-foreground text-xs font-medium px-2.5 py-1 rounded-full">
                       {addon.name} · ${addon.price}
                     </span>
-                  ))}
+                )}
                 </div>
               </div>
-            )}
+            }
 
           </div>
 
           {/* Technician — 7 cols */}
           <div className="md:col-span-7 bg-card rounded-2xl border border-border p-6 shadow-sm flex flex-col">
-            {technician.isAssigned ? (
-              <>
-                <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-4">Your Technician</p>
+            {technician.isAssigned ?
+            <>
+                <p className="text-xs font-bold uppercase tracking-widest mb-4 text-secondary-foreground">Your Technician</p>
                 <div className="flex gap-3.5 items-start">
                   <div className="w-[56px] h-[56px] rounded-xl bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center text-primary-foreground text-lg font-bold shrink-0">
                     {technician.initials}
@@ -165,9 +165,9 @@ const ServiceDetails = () => {
                     </p>
                   </div>
                 </div>
-              </>
-            ) : (
-              <>
+              </> :
+
+            <>
                 <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-4">Pool Technician</p>
                 <div className="flex flex-col items-center text-center gap-3">
                   <div className="w-[72px] h-[72px] rounded-xl bg-muted flex items-center justify-center shrink-0">
@@ -184,47 +184,47 @@ const ServiceDetails = () => {
                   </div>
                 </div>
               </>
-            )}
+            }
           </div>
         </div>
 
         {/* 4. Your Pool */}
         <div className="bg-card rounded-2xl border border-border p-6 shadow-sm">
-          <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-4">Your Pool</p>
+          <p className="text-xs font-bold uppercase tracking-widest mb-4 text-secondary-foreground">Your Pool</p>
           <div className="space-y-2.5">
             <div className="flex items-center gap-2 text-sm text-foreground">
               <MapPin className="h-4 w-4 text-muted-foreground" />
               <span>{fullAddress}</span>
             </div>
-            {pool?.poolType && (
-              <div className="flex items-center gap-2 text-sm text-foreground">
+            {pool?.poolType &&
+            <div className="flex items-center gap-2 text-sm text-foreground">
                 <Droplets className="h-4 w-4 text-muted-foreground" />
                 <span>{pool.poolType} · {pool.poolSize}</span>
               </div>
-            )}
+            }
             <div className="flex items-center gap-2 text-sm text-foreground">
               <Key className="h-4 w-4 text-muted-foreground" />
               <span>{ACCESS_LABELS[pool?.accessMethod || scheduleData.accessMethod]}</span>
             </div>
-            {(pool?.accessDetail || scheduleData.accessDetail) && (
-              <div className="mt-3">
+            {(pool?.accessDetail || scheduleData.accessDetail) &&
+            <div className="mt-3">
                 <p className="text-[15px] font-bold text-foreground mb-1.5">Access Notes</p>
                 <p className="text-[13.5px] text-muted-foreground leading-relaxed">{pool?.accessDetail || scheduleData.accessDetail}</p>
               </div>
-            )}
+            }
           </div>
-          {booking.specialNotes && (
-            <>
+          {booking.specialNotes &&
+          <>
               <div className="border-t border-border my-4" />
               <CleaningNotes notes={booking.specialNotes} />
             </>
-          )}
+          }
         </div>
 
         {/* 5. Recurring Schedule (monthly only) */}
-        {isMonthly && (
-          <div className="bg-card rounded-2xl border border-border p-6 shadow-sm">
-            <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-4">Recurring Schedule</p>
+        {isMonthly &&
+        <div className="bg-card rounded-2xl border border-border p-6 shadow-sm">
+            <p className="text-xs font-bold uppercase tracking-widest mb-4 text-secondary-foreground">Recurring Schedule</p>
             <div className="space-y-2.5 text-sm">
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Frequency</span>
@@ -244,36 +244,36 @@ const ServiceDetails = () => {
               Manage Plan
             </Button>
           </div>
-        )}
+        }
 
         {/* 6. Payment Details */}
         <div className="bg-card rounded-2xl border border-border p-6 shadow-sm">
-          <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-3">Payment Details</p>
+          <p className="text-xs font-bold uppercase tracking-widest mb-3 text-secondary-foreground">Payment Details</p>
           <div className="space-y-2 text-sm">
-            {isMonthly && (
-              <div className="flex justify-between">
+            {isMonthly &&
+            <div className="flex justify-between">
                 <span className="text-muted-foreground">Recurring amount</span>
                 <span className="text-foreground font-medium">${selectedPass.discountPrice.toFixed(2)}/mo</span>
               </div>
-            )}
-            {!isMonthly && (
-              <div className="flex justify-between">
+            }
+            {!isMonthly &&
+            <div className="flex justify-between">
                 <span className="text-muted-foreground">Base service</span>
                 <span className="text-foreground font-medium">${selectedPass.discountPrice.toFixed(2)}</span>
               </div>
-            )}
-            {scheduleData.addons.map((addon) => (
-              <div key={addon.id} className="flex justify-between">
+            }
+            {scheduleData.addons.map((addon) =>
+            <div key={addon.id} className="flex justify-between">
                 <span className="text-muted-foreground">{addon.name}</span>
                 <span className="text-foreground font-medium">${addon.price.toFixed(2)}</span>
               </div>
-            ))}
+            )}
           </div>
         </div>
 
         {/* 7. After-Service Transparency */}
         <div className="bg-card rounded-2xl border border-border p-6 shadow-sm">
-          <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-4">After Your Service</p>
+          <p className="text-xs font-bold uppercase tracking-widest mb-4 text-secondary-foreground">After Your Service</p>
           <div className="space-y-3">
             <div className="flex items-center gap-3 text-sm text-foreground">
               <Camera className="h-4 w-4 text-muted-foreground shrink-0" />
@@ -288,7 +288,7 @@ const ServiceDetails = () => {
 
         {/* 8. Help / Support */}
         <div className="bg-card rounded-2xl border border-border p-6 shadow-sm">
-          <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-3">Need More Help?</p>
+          <p className="text-xs font-bold uppercase tracking-widest mb-3 text-secondary-foreground">Need More Help?</p>
           <p className="text-[13.5px] text-muted-foreground leading-relaxed">
             View our <a href="#" className="text-primary font-semibold hover:underline">help center</a> for more information on what to expect and how Orlando's Oasis works, or <a href="#" className="text-primary font-semibold hover:underline">report an issue</a>.
           </p>
@@ -302,8 +302,8 @@ const ServiceDetails = () => {
           <p className="mt-3">© Orlando's Oasis 2015 – 2026</p>
         </footer>
       </main>
-    </div>
-  );
+    </div>);
+
 };
 
 export default ServiceDetails;

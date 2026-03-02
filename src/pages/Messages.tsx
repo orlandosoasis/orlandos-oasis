@@ -3,9 +3,15 @@ import { Link, useNavigate } from "react-router-dom";
 import { Waves, ArrowLeft, Calendar, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { useBooking } from "@/contexts/BookingContext";
+import poolBefore1 from "@/assets/pool-before-1.jpg";
+import poolBefore2 from "@/assets/pool-before-2.jpg";
+import poolBefore3 from "@/assets/pool-before-3.jpg";
+import poolAfter1 from "@/assets/pool-after-1.jpg";
+import poolAfter2 from "@/assets/pool-after-2.jpg";
+import poolAfter3 from "@/assets/pool-after-3.jpg";
 
-const FULL_DAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 const SHORT_MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
 const TIME_LABELS: Record<string, string> = {
@@ -14,59 +20,121 @@ const TIME_LABELS: Record<string, string> = {
   evening: "4:00 PM – 6:00 PM",
 };
 
-interface Message {
+interface PhotoData {
+  src: string;
+  alt: string;
+  date: string;
+  time: string;
+}
+
+interface ChatItem {
   id: string;
-  text: string;
-  sender: "user" | "tech" | "automated";
+  type: "text" | "system" | "photos";
+  sender?: "user" | "tech" | "automated";
+  text?: string;
   time: string;
   date: string;
+  photos?: PhotoData[];
 }
 
 function formatDate(d: Date): string {
   return `${SHORT_MONTHS[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`;
 }
 
-function buildMockMessages(techName: string, serviceDate: Date, hours: number): Message[] {
+function buildMessages(techName: string, serviceDate: Date, hours: number): ChatItem[] {
   const svcDate = formatDate(serviceDate);
   const dayBefore = new Date(serviceDate);
   dayBefore.setDate(dayBefore.getDate() - 1);
   const twoDaysBefore = new Date(serviceDate);
   twoDaysBefore.setDate(twoDaysBefore.getDate() - 2);
+  const twoDaysBeforeStr = formatDate(twoDaysBefore);
+  const dayBeforeStr = formatDate(dayBefore);
+
+  const beforePhotos: PhotoData[] = [
+    { src: poolBefore1, alt: "Pool surface with leaves and debris", date: svcDate, time: "10:28 AM" },
+    { src: poolBefore2, alt: "Pool walls with algae buildup", date: svcDate, time: "10:30 AM" },
+    { src: poolBefore3, alt: "Pool with fallen leaves on surface", date: svcDate, time: "10:32 AM" },
+  ];
+
+  const afterPhotos: PhotoData[] = [
+    { src: poolAfter1, alt: "Clean pool with crystal clear water", date: svcDate, time: "11:34 AM" },
+    { src: poolAfter2, alt: "Spotless pool tile line and steps", date: svcDate, time: "11:36 AM" },
+    { src: poolAfter3, alt: "Pristine pool sparkling in sunlight", date: svcDate, time: "11:38 AM" },
+  ];
 
   return [
-    { id: "1", text: `Hi! I'm ${techName}, your assigned pool technician. Looking forward to servicing your pool!`, sender: "tech", time: "2:24 PM", date: formatDate(twoDaysBefore) },
-    { id: "2", text: "Hi! Thanks for reaching out. Is there anything I should know before the visit?", sender: "user", time: "2:27 PM", date: formatDate(twoDaysBefore) },
-    { id: "3", text: "Just make sure the gate is accessible and any pool covers are removed. I'll take care of the rest!", sender: "tech", time: "4:48 PM", date: formatDate(twoDaysBefore) },
-    { id: "4", text: "Sounds good, thank you!", sender: "user", time: "4:57 PM", date: formatDate(twoDaysBefore) },
-    { id: "5", text: `Reminder: Your ${hours}-hour pool service with ${techName} is confirmed for ${svcDate}. View details in your dashboard.`, sender: "automated", time: "8:33 AM", date: formatDate(dayBefore) },
-    { id: "6", text: `Hi! Just a heads up — I'll be arriving around the scheduled window tomorrow. See you then!`, sender: "tech", time: "10:15 AM", date: formatDate(dayBefore) },
-    { id: "7", text: "Perfect, we'll be ready!", sender: "user", time: "10:22 AM", date: formatDate(dayBefore) },
-    { id: "8", text: `${techName} is on the way to begin your pool service.`, sender: "automated", time: "9:55 AM", date: svcDate },
-    { id: "9", text: "I'm here — starting the service now.", sender: "tech", time: "10:02 AM", date: svcDate },
-    { id: "10", text: "Great, thank you!", sender: "user", time: "10:05 AM", date: svcDate },
-    { id: "11", text: "All done! Skimmer basket was full of leaves so I gave it an extra clean. Chemicals are balanced. Your pool is looking great! 🏊", sender: "tech", time: "11:42 AM", date: svcDate },
+    { id: "1", type: "text", sender: "tech", text: `Hi! I'm ${techName}, your assigned pool technician. Looking forward to servicing your pool!`, time: "2:24 PM", date: twoDaysBeforeStr },
+    { id: "2", type: "text", sender: "user", text: "Hi! Thanks for reaching out. Is there anything I should know before the visit?", time: "2:27 PM", date: twoDaysBeforeStr },
+    { id: "3", type: "text", sender: "tech", text: "Just make sure the gate is accessible and any pool covers are removed. I'll take care of the rest!", time: "4:48 PM", date: twoDaysBeforeStr },
+    { id: "4", type: "text", sender: "user", text: "Sounds good, thank you!", time: "4:57 PM", date: twoDaysBeforeStr },
+    { id: "5", type: "text", sender: "automated", text: `Reminder: Your ${hours}-hour pool service with ${techName} is confirmed for ${svcDate}. View details in your dashboard.`, time: "8:33 AM", date: dayBeforeStr },
+    { id: "6", type: "text", sender: "tech", text: "Hi! Just a heads up — I'll be arriving around the scheduled window tomorrow. See you then!", time: "10:15 AM", date: dayBeforeStr },
+    { id: "7", type: "text", sender: "user", text: "Perfect, we'll be ready!", time: "10:22 AM", date: dayBeforeStr },
+    { id: "8", type: "text", sender: "automated", text: `${techName} is on the way to begin your pool service.`, time: "9:55 AM", date: svcDate },
+
+    // System: service started
+    { id: "s1", type: "system", text: "Your pool service has started.", time: "10:00 AM", date: svcDate },
+
+    // Technician: before photos
+    { id: "9", type: "text", sender: "tech", text: `Hi, I've started your ${hours}-hour pool service. Here are the before photos.`, time: "10:02 AM", date: svcDate },
+    { id: "bp", type: "photos", sender: "tech", photos: beforePhotos, time: "10:03 AM", date: svcDate },
+
+    { id: "10", type: "text", sender: "user", text: "Great, thank you!", time: "10:05 AM", date: svcDate },
+
+    // System: service completed
+    { id: "s2", type: "system", text: "Your pool service has been completed.", time: "11:40 AM", date: svcDate },
+
+    // Technician: after photos
+    { id: "11", type: "text", sender: "tech", text: "Your pool is all set. Please see the after photos below.", time: "11:42 AM", date: svcDate },
+    { id: "ap", type: "photos", sender: "tech", photos: afterPhotos, time: "11:43 AM", date: svcDate },
   ];
 }
+
+/* ─── System Status Badge ─── */
+const SystemMessage = ({ text, time }: { text: string; time: string }) => (
+  <div className="flex flex-col items-center my-3 gap-1">
+    <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-primary/10 text-primary border border-primary/20">
+      {text}
+    </span>
+    <span className="text-[10px] text-muted-foreground">{time}</span>
+  </div>
+);
+
+/* ─── Photo Grid (inside a bubble) ─── */
+const PhotoGrid = ({ photos, onTap }: { photos: PhotoData[]; onTap: (p: PhotoData) => void }) => (
+  <div className="grid grid-cols-3 gap-1.5 mt-1">
+    {photos.map((p, i) => (
+      <button
+        key={i}
+        onClick={() => onTap(p)}
+        className="rounded-xl overflow-hidden border border-border hover:ring-2 hover:ring-primary/30 transition-all cursor-pointer"
+      >
+        <img src={p.src} alt={p.alt} className="w-full h-[80px] object-cover" loading="lazy" />
+      </button>
+    ))}
+  </div>
+);
 
 const Messages = () => {
   const navigate = useNavigate();
   const { booking } = useBooking();
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [newMessage, setNewMessage] = useState("");
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [items, setItems] = useState<ChatItem[]>([]);
+  const [lightboxPhoto, setLightboxPhoto] = useState<PhotoData | null>(null);
 
   const techName = booking?.technician?.isAssigned ? booking.technician.name : "Carlos M.";
   const techInitials = booking?.technician?.isAssigned ? booking.technician.initials : "CM";
 
   useEffect(() => {
     if (booking) {
-      setMessages(buildMockMessages(techName, booking.scheduleData.selectedDate, booking.selectedPass.hours));
+      setItems(buildMessages(techName, booking.scheduleData.selectedDate, booking.selectedPass.hours));
     }
   }, [booking]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
+  }, [items]);
 
   if (!booking) {
     return (
@@ -77,7 +145,7 @@ const Messages = () => {
     );
   }
 
-  const { selectedPass, scheduleData } = booking;
+  const { scheduleData } = booking;
   const d = scheduleData.selectedDate;
   const formattedDate = `${SHORT_MONTHS[d.getMonth()]} ${d.getDate()}`;
   const nextServiceLabel = `Next service · ${formattedDate}, ${TIME_LABELS[scheduleData.timeWindow]?.split("–")[0]?.trim() || "Morning"}`;
@@ -86,21 +154,21 @@ const Messages = () => {
     if (!newMessage.trim()) return;
     const now = new Date();
     const timeStr = now.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit", hour12: true });
-    setMessages((prev) => [
+    setItems((prev) => [
       ...prev,
-      { id: `user-${Date.now()}`, text: newMessage.trim(), sender: "user", time: timeStr, date: formatDate(now) },
+      { id: `user-${Date.now()}`, type: "text", sender: "user", text: newMessage.trim(), time: timeStr, date: formatDate(now) },
     ]);
     setNewMessage("");
   };
 
-  // Group messages by date
-  const groupedMessages: { date: string; msgs: Message[] }[] = [];
-  messages.forEach((msg) => {
-    const last = groupedMessages[groupedMessages.length - 1];
-    if (last && last.date === msg.date) {
-      last.msgs.push(msg);
+  // Group by date
+  const grouped: { date: string; items: ChatItem[] }[] = [];
+  items.forEach((item) => {
+    const last = grouped[grouped.length - 1];
+    if (last && last.date === item.date) {
+      last.items.push(item);
     } else {
-      groupedMessages.push({ date: msg.date, msgs: [msg] });
+      grouped.push({ date: item.date, items: [item] });
     }
   });
 
@@ -123,7 +191,6 @@ const Messages = () => {
 
       {/* Chat Container */}
       <div className="flex flex-1 overflow-hidden max-w-[760px] mx-auto w-full">
-        {/* Main Chat */}
         <div className="flex-1 flex flex-col overflow-hidden">
           {/* Chat Header */}
           <div className="bg-card border-b border-border px-5 py-3 flex items-center justify-between">
@@ -149,7 +216,7 @@ const Messages = () => {
 
           {/* Messages Area */}
           <div className="flex-1 overflow-y-auto px-5 py-5 bg-muted/30 space-y-1">
-            {groupedMessages.map((group) => (
+            {grouped.map((group) => (
               <div key={group.date}>
                 {/* Date Divider */}
                 <div className="text-center my-3">
@@ -158,28 +225,49 @@ const Messages = () => {
                   </span>
                 </div>
 
-                {/* Messages in group */}
-                {group.msgs.map((msg) => (
-                  <div
-                    key={msg.id}
-                    className={`flex flex-col mb-1 max-w-[70%] ${
-                      msg.sender === "user" ? "self-end items-end ml-auto" : "self-start items-start"
-                    }`}
-                  >
+                {group.items.map((item) => {
+                  // System status message
+                  if (item.type === "system") {
+                    return <SystemMessage key={item.id} text={item.text!} time={item.time} />;
+                  }
+
+                  // Photo grid (attached to tech bubble)
+                  if (item.type === "photos") {
+                    return (
+                      <div key={item.id} className="flex flex-col mb-1 max-w-[75%] self-start items-start">
+                        <div className="bg-card rounded-2xl rounded-bl-md border border-border shadow-sm p-2">
+                          <PhotoGrid photos={item.photos!} onTap={setLightboxPhoto} />
+                        </div>
+                        <span className="text-[11px] text-muted-foreground mt-0.5 px-1">{item.time}</span>
+                      </div>
+                    );
+                  }
+
+                  // Regular text message
+                  const isUser = item.sender === "user";
+                  const isAuto = item.sender === "automated";
+                  return (
                     <div
-                      className={`px-3.5 py-2.5 text-[13.5px] leading-relaxed ${
-                        msg.sender === "user"
-                          ? "bg-primary text-primary-foreground rounded-2xl rounded-br-md"
-                          : msg.sender === "automated"
-                          ? "bg-muted text-muted-foreground rounded-2xl rounded-bl-md text-[12.5px]"
-                          : "bg-card text-foreground rounded-2xl rounded-bl-md border border-border shadow-sm"
+                      key={item.id}
+                      className={`flex flex-col mb-1 max-w-[70%] ${
+                        isUser ? "self-end items-end ml-auto" : "self-start items-start"
                       }`}
                     >
-                      {msg.text}
+                      <div
+                        className={`px-3.5 py-2.5 text-[13.5px] leading-relaxed ${
+                          isUser
+                            ? "bg-primary text-primary-foreground rounded-2xl rounded-br-md"
+                            : isAuto
+                            ? "bg-muted text-muted-foreground rounded-2xl rounded-bl-md text-[12.5px]"
+                            : "bg-card text-foreground rounded-2xl rounded-bl-md border border-border shadow-sm"
+                        }`}
+                      >
+                        {item.text}
+                      </div>
+                      <span className="text-[11px] text-muted-foreground mt-0.5 px-1">{item.time}</span>
                     </div>
-                    <span className="text-[11px] text-muted-foreground mt-0.5 px-1">{msg.time}</span>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             ))}
             <div ref={messagesEndRef} />
@@ -207,6 +295,19 @@ const Messages = () => {
           </div>
         </div>
       </div>
+
+      {/* Photo Lightbox */}
+      {lightboxPhoto && (
+        <Dialog open={!!lightboxPhoto} onOpenChange={() => setLightboxPhoto(null)}>
+          <DialogContent className="max-w-md p-0 overflow-hidden rounded-2xl">
+            <DialogTitle className="sr-only">Photo</DialogTitle>
+            <img src={lightboxPhoto.src} alt={lightboxPhoto.alt} className="w-full max-h-[400px] object-cover" />
+            <div className="px-5 py-3 pb-5">
+              <p className="text-xs text-muted-foreground">{lightboxPhoto.date} at {lightboxPhoto.time}</p>
+            </div>
+          </DialogContent>
+        </Dialog>
+      )}
     </div>
   );
 };

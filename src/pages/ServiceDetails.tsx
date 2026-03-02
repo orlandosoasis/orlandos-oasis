@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Waves, ArrowLeft, Clock, Calendar, MapPin, Star, Key, Droplets, Camera, FileText, FlaskConical, RefreshCw, CreditCard, MessagesSquare } from "lucide-react";
+import { Waves, ArrowLeft, Clock, Calendar, MapPin, Star, Key, Droplets, Wrench, Camera, FileText, FlaskConical, RefreshCw, CreditCard, MessagesSquare } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import StatusBadge from "@/components/StatusBadge";
 import { useBooking } from "@/contexts/BookingContext";
@@ -125,7 +125,7 @@ const ServiceDetails = () => {
                 <span>{formattedDate}</span>
               </div>
               <div className="flex items-center gap-2 text-sm text-foreground">
-                <Droplets className="h-4 w-4 text-muted-foreground" />
+                <Wrench className="h-4 w-4 text-muted-foreground" />
                 <span>Monthly service</span>
               </div>
             </div>

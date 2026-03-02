@@ -1,7 +1,7 @@
 import { useState } from "react";
 import LeaveReviewModal from "@/components/LeaveReviewModal";
 import { Link, useNavigate } from "react-router-dom";
-import { Waves, ArrowLeft, Clock, Calendar, Star, Droplets, Camera, FileText, CheckCircle2, MessagesSquare } from "lucide-react";
+import { Waves, ArrowLeft, Clock, Calendar, Star, Wrench, Camera, FileText, CheckCircle2, MessagesSquare } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import StatusBadge from "@/components/StatusBadge";
 import { useBooking } from "@/contexts/BookingContext";
@@ -132,7 +132,7 @@ const CompletedServiceDetails = () => {
                 <span>Completed at 11:42 AM</span>
               </div>
               <div className="flex items-center gap-2 text-sm text-foreground">
-                <Droplets className="h-4 w-4 text-muted-foreground" />
+                <Wrench className="h-4 w-4 text-muted-foreground" />
                 <span>Monthly service</span>
               </div>
             </div>

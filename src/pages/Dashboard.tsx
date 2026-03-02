@@ -97,7 +97,7 @@ const Dashboard = () => {
   const isDemoUser = user?.email === "demo@example.com";
   const demoBookings = isDemoUser ? createDemoBookings() : null;
 
-  const upcomingBooking = booking ? { ...booking, status: booking.status || "scheduled" as const } : demoBookings?.upcoming || null;
+  const upcomingBooking = booking ? { ...booking, status: "scheduled" as const } : demoBookings?.upcoming || null;
   const pastBooking = booking ? { ...booking, status: "completed" as const } : demoBookings?.past || null;
 
   return (

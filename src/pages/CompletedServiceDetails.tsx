@@ -126,7 +126,7 @@ const CompletedServiceDetails = () => {
 
           {/* Technician */}
           <div className="md:col-span-7 bg-card rounded-2xl border border-border p-6 shadow-sm flex flex-col">
-            <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-4">Your Technician</p>
+            <h2 className="text-[17px] font-bold text-foreground mb-4">Your Technician</h2>
             <div className="flex gap-3.5 items-start">
               <div className="w-[56px] h-[56px] rounded-xl bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center text-primary-foreground text-lg font-bold shrink-0">
                 {technician.isAssigned ? technician.initials : "CM"}

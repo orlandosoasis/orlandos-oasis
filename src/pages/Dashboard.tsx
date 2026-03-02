@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Waves, Calendar, ChevronRight, LogOut, Star, CheckCircle2, Clock } from "lucide-react";
+import { Waves, Calendar, ChevronRight, LogOut, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
 import { useBooking, BookingData, matchTechnician } from "@/contexts/BookingContext";
 import PoolSceneHero from "@/components/dashboard/PoolSceneHero";
 import BookingFlow from "@/components/dashboard/BookingFlow";
+import StatusBadge from "@/components/StatusBadge";
 
 const FULL_DAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 const SHORT_MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -66,6 +67,7 @@ function createDemoBookings(): { upcoming: BookingData; past: BookingData } {
       },
       technician: tech,
       pool: sharedPool,
+      status: "scheduled",
     },
     past: {
       frequency: "once",
@@ -80,6 +82,7 @@ function createDemoBookings(): { upcoming: BookingData; past: BookingData } {
       },
       technician: tech,
       pool: sharedPool,
+      status: "completed",
     },
   };
 }
@@ -131,7 +134,7 @@ const Dashboard = () => {
               <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
                 {SHORT_MONTHS[upcomingBooking.scheduleData.selectedDate.getMonth()]} {upcomingBooking.scheduleData.selectedDate.getFullYear()}
               </p>
-              <ServiceCard booking={upcomingBooking} status="scheduled" navigateTo="/service-details" />
+              <ServiceCard booking={upcomingBooking} navigateTo="/service-details" />
             </>
           ) : (
             <div className="bg-card rounded-2xl p-8 text-center">
@@ -147,7 +150,7 @@ const Dashboard = () => {
 
           {pastBooking ? (
             <div className="mt-3">
-              <ServiceCard booking={pastBooking} status="completed" navigateTo="/service-details/completed" />
+              <ServiceCard booking={pastBooking} navigateTo="/service-details/completed" />
             </div>
           ) : (
             <div className="bg-card rounded-2xl p-8 text-center">
@@ -186,21 +189,17 @@ const Dashboard = () => {
 };
 
 /* ── Unified Service Card ── */
-type ServiceStatus = "scheduled" | "completed";
-
 interface ServiceCardProps {
   booking: BookingData;
-  status: ServiceStatus;
   navigateTo: string;
 }
 
-const ServiceCard = ({ booking, status, navigateTo }: ServiceCardProps) => {
+const ServiceCard = ({ booking, navigateTo }: ServiceCardProps) => {
   const navigate = useNavigate();
   const { selectedPass, scheduleData, technician } = booking;
+  const serviceStatus = booking.status || "scheduled";
   const d = scheduleData.selectedDate;
   const shortDate = `${FULL_DAYS[d.getDay()]}, ${SHORT_MONTHS[d.getMonth()]} ${d.getDate()}`;
-
-  const isCompleted = status === "completed";
 
   return (
     <div onClick={() => navigate(navigateTo)} className="bg-card rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer group">
@@ -210,17 +209,7 @@ const ServiceCard = ({ booking, status, navigateTo }: ServiceCardProps) => {
 
         {/* Status badge */}
         <div className="absolute top-3 left-3">
-          {isCompleted ? (
-            <span className="inline-flex items-center gap-1 bg-green-500/90 text-white text-xs font-semibold px-2.5 py-1 rounded-lg shadow-sm">
-              <CheckCircle2 className="h-3.5 w-3.5" />
-              Completed
-            </span>
-          ) : (
-            <span className="inline-flex items-center gap-1 bg-primary/90 text-primary-foreground text-xs font-semibold px-2.5 py-1 rounded-lg shadow-sm">
-              <Clock className="h-3.5 w-3.5" />
-              Scheduled
-            </span>
-          )}
+          <StatusBadge status={serviceStatus} />
         </div>
 
         {/* Technician badge */}

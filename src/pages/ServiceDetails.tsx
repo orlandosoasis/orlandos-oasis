@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Waves, ArrowLeft, Clock, Calendar, MapPin, Star, Key, Droplets, Camera, FileText, FlaskConical, RefreshCw, CreditCard } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
+import StatusBadge from "@/components/StatusBadge";
 import { useBooking } from "@/contexts/BookingContext";
 import PoolSceneHero from "@/components/dashboard/PoolSceneHero";
 
@@ -103,7 +103,7 @@ const ServiceDetails = () => {
           <h1 className="text-xl font-bold text-white">{selectedPass.hours}-Hour Pool Service</h1>
           <p className="text-sm font-semibold text-white/90 mt-1">{formattedDate}</p>
           <p className="text-sm text-white/80">Expected arrival {TIME_LABELS[scheduleData.timeWindow]}</p>
-          <Badge className="bg-primary/90 text-primary-foreground text-[13px] px-3 py-1 mt-1">Scheduled</Badge>
+          <StatusBadge status={booking.status || "scheduled"} className="mt-1" />
         </div>
       </div>
 

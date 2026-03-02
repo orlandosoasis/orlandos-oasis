@@ -1,7 +1,10 @@
+import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { ArrowLeft, Waves } from "lucide-react";
 
 const Terms = () => {
+  useEffect(() => { window.scrollTo(0, 0); }, []);
+
   return (
     <div className="min-h-screen bg-background">
       <header className="bg-card border-b border-border sticky top-0 z-10">

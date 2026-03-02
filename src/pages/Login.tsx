@@ -27,7 +27,13 @@ const Login = () => {
         title: "Welcome back!",
         description: "You've successfully logged in.",
       });
-      navigate("/dashboard");
+      // Route technicians to their dedicated dashboard
+      const normalizedEmail = email.toLowerCase().trim();
+      if (normalizedEmail === "tech@example.com") {
+        navigate("/tech-dashboard");
+      } else {
+        navigate("/dashboard");
+      }
     } else {
       toast({
         title: "Login failed",

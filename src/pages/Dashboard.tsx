@@ -88,10 +88,22 @@ function createDemoBookings(): { upcoming: BookingData; past: BookingData } {
 }
 
 const Dashboard = () => {
-  const { user, logout } = useAuth();
+  const { user, logout, isAuthenticated, isLoading } = useAuth();
   const { booking } = useBooking();
+  const navigate = useNavigate();
   const [showCancelled, setShowCancelled] = useState(false);
   const [showBooking, setShowBooking] = useState(false);
+
+  useEffect(() => {
+    if (!isLoading && !isAuthenticated) {
+      navigate("/login", { replace: true });
+    }
+  }, [isLoading, isAuthenticated, navigate]);
+
+  const handleLogout = () => {
+    logout();
+    navigate("/login", { replace: true });
+  };
 
   // For demo user, show seed data; otherwise use booking context
   const isDemoUser = user?.email === "demo@example.com";
@@ -115,7 +127,7 @@ const Dashboard = () => {
               Book Service
             </Button>
             {user && (
-              <Button variant="ghost" size="icon" onClick={logout} title="Sign out">
+              <Button variant="ghost" size="icon" onClick={handleLogout} title="Sign out">
                 <LogOut className="h-4 w-4" />
               </Button>
             )}

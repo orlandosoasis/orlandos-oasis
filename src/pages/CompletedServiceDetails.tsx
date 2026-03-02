@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Waves, ArrowLeft, Clock, Calendar, Star, Droplets, Camera, FileText, CheckCircle2, ChevronDown, ChevronUp, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
+import StatusBadge from "@/components/StatusBadge";
 import { useBooking } from "@/contexts/BookingContext";
 import PoolSceneHero from "@/components/dashboard/PoolSceneHero";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
@@ -92,10 +92,7 @@ const CompletedServiceDetails = () => {
         <div className="absolute bottom-0 left-0 right-0 p-6 max-w-[760px] mx-auto">
           <h1 className="text-xl font-bold text-white">{selectedPass.hours}-Hour Pool Service</h1>
           <p className="text-sm font-semibold text-white/90 mt-1">Completed on {formattedDate}</p>
-          <Badge className="bg-green-500/90 text-white text-[10px] px-2 py-0.5 mt-1.5 gap-1">
-            <CheckCircle2 className="h-3 w-3" />
-            Completed
-          </Badge>
+          <StatusBadge status="completed" className="mt-1.5" />
         </div>
       </div>
 

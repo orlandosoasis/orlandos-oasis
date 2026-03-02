@@ -209,7 +209,7 @@ const Messages = () => {
               <p className="text-xs text-muted-foreground truncate mt-0.5">
                 {lastTechMsg?.text || nextServiceLabel}
               </p>
-              <p className="text-[11px] text-muted-foreground mt-0.5">{nextServiceLabel}</p>
+              
             </div>
             {/* Unread dot */}
             <span className="w-2 h-2 rounded-full bg-primary shrink-0" />
@@ -228,7 +228,7 @@ const Messages = () => {
               </div>
               <div>
                 <p className="text-[15px] font-bold text-foreground">{techName}</p>
-                <p className="text-xs text-muted-foreground">{nextServiceLabel}</p>
+                
               </div>
             </div>
             <Button

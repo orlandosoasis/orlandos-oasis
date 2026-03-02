@@ -128,12 +128,12 @@ const CompletedServiceDetails = () => {
                 <span>{formattedDate}</span>
               </div>
               <div className="flex items-center gap-2 text-sm text-foreground">
-                <Droplets className="h-4 w-4 text-muted-foreground" />
-                <span>{isMonthly ? "Monthly plan" : "One-time service"}</span>
-              </div>
-              <div className="flex items-center gap-2 text-sm text-foreground">
                 <CheckCircle2 className="h-4 w-4 text-muted-foreground" />
                 <span>Completed at 11:42 AM</span>
+              </div>
+              <div className="flex items-center gap-2 text-sm text-foreground">
+                <Droplets className="h-4 w-4 text-muted-foreground" />
+                <span>Monthly plan</span>
               </div>
             </div>
           </div>

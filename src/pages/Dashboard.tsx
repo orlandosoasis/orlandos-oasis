@@ -1,9 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Waves, Calendar, ChevronRight, User, Clock, MapPin, LogOut, Star, CheckCircle2 } from "lucide-react";
+import { Waves, Calendar, ChevronRight, LogOut, Star, CheckCircle2, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
-import { useBooking } from "@/contexts/BookingContext";
+import { useBooking, BookingData, matchTechnician } from "@/contexts/BookingContext";
 import PoolSceneHero from "@/components/dashboard/PoolSceneHero";
 import BookingFlow from "@/components/dashboard/BookingFlow";
 
@@ -23,15 +23,79 @@ const ACCESS_LABELS: Record<string, string> = {
   other: "Custom instructions provided",
 };
 
+/* ── Demo seed data for demo@example.com ── */
+function createDemoBookings(): { upcoming: BookingData; past: BookingData } {
+  const upcomingDate = new Date(2026, 2, 18); // March 18, 2026
+  const pastDate = new Date(2026, 1, 21); // February 21, 2026
+
+  const sharedPass = {
+    id: "pass-2",
+    hours: 3,
+    label: "Deep Clean Pass",
+    description: "Full cleaning, chemical balance, filter check",
+    originalPrice: 189,
+    discountPrice: 149,
+    percentOff: 21,
+    isMostPopular: true,
+  };
+
+  const sharedPool = {
+    address: "123 Main Street",
+    city: "Miami",
+    state: "FL",
+    zip: "33101",
+    poolType: "In-ground",
+    poolSize: "Medium (15k–25k gallons)",
+    accessMethod: "gate" as const,
+    accessDetail: "Code: 4521",
+  };
+
+  const tech = { name: "Carlos M.", initials: "CM", rating: 4.9, isAssigned: true };
+
+  return {
+    upcoming: {
+      frequency: "once",
+      selectedPass: sharedPass,
+      scheduleData: {
+        selectedDate: upcomingDate,
+        timeWindow: "morning",
+        accessMethod: "gate",
+        accessDetail: "Code: 4521",
+        addons: [{ id: "addon-1", name: "Filter Deep Clean", price: 29 }],
+        addonsTotal: 29,
+      },
+      technician: tech,
+      pool: sharedPool,
+    },
+    past: {
+      frequency: "once",
+      selectedPass: sharedPass,
+      scheduleData: {
+        selectedDate: pastDate,
+        timeWindow: "morning",
+        accessMethod: "gate",
+        accessDetail: "Code: 4521",
+        addons: [],
+        addonsTotal: 0,
+      },
+      technician: tech,
+      pool: sharedPool,
+    },
+  };
+}
+
 const Dashboard = () => {
   const { user, logout } = useAuth();
   const { booking } = useBooking();
   const [showCancelled, setShowCancelled] = useState(false);
   const [showBooking, setShowBooking] = useState(false);
 
-  const formatShortDate = (date: Date) => {
-    return `${FULL_DAYS[date.getDay()]}, ${SHORT_MONTHS[date.getMonth()]} ${date.getDate()}`;
-  };
+  // For demo user, show seed data; otherwise use booking context
+  const isDemoUser = user?.email === "demo@example.com";
+  const demoBookings = isDemoUser ? createDemoBookings() : null;
+
+  const upcomingBooking = booking || demoBookings?.upcoming || null;
+  const pastBooking = booking ? booking : demoBookings?.past || null;
 
   return (
     <div className="min-h-screen bg-background">
@@ -62,12 +126,12 @@ const Dashboard = () => {
         <section className="mb-10">
           <h2 className="text-[1.35rem] font-semibold text-foreground mb-4">Upcoming services</h2>
 
-          {booking ? (
+          {upcomingBooking ? (
             <>
               <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
-                {SHORT_MONTHS[booking.scheduleData.selectedDate.getMonth()]} {booking.scheduleData.selectedDate.getFullYear()}
+                {SHORT_MONTHS[upcomingBooking.scheduleData.selectedDate.getMonth()]} {upcomingBooking.scheduleData.selectedDate.getFullYear()}
               </p>
-              <UpcomingCard booking={booking} />
+              <ServiceCard booking={upcomingBooking} status="scheduled" navigateTo="/service-details" />
             </>
           ) : (
             <div className="bg-card rounded-2xl p-8 text-center">
@@ -81,9 +145,9 @@ const Dashboard = () => {
         <section>
           <h2 className="text-[1.35rem] font-semibold text-foreground mb-1">Past services</h2>
 
-          {booking ? (
+          {pastBooking ? (
             <div className="mt-3">
-              <CompletedCard booking={booking} />
+              <ServiceCard booking={pastBooking} status="completed" navigateTo="/service-details/completed" />
             </div>
           ) : (
             <div className="bg-card rounded-2xl p-8 text-center">
@@ -121,22 +185,43 @@ const Dashboard = () => {
   );
 };
 
-/* ── Upcoming Service Card ── */
-interface UpcomingCardProps {
-  booking: NonNullable<ReturnType<typeof useBooking>["booking"]>;
+/* ── Unified Service Card ── */
+type ServiceStatus = "scheduled" | "completed";
+
+interface ServiceCardProps {
+  booking: BookingData;
+  status: ServiceStatus;
+  navigateTo: string;
 }
 
-const UpcomingCard = ({ booking }: UpcomingCardProps) => {
+const ServiceCard = ({ booking, status, navigateTo }: ServiceCardProps) => {
   const navigate = useNavigate();
   const { selectedPass, scheduleData, technician } = booking;
   const d = scheduleData.selectedDate;
   const shortDate = `${FULL_DAYS[d.getDay()]}, ${SHORT_MONTHS[d.getMonth()]} ${d.getDate()}`;
 
+  const isCompleted = status === "completed";
+
   return (
-    <div onClick={() => navigate("/service-details")} className="bg-card rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer group">
+    <div onClick={() => navigate(navigateTo)} className="bg-card rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer group">
       {/* Hero illustration */}
       <div className="relative h-[190px] overflow-hidden">
         <PoolSceneHero />
+
+        {/* Status badge */}
+        <div className="absolute top-3 left-3">
+          {isCompleted ? (
+            <span className="inline-flex items-center gap-1 bg-green-500/90 text-white text-xs font-semibold px-2.5 py-1 rounded-lg shadow-sm">
+              <CheckCircle2 className="h-3.5 w-3.5" />
+              Completed
+            </span>
+          ) : (
+            <span className="inline-flex items-center gap-1 bg-primary/90 text-primary-foreground text-xs font-semibold px-2.5 py-1 rounded-lg shadow-sm">
+              <Clock className="h-3.5 w-3.5" />
+              Scheduled
+            </span>
+          )}
+        </div>
 
         {/* Technician badge */}
         <div className="absolute top-3 right-3 bg-card/90 backdrop-blur-sm rounded-xl px-2.5 py-1.5 flex items-center gap-2 shadow-md border border-border">
@@ -171,7 +256,7 @@ const UpcomingCard = ({ booking }: UpcomingCardProps) => {
           <p className="text-[0.825rem] text-muted-foreground leading-relaxed">
             Expected arrival {TIME_LABELS[scheduleData.timeWindow]}
             <br />
-            123 Main Street, Miami, FL 33101
+            {booking.pool.address}, {booking.pool.city}, {booking.pool.state} {booking.pool.zip}
             <br />
             Pool Access: {ACCESS_LABELS[scheduleData.accessMethod]}
             {scheduleData.accessDetail && ` · ${scheduleData.accessDetail}`}
@@ -188,41 +273,6 @@ const UpcomingCard = ({ booking }: UpcomingCardProps) => {
               ))}
             </div>
           )}
-        </div>
-        <ChevronRight className="h-5 w-5 text-muted-foreground mt-1 shrink-0 group-hover:translate-x-0.5 transition-transform" />
-      </div>
-    </div>
-  );
-};
-
-/* ── Completed Service Card ── */
-const CompletedCard = ({ booking }: UpcomingCardProps) => {
-  const navigate = useNavigate();
-  const { selectedPass, scheduleData, technician } = booking;
-
-  // Sample completed date: 5 days before the booking date
-  const completedDate = new Date(scheduleData.selectedDate);
-  completedDate.setDate(completedDate.getDate() - 5);
-  const shortDate = `${FULL_DAYS[completedDate.getDay()]}, ${SHORT_MONTHS[completedDate.getMonth()]} ${completedDate.getDate()}`;
-
-  return (
-    <div
-      onClick={() => navigate("/service-details/completed")}
-      className="bg-card rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer group"
-    >
-      <div className="px-[18px] py-4 flex items-start justify-between">
-        <div className="flex-1">
-          <div className="flex items-center gap-2 mb-1">
-            <p className="font-semibold text-foreground text-base">{selectedPass.label}</p>
-            <span className="inline-flex items-center gap-1 bg-green-500/10 text-green-600 text-[11px] font-semibold px-2 py-0.5 rounded-full">
-              <CheckCircle2 className="h-3 w-3" />
-              Completed
-            </span>
-          </div>
-          <p className="font-semibold text-foreground text-[0.875rem] mb-0.5">{shortDate}</p>
-          <p className="text-[0.825rem] text-muted-foreground leading-relaxed">
-            {technician.isAssigned ? technician.name : "Carlos M."} · {selectedPass.hours}-hour service
-          </p>
         </div>
         <ChevronRight className="h-5 w-5 text-muted-foreground mt-1 shrink-0 group-hover:translate-x-0.5 transition-transform" />
       </div>

@@ -153,7 +153,7 @@ const BookingFlow = ({ onClose, onComplete }: BookingFlowProps) => {
             <CheckCircle2 className="h-8 w-8 text-green-600" />
           </div>
           <h2 className="text-xl font-bold text-foreground mb-1">
-            {frequency === "once" ? "Payment Successful!" : "Monthly Plan Started!"}
+            {frequency === "once" ? "Payment Successful!" : "Monthly Service Started!"}
           </h2>
           <p className="text-sm text-muted-foreground mb-8">
             {frequency === "once" ? "Your pool service has been booked." : "Your recurring pool service is set up."}
@@ -241,7 +241,7 @@ const BookingFlow = ({ onClose, onComplete }: BookingFlowProps) => {
               </div>
             </div>
 
-            {/* Dynamic: One-time duration OR Monthly plans */}
+            {/* Dynamic: One-time duration OR Monthly services */}
             {frequency === "once" ? (
               <div>
                 <p className="text-[11px] font-semibold tracking-[0.8px] uppercase text-muted-foreground mb-2.5">SERVICE DURATION</p>
@@ -742,7 +742,7 @@ const BookingFlow = ({ onClose, onComplete }: BookingFlowProps) => {
               ) : frequency === "once" ? (
                 `Pay $${totalPrice}`
               ) : (
-                "Start Monthly Plan"
+                "Start Monthly Service"
               )}
             </Button>
           )}

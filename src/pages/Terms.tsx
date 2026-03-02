@@ -38,7 +38,7 @@ const Terms = () => {
           <section>
             <h2 className="text-[17px] font-bold text-foreground mb-2">3. Booking & Payments</h2>
             <p className="mb-2">By completing a booking, you authorize Orlando's Oasis to charge the payment method on file for the agreed service amount.</p>
-            <p className="mb-2">For monthly plans, your subscription will automatically renew each billing cycle at the current rate unless canceled prior to the next service date.</p>
+            <p className="mb-2">For monthly services, your subscription will automatically renew each billing cycle at the current rate unless canceled prior to the next service date.</p>
             <p>Cancellations and rescheduling requests must be submitted at least 24 hours before the scheduled appointment. Late cancellations may be subject to a service fee.</p>
           </section>
 

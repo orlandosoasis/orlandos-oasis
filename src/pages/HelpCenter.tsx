@@ -20,7 +20,7 @@ const CATEGORIES = [
     icon: CreditCard,
     articles: [
       { title: "What payment methods are accepted?", body: "We accept all major credit and debit cards. Payment is processed securely at the time of booking." },
-      { title: "When am I charged for monthly plans?", body: "Monthly plan subscribers are billed automatically at the beginning of each billing cycle. You can view your billing history on the dashboard." },
+      { title: "When am I charged for monthly services?", body: "Monthly service subscribers are billed automatically at the beginning of each billing cycle. You can view your billing history on the dashboard." },
       { title: "How do I get a refund?", body: "If you're unsatisfied with a service, contact us within 48 hours. Refunds are issued at Orlando's Oasis's discretion based on the circumstances." },
     ],
   },
@@ -29,8 +29,8 @@ const CATEGORIES = [
     label: "Membership & Plans",
     icon: Award,
     articles: [
-      { title: "What's included in a monthly plan?", body: "Monthly plans include one scheduled cleaning per month at a discounted rate. Your plan auto-renews unless canceled before the next billing date." },
-      { title: "Can I switch between one-time and monthly?", body: "Yes. You can switch to a monthly plan at any time from the booking flow. To cancel a monthly plan, visit your dashboard settings." },
+      { title: "What's included in a monthly service?", body: "Monthly services include one scheduled cleaning per month at a discounted rate. Your service auto-renews unless canceled before the next billing date." },
+      { title: "Can I switch between one-time and monthly?", body: "Yes. You can switch to a monthly service at any time from the booking flow. To cancel a monthly service, visit your dashboard settings." },
     ],
   },
   {

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import LeaveReviewModal from "@/components/LeaveReviewModal";
 import { Link, useNavigate } from "react-router-dom";
-import { Waves, ArrowLeft, Clock, Calendar, Star, Droplets, Camera, FileText, CheckCircle2 } from "lucide-react";
+import { Waves, ArrowLeft, Clock, Calendar, Star, Droplets, Camera, FileText, CheckCircle2, MessagesSquare } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import StatusBadge from "@/components/StatusBadge";
 import { useBooking } from "@/contexts/BookingContext";
@@ -151,18 +151,26 @@ const CompletedServiceDetails = () => {
                   <Star className="h-3.5 w-3.5 fill-cta-yellow text-cta-yellow" />
                   <span>{technician.isAssigned ? technician.rating : 4.9}</span>
                 </div>
-                {reviewSubmitted ? (
-                  <Button variant="outline" size="sm" className="mt-2 text-xs gap-1.5 rounded-lg opacity-60 cursor-default" disabled>
-                    <CheckCircle2 className="h-3 w-3" />
-                    Review Submitted
-                  </Button>
-                ) : (
-                  <Button variant="outline" size="sm" className="mt-2 text-xs gap-1.5 rounded-lg" onClick={(e) => { e.stopPropagation(); setReviewOpen(true); }}>
-                    <Star className="h-3 w-3" />
-                    Leave a Review
-                  </Button>
-                )}
+                <p className="text-[13px] text-muted-foreground">Assigned pool care specialist for this visit.</p>
               </div>
+            </div>
+            {/* CTA Row */}
+            <div className="flex gap-3 mt-4">
+              <Button variant="outline" className="flex-1 gap-1.5 hover:bg-primary hover:text-primary-foreground hover:border-primary">
+                <MessagesSquare className="h-4 w-4" />
+                Message
+              </Button>
+              {reviewSubmitted ? (
+                <Button variant="outline" className="flex-1 gap-1.5 opacity-60 cursor-default" disabled>
+                  <CheckCircle2 className="h-4 w-4" />
+                  Review Submitted
+                </Button>
+              ) : (
+                <Button variant="outline" className="flex-1 gap-1.5 hover:bg-primary hover:text-primary-foreground hover:border-primary" onClick={(e) => { e.stopPropagation(); setReviewOpen(true); }}>
+                  <Star className="h-4 w-4" />
+                  Leave a Review
+                </Button>
+              )}
             </div>
           </div>
         </div>

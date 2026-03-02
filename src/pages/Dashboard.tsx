@@ -240,17 +240,27 @@ const ServiceCard = ({ booking, navigateTo }: ServiceCardProps) => {
       <div className="px-[18px] py-4 flex items-start justify-between">
         <div className="flex-1">
           <p className="font-semibold text-foreground text-base mb-1">
-            {selectedPass.label}
+            {serviceStatus === "completed"
+              ? `${selectedPass.hours}-Hour Pool Service`
+              : selectedPass.label}
           </p>
-          <p className="font-semibold text-foreground text-[0.875rem] mb-0.5">{shortDate}</p>
-          <p className="text-[0.825rem] text-muted-foreground leading-relaxed">
-            Expected arrival {TIME_LABELS[scheduleData.timeWindow]}
-            <br />
-            {booking.pool.address}, {booking.pool.city}, {booking.pool.state} {booking.pool.zip}
-            <br />
-            Pool Access: {ACCESS_LABELS[scheduleData.accessMethod]}
-            {scheduleData.accessDetail && ` · ${scheduleData.accessDetail}`}
-          </p>
+          {serviceStatus === "completed" ? (
+            <p className="text-[0.825rem] text-muted-foreground leading-relaxed">
+              Completed on {shortDate}
+            </p>
+          ) : (
+            <>
+              <p className="font-semibold text-foreground text-[0.875rem] mb-0.5">{shortDate}</p>
+              <p className="text-[0.825rem] text-muted-foreground leading-relaxed">
+                Expected arrival {TIME_LABELS[scheduleData.timeWindow]}
+                <br />
+                {booking.pool.address}, {booking.pool.city}, {booking.pool.state} {booking.pool.zip}
+                <br />
+                Pool Access: {ACCESS_LABELS[scheduleData.accessMethod]}
+                {scheduleData.accessDetail && ` · ${scheduleData.accessDetail}`}
+              </p>
+            </>
+          )}
           {scheduleData.addons.length > 0 && (
             <div className="flex flex-wrap gap-1.5 mt-2">
               {scheduleData.addons.map((addon) => (

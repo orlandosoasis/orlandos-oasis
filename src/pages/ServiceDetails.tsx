@@ -272,15 +272,14 @@ const ServiceDetails = () => {
         <div className="bg-card rounded-2xl border border-border p-6 shadow-sm">
           <h2 className="text-[17px] font-bold text-foreground mb-3">Need More Help?</h2>
           <p className="text-[13.5px] text-muted-foreground leading-relaxed">
-            View our <a href="#" className="text-primary font-semibold hover:underline">help center</a> for more information on what to expect and how Orlando's Oasis works, or <a href="#" className="text-primary font-semibold hover:underline">report an issue</a>.
+            View our <Link to="/help" className="text-primary font-semibold hover:underline">help center</Link> for more information on what to expect and how Orlando's Oasis works, or <a href="#" className="text-primary font-semibold hover:underline">report an issue</a>.
           </p>
         </div>
 
         {/* Footer */}
         <footer className="text-center text-xs text-muted-foreground mt-10 space-x-3">
-          <a href="#" className="text-primary hover:underline">Terms</a>
-          <a href="#" className="text-primary hover:underline">Privacy</a>
-          <a href="#" className="text-primary hover:underline">Do Not Sell My Personal Information</a>
+          <Link to="/terms" className="text-primary hover:underline">Terms</Link>
+          <Link to="/privacy" className="text-primary hover:underline">Privacy</Link>
           <p className="mt-3">© Orlando's Oasis 2015 – 2026</p>
         </footer>
       </main>

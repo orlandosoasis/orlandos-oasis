@@ -12,6 +12,9 @@ import Dashboard from "./pages/Dashboard";
 import ServicePass from "./pages/ServicePass";
 import ServiceDetails from "./pages/ServiceDetails";
 import CompletedServiceDetails from "./pages/CompletedServiceDetails";
+import Terms from "./pages/Terms";
+import Privacy from "./pages/Privacy";
+import HelpCenter from "./pages/HelpCenter";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -32,6 +35,9 @@ const App = () => (
             <Route path="/passes" element={<ServicePass />} />
             <Route path="/service-details" element={<ServiceDetails />} />
             <Route path="/service-details/completed" element={<CompletedServiceDetails />} />
+            <Route path="/terms" element={<Terms />} />
+            <Route path="/privacy" element={<Privacy />} />
+            <Route path="/help" element={<HelpCenter />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

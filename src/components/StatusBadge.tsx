@@ -17,20 +17,23 @@ const STATUS_CONFIG: Record<
   in_progress: {
     label: "In Progress",
     icon: Loader2,
-    bgClass: "bg-amber-500/90",
-    textClass: "text-white",
+    bgClass: "bg-[#FFF4DB]",
+    textClass: "text-[#4a3505]",
+    borderClass: "border border-[#FAE5C5]",
   },
   completed: {
     label: "Completed",
     icon: CheckCircle2,
-    bgClass: "bg-green-500/90",
-    textClass: "text-white",
+    bgClass: "bg-[#DBFBE5]",
+    textClass: "text-[#054a20]",
+    borderClass: "border border-[#C5FAD5]",
   },
   cancelled: {
     label: "Cancelled",
     icon: XCircle,
-    bgClass: "bg-muted",
-    textClass: "text-muted-foreground",
+    bgClass: "bg-[#FFE0E0]",
+    textClass: "text-[#4a0505]",
+    borderClass: "border border-[#FAC5C5]",
   },
 };
 

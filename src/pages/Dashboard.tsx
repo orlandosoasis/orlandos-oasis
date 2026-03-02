@@ -199,8 +199,17 @@ const ServiceCard = ({ booking, navigateTo }: ServiceCardProps) => {
   const { setBooking } = useBooking();
   const { selectedPass, scheduleData, technician } = booking;
   const serviceStatus = booking.status || "scheduled";
+  const isCompleted = serviceStatus === "completed";
   const d = scheduleData.selectedDate;
-  const shortDate = `${FULL_DAYS[d.getDay()]}, ${SHORT_MONTHS[d.getMonth()]} ${d.getDate()}`;
+
+  // For completed services, mirror the CompletedServiceDetails page date logic
+  const displayDate = isCompleted ? (() => {
+    const cd = new Date(d);
+    cd.setDate(cd.getDate() - 5);
+    return cd;
+  })() : d;
+
+  const fullDate = `${FULL_DAYS[displayDate.getDay()]}, ${SHORT_MONTHS[displayDate.getMonth()]} ${displayDate.getDate()}, ${displayDate.getFullYear()}`;
 
   return (
     <div onClick={() => { setBooking(booking); navigate(navigateTo); }} className="bg-card rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer group">
@@ -240,17 +249,24 @@ const ServiceCard = ({ booking, navigateTo }: ServiceCardProps) => {
       <div className="px-[18px] py-4 flex items-start justify-between">
         <div className="flex-1">
           <p className="font-semibold text-foreground text-base mb-1">
-            {selectedPass.label}
+            {selectedPass.hours}-Hour Pool Service
           </p>
-          <p className="font-semibold text-foreground text-[0.875rem] mb-0.5">{shortDate}</p>
-          <p className="text-[0.825rem] text-muted-foreground leading-relaxed">
-            Expected arrival {TIME_LABELS[scheduleData.timeWindow]}
-            <br />
-            {booking.pool.address}, {booking.pool.city}, {booking.pool.state} {booking.pool.zip}
-            <br />
-            Pool Access: {ACCESS_LABELS[scheduleData.accessMethod]}
-            {scheduleData.accessDetail && ` · ${scheduleData.accessDetail}`}
-          </p>
+          {isCompleted ? (
+            <p className="text-[0.825rem] text-muted-foreground leading-relaxed">
+              Completed on {fullDate} at 11:42 AM
+              <br />
+              {booking.pool.address}, {booking.pool.city}, {booking.pool.state} {booking.pool.zip}
+            </p>
+          ) : (
+            <>
+              <p className="font-semibold text-foreground text-[0.875rem] mb-0.5">{fullDate}</p>
+              <p className="text-[0.825rem] text-muted-foreground leading-relaxed">
+                Expected arrival {TIME_LABELS[scheduleData.timeWindow]}
+                <br />
+                {booking.pool.address}, {booking.pool.city}, {booking.pool.state} {booking.pool.zip}
+              </p>
+            </>
+          )}
         </div>
         <ChevronRight className="h-5 w-5 text-muted-foreground mt-1 shrink-0 group-hover:translate-x-0.5 transition-transform" />
       </div>

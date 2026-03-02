@@ -114,7 +114,7 @@ const ServiceDetails = () => {
         <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
           {/* Appointment Details */}
           <div className="md:col-span-5 bg-card rounded-2xl border border-border p-6 shadow-sm flex flex-col">
-            <p className="text-xs font-bold uppercase tracking-widest mb-4 text-secondary-foreground">Appointment Details</p>
+            <h2 className="text-[17px] font-bold text-foreground mb-4">Appointment Details</h2>
             <div className="space-y-2.5">
               <div className="flex items-center gap-2 text-sm text-foreground">
                 <Clock className="h-4 w-4 text-muted-foreground" />
@@ -137,7 +137,7 @@ const ServiceDetails = () => {
           <div className="md:col-span-7 bg-card rounded-2xl border border-border p-6 shadow-sm flex flex-col">
             {technician.isAssigned ?
             <>
-                <p className="text-xs font-bold uppercase tracking-widest mb-4 text-secondary-foreground">Your Technician</p>
+                <h2 className="text-[17px] font-bold text-foreground mb-4">Your Technician</h2>
                 <div className="flex gap-3.5 items-start">
                   <div className="w-[56px] h-[56px] rounded-xl bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center text-primary-foreground text-lg font-bold shrink-0">
                     {technician.initials}
@@ -156,7 +156,7 @@ const ServiceDetails = () => {
               </> :
 
             <>
-                <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-4">Pool Technician</p>
+                <h2 className="text-[17px] font-bold text-foreground mb-4">Pool Technician</h2>
                 <div className="flex flex-col items-center text-center gap-3">
                   <div className="w-[72px] h-[72px] rounded-xl bg-muted flex items-center justify-center shrink-0">
                     <Droplets className="h-8 w-8 text-muted-foreground" />
@@ -178,7 +178,7 @@ const ServiceDetails = () => {
 
         {/* 4. Your Pool */}
         <div className="bg-card rounded-2xl border border-border p-6 shadow-sm">
-          <p className="text-xs font-bold uppercase tracking-widest mb-4 text-secondary-foreground">Your Pool</p>
+          <h2 className="text-[17px] font-bold text-foreground mb-4">Your Pool</h2>
           <div className="space-y-2.5">
             <div className="flex items-center gap-2 text-sm text-foreground">
               <MapPin className="h-4 w-4 text-muted-foreground" />
@@ -212,7 +212,7 @@ const ServiceDetails = () => {
         {/* 5. Recurring Schedule (monthly only) */}
         {isMonthly &&
         <div className="bg-card rounded-2xl border border-border p-6 shadow-sm">
-            <p className="text-xs font-bold uppercase tracking-widest mb-4 text-secondary-foreground">Recurring Schedule</p>
+            <h2 className="text-[17px] font-bold text-foreground mb-4">Recurring Schedule</h2>
             <div className="space-y-2.5 text-sm">
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Frequency</span>
@@ -236,7 +236,7 @@ const ServiceDetails = () => {
 
         {/* 6. Payment Details */}
         <div className="bg-card rounded-2xl border border-border p-6 shadow-sm">
-          <p className="text-xs font-bold uppercase tracking-widest mb-3 text-secondary-foreground">Payment Details</p>
+          <h2 className="text-[17px] font-bold text-foreground mb-3">Payment Details</h2>
           <div className="space-y-2 text-sm">
             {isMonthly &&
             <div className="flex justify-between">
@@ -255,7 +255,7 @@ const ServiceDetails = () => {
 
         {/* 7. After-Service Transparency */}
         <div className="bg-card rounded-2xl border border-border p-6 shadow-sm">
-          <p className="text-xs font-bold uppercase tracking-widest mb-4 text-secondary-foreground">After Your Service</p>
+          <h2 className="text-[17px] font-bold text-foreground mb-4">After Your Service</h2>
           <div className="space-y-3">
             <div className="flex items-center gap-3 text-sm text-foreground">
               <Camera className="h-4 w-4 text-muted-foreground shrink-0" />
@@ -270,7 +270,7 @@ const ServiceDetails = () => {
 
         {/* 8. Help / Support */}
         <div className="bg-card rounded-2xl border border-border p-6 shadow-sm">
-          <p className="text-xs font-bold uppercase tracking-widest mb-3 text-secondary-foreground">Need More Help?</p>
+          <h2 className="text-[17px] font-bold text-foreground mb-3">Need More Help?</h2>
           <p className="text-[13.5px] text-muted-foreground leading-relaxed">
             View our <a href="#" className="text-primary font-semibold hover:underline">help center</a> for more information on what to expect and how Orlando's Oasis works, or <a href="#" className="text-primary font-semibold hover:underline">report an issue</a>.
           </p>

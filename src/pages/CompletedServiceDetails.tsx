@@ -272,15 +272,14 @@ const CompletedServiceDetails = () => {
       {lightboxPhoto && (
         <Dialog open={!!lightboxPhoto} onOpenChange={() => setLightboxPhoto(null)}>
           <DialogContent className="max-w-md p-0 overflow-hidden rounded-2xl">
-            <DialogTitle className="sr-only">{lightboxPhoto.alt}</DialogTitle>
+            <DialogTitle className="sr-only">Photo</DialogTitle>
             <img
               src={lightboxPhoto.src}
               alt={lightboxPhoto.alt}
               className="w-full max-h-[400px] object-cover"
             />
             <div className="px-5 py-3 pb-5">
-              <p className="text-sm font-semibold text-foreground">{lightboxPhoto.alt}</p>
-              <p className="text-xs text-muted-foreground mt-0.5">Taken on {lightboxPhoto.date} at {lightboxPhoto.time}</p>
+              <p className="text-xs text-muted-foreground">{lightboxPhoto.date} at {lightboxPhoto.time}</p>
             </div>
           </DialogContent>
         </Dialog>

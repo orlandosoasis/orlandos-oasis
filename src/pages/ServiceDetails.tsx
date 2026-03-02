@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Waves, ArrowLeft, Clock, Calendar, MapPin, Star, Key, Droplets, Camera, FileText, FlaskConical, RefreshCw, CreditCard, Send } from "lucide-react";
+import { Waves, ArrowLeft, Clock, Calendar, MapPin, Star, Key, Droplets, Camera, FileText, FlaskConical, RefreshCw, CreditCard, MessagesSquare } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import StatusBadge from "@/components/StatusBadge";
 import { useBooking } from "@/contexts/BookingContext";
@@ -175,7 +175,7 @@ const ServiceDetails = () => {
             }
             {/* Message CTA */}
             <Button variant="outline" className="w-full mt-4 gap-1.5 hover:bg-primary hover:text-primary-foreground hover:border-primary">
-              <Send className="h-4 w-4" />
+              <MessagesSquare className="h-4 w-4" />
               Message
             </Button>
           </div>

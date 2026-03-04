@@ -240,7 +240,7 @@ export default function RescheduleModal({ open, onOpenChange, booking, onResched
         {step === 5 && selectedDate && selectedTime && (
           <div className="p-6 space-y-5">
             <Alert className="border-green-500/30 bg-green-500/5">
-              <CheckCircle2 className="h-4 w-4 text-green-600" />
+              <CheckCircle2 className="h-4 w-4 !text-green-600" />
               <AlertDescription className="ml-2">
                 <p className="font-semibold text-foreground text-sm">Service Successfully Rescheduled</p>
                 <p className="text-xs text-muted-foreground mt-1">

@@ -101,7 +101,7 @@ export default function RescheduleModal({ open, onOpenChange, booking, onResched
 
             <div className="flex flex-col gap-2.5">
               <Button className="w-full font-semibold" onClick={() => setStep(2)}>
-                Continue to Select New Date
+                Reschedule
               </Button>
               <Button variant="outline" className="w-full hover:text-primary hover:border-primary hover:bg-transparent" onClick={handleClose}>
                 Cancel

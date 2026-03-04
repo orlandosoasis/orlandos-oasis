@@ -142,11 +142,6 @@ const ServiceDetails = () => {
                 <span>Monthly service</span>
               </div>
             </div>
-
-            <Button variant="outline" className="w-full mt-4 gap-1.5 hover:bg-primary hover:text-primary-foreground hover:border-primary" onClick={() => setShowReschedule(true)}>
-              <CalendarClock className="h-4 w-4" />
-              Reschedule
-            </Button>
           </div>
 
           {/* Technician — 7 cols */}
@@ -189,12 +184,19 @@ const ServiceDetails = () => {
                 </div>
               </>
             }
-            {/* Message CTA */}
-            <Button variant="outline" className="w-full mt-4 gap-1.5 hover:bg-primary hover:text-primary-foreground hover:border-primary" onClick={() => navigate("/messages")}>
-              <MessagesSquare className="h-4 w-4" />
-              Message
-            </Button>
           </div>
+        </div>
+
+        {/* Reschedule & Message buttons */}
+        <div className="grid grid-cols-2 gap-3">
+          <Button variant="outline" className="w-full gap-1.5 hover:bg-primary hover:text-primary-foreground hover:border-primary" onClick={() => setShowReschedule(true)}>
+            <CalendarClock className="h-4 w-4" />
+            Reschedule
+          </Button>
+          <Button variant="outline" className="w-full gap-1.5 hover:bg-primary hover:text-primary-foreground hover:border-primary" onClick={() => navigate("/messages")}>
+            <MessagesSquare className="h-4 w-4" />
+            Message
+          </Button>
         </div>
 
         {/* 4. Your Pool */}

@@ -26,6 +26,7 @@ const Login = () => {
       toast({
         title: "Welcome back!",
         description: "You've successfully logged in.",
+        variant: "success",
       });
       // Route technicians to their dedicated dashboard
       const normalizedEmail = email.toLowerCase().trim();

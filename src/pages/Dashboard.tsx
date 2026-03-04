@@ -1,15 +1,17 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Waves, Calendar, ChevronRight, LogOut, Star } from "lucide-react";
+import { Waves, Calendar, ChevronRight, LogOut, Star, CalendarClock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
-import { useBooking, BookingData, matchTechnician } from "@/contexts/BookingContext";
+import { useBooking, type BookingData, type TimeWindow } from "@/contexts/BookingContext";
 import PoolSceneHero from "@/components/dashboard/PoolSceneHero";
 import BookingFlow from "@/components/dashboard/BookingFlow";
 import StatusBadge from "@/components/StatusBadge";
+import RescheduleModal from "@/components/RescheduleModal";
 
 const FULL_DAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 const SHORT_MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+const MONTH_NAMES = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
 const TIME_LABELS: Record<string, string> = {
   morning: "8:00 AM – 12:00 PM",
@@ -17,100 +19,124 @@ const TIME_LABELS: Record<string, string> = {
   evening: "4:00 PM – 6:00 PM",
 };
 
-const ACCESS_LABELS: Record<string, string> = {
-  home: "Owner will be home",
-  gate: "Gate code provided",
-  key: "Key on property",
-  other: "Custom instructions provided",
-};
-
-/* ── Demo seed data for demo@example.com ── */
-function createDemoBookings(): { upcoming: BookingData; past: BookingData } {
-  const upcomingDate = new Date(2026, 2, 18); // March 18, 2026
-  const pastDate = new Date(2026, 0, 16); // January 16, 2026
-
-  const sharedPass = {
-    id: "pass-2",
-    hours: 3,
-    label: "Deep Clean Pass",
-    description: "Full cleaning, chemical balance, filter check",
-    originalPrice: 189,
-    discountPrice: 149,
-    percentOff: 21,
-    isMostPopular: true,
-  };
-
-  const sharedPool = {
-    address: "123 Main Street",
-    city: "Miami",
-    state: "FL",
-    zip: "33101",
-    poolType: "In-ground",
-    poolSize: "Medium (15k–25k gallons)",
-    accessMethod: "gate" as const,
-    accessDetail: "Code: 4521",
-  };
-
-  const tech = { name: "Carlos M.", initials: "CM", rating: 4.9, isAssigned: true };
-
-  return {
-    upcoming: {
-      frequency: "once",
-      selectedPass: sharedPass,
-      scheduleData: {
-        selectedDate: upcomingDate,
-        timeWindow: "morning",
-        accessMethod: "gate",
-        accessDetail: "Code: 4521",
-        addons: [{ id: "addon-1", name: "Filter Deep Clean", price: 29 }],
-        addonsTotal: 29,
-      },
-      technician: tech,
-      pool: sharedPool,
-      status: "scheduled",
-    },
-    past: {
-      frequency: "once",
-      selectedPass: sharedPass,
-      scheduleData: {
-        selectedDate: pastDate,
-        timeWindow: "morning",
-        accessMethod: "gate",
-        accessDetail: "Code: 4521",
-        addons: [],
-        addonsTotal: 0,
-      },
-      technician: tech,
-      pool: sharedPool,
-      status: "completed",
-    },
-  };
+/* ── Types ── */
+interface ServiceInstance {
+  id: string;
+  booking: BookingData;
 }
 
-const Dashboard = () => {
-  const { user, logout, isAuthenticated, isLoading } = useAuth();
-  const { booking } = useBooking();
-  const navigate = useNavigate();
-  const [showCancelled, setShowCancelled] = useState(false);
-  const [showBooking, setShowBooking] = useState(false);
+/* ── Helpers ── */
+function getThirdWednesday(year: number, month: number): Date {
+  const d = new Date(year, month, 1);
+  const dow = d.getDay();
+  const firstWed = dow <= 3 ? 3 - dow + 1 : 10 - dow + 1;
+  return new Date(year, month, firstWed + 14);
+}
 
-  useEffect(() => {
-    if (!isLoading && !isAuthenticated) {
-      navigate("/login", { replace: true });
-    }
-  }, [isLoading, isAuthenticated, navigate]);
-
-  const handleLogout = () => {
-    logout();
-    navigate("/login", { replace: true });
+function generateDemoServices(): ServiceInstance[] {
+  const sharedPass = {
+    id: "pass-2", hours: 3, label: "Deep Clean Pass",
+    description: "Full cleaning, chemical balance, filter check",
+    originalPrice: 189, discountPrice: 149, percentOff: 21, isMostPopular: true,
+  };
+  const sharedPool = {
+    address: "123 Main Street", city: "Miami", state: "FL", zip: "33101",
+    poolType: "In-ground", poolSize: "Medium (15k–25k gallons)",
+    accessMethod: "gate" as const, accessDetail: "Code: 4521",
+  };
+  const tech = { name: "Carlos M.", initials: "CM", rating: 4.9, isAssigned: true };
+  const baseSchedule = {
+    timeWindow: "morning" as const, accessMethod: "gate" as const,
+    accessDetail: "Code: 4521", addons: [] as { id: string; name: string; price: number }[], addonsTotal: 0,
   };
 
-  // For demo user, show seed data; otherwise use booking context
-  const isDemoUser = user?.email === "demo@example.com";
-  const demoBookings = isDemoUser ? createDemoBookings() : null;
+  const services: ServiceInstance[] = [];
 
-  const upcomingBooking = booking ? { ...booking, status: "scheduled" as const } : demoBookings?.upcoming || null;
-  const pastBooking = booking ? { ...booking, status: "completed" as const } : demoBookings?.past || null;
+  // Past service — Feb 25, 2026
+  services.push({
+    id: "svc-feb-2026",
+    booking: {
+      frequency: "monthly", selectedPass: sharedPass, pool: sharedPool, technician: tech, status: "completed",
+      scheduleData: { ...baseSchedule, selectedDate: new Date(2026, 1, 25) },
+    },
+  });
+
+  // Upcoming monthly visits — 3rd Wednesday, 8 months starting March
+  for (let i = 0; i < 8; i++) {
+    const m = 2 + i;
+    const year = 2026 + Math.floor(m / 12);
+    const month = m % 12;
+    const date = getThirdWednesday(year, month);
+    services.push({
+      id: `svc-${SHORT_MONTHS[month].toLowerCase()}-${year}`,
+      booking: {
+        frequency: "monthly", selectedPass: sharedPass, pool: sharedPool, technician: tech, status: "scheduled",
+        scheduleData: { ...baseSchedule, selectedDate: date },
+      },
+    });
+  }
+
+  return services;
+}
+
+function formatGreetingDate(): string {
+  const now = new Date();
+  return `Today, ${MONTH_NAMES[now.getMonth()]} ${now.getDate()}, ${now.getFullYear()}`;
+}
+
+/* ══════════════════════════════════════════════
+   Dashboard
+   ══════════════════════════════════════════════ */
+const Dashboard = () => {
+  const { user, logout, isAuthenticated, isLoading } = useAuth();
+  const { booking, setBooking } = useBooking();
+  const navigate = useNavigate();
+  const [showBooking, setShowBooking] = useState(false);
+  const [showMore, setShowMore] = useState(false);
+  const [services, setServices] = useState<ServiceInstance[]>([]);
+  const [rescheduleService, setRescheduleService] = useState<ServiceInstance | null>(null);
+
+  useEffect(() => {
+    if (!isLoading && !isAuthenticated) navigate("/login", { replace: true });
+  }, [isLoading, isAuthenticated, navigate]);
+
+  useEffect(() => {
+    const isDemoUser = user?.email === "demo@example.com";
+    if (isDemoUser) {
+      setServices(generateDemoServices());
+    } else if (booking) {
+      setServices([{ id: "svc-custom", booking: { ...booking, status: "scheduled" } }]);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user?.email]);
+
+  const handleLogout = () => { logout(); navigate("/login", { replace: true }); };
+
+  const upcomingServices = useMemo(() => services.filter(s => s.booking.status === "scheduled"), [services]);
+  const pastServices = useMemo(() => services.filter(s => s.booking.status === "completed"), [services]);
+
+  const nextService = upcomingServices[0] || null;
+  const remainingUpcoming = upcomingServices.slice(1);
+  const visibleUpcoming = showMore ? remainingUpcoming : remainingUpcoming.slice(0, 3);
+
+  const handleViewDetails = (svc: ServiceInstance) => {
+    setBooking(svc.booking);
+    navigate(`/service/${svc.id}`);
+  };
+
+  const handleReschedule = (newDate: Date, newTimeWindow: TimeWindow) => {
+    if (!rescheduleService) return;
+    setServices(prev =>
+      prev.map(s =>
+        s.id === rescheduleService.id
+          ? { ...s, booking: { ...s.booking, scheduleData: { ...s.booking.scheduleData, selectedDate: newDate, timeWindow: newTimeWindow } } }
+          : s
+      )
+    );
+    setRescheduleService(null);
+  };
+
+  const firstName = user?.fullName?.split(" ")[0] || "there";
 
   return (
     <div className="min-h-screen bg-background">
@@ -135,153 +161,187 @@ const Dashboard = () => {
         </div>
       </header>
 
-      {/* Main Content */}
       <main className="max-w-[760px] mx-auto px-5 py-8 pb-16">
-        {/* Upcoming Section */}
-        <section className="mb-10">
-          <h2 className="text-[1.35rem] font-semibold text-foreground mb-4">Upcoming services</h2>
+        {/* Greeting */}
+        <div className="mb-8">
+          <h1 className="text-2xl font-bold text-foreground">Hi, {firstName} 👋</h1>
+          <p className="text-sm text-muted-foreground mt-1">{formatGreetingDate()}</p>
+        </div>
 
-          {upcomingBooking ? (
-            <>
-              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
-                {SHORT_MONTHS[upcomingBooking.scheduleData.selectedDate.getMonth()]} {upcomingBooking.scheduleData.selectedDate.getFullYear()}
-              </p>
-              <ServiceCard booking={upcomingBooking} navigateTo="/service-details" />
-            </>
-          ) : (
-            <div className="bg-card rounded-2xl p-8 text-center">
-              <p className="text-muted-foreground">No upcoming services yet.</p>
-              <button className="mt-4 text-primary font-bold text-sm hover:underline" onClick={() => setShowBooking(true)}>Book Your First Service</button>
+        {/* Next Service */}
+        {nextService && (
+          <section className="mb-8">
+            <h2 className="text-lg font-semibold text-foreground mb-3">Next Service</h2>
+            <NextServiceCard service={nextService} onViewDetails={() => handleViewDetails(nextService)} />
+          </section>
+        )}
+
+        {/* Upcoming Visits */}
+        {remainingUpcoming.length > 0 && (
+          <section className="mb-8">
+            <h2 className="text-lg font-semibold text-foreground mb-3">Upcoming Visits</h2>
+            <div className="bg-card rounded-2xl border border-border shadow-sm divide-y divide-border overflow-hidden">
+              {visibleUpcoming.map(svc => (
+                <UpcomingRow key={svc.id} service={svc} onReschedule={() => setRescheduleService(svc)} />
+              ))}
             </div>
-          )}
-        </section>
+            {remainingUpcoming.length > 3 && (
+              <div className="mt-3 text-center">
+                {showMore ? (
+                  <button onClick={() => { setShowMore(false); window.scrollTo({ top: 0, behavior: "smooth" }); }} className="text-sm font-semibold text-primary hover:underline">
+                    Back to Top
+                  </button>
+                ) : (
+                  <button onClick={() => setShowMore(true)} className="text-sm font-semibold text-primary hover:underline">
+                    View More ({remainingUpcoming.length - 3} more)
+                  </button>
+                )}
+              </div>
+            )}
+          </section>
+        )}
 
-        {/* Past Section */}
-        <section>
-          <h2 className="text-[1.35rem] font-semibold text-foreground mb-1">Past services</h2>
-
-          {pastBooking ? (
-            <div className="mt-3">
-              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
-                FEB 2026
-              </p>
-              <ServiceCard booking={pastBooking} navigateTo="/service-details/completed" />
+        {/* Past Services */}
+        {pastServices.length > 0 && (
+          <section className="mb-8">
+            <h2 className="text-lg font-semibold text-foreground mb-3">Past Services</h2>
+            <div className="bg-card rounded-2xl border border-border shadow-sm divide-y divide-border overflow-hidden">
+              {pastServices.map(svc => (
+                <PastRow key={svc.id} service={svc} onViewDetails={() => handleViewDetails(svc)} />
+              ))}
             </div>
-          ) : (
-            <div className="bg-card rounded-2xl p-8 text-center">
-              <p className="text-muted-foreground text-sm">No past services to show.</p>
-            </div>
-          )}
+          </section>
+        )}
 
-          <div className="flex flex-col gap-3 mt-5">
-            <Button
-              variant="outline"
-              className="w-full rounded-xl h-12 font-semibold hover:bg-primary hover:text-primary-foreground hover:border-primary"
-              onClick={() => setShowCancelled(!showCancelled)}
-            >
-              {showCancelled ? "Hide cancelled appointments" : "Show cancelled appointments"}
-            </Button>
+        {/* Empty state */}
+        {services.length === 0 && !isLoading && (
+          <div className="bg-card rounded-2xl p-8 text-center">
+            <p className="text-muted-foreground">No services yet.</p>
+            <button className="mt-4 text-primary font-bold text-sm hover:underline" onClick={() => setShowBooking(true)}>Book Your First Service</button>
           </div>
-        </section>
+        )}
 
         {/* Footer */}
         <footer className="text-center text-xs text-muted-foreground mt-10 space-x-3">
-          <a href="#" className="text-primary hover:underline">Terms</a>
-          <a href="#" className="text-primary hover:underline">Privacy</a>
+          <Link to="/terms" className="text-primary hover:underline">Terms</Link>
+          <Link to="/privacy" className="text-primary hover:underline">Privacy</Link>
           <a href="#" className="text-primary hover:underline">Do Not Sell My Personal Information</a>
           <p className="mt-3">© Orlando's Oasis 2015 – 2026</p>
         </footer>
       </main>
 
-      {showBooking && (
-        <BookingFlow
-          onClose={() => setShowBooking(false)}
-          onComplete={() => setShowBooking(false)}
+      {showBooking && <BookingFlow onClose={() => setShowBooking(false)} onComplete={() => setShowBooking(false)} />}
+
+      {rescheduleService && (
+        <RescheduleModal
+          open={!!rescheduleService}
+          onOpenChange={(open) => { if (!open) setRescheduleService(null); }}
+          booking={rescheduleService.booking}
+          onReschedule={handleReschedule}
         />
       )}
     </div>
   );
 };
 
-/* ── Unified Service Card ── */
-interface ServiceCardProps {
-  booking: BookingData;
-  navigateTo: string;
-}
-
-const ServiceCard = ({ booking, navigateTo }: ServiceCardProps) => {
-  const navigate = useNavigate();
-  const { setBooking } = useBooking();
+/* ── Next Service Card ── */
+const NextServiceCard = ({ service, onViewDetails }: { service: ServiceInstance; onViewDetails: () => void }) => {
+  const { booking } = service;
   const { selectedPass, scheduleData, technician } = booking;
-  const serviceStatus = booking.status || "scheduled";
-  const isCompleted = serviceStatus === "completed";
   const d = scheduleData.selectedDate;
-
-  // For completed services, use fixed date: February 25, 2026
-  const displayDate = isCompleted ? new Date(2026, 1, 25) : d;
-
-  const fullDate = `${FULL_DAYS[displayDate.getDay()]}, ${SHORT_MONTHS[displayDate.getMonth()]} ${displayDate.getDate()}, ${displayDate.getFullYear()}`;
+  const fullDate = `${FULL_DAYS[d.getDay()]}, ${SHORT_MONTHS[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`;
 
   return (
-    <div onClick={() => { setBooking(booking); navigate(navigateTo); }} className="bg-card rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer group">
-      {/* Hero illustration */}
+    <div onClick={onViewDetails} className="bg-card rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer group">
       <div className="relative h-[190px] overflow-hidden">
         <PoolSceneHero />
-
-        {/* Status badge */}
         <div className="absolute top-3 left-3">
-          <StatusBadge status={serviceStatus} />
+          <StatusBadge status="scheduled" />
         </div>
-
-        {/* Technician badge */}
         <div className="absolute top-3 right-3 bg-card/90 backdrop-blur-sm rounded-xl px-2.5 py-1.5 flex items-center gap-2 shadow-md border border-border">
           <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-primary to-oasis-aqua flex items-center justify-center text-primary-foreground text-sm font-bold">
-            {technician.isAssigned ? technician.initials : "?"}
+            {technician.initials}
           </div>
           <div className="flex flex-col leading-tight">
-            <span className="text-[0.8rem] font-semibold text-foreground">
-              {technician.isAssigned ? technician.name : "TBD"}
-            </span>
+            <span className="text-[0.8rem] font-semibold text-foreground">{technician.name}</span>
             <span className="text-[0.72rem] text-muted-foreground flex items-center gap-1">
-              {technician.isAssigned ? (
-                <>
-                  <Star className="h-3 w-3 fill-cta-yellow text-cta-yellow" />
-                  {technician.rating}
-                </>
-              ) : (
-                "Assigning soon"
-              )}
+              <Star className="h-3 w-3 fill-cta-yellow text-cta-yellow" />
+              {technician.rating}
             </span>
           </div>
         </div>
       </div>
-
-      {/* Card body */}
       <div className="px-[18px] py-4 flex items-start justify-between">
         <div className="flex-1">
-          <p className="font-semibold text-foreground text-base mb-1">
-            {selectedPass.hours}-Hour Pool Service
+          <p className="font-semibold text-foreground text-base mb-1">{selectedPass.hours}-Hour Pool Service</p>
+          <p className="font-semibold text-foreground text-[0.875rem] mb-0.5">{fullDate}</p>
+          <p className="text-[0.825rem] text-muted-foreground leading-relaxed">
+            Expected arrival {TIME_LABELS[scheduleData.timeWindow]}
           </p>
-          {isCompleted ? (
-            <p className="text-[0.825rem] text-muted-foreground leading-relaxed">
-              Completed on {fullDate} at 11:42 AM
-              <br />
-              {booking.pool.address}, {booking.pool.city}, {booking.pool.state} {booking.pool.zip}
-            </p>
-          ) : (
-            <>
-              <p className="font-semibold text-foreground text-[0.875rem] mb-0.5">{fullDate}</p>
-              <p className="text-[0.825rem] text-muted-foreground leading-relaxed">
-                Expected arrival {TIME_LABELS[scheduleData.timeWindow]}
-                <br />
-                {booking.pool.address}, {booking.pool.city}, {booking.pool.state} {booking.pool.zip}
-              </p>
-            </>
-          )}
         </div>
         <div className="flex items-center gap-1 shrink-0 mt-1">
           <span className="text-xs font-medium text-muted-foreground group-hover:text-primary transition-colors">View Details</span>
           <ChevronRight className="h-5 w-5 text-muted-foreground shrink-0 group-hover:translate-x-0.5 group-hover:text-primary transition-all" />
+        </div>
+      </div>
+    </div>
+  );
+};
+
+/* ── Upcoming Visit Row ── */
+const UpcomingRow = ({ service, onReschedule }: { service: ServiceInstance; onReschedule: () => void }) => {
+  const { booking } = service;
+  const d = booking.scheduleData.selectedDate;
+  const month = SHORT_MONTHS[d.getMonth()].toUpperCase();
+  const day = d.getDate();
+
+  return (
+    <div className="flex items-center gap-4 px-5 py-4">
+      <div className="w-12 text-center shrink-0">
+        <p className="text-xs font-semibold text-muted-foreground uppercase">{month}</p>
+        <p className="text-xl font-bold text-foreground">{day}</p>
+      </div>
+      <div className="flex-1 min-w-0">
+        <p className="text-sm font-semibold text-foreground">{booking.selectedPass.hours}-Hour Pool Service</p>
+        <p className="text-xs text-muted-foreground truncate">
+          {booking.technician.name} · {TIME_LABELS[booking.scheduleData.timeWindow]}
+        </p>
+      </div>
+      <Button
+        variant="outline"
+        size="sm"
+        className="shrink-0 gap-1.5 text-xs hover:bg-primary hover:text-primary-foreground hover:border-primary"
+        onClick={(e) => { e.stopPropagation(); onReschedule(); }}
+      >
+        <CalendarClock className="h-3.5 w-3.5" />
+        Reschedule
+      </Button>
+    </div>
+  );
+};
+
+/* ── Past Service Row ── */
+const PastRow = ({ service, onViewDetails }: { service: ServiceInstance; onViewDetails: () => void }) => {
+  const { booking } = service;
+  const displayDate = new Date(2026, 1, 25);
+  const month = SHORT_MONTHS[displayDate.getMonth()].toUpperCase();
+  const day = displayDate.getDate();
+
+  return (
+    <div className="flex items-center gap-4 px-5 py-4 cursor-pointer hover:bg-muted/30 transition-colors group" onClick={onViewDetails}>
+      <div className="w-12 text-center shrink-0">
+        <p className="text-xs font-semibold text-muted-foreground uppercase">{month}</p>
+        <p className="text-xl font-bold text-foreground">{day}</p>
+      </div>
+      <div className="flex-1 min-w-0">
+        <p className="text-sm font-semibold text-foreground">{booking.selectedPass.hours}-Hour Pool Service</p>
+        <p className="text-xs text-muted-foreground">{booking.technician.name} · Completed</p>
+      </div>
+      <div className="flex items-center gap-2 shrink-0">
+        <StatusBadge status="completed" />
+        <div className="flex items-center gap-1">
+          <span className="text-xs font-medium text-muted-foreground group-hover:text-primary transition-colors">View Details</span>
+          <ChevronRight className="h-4 w-4 text-muted-foreground group-hover:text-primary group-hover:translate-x-0.5 transition-all" />
         </div>
       </div>
     </div>

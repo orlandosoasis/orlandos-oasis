@@ -1,95 +1,93 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Waves, ArrowLeft, Clock, Calendar, MapPin, Star, Key, Droplets, Wrench, Camera, FileText, FlaskConical, RefreshCw, CreditCard, MessagesSquare, CalendarClock } from "lucide-react";
+import { Waves, ArrowLeft, Clock, Calendar, MapPin, Star, Key, Droplets, Wrench, Camera, FileText, RefreshCw, CreditCard, MessagesSquare, CalendarClock, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import StatusBadge from "@/components/StatusBadge";
 import { useBooking, type TimeWindow } from "@/contexts/BookingContext";
 import PoolSceneHero from "@/components/dashboard/PoolSceneHero";
 import RescheduleModal from "@/components/RescheduleModal";
+import LeaveReviewModal from "@/components/LeaveReviewModal";
+import ServiceReport from "@/components/ServiceReport";
+
 const FULL_DAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 const SHORT_MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
 const TIME_LABELS: Record<string, string> = {
   morning: "8:00 AM – 12:00 PM",
   afternoon: "12:00 PM – 4:00 PM",
-  evening: "4:00 PM – 6:00 PM"
+  evening: "4:00 PM – 6:00 PM",
 };
 
 const ACCESS_LABELS: Record<string, string> = {
   home: "Owner will be home",
   gate: "Gate code provided",
   key: "Key on property",
-  other: "Custom instructions provided"
+  other: "Custom instructions provided",
 };
 
 const SERVICE_INCLUDES: Record<number, string[]> = {
   2: ["Skim", "Brush", "Chemical check"],
   3: ["Skim", "Vacuum", "Brush", "Chemicals & filter rinse"],
   4: ["Deep clean", "Tile scrub", "Full chemical balance"],
-  6: ["Complete restoration", "Deep vacuum", "Tile scrub", "Full chemical balance", "Filter deep clean"]
+  6: ["Complete restoration", "Deep vacuum", "Tile scrub", "Full chemical balance", "Filter deep clean"],
 };
 
-const CleaningNotes = ({ notes }: {notes: string;}) => {
+const CleaningNotes = ({ notes }: { notes: string }) => {
   const [expanded, setExpanded] = useState(false);
-
   return (
     <div className="mt-4">
       <p className="text-[15px] font-bold text-foreground mb-1.5">Cleaning Notes</p>
-      <p
-        className={`text-[13.5px] text-muted-foreground leading-relaxed ${!expanded ? "line-clamp-3" : ""}`}>
-
-        {notes}
-      </p>
-      <button
-        onClick={() => setExpanded(!expanded)}
-        className="text-primary text-[13px] font-semibold hover:underline mt-1">
-
+      <p className={`text-[13.5px] text-muted-foreground leading-relaxed ${!expanded ? "line-clamp-3" : ""}`}>{notes}</p>
+      <button onClick={() => setExpanded(!expanded)} className="text-primary text-[13px] font-semibold hover:underline mt-1">
         {expanded ? "Show less" : "Read more"}
       </button>
-    </div>);
-
+    </div>
+  );
 };
 
 const ServiceDetails = () => {
   const navigate = useNavigate();
   const { booking, setBooking } = useBooking();
   const [showReschedule, setShowReschedule] = useState(false);
+  const [reviewOpen, setReviewOpen] = useState(false);
+  const [reviewSubmitted, setReviewSubmitted] = useState(false);
 
   const handleReschedule = (newDate: Date, newTimeWindow: TimeWindow) => {
     if (booking) {
       setBooking({
         ...booking,
-        scheduleData: {
-          ...booking.scheduleData,
-          selectedDate: newDate,
-          timeWindow: newTimeWindow
-        }
+        scheduleData: { ...booking.scheduleData, selectedDate: newDate, timeWindow: newTimeWindow },
       });
     }
   };
+
   if (!booking) {
     return (
       <div className="min-h-screen bg-background flex flex-col items-center justify-center gap-4">
         <p className="text-muted-foreground">No booking found.</p>
         <Button onClick={() => navigate("/dashboard")}>Back to Dashboard</Button>
-      </div>);
-
+      </div>
+    );
   }
 
   const { selectedPass, scheduleData, technician, frequency, pool } = booking;
-  const d = scheduleData.selectedDate;
-  const formattedDate = `${FULL_DAYS[d.getDay()]}, ${SHORT_MONTHS[d.getMonth()]} ${d.getDate()}`;
+  const status = booking.status || "scheduled";
+  const isCompleted = status === "completed";
   const isMonthly = frequency === "monthly";
+
+  // For completed services, display Feb 25, 2026
+  const d = isCompleted ? new Date(2026, 1, 25) : scheduleData.selectedDate;
+  const formattedDate = `${FULL_DAYS[d.getDay()]}, ${SHORT_MONTHS[d.getMonth()]} ${d.getDate()}`;
+  const formattedDateFull = `${formattedDate}, ${d.getFullYear()}`;
+
   const totalPaid = selectedPass.discountPrice + scheduleData.addonsTotal;
+  const fullAddress = pool ? [pool.address, pool.city, pool.state, pool.zip].filter(Boolean).join(", ") : "Address not provided";
 
   const getNextServiceDate = () => {
     const next = new Date(d);
     next.setMonth(next.getMonth() + 1);
     return `${FULL_DAYS[next.getDay()]}, ${SHORT_MONTHS[next.getMonth()]} ${next.getDate()}, ${next.getFullYear()}`;
   };
-
-  const serviceIncludes = SERVICE_INCLUDES[selectedPass.hours] || SERVICE_INCLUDES[3];
-  const fullAddress = pool ? [pool.address, pool.city, pool.state, pool.zip].filter(Boolean).join(", ") : "Address not provided";
 
   return (
     <div className="min-h-screen bg-background">
@@ -108,22 +106,28 @@ const ServiceDetails = () => {
         </div>
       </header>
 
-      {/* 1. Hero */}
+      {/* Hero */}
       <div className="relative h-[200px] overflow-hidden">
         <PoolSceneHero />
         <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
         <div className="absolute bottom-0 left-0 right-0 p-6 max-w-[760px] mx-auto">
           <h1 className="text-xl font-bold text-white">{selectedPass.hours}-Hour Pool Service</h1>
-          <p className="text-sm font-semibold text-white/90 mt-1">{formattedDate}</p>
-          <p className="text-sm text-white/80">Expected arrival {TIME_LABELS[scheduleData.timeWindow]}</p>
-          <StatusBadge status={booking.status || "scheduled"} className="mt-1" />
+          {isCompleted ? (
+            <p className="text-sm font-semibold text-white/90 mt-1">Completed on {formattedDateFull}</p>
+          ) : (
+            <>
+              <p className="text-sm font-semibold text-white/90 mt-1">{formattedDate}</p>
+              <p className="text-sm text-white/80">Expected arrival {TIME_LABELS[scheduleData.timeWindow]}</p>
+            </>
+          )}
+          <StatusBadge status={status} className="mt-1" />
         </div>
       </div>
 
       {/* Content */}
       <main className="max-w-[760px] mx-auto px-5 py-6 pb-16 space-y-4">
 
-        {/* 2. Appointment Details + 3. Technician — side by side on desktop */}
+        {/* Appointment Details + Technician */}
         <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
           {/* Appointment Details */}
           <div className="md:col-span-5 bg-card rounded-2xl border border-border p-6 shadow-sm flex flex-col">
@@ -135,24 +139,32 @@ const ServiceDetails = () => {
               </div>
               <div className="flex items-center gap-2 text-sm text-foreground">
                 <Calendar className="h-4 w-4 text-muted-foreground" />
-                <span>{formattedDate}</span>
+                <span>{isCompleted ? formattedDateFull : formattedDate}</span>
               </div>
+              {isCompleted && (
+                <div className="flex items-center gap-2 text-sm text-foreground">
+                  <CheckCircle2 className="h-4 w-4 text-muted-foreground" />
+                  <span>Completed at 11:42 AM</span>
+                </div>
+              )}
               <div className="flex items-center gap-2 text-sm text-foreground">
                 <Wrench className="h-4 w-4 text-muted-foreground" />
                 <span>Monthly service</span>
               </div>
             </div>
 
-            <Button variant="outline" className="w-full mt-4 gap-1.5 hover:bg-primary hover:text-primary-foreground hover:border-primary" onClick={() => setShowReschedule(true)}>
-              <CalendarClock className="h-4 w-4" />
-              Reschedule
-            </Button>
+            {!isCompleted && (
+              <Button variant="outline" className="w-full mt-4 gap-1.5 hover:bg-primary hover:text-primary-foreground hover:border-primary" onClick={() => setShowReschedule(true)}>
+                <CalendarClock className="h-4 w-4" />
+                Reschedule
+              </Button>
+            )}
           </div>
 
-          {/* Technician — 7 cols */}
+          {/* Technician */}
           <div className="md:col-span-7 bg-card rounded-2xl border border-border p-6 shadow-sm flex-col flex items-start justify-start">
-            {technician.isAssigned ?
-            <>
+            {technician.isAssigned ? (
+              <>
                 <h2 className="text-[17px] font-bold text-foreground mb-4">Your Technician</h2>
                 <div className="flex gap-3.5 items-start">
                   <div className="w-[56px] h-[56px] rounded-xl bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center text-primary-foreground text-lg font-bold shrink-0">
@@ -169,9 +181,9 @@ const ServiceDetails = () => {
                     </p>
                   </div>
                 </div>
-              </> :
-
-            <>
+              </>
+            ) : (
+              <>
                 <h2 className="text-[17px] font-bold text-foreground mb-4">Pool Technician</h2>
                 <div className="flex flex-col items-center text-center gap-3">
                   <div className="w-[72px] h-[72px] rounded-xl bg-muted flex items-center justify-center shrink-0">
@@ -188,51 +200,72 @@ const ServiceDetails = () => {
                   </div>
                 </div>
               </>
-            }
-            {/* Message CTA */}
-            <Button variant="outline" className="w-full mt-4 gap-1.5 hover:bg-primary hover:text-primary-foreground hover:border-primary" onClick={() => navigate("/messages")}>
-              <MessagesSquare className="h-4 w-4" />
-              Message
-            </Button>
+            )}
+
+            {/* CTA Row */}
+            <div className="flex gap-3 mt-4 w-full">
+              <Button variant="outline" className="flex-1 gap-1.5 hover:bg-primary hover:text-primary-foreground hover:border-primary" onClick={() => navigate("/messages")}>
+                <MessagesSquare className="h-4 w-4" />
+                Message
+              </Button>
+              {isCompleted && (
+                reviewSubmitted ? (
+                  <Button variant="outline" className="flex-1 gap-1.5 opacity-60 cursor-default" disabled>
+                    <CheckCircle2 className="h-4 w-4" />
+                    Review Submitted
+                  </Button>
+                ) : (
+                  <Button variant="outline" className="flex-1 gap-1.5 hover:bg-primary hover:text-primary-foreground hover:border-primary" onClick={(e) => { e.stopPropagation(); setReviewOpen(true); }}>
+                    <Star className="h-4 w-4" />
+                    Leave a Review
+                  </Button>
+                )
+              )}
+            </div>
           </div>
         </div>
 
-        {/* 4. Your Pool */}
-        <div className="bg-card rounded-2xl border border-border p-6 shadow-sm">
-          <h2 className="text-[17px] font-bold text-foreground mb-4">Your Pool</h2>
-          <div className="space-y-2.5">
-            <div className="flex items-center gap-2 text-sm text-foreground">
-              <MapPin className="h-4 w-4 text-muted-foreground" />
-              <span>{fullAddress}</span>
-            </div>
-            {pool?.poolType &&
-            <div className="flex items-center gap-2 text-sm text-foreground">
-                <Droplets className="h-4 w-4 text-muted-foreground" />
-                <span>{pool.poolType} · {pool.poolSize}</span>
-              </div>
-            }
-            <div className="flex items-center gap-2 text-sm text-foreground">
-              <Key className="h-4 w-4 text-muted-foreground" />
-              <span>{ACCESS_LABELS[pool?.accessMethod || scheduleData.accessMethod]}</span>
-            </div>
-            {(pool?.accessDetail || scheduleData.accessDetail) &&
-            <div className="mt-3">
-                <p className="font-bold text-foreground mb-1.5 text-xs">Access Notes</p>
-                <p className="text-[13.5px] text-muted-foreground leading-relaxed">{pool?.accessDetail || scheduleData.accessDetail}</p>
-              </div>
-            }
-          </div>
-          {booking.specialNotes &&
-          <>
-              <div className="border-t border-border my-4" />
-              <CleaningNotes notes={booking.specialNotes} />
-            </>
-          }
-        </div>
+        {/* Service Report (completed only) */}
+        {isCompleted && <ServiceReport />}
 
-        {/* 5. Recurring Schedule (monthly only) */}
-        {isMonthly &&
-        <div className="bg-card rounded-2xl border border-border p-6 shadow-sm">
+        {/* Your Pool (scheduled only) */}
+        {!isCompleted && (
+          <div className="bg-card rounded-2xl border border-border p-6 shadow-sm">
+            <h2 className="text-[17px] font-bold text-foreground mb-4">Your Pool</h2>
+            <div className="space-y-2.5">
+              <div className="flex items-center gap-2 text-sm text-foreground">
+                <MapPin className="h-4 w-4 text-muted-foreground" />
+                <span>{fullAddress}</span>
+              </div>
+              {pool?.poolType && (
+                <div className="flex items-center gap-2 text-sm text-foreground">
+                  <Droplets className="h-4 w-4 text-muted-foreground" />
+                  <span>{pool.poolType} · {pool.poolSize}</span>
+                </div>
+              )}
+              <div className="flex items-center gap-2 text-sm text-foreground">
+                <Key className="h-4 w-4 text-muted-foreground" />
+                <span>{ACCESS_LABELS[pool?.accessMethod || scheduleData.accessMethod]}</span>
+              </div>
+              {(pool?.accessDetail || scheduleData.accessDetail) && (
+                <div className="mt-3">
+                  <p className="font-bold text-foreground mb-1.5 text-xs">Access Notes</p>
+                  <p className="text-[13.5px] text-muted-foreground leading-relaxed">{pool?.accessDetail || scheduleData.accessDetail}</p>
+                </div>
+              )}
+            </div>
+            {booking.specialNotes && (
+              <>
+                <div className="border-t border-border my-4" />
+                <CleaningNotes notes={booking.specialNotes} />
+              </>
+            )}
+          </div>
+        )}
+
+        {/* Recurring Schedule (scheduled + monthly only) */}
+        {!isCompleted && isMonthly && (
+          <div className="bg-card rounded-2xl border border-border p-6 shadow-sm">
             <h2 className="text-[17px] font-bold text-foreground mb-4">Recurring Schedule</h2>
             <div className="space-y-2.5 text-sm">
               <div className="flex justify-between">
@@ -253,43 +286,46 @@ const ServiceDetails = () => {
               Manage Plan
             </Button>
           </div>
-        }
+        )}
 
-        {/* 6. Payment Details */}
-        <div className="bg-card rounded-2xl border border-border p-6 shadow-sm">
-          <h2 className="text-[17px] font-bold text-foreground mb-3">Payment Details</h2>
-          <div className="space-y-2 text-sm">
-            {isMonthly &&
-            <div className="flex justify-between">
-                <span className="text-muted-foreground">Recurring amount</span>
-                <span className="text-foreground font-medium">${selectedPass.discountPrice.toFixed(2)}/mo</span>
-              </div>
-            }
-            {!isMonthly &&
-            <div className="flex justify-between">
-                <span className="text-muted-foreground">Base service</span>
-                <span className="text-foreground font-medium">${selectedPass.discountPrice.toFixed(2)}</span>
-              </div>
-            }
-          </div>
-        </div>
-
-        {/* 7. After-Service Transparency */}
-        <div className="bg-card rounded-2xl border border-border p-6 shadow-sm">
-          <h2 className="text-[17px] font-bold text-foreground mb-4">After Your Service</h2>
-          <div className="space-y-3">
-            <div className="flex items-center gap-3 text-sm text-foreground">
-              <Camera className="h-4 w-4 text-muted-foreground shrink-0" />
-              <span>Before & after photos will be uploaded</span>
-            </div>
-            <div className="flex items-center gap-3 text-sm text-foreground">
-              <FileText className="h-4 w-4 text-muted-foreground shrink-0" />
-              <span>Service notes included</span>
+        {/* Payment Details (scheduled only) */}
+        {!isCompleted && (
+          <div className="bg-card rounded-2xl border border-border p-6 shadow-sm">
+            <h2 className="text-[17px] font-bold text-foreground mb-3">Payment Details</h2>
+            <div className="space-y-2 text-sm">
+              {isMonthly ? (
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Recurring amount</span>
+                  <span className="text-foreground font-medium">${selectedPass.discountPrice.toFixed(2)}/mo</span>
+                </div>
+              ) : (
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Base service</span>
+                  <span className="text-foreground font-medium">${selectedPass.discountPrice.toFixed(2)}</span>
+                </div>
+              )}
             </div>
           </div>
-        </div>
+        )}
 
-        {/* 8. Help / Support */}
+        {/* After Your Service (scheduled only) */}
+        {!isCompleted && (
+          <div className="bg-card rounded-2xl border border-border p-6 shadow-sm">
+            <h2 className="text-[17px] font-bold text-foreground mb-4">After Your Service</h2>
+            <div className="space-y-3">
+              <div className="flex items-center gap-3 text-sm text-foreground">
+                <Camera className="h-4 w-4 text-muted-foreground shrink-0" />
+                <span>Before & after photos will be uploaded</span>
+              </div>
+              <div className="flex items-center gap-3 text-sm text-foreground">
+                <FileText className="h-4 w-4 text-muted-foreground shrink-0" />
+                <span>Service notes included</span>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Help / Support */}
         <div className="bg-card rounded-2xl border border-border p-6 shadow-sm">
           <h2 className="text-[17px] font-bold text-foreground mb-3">Need More Help?</h2>
           <p className="text-[13.5px] text-muted-foreground leading-relaxed">
@@ -305,16 +341,30 @@ const ServiceDetails = () => {
         </footer>
       </main>
 
-      {booking &&
-      <RescheduleModal
-        open={showReschedule}
-        onOpenChange={setShowReschedule}
-        booking={booking}
-        onReschedule={handleReschedule} />
+      {/* Reschedule Modal (scheduled only) */}
+      {!isCompleted && booking && (
+        <RescheduleModal
+          open={showReschedule}
+          onOpenChange={setShowReschedule}
+          booking={booking}
+          onReschedule={handleReschedule}
+        />
+      )}
 
-      }
-    </div>);
-
+      {/* Review Modal (completed only) */}
+      {isCompleted && (
+        <LeaveReviewModal
+          open={reviewOpen}
+          onOpenChange={setReviewOpen}
+          technicianName={technician.isAssigned ? technician.name : "Carlos M."}
+          onSubmit={() => {
+            setReviewSubmitted(true);
+            setReviewOpen(false);
+          }}
+        />
+      )}
+    </div>
+  );
 };
 
 export default ServiceDetails;

@@ -11,7 +11,6 @@ import Signup from "./pages/Signup";
 import Dashboard from "./pages/Dashboard";
 import ServicePass from "./pages/ServicePass";
 import ServiceDetails from "./pages/ServiceDetails";
-import CompletedServiceDetails from "./pages/CompletedServiceDetails";
 import Messages from "./pages/Messages";
 import Terms from "./pages/Terms";
 import Privacy from "./pages/Privacy";
@@ -36,8 +35,9 @@ const App = () => (
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/tech-dashboard" element={<TechnicianDashboard />} />
             <Route path="/passes" element={<ServicePass />} />
+            <Route path="/service/:serviceId" element={<ServiceDetails />} />
             <Route path="/service-details" element={<ServiceDetails />} />
-            <Route path="/service-details/completed" element={<CompletedServiceDetails />} />
+            <Route path="/service-details/completed" element={<ServiceDetails />} />
             <Route path="/messages" element={<Messages />} />
             <Route path="/terms" element={<Terms />} />
             <Route path="/privacy" element={<Privacy />} />

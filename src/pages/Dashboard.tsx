@@ -1,6 +1,6 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Waves, Calendar, ChevronRight, ChevronDown, ArrowUp, LogOut, Star } from "lucide-react";
+import { Waves, Calendar, ChevronRight, LogOut, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
 import { useBooking, BookingData, matchTechnician } from "@/contexts/BookingContext";
@@ -25,68 +25,10 @@ const ACCESS_LABELS: Record<string, string> = {
 };
 
 /* ── Demo seed data for demo@example.com ── */
-function generateRecurringVisits(startMonth: number, count: number): BookingData[] {
-  const sharedPass = {
-    id: "pass-2",
-    hours: 3,
-    label: "Deep Clean Pass",
-    description: "Full cleaning, chemical balance, filter check",
-    originalPrice: 189,
-    discountPrice: 149,
-    percentOff: 21,
-    isMostPopular: true,
-  };
+function createDemoBookings(): { upcoming: BookingData; past: BookingData } {
+  const upcomingDate = new Date(2026, 2, 18); // March 18, 2026
+  const pastDate = new Date(2026, 0, 16); // January 16, 2026
 
-  const sharedPool = {
-    address: "123 Main Street",
-    city: "Miami",
-    state: "FL",
-    zip: "33101",
-    poolType: "In-ground",
-    poolSize: "Medium (15k–25k gallons)",
-    accessMethod: "gate" as const,
-    accessDetail: "Code: 4521",
-  };
-
-  const tech = { name: "Carlos M.", initials: "CM", rating: 4.9, isAssigned: true };
-
-  // Generate one visit per month starting from startMonth (0-indexed)
-  const visits: BookingData[] = [];
-  for (let i = 0; i < count; i++) {
-    const monthIndex = startMonth + i;
-    const year = 2026 + Math.floor(monthIndex / 12);
-    const month = monthIndex % 12;
-    // Pick the 3rd Wednesday of each month
-    const date = getNthWeekday(year, month, 3, 3); // 3rd Wednesday
-    visits.push({
-      frequency: "monthly",
-      selectedPass: sharedPass,
-      recurrence: "monthly",
-      scheduleData: {
-        selectedDate: date,
-        timeWindow: "morning",
-        accessMethod: "gate",
-        accessDetail: "Code: 4521",
-        addons: i === 0 ? [{ id: "addon-1", name: "Filter Deep Clean", price: 29 }] : [],
-        addonsTotal: i === 0 ? 29 : 0,
-      },
-      technician: tech,
-      pool: sharedPool,
-      status: "scheduled",
-    });
-  }
-  return visits;
-}
-
-/** Get the nth occurrence of a weekday in a given month (1-indexed nth, 0=Sun..6=Sat) */
-function getNthWeekday(year: number, month: number, nth: number, weekday: number): Date {
-  const first = new Date(year, month, 1);
-  let day = 1 + ((weekday - first.getDay() + 7) % 7);
-  day += (nth - 1) * 7;
-  return new Date(year, month, day);
-}
-
-function createDemoPastBooking(): BookingData {
   const sharedPass = {
     id: "pass-2",
     hours: 3,
@@ -112,25 +54,38 @@ function createDemoPastBooking(): BookingData {
   const tech = { name: "Carlos M.", initials: "CM", rating: 4.9, isAssigned: true };
 
   return {
-    frequency: "once",
-    selectedPass: sharedPass,
-    scheduleData: {
-      selectedDate: new Date(2026, 0, 16),
-      timeWindow: "morning",
-      accessMethod: "gate",
-      accessDetail: "Code: 4521",
-      addons: [],
-      addonsTotal: 0,
+    upcoming: {
+      frequency: "once",
+      selectedPass: sharedPass,
+      scheduleData: {
+        selectedDate: upcomingDate,
+        timeWindow: "morning",
+        accessMethod: "gate",
+        accessDetail: "Code: 4521",
+        addons: [{ id: "addon-1", name: "Filter Deep Clean", price: 29 }],
+        addonsTotal: 29,
+      },
+      technician: tech,
+      pool: sharedPool,
+      status: "scheduled",
     },
-    technician: tech,
-    pool: sharedPool,
-    status: "completed",
+    past: {
+      frequency: "once",
+      selectedPass: sharedPass,
+      scheduleData: {
+        selectedDate: pastDate,
+        timeWindow: "morning",
+        accessMethod: "gate",
+        accessDetail: "Code: 4521",
+        addons: [],
+        addonsTotal: 0,
+      },
+      technician: tech,
+      pool: sharedPool,
+      status: "completed",
+    },
   };
 }
-
-const INITIAL_VISIBLE = 3;
-const LOAD_MORE_COUNT = 4;
-const MAX_VISIBLE = 8;
 
 const Dashboard = () => {
   const { user, logout, isAuthenticated, isLoading } = useAuth();
@@ -138,8 +93,6 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const [showCancelled, setShowCancelled] = useState(false);
   const [showBooking, setShowBooking] = useState(false);
-  const [visibleCount, setVisibleCount] = useState(INITIAL_VISIBLE);
-  const topRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
@@ -154,27 +107,13 @@ const Dashboard = () => {
 
   // For demo user, show seed data; otherwise use booking context
   const isDemoUser = user?.email === "demo@example.com";
+  const demoBookings = isDemoUser ? createDemoBookings() : null;
 
-  // Generate 8 total recurring visits starting from April 2026 (month index 3)
-  const allUpcoming = isDemoUser ? generateRecurringVisits(2, MAX_VISIBLE) : booking ? [{ ...booking, status: "scheduled" as const }] : [];
-  const visibleUpcoming = allUpcoming.slice(0, visibleCount);
-  const pastBooking = isDemoUser ? createDemoPastBooking() : booking ? { ...booking, status: "completed" as const } : null;
-
-  // Group visible upcoming by month/year
-  const groupedUpcoming = visibleUpcoming.reduce<Record<string, BookingData[]>>((acc, b) => {
-    const d = b.scheduleData.selectedDate;
-    const key = `${SHORT_MONTHS[d.getMonth()]} ${d.getFullYear()}`;
-    if (!acc[key]) acc[key] = [];
-    acc[key].push(b);
-    return acc;
-  }, {});
-
-  const canLoadMore = visibleCount < allUpcoming.length;
-  const showBackToTop = visibleCount >= MAX_VISIBLE;
+  const upcomingBooking = booking ? { ...booking, status: "scheduled" as const } : demoBookings?.upcoming || null;
+  const pastBooking = booking ? { ...booking, status: "completed" as const } : demoBookings?.past || null;
 
   return (
     <div className="min-h-screen bg-background">
-      <div ref={topRef} />
       {/* Header */}
       <header className="bg-card border-b border-border sticky top-0 z-10">
         <div className="container max-w-[760px] mx-auto px-5 h-[60px] flex items-center justify-between">
@@ -202,44 +141,12 @@ const Dashboard = () => {
         <section className="mb-10">
           <h2 className="text-[1.35rem] font-semibold text-foreground mb-4">Upcoming services</h2>
 
-          {visibleUpcoming.length > 0 ? (
+          {upcomingBooking ? (
             <>
-              {Object.entries(groupedUpcoming).map(([monthLabel, bookings]) => (
-                <div key={monthLabel} className="mb-6">
-                  <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
-                    {monthLabel}
-                  </p>
-                  <div className="flex flex-col gap-4">
-                    {bookings.map((b, idx) => (
-                      <ServiceCard key={`${monthLabel}-${idx}`} booking={b} navigateTo="/service-details" />
-                    ))}
-                  </div>
-                </div>
-              ))}
-
-              {/* View More / Back to Top */}
-              <div className="flex flex-col items-center gap-3 mt-6">
-                {canLoadMore && (
-                  <Button
-                    variant="outline"
-                    className="w-full rounded-xl h-12 font-semibold hover:bg-primary hover:text-primary-foreground hover:border-primary"
-                    onClick={() => setVisibleCount((prev) => Math.min(prev + LOAD_MORE_COUNT, MAX_VISIBLE))}
-                  >
-                    <ChevronDown className="h-4 w-4 mr-1" />
-                    View More
-                  </Button>
-                )}
-                {showBackToTop && (
-                  <Button
-                    variant="ghost"
-                    className="text-primary font-semibold"
-                    onClick={() => topRef.current?.scrollIntoView({ behavior: "smooth" })}
-                  >
-                    <ArrowUp className="h-4 w-4 mr-1" />
-                    Back to Top
-                  </Button>
-                )}
-              </div>
+              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
+                {SHORT_MONTHS[upcomingBooking.scheduleData.selectedDate.getMonth()]} {upcomingBooking.scheduleData.selectedDate.getFullYear()}
+              </p>
+              <ServiceCard booking={upcomingBooking} navigateTo="/service-details" />
             </>
           ) : (
             <div className="bg-card rounded-2xl p-8 text-center">

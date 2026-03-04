@@ -175,7 +175,7 @@ export default function RescheduleModal({ open, onOpenChange, booking, onResched
                     <p className="text-sm font-semibold text-foreground">{slot.label}</p>
                     <p className="text-xs text-muted-foreground">{slot.range}</p>
                   </div>
-                  <Clock className={cn("h-4 w-4", selectedTime === slot.value ? "text-primary" : "text-muted-foreground")} />
+                  
                 </button>
               ))}
             </div>

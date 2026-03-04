@@ -138,7 +138,7 @@ export default function RescheduleModal({ open, onOpenChange, booking, onResched
             )}
 
             <div className="flex gap-2.5">
-              <Button variant="outline" className="flex-1" onClick={() => setStep(1)}>
+              <Button variant="outline" className="flex-1 hover:text-primary hover:border-primary hover:bg-transparent" onClick={() => setStep(1)}>
                 <ArrowLeft className="h-4 w-4 mr-1" />
                 Back
               </Button>
@@ -188,7 +188,7 @@ export default function RescheduleModal({ open, onOpenChange, booking, onResched
             )}
 
             <div className="flex gap-2.5">
-              <Button variant="outline" className="flex-1" onClick={() => setStep(2)}>
+              <Button variant="outline" className="flex-1 hover:text-primary hover:border-primary hover:bg-transparent" onClick={() => setStep(2)}>
                 <ArrowLeft className="h-4 w-4 mr-1" />
                 Back
               </Button>
@@ -225,7 +225,7 @@ export default function RescheduleModal({ open, onOpenChange, booking, onResched
             </div>
 
             <div className="flex gap-2.5">
-              <Button variant="outline" className="flex-1" onClick={() => setStep(3)}>
+              <Button variant="outline" className="flex-1 hover:text-primary hover:border-primary hover:bg-transparent" onClick={() => setStep(3)}>
                 <ArrowLeft className="h-4 w-4 mr-1" />
                 Back
               </Button>

@@ -118,6 +118,7 @@ const Dashboard = () => {
   const nextService = upcomingServices[0] || null;
   const remainingUpcoming = upcomingServices.slice(1);
   const visibleUpcoming = showMore ? remainingUpcoming : remainingUpcoming.slice(0, 3);
+  const currentYear = new Date().getFullYear();
 
   const handleViewDetails = (svc: ServiceInstance) => {
     setBooking(svc.booking);
@@ -181,19 +182,24 @@ const Dashboard = () => {
           <section className="mb-8">
             <h2 className="text-lg font-semibold text-foreground mb-3">Upcoming Visits</h2>
             <div className="bg-card rounded-2xl border border-border shadow-sm divide-y divide-border overflow-hidden">
-              {visibleUpcoming.map(svc => (
-                <UpcomingRow key={svc.id} service={svc} onReschedule={() => setRescheduleService(svc)} />
-              ))}
+              {visibleUpcoming.map((svc, idx) => {
+                // idx in remainingUpcoming (0-based); first 5 (indices 0–4) get reschedule since nextService takes slot 0 of 6
+                const globalIndex = remainingUpcoming.indexOf(svc);
+                const canReschedule = globalIndex < 5;
+                return (
+                  <UpcomingRow key={svc.id} service={svc} canReschedule={canReschedule} onReschedule={() => setRescheduleService(svc)} />
+                );
+              })}
             </div>
             {remainingUpcoming.length > 3 && (
               <div className="mt-3 text-center">
                 {showMore ? (
                   <button onClick={() => { setShowMore(false); window.scrollTo({ top: 0, behavior: "smooth" }); }} className="text-sm font-semibold text-primary hover:underline">
-                    Back to Top
+                    See less
                   </button>
                 ) : (
                   <button onClick={() => setShowMore(true)} className="text-sm font-semibold text-primary hover:underline">
-                    View More ({remainingUpcoming.length - 3} more)
+                    View full schedule this year ({currentYear})
                   </button>
                 )}
               </div>
@@ -289,7 +295,7 @@ const NextServiceCard = ({ service, onViewDetails }: { service: ServiceInstance;
 };
 
 /* ── Upcoming Visit Row ── */
-const UpcomingRow = ({ service, onReschedule }: { service: ServiceInstance; onReschedule: () => void }) => {
+const UpcomingRow = ({ service, canReschedule, onReschedule }: { service: ServiceInstance; canReschedule: boolean; onReschedule: () => void }) => {
   const { booking } = service;
   const d = booking.scheduleData.selectedDate;
   const month = SHORT_MONTHS[d.getMonth()].toUpperCase();
@@ -310,7 +316,8 @@ const UpcomingRow = ({ service, onReschedule }: { service: ServiceInstance; onRe
       <Button
         variant="outline"
         size="sm"
-        className="shrink-0 gap-1.5 text-xs hover:bg-primary hover:text-primary-foreground hover:border-primary"
+        disabled={!canReschedule}
+        className="shrink-0 gap-1.5 text-xs hover:bg-primary hover:text-primary-foreground hover:border-primary disabled:opacity-40 disabled:cursor-not-allowed"
         onClick={(e) => { e.stopPropagation(); onReschedule(); }}
       >
         <CalendarClock className="h-3.5 w-3.5" />

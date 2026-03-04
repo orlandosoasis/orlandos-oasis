@@ -217,12 +217,8 @@ const ServiceCard = ({ booking, navigateTo }: ServiceCardProps) => {
   const isCompleted = serviceStatus === "completed";
   const d = scheduleData.selectedDate;
 
-  // For completed services, mirror the CompletedServiceDetails page date logic
-  const displayDate = isCompleted ? (() => {
-    const cd = new Date(d);
-    cd.setDate(cd.getDate() - 5);
-    return cd;
-  })() : d;
+  // For completed services, use fixed date: February 25, 2026
+  const displayDate = isCompleted ? new Date(2026, 1, 25) : d;
 
   const fullDate = `${FULL_DAYS[displayDate.getDay()]}, ${SHORT_MONTHS[displayDate.getMonth()]} ${displayDate.getDate()}, ${displayDate.getFullYear()}`;
 

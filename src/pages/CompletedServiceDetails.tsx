@@ -75,9 +75,8 @@ const CompletedServiceDetails = () => {
 
   const { selectedPass, scheduleData, technician, frequency } = booking;
 
-  // The completed service happened 5 days before the booking date
-  const completedDate = new Date(scheduleData.selectedDate);
-  completedDate.setDate(completedDate.getDate() - 5);
+  // Fixed completed service date: February 25, 2026
+  const completedDate = new Date(2026, 1, 25);
   const formattedDate = `${FULL_DAYS[completedDate.getDay()]}, ${SHORT_MONTHS[completedDate.getMonth()]} ${completedDate.getDate()}, ${completedDate.getFullYear()}`;
 
   const isMonthly = frequency === "monthly";

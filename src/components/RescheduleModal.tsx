@@ -250,7 +250,7 @@ export default function RescheduleModal({ open, onOpenChange, booking, onResched
             </Alert>
 
             <div className="flex gap-2.5">
-              <Button variant="outline" className="flex-1" onClick={() => { handleClose(); window.location.href = "/messages"; }}>
+              <Button variant="outline" className="flex-1 hover:text-primary hover:border-primary hover:bg-transparent" onClick={() => { handleClose(); window.location.href = "/messages"; }}>
                 Message Technician
               </Button>
               <Button className="flex-1 font-semibold" onClick={handleClose}>

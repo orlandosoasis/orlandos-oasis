@@ -84,23 +84,26 @@ export default function RescheduleModal({ open, onOpenChange, booking, onResched
                 <Clock className="h-4 w-4" />
                 <span>{getTimeRange(scheduleData.timeWindow)}</span>
               </div>
-              {technician.isAssigned && (
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <Star className="h-3.5 w-3.5" />
-                  <span>{technician.name}</span>
-                </div>
-              )}
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <MapPin className="h-4 w-4" />
                 <span>{fullAddress}</span>
               </div>
+              {technician.isAssigned && (
+                <>
+                  <div className="border-t border-border my-1" />
+                  <div>
+                    <p className="text-xs text-muted-foreground">Assigned Pool Technician</p>
+                    <p className="text-sm font-bold text-foreground mt-0.5">{technician.name}</p>
+                  </div>
+                </>
+              )}
             </div>
 
             <div className="flex flex-col gap-2.5">
               <Button className="w-full font-semibold" onClick={() => setStep(2)}>
                 Continue to Select New Date
               </Button>
-              <Button variant="outline" className="w-full" onClick={handleClose}>
+              <Button variant="outline" className="w-full hover:text-primary hover:border-primary hover:bg-transparent" onClick={handleClose}>
                 Cancel
               </Button>
             </div>

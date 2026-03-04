@@ -103,7 +103,7 @@ export default function RescheduleModal({ open, onOpenChange, booking, onResched
               <Button className="w-full font-semibold" onClick={() => setStep(2)}>
                 Select New Date
               </Button>
-              <Button variant="outline" className="w-full hover:text-primary hover:border-primary hover:bg-transparent" onClick={handleClose}>
+              <Button variant="outline" className="w-full hover:text-primary hover:border-primary hover:bg-primary/10" onClick={handleClose}>
                 Cancel
               </Button>
             </div>

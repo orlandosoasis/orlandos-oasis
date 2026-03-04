@@ -239,8 +239,8 @@ export default function RescheduleModal({ open, onOpenChange, booking, onResched
         {/* Step 5: Success */}
         {step === 5 && selectedDate && selectedTime && (
           <div className="p-6 space-y-5">
-            <Alert className="border-primary/30 bg-primary/5">
-              <CheckCircle2 className="h-4 w-4 text-primary" />
+            <Alert className="border-green-500/30 bg-green-500/5">
+              <CheckCircle2 className="h-4 w-4 text-green-600" />
               <AlertDescription className="ml-2">
                 <p className="font-semibold text-foreground text-sm">Service Successfully Rescheduled</p>
                 <p className="text-xs text-muted-foreground mt-1">
@@ -249,11 +249,11 @@ export default function RescheduleModal({ open, onOpenChange, booking, onResched
               </AlertDescription>
             </Alert>
 
-            <div className="flex flex-col gap-2.5">
-              <Button className="w-full font-semibold" onClick={handleClose}>
+            <div className="flex gap-2.5">
+              <Button className="flex-1 font-semibold" onClick={handleClose}>
                 View Service Details
               </Button>
-              <Button variant="outline" className="w-full" onClick={() => { handleClose(); window.location.href = "/messages"; }}>
+              <Button variant="outline" className="flex-1" onClick={() => { handleClose(); window.location.href = "/messages"; }}>
                 Message Technician
               </Button>
             </div>

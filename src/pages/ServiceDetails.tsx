@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Waves, ArrowLeft, Clock, Calendar, MapPin, Star, Key, Droplets, Wrench, Camera, FileText, FlaskConical, RefreshCw, CreditCard, MessagesSquare } from "lucide-react";
+import { Waves, ArrowLeft, Clock, Calendar, MapPin, Star, Key, Droplets, Wrench, Camera, FileText, FlaskConical, RefreshCw, CreditCard, MessagesSquare, CalendarClock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import StatusBadge from "@/components/StatusBadge";
-import { useBooking } from "@/contexts/BookingContext";
+import { useBooking, type TimeWindow } from "@/contexts/BookingContext";
 import PoolSceneHero from "@/components/dashboard/PoolSceneHero";
-
+import RescheduleModal from "@/components/RescheduleModal";
 const FULL_DAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 const SHORT_MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
@@ -52,8 +52,21 @@ const CleaningNotes = ({ notes }: {notes: string;}) => {
 
 const ServiceDetails = () => {
   const navigate = useNavigate();
-  const { booking } = useBooking();
+  const { booking, setBooking } = useBooking();
+  const [showReschedule, setShowReschedule] = useState(false);
 
+  const handleReschedule = (newDate: Date, newTimeWindow: TimeWindow) => {
+    if (booking) {
+      setBooking({
+        ...booking,
+        scheduleData: {
+          ...booking.scheduleData,
+          selectedDate: newDate,
+          timeWindow: newTimeWindow,
+        },
+      });
+    }
+  };
   if (!booking) {
     return (
       <div className="min-h-screen bg-background flex flex-col items-center justify-center gap-4">
@@ -130,7 +143,10 @@ const ServiceDetails = () => {
               </div>
             </div>
 
-
+            <Button variant="outline" className="w-full mt-4 gap-1.5 hover:bg-primary hover:text-primary-foreground hover:border-primary" onClick={() => setShowReschedule(true)}>
+              <CalendarClock className="h-4 w-4" />
+              Reschedule
+            </Button>
           </div>
 
           {/* Technician — 7 cols */}
@@ -288,6 +304,15 @@ const ServiceDetails = () => {
           <p className="mt-3">© Orlando's Oasis 2015 – 2026</p>
         </footer>
       </main>
+
+      {booking && (
+        <RescheduleModal
+          open={showReschedule}
+          onOpenChange={setShowReschedule}
+          booking={booking}
+          onReschedule={handleReschedule}
+        />
+      )}
     </div>);
 
 };

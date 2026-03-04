@@ -279,7 +279,10 @@ const ServiceCard = ({ booking, navigateTo }: ServiceCardProps) => {
             </>
           )}
         </div>
-        <ChevronRight className="h-5 w-5 text-muted-foreground mt-1 shrink-0 group-hover:translate-x-0.5 transition-transform" />
+        <div className="flex items-center gap-1 shrink-0 mt-1">
+          <span className="text-xs font-medium text-muted-foreground group-hover:text-primary transition-colors">View Details</span>
+          <ChevronRight className="h-5 w-5 text-muted-foreground shrink-0 group-hover:translate-x-0.5 group-hover:text-primary transition-all" />
+        </div>
       </div>
     </div>
   );

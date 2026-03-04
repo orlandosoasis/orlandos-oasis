@@ -62,8 +62,8 @@ const ServiceDetails = () => {
         scheduleData: {
           ...booking.scheduleData,
           selectedDate: newDate,
-          timeWindow: newTimeWindow,
-        },
+          timeWindow: newTimeWindow
+        }
       });
     }
   };
@@ -150,7 +150,7 @@ const ServiceDetails = () => {
           </div>
 
           {/* Technician — 7 cols */}
-          <div className="md:col-span-7 bg-card rounded-2xl border border-border p-6 shadow-sm flex flex-col">
+          <div className="md:col-span-7 bg-card rounded-2xl border border-border p-6 shadow-sm flex-col flex items-start justify-start">
             {technician.isAssigned ?
             <>
                 <h2 className="text-[17px] font-bold text-foreground mb-4">Your Technician</h2>
@@ -305,14 +305,14 @@ const ServiceDetails = () => {
         </footer>
       </main>
 
-      {booking && (
-        <RescheduleModal
-          open={showReschedule}
-          onOpenChange={setShowReschedule}
-          booking={booking}
-          onReschedule={handleReschedule}
-        />
-      )}
+      {booking &&
+      <RescheduleModal
+        open={showReschedule}
+        onOpenChange={setShowReschedule}
+        booking={booking}
+        onReschedule={handleReschedule} />
+
+      }
     </div>);
 
 };

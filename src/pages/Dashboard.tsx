@@ -304,7 +304,7 @@ const UpcomingRow = ({ service, onReschedule }: { service: ServiceInstance; onRe
       <div className="flex-1 min-w-0">
         <p className="text-sm font-semibold text-foreground">{booking.selectedPass.hours}-Hour Pool Service</p>
         <p className="text-xs text-muted-foreground truncate">
-          {booking.technician.name} · {TIME_LABELS[booking.scheduleData.timeWindow]}
+          Pool Technician to be assigned · {TIME_LABELS[booking.scheduleData.timeWindow]}
         </p>
       </div>
       <Button
@@ -334,15 +334,15 @@ const PastRow = ({ service, onViewDetails }: { service: ServiceInstance; onViewD
         <p className="text-xl font-bold text-foreground">{day}</p>
       </div>
       <div className="flex-1 min-w-0">
-        <p className="text-sm font-semibold text-foreground">{booking.selectedPass.hours}-Hour Pool Service</p>
-        <p className="text-xs text-muted-foreground">{booking.technician.name} · Completed</p>
-      </div>
-      <div className="flex items-center gap-2 shrink-0">
-        <StatusBadge status="completed" />
-        <div className="flex items-center gap-1">
-          <span className="text-xs font-medium text-muted-foreground group-hover:text-primary transition-colors">View Details</span>
-          <ChevronRight className="h-4 w-4 text-muted-foreground group-hover:text-primary group-hover:translate-x-0.5 transition-all" />
+        <div className="flex items-center gap-2">
+          <p className="text-sm font-semibold text-foreground">{booking.selectedPass.hours}-Hour Pool Service</p>
+          <StatusBadge status="completed" />
         </div>
+        <p className="text-xs text-muted-foreground">{booking.technician.name}</p>
+      </div>
+      <div className="flex items-center gap-1 shrink-0">
+        <span className="text-xs font-medium text-muted-foreground group-hover:text-primary transition-colors">View Details</span>
+        <ChevronRight className="h-4 w-4 text-muted-foreground group-hover:text-primary group-hover:translate-x-0.5 transition-all" />
       </div>
     </div>
   );

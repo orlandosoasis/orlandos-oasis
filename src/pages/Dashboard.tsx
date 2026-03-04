@@ -156,7 +156,7 @@ const Dashboard = () => {
   const isDemoUser = user?.email === "demo@example.com";
 
   // Generate 8 total recurring visits starting from April 2026 (month index 3)
-  const allUpcoming = isDemoUser ? generateRecurringVisits(3, MAX_VISIBLE) : booking ? [{ ...booking, status: "scheduled" as const }] : [];
+  const allUpcoming = isDemoUser ? generateRecurringVisits(2, MAX_VISIBLE) : booking ? [{ ...booking, status: "scheduled" as const }] : [];
   const visibleUpcoming = allUpcoming.slice(0, visibleCount);
   const pastBooking = isDemoUser ? createDemoPastBooking() : booking ? { ...booking, status: "completed" as const } : null;
 

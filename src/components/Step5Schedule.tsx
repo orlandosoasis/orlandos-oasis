@@ -396,58 +396,6 @@ const Step5Schedule = ({ selectedPass, onChangePass, passOptions, onConfirm }: S
         </div>
       </div>
 
-      {/* ⑥ Add-Ons */}
-      <div className="bg-card rounded-2xl border border-border p-6 shadow-sm">
-        <p className="text-[11px] font-medium tracking-[1.2px] uppercase text-muted-foreground mb-3.5">Step 4 — Optional</p>
-        <h3 className="text-[17px] font-semibold text-foreground mb-1">Select Add-Ons</h3>
-        <p className="text-xs text-muted-foreground mb-4">Add extras at a discounted rate while booking.</p>
-
-        {/* Purchased Service Summary */}
-        <p className="text-xs text-muted-foreground mb-0.5">Your service</p>
-        <p className="text-sm font-medium text-foreground mb-4">{selectedPass.label}</p>
-
-        <div className="flex flex-col gap-2.5">
-          {ADDONS.map((addon) => {
-            const isSelected = addons.includes(addon.id);
-            return (
-              <button
-                key={addon.id}
-                type="button"
-                onClick={() => toggleAddon(addon.id)}
-                className={`flex items-center gap-3.5 rounded-xl border-2 p-4 transition-all text-left select-none ${
-                isSelected ?
-                "border-primary bg-primary/[0.06]" :
-                "border-border hover:border-primary/40 hover:bg-primary/5"}`
-                }>
-
-                <div className={`w-[22px] h-[22px] rounded-md border-2 flex items-center justify-center shrink-0 text-xs transition-all ${
-                isSelected ? "bg-primary border-primary text-primary-foreground" : "border-border text-transparent"}`
-                }>
-                  ✓
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-foreground mb-0.5">{addon.name}</p>
-                  <p className="text-xs text-muted-foreground">{addon.desc}</p>
-                  {addon.badge &&
-                  <span className="inline-block mt-1 text-[10px] font-medium bg-amber-500/[0.18] text-amber-700 border border-amber-500/40 rounded-full px-[7px] py-[2px]">
-                      {addon.badge}
-                    </span>
-                  }
-                </div>
-                <span className="text-[15px] font-semibold text-primary whitespace-nowrap">+${addon.price}</span>
-              </button>);
-
-          })}
-        </div>
-
-        <div className="mt-3.5 pt-3.5 border-t border-border flex items-center justify-between">
-          <span className="text-[13px] text-muted-foreground">Add-ons total</span>
-          <span className="text-lg font-bold text-primary">
-            {addonsTotal > 0 ? `+$${addonsTotal}` : "$0"}
-          </span>
-        </div>
-      </div>
-
       {/* ⑦ CTA */}
       <div className="pt-1">
         <Button

@@ -102,12 +102,10 @@ const BookingFlow = ({ onClose, onComplete }: BookingFlowProps) => {
     return "";
   };
 
-  const handlePayment = async () => {
-    if (!paymentMethod) return;
+  const handleConfirmBooking = async () => {
     setIsProcessing(true);
-    await new Promise(r => setTimeout(r, 2200));
+    await new Promise(r => setTimeout(r, 1200));
     setIsProcessing(false);
-    setPaymentSuccess(true);
 
     const scheduleData: ScheduleData = {
       selectedDate,
@@ -136,6 +134,8 @@ const BookingFlow = ({ onClose, onComplete }: BookingFlowProps) => {
         accessDetail: getAccessDetail(),
       },
     });
+
+    setBookingSuccess(true);
   };
 
   const TOTAL_STEPS = 3;

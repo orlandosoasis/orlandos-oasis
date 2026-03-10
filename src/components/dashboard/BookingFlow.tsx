@@ -138,8 +138,8 @@ const BookingFlow = ({ onClose, onComplete }: BookingFlowProps) => {
     setBookingSuccess(true);
   };
 
-  const TOTAL_STEPS = 3;
-  const STEP_LABELS = ["Service Setup", "Pool / Property", "Notes & Payment"];
+  const TOTAL_STEPS = 2;
+  const STEP_LABELS = ["Service Setup", "Pool / Property"];
 
   // Success screen
   if (paymentSuccess) {

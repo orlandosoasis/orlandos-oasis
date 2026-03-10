@@ -221,90 +221,19 @@ const BookingFlow = ({ onClose, onComplete }: BookingFlowProps) => {
         {/* ── Step 1: Service Setup ── */}
         {step === 1 && (
           <div className="space-y-6 animate-fade-in">
-            {/* Frequency */}
+            {/* Purchased Service (read-only) */}
             <div>
-              <h2 className="text-lg font-semibold text-foreground mb-1">How often do you need service?</h2>
-              <p className="text-sm text-muted-foreground mb-4">This determines your pricing and scheduling options.</p>
-              <div className="grid grid-cols-2 gap-2.5">
-                {([
-                  { value: "once" as const, label: "Clean once", desc: "One-time service" },
-                  { value: "monthly" as const, label: "Clean monthly", desc: "Recurring plan" },
-                ] as const).map(opt => (
-                  <button key={opt.value} type="button" onClick={() => setFrequency(opt.value)}
-                    className={`flex flex-col items-center justify-center rounded-xl border-2 py-5 px-3 transition-all text-center ${
-                      frequency === opt.value ? "border-primary bg-primary/[0.07]" : "border-border hover:border-primary/40 hover:bg-primary/5"
-                    }`}>
-                    <span className="text-sm font-semibold text-foreground">{opt.label}</span>
-                    <span className="text-xs text-muted-foreground mt-0.5">{opt.desc}</span>
-                  </button>
-                ))}
+              <p className="text-[11px] font-semibold tracking-[0.8px] uppercase text-muted-foreground mb-2.5">PURCHASED SERVICE</p>
+              <div className="flex items-center gap-3.5 rounded-xl border-2 border-border bg-muted/30 p-4">
+                <div className="w-[22px] h-[22px] rounded-full bg-primary border-primary flex items-center justify-center shrink-0">
+                  <Check className="h-3 w-3 text-primary-foreground" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <span className="text-sm font-semibold text-foreground">{selectedPass.label}</span>
+                  <p className="text-xs text-muted-foreground">{selectedPass.description}</p>
+                </div>
               </div>
             </div>
-
-            {/* Dynamic: One-time duration OR Monthly services */}
-            {frequency === "once" ? (
-              <div>
-                <p className="text-[11px] font-semibold tracking-[0.8px] uppercase text-muted-foreground mb-2.5">SERVICE DURATION</p>
-                <div className="flex flex-col gap-2.5">
-                  {DURATION_OPTIONS.map(opt => {
-                    const isSelected = selectedDuration === opt.id;
-                    return (
-                      <button key={opt.id} type="button" onClick={() => setSelectedDuration(opt.id)}
-                        className={`relative flex items-center gap-3.5 rounded-xl border-2 p-4 transition-all text-left select-none ${
-                          isSelected ? "border-primary bg-primary/[0.06]" : "border-border hover:border-primary/40 hover:bg-primary/5"
-                        }`}>
-                        <div className={`w-[22px] h-[22px] rounded-full border-2 flex items-center justify-center shrink-0 transition-all ${
-                          isSelected ? "bg-primary border-primary text-primary-foreground" : "border-border text-transparent"
-                        }`}>
-                          <Check className="h-3 w-3" />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-2 mb-0.5">
-                            <span className="text-sm font-semibold text-foreground">{opt.hours} Hours</span>
-                            {opt.isMostPopular && (
-                              <Badge className="bg-primary text-primary-foreground text-[10px] px-1.5 py-0">Most Popular</Badge>
-                            )}
-                          </div>
-                          <p className="text-xs text-muted-foreground">{opt.description}</p>
-                        </div>
-                        <span className="text-lg font-bold text-primary whitespace-nowrap">${opt.discountPrice}</span>
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-            ) : (
-              <div>
-                <p className="text-[11px] font-semibold tracking-[0.8px] uppercase text-muted-foreground mb-2.5">SERVICE DURATION</p>
-                <div className="flex flex-col gap-2.5">
-                  {DURATION_OPTIONS.map(opt => {
-                    const isSelected = selectedDuration === opt.id;
-                    return (
-                      <button key={opt.id} type="button" onClick={() => setSelectedDuration(opt.id)}
-                        className={`relative flex items-center gap-3.5 rounded-xl border-2 p-4 transition-all text-left select-none ${
-                          isSelected ? "border-primary bg-primary/[0.06]" : "border-border hover:border-primary/40 hover:bg-primary/5"
-                        }`}>
-                        <div className={`w-[22px] h-[22px] rounded-full border-2 flex items-center justify-center shrink-0 transition-all ${
-                          isSelected ? "bg-primary border-primary text-primary-foreground" : "border-border text-transparent"
-                        }`}>
-                          <Check className="h-3 w-3" />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-2 mb-0.5">
-                            <span className="text-sm font-semibold text-foreground">{opt.hours} Hours</span>
-                            {opt.isMostPopular && (
-                              <Badge className="bg-primary text-primary-foreground text-[10px] px-1.5 py-0">Most Popular</Badge>
-                            )}
-                          </div>
-                          <p className="text-xs text-muted-foreground">{opt.description}</p>
-                        </div>
-                        <span className="text-lg font-bold text-primary whitespace-nowrap">${opt.discountPrice}<span className="text-xs font-normal text-muted-foreground">/mo</span></span>
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-            )}
 
             {/* Date picker */}
             <div>

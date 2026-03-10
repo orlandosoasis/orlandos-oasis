@@ -93,11 +93,13 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const [showBooking, setShowBooking] = useState(false);
+  const [fromCheckout, setFromCheckout] = useState(false);
 
   // Auto-open booking flow when redirected from checkout
   useEffect(() => {
     if (searchParams.get("openBooking") === "true") {
       setShowBooking(true);
+      setFromCheckout(true);
       setSearchParams({}, { replace: true });
     }
   }, [searchParams, setSearchParams]);
@@ -105,7 +107,7 @@ const Dashboard = () => {
   const [services, setServices] = useState<ServiceInstance[]>([]);
   const [rescheduleService, setRescheduleService] = useState<ServiceInstance | null>(null);
 
-  const isPostCheckout = searchParams.get("openBooking") === "true" || showBooking;
+  const isPostCheckout = fromCheckout || showBooking;
 
   useEffect(() => {
     if (!isLoading && !isAuthenticated && !isPostCheckout) navigate("/login", { replace: true });

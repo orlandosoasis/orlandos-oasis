@@ -173,7 +173,7 @@ const Step4Checkout = ({ selectedPass, timeLeft, email, onChangePass, passOption
       {/* Email */}
       <div className="border border-border rounded-xl px-5 py-3.5">
         <p className="text-[11px] text-muted-foreground mb-1">Email to deliver confirmation to:</p>
-        <p className="text-sm font-medium text-muted-foreground">{email || "—"}</p>
+        <p className="text-sm font-medium text-muted-foreground">{email || "Enter your email address"}</p>
       </div>
 
       {/* Legal */}

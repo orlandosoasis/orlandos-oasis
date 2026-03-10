@@ -645,12 +645,6 @@ const BookingFlow = ({ onClose, onComplete }: BookingFlowProps) => {
       {/* Sticky footer */}
       <div className="fixed bottom-0 left-0 right-0 bg-card border-t border-border">
         <div className="max-w-[760px] mx-auto px-5 py-4">
-          <div className="flex items-center justify-between mb-3">
-            <span className="text-sm text-muted-foreground">
-              {`${selectedPass.hours}h service${frequency === "monthly" ? " · Monthly" : ""}`}
-            </span>
-            <span className="text-lg font-bold text-foreground">${totalPrice}{frequency === "monthly" ? "/mo" : ""}</span>
-          </div>
           {step < 3 ? (
             <Button onClick={() => setStep(step + 1)} disabled={!canProceed()} className="w-full h-12 text-[15px] font-bold rounded-xl">
               Continue

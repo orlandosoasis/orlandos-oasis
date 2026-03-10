@@ -59,13 +59,11 @@ const BookingFlow = ({ onClose, onComplete }: BookingFlowProps) => {
   const [keyLocation, setKeyLocation] = useState("");
   const [otherInstructions, setOtherInstructions] = useState("");
 
-  // Step 3 — Notes + Payment
+  // Step 2 — Notes
   const [specialNotes, setSpecialNotes] = useState("");
-  type PaymentMethod = "google_pay" | "card" | "paypal";
-  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod | null>(null);
   
   const [isProcessing, setIsProcessing] = useState(false);
-  const [paymentSuccess, setPaymentSuccess] = useState(false);
+  const [bookingSuccess, setBookingSuccess] = useState(false);
 
   const selectedPass = DURATION_OPTIONS.find(o => o.id === selectedDuration)!;
   const totalPrice = selectedPass.discountPrice;

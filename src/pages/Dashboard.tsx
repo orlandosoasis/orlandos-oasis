@@ -290,17 +290,20 @@ const NextServiceCard = ({ service, onViewDetails }: { service: ServiceInstance;
           </div>
         </div>
       </div>
-      <div className="px-[18px] py-4 flex items-start justify-between">
-        <div className="flex-1">
-          <p className="font-semibold text-foreground text-base mb-1">{selectedPass.hours}-Hour Pool Service</p>
-          <p className="font-semibold text-foreground text-[0.875rem] mb-0.5">{fullDate}</p>
-          <p className="text-[0.825rem] text-muted-foreground leading-relaxed">
+      <div className="px-5 py-4 flex items-center gap-4">
+        <div className="w-12 text-center shrink-0">
+          <p className="text-xs font-semibold text-muted-foreground uppercase">{SHORT_MONTHS[d.getMonth()]}</p>
+          <p className="text-xl font-bold text-foreground">{d.getDate()}</p>
+        </div>
+        <div className="flex-1 min-w-0">
+          <p className="text-sm font-semibold text-foreground">{selectedPass.hours}-Hour Pool Service</p>
+          <p className="text-xs text-muted-foreground">
             Expected arrival {TIME_LABELS[scheduleData.timeWindow]}
           </p>
         </div>
-        <div className="flex items-center gap-1 shrink-0 mt-1">
+        <div className="flex items-center gap-1 shrink-0">
           <span className="text-xs font-medium text-muted-foreground group-hover:text-primary transition-colors">View Details</span>
-          <ChevronRight className="h-5 w-5 text-muted-foreground shrink-0 group-hover:translate-x-0.5 group-hover:text-primary transition-all" />
+          <ChevronRight className="h-4 w-4 text-muted-foreground shrink-0 group-hover:translate-x-0.5 group-hover:text-primary transition-all" />
         </div>
       </div>
     </div>

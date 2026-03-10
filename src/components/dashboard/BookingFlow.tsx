@@ -142,7 +142,7 @@ const BookingFlow = ({ onClose, onComplete }: BookingFlowProps) => {
   const STEP_LABELS = ["Service Setup", "Pool / Property"];
 
   // Success screen
-  if (paymentSuccess) {
+  if (bookingSuccess) {
     return (
       <div className="fixed inset-0 z-50 bg-background overflow-y-auto">
         <div className="max-w-[760px] mx-auto px-5 py-12 flex flex-col items-center text-center">

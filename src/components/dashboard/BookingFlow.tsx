@@ -647,7 +647,7 @@ const BookingFlow = ({ onClose, onComplete }: BookingFlowProps) => {
         <div className="max-w-[760px] mx-auto px-5 py-4">
           {step < 3 ? (
             <Button onClick={() => setStep(step + 1)} disabled={!canProceed()} className="w-full h-12 text-[15px] font-bold rounded-xl">
-              Continue
+              Save all
             </Button>
           ) : paymentMethod === "paypal" ? null : (
             <Button onClick={handlePayment} disabled={!canProceed() || isProcessing} className="w-full h-14 text-[17px] font-bold rounded-2xl shadow-lg">

@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
 import { createPortal } from "react-dom";
 import { Clock, Bell, Check, ArrowLeft, Pencil } from "lucide-react";
 import Step4Checkout from "@/components/Step4Checkout";
@@ -431,6 +432,17 @@ const ServicePassSection = () => {
     phone: "",
   });
   const [scheduleData, setScheduleData] = useState<any>(null);
+  const [showPaymentSuccess, setShowPaymentSuccess] = useState(false);
+  const navigate = useNavigate();
+
+  // Auto-redirect after payment success modal
+  useEffect(() => {
+    if (!showPaymentSuccess) return;
+    const timeout = setTimeout(() => {
+      navigate("/dashboard?openBooking=true");
+    }, 3000);
+    return () => clearTimeout(timeout);
+  }, [showPaymentSuccess, navigate]);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -500,12 +512,27 @@ const ServicePassSection = () => {
             email={formData.email}
             onChangePass={setSelectedPass}
             passOptions={PASS_OPTIONS}
-            onContinue={() => {
-              // Payment success — redirect to dashboard with auto-open booking
-              window.location.href = "/dashboard?openBooking=true";
-            }}
+            onContinue={() => setShowPaymentSuccess(true)}
           />
         </div>
+
+        {/* Payment Success Modal */}
+        <Dialog open={showPaymentSuccess} onOpenChange={() => {}}>
+          <DialogContent className="max-w-sm rounded-2xl text-center pt-10 [&>button]:hidden" onPointerDownOutside={(e) => e.preventDefault()}>
+            <div className="flex flex-col items-center gap-4 py-2">
+              <div className="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center">
+                <Check className="h-7 w-7 text-primary" />
+              </div>
+              <DialogHeader className="space-y-2">
+                <DialogTitle className="text-xl font-bold text-foreground">Payment successful</DialogTitle>
+                <DialogDescription className="text-sm text-muted-foreground leading-relaxed">
+                  Your payment has been confirmed. We will redirect you to the booking page so you can schedule your pool service.
+                </DialogDescription>
+              </DialogHeader>
+              <p className="text-xs text-muted-foreground animate-pulse">Redirecting you to the booking page…</p>
+            </div>
+          </DialogContent>
+        </Dialog>
       </>
     );
   }

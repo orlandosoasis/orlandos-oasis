@@ -91,7 +91,16 @@ const Dashboard = () => {
   const { user, logout, isAuthenticated, isLoading } = useAuth();
   const { booking, setBooking } = useBooking();
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [showBooking, setShowBooking] = useState(false);
+
+  // Auto-open booking flow when redirected from checkout
+  useEffect(() => {
+    if (searchParams.get("openBooking") === "true") {
+      setShowBooking(true);
+      setSearchParams({}, { replace: true });
+    }
+  }, [searchParams, setSearchParams]);
   const [showMore, setShowMore] = useState(false);
   const [services, setServices] = useState<ServiceInstance[]>([]);
   const [rescheduleService, setRescheduleService] = useState<ServiceInstance | null>(null);

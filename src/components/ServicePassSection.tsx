@@ -500,7 +500,10 @@ const ServicePassSection = () => {
             email={formData.email}
             onChangePass={setSelectedPass}
             passOptions={PASS_OPTIONS}
-            onContinue={() => setStep(5)}
+            onContinue={() => {
+              // Payment success — redirect to dashboard with auto-open booking
+              window.location.href = "/dashboard?openBooking=true";
+            }}
           />
         </div>
       </>

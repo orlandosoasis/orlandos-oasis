@@ -85,7 +85,6 @@ const BookingFlow = ({ onClose, onComplete }: BookingFlowProps) => {
       if (accessMethod === "other" && !otherInstructions.trim()) return false;
       return true;
     }
-    if (step === 3) return !!paymentMethod;
     return true;
   };
 

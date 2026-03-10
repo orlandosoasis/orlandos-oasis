@@ -174,7 +174,7 @@ const BookingFlow = ({ onClose, onComplete }: BookingFlowProps) => {
             </div>
 
             <div className="border-t border-border pt-3" />
-            <p className="text-[11px] font-semibold tracking-[0.8px] uppercase text-muted-foreground">POOL DETAILS</p>
+            <h3 className="text-sm font-semibold text-foreground mb-3">Pool Details</h3>
             <div className="flex justify-between text-sm">
               <span className="text-muted-foreground">Address</span>
               <span className="font-medium text-foreground text-right max-w-[60%]">{[address, city, state, zip].filter(Boolean).join(", ")}</span>

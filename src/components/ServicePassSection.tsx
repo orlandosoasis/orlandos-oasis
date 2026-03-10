@@ -497,8 +497,8 @@ const ServicePassSection = () => {
     return (
       <div className="fixed inset-0 z-50 bg-background flex items-center justify-center">
         <div className="flex flex-col items-center gap-6 text-center px-6 max-w-md">
-          <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
-            <Check className="h-8 w-8 text-primary" />
+          <div className="w-16 h-16 rounded-full bg-green-500/10 flex items-center justify-center">
+            <Check className="h-8 w-8 text-green-500" />
           </div>
           <h1 className="text-2xl font-bold text-foreground">Payment successful</h1>
           <p className="text-muted-foreground leading-relaxed">

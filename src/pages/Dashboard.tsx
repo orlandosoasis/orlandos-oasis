@@ -105,9 +105,11 @@ const Dashboard = () => {
   const [services, setServices] = useState<ServiceInstance[]>([]);
   const [rescheduleService, setRescheduleService] = useState<ServiceInstance | null>(null);
 
+  const isPostCheckout = searchParams.get("openBooking") === "true" || showBooking;
+
   useEffect(() => {
-    if (!isLoading && !isAuthenticated) navigate("/login", { replace: true });
-  }, [isLoading, isAuthenticated, navigate]);
+    if (!isLoading && !isAuthenticated && !isPostCheckout) navigate("/login", { replace: true });
+  }, [isLoading, isAuthenticated, isPostCheckout, navigate]);
 
   useEffect(() => {
     const isDemoUser = user?.email === "demo@example.com";

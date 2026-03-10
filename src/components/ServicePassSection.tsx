@@ -435,14 +435,6 @@ const ServicePassSection = () => {
   const [showPaymentSuccess, setShowPaymentSuccess] = useState(false);
   const navigate = useNavigate();
 
-  // Auto-redirect after payment success modal
-  useEffect(() => {
-    if (!showPaymentSuccess) return;
-    const timeout = setTimeout(() => {
-      navigate("/dashboard?openBooking=true");
-    }, 3000);
-    return () => clearTimeout(timeout);
-  }, [showPaymentSuccess, navigate]);
 
   useEffect(() => {
     const timer = setInterval(() => {

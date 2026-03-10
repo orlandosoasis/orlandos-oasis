@@ -9,8 +9,8 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogDescription,
-} from "@/components/ui/dialog";
+  DialogDescription } from
+"@/components/ui/dialog";
 
 interface PassOption {
   id: string;
@@ -25,7 +25,7 @@ interface PassOption {
 
 interface Step4Props {
   selectedPass: PassOption;
-  timeLeft: { minutes: number; seconds: number };
+  timeLeft: {minutes: number;seconds: number;};
   email: string;
   onChangePass: (passId: string) => void;
   passOptions: PassOption[];
@@ -73,11 +73,11 @@ const Step4Checkout = ({ selectedPass, timeLeft, email, onChangePass, passOption
         type="button"
         onClick={() => setPaymentMethod("gpay")}
         className={`w-full flex items-center justify-center gap-2 h-12 rounded-xl border-2 transition-colors font-medium text-[15px] ${
-          paymentMethod === "gpay"
-            ? "border-primary bg-foreground text-background"
-            : "border-border bg-foreground text-background hover:opacity-90"
-        }`}
-      >
+        paymentMethod === "gpay" ?
+        "border-primary bg-foreground text-background" :
+        "border-border bg-foreground text-background hover:opacity-90"}`
+        }>
+        
         <svg viewBox="0 0 24 24" className="h-5 w-5" fill="currentColor">
           <path d="M12.24 10.285V14.4h6.806c-.275 1.765-2.056 5.174-6.806 5.174-4.095 0-7.439-3.389-7.439-7.574s3.345-7.574 7.439-7.574c2.33 0 3.891.989 4.785 1.849l3.254-3.138C18.189 1.186 15.479 0 12.24 0c-6.635 0-12 5.365-12 12s5.365 12 12 12c6.926 0 11.52-4.869 11.52-11.726 0-.788-.085-1.39-.189-1.989H12.24z" />
         </svg>
@@ -96,14 +96,14 @@ const Step4Checkout = ({ selectedPass, timeLeft, email, onChangePass, passOption
           <button
             type="button"
             onClick={() => setPaymentMethod("card")}
-            className="w-full flex items-center gap-3.5 px-5 py-4 transition-colors hover:bg-muted/30"
-          >
+            className="w-full flex items-center gap-3.5 px-5 py-4 transition-colors hover:bg-muted/30">
+            
             <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 transition-colors ${
-              paymentMethod === "card" ? "border-foreground" : "border-muted-foreground/40"
-            }`}>
-              {paymentMethod === "card" && (
-                <div className="w-2.5 h-2.5 rounded-full bg-foreground" />
-              )}
+            paymentMethod === "card" ? "border-foreground" : "border-muted-foreground/40"}`
+            }>
+              {paymentMethod === "card" &&
+              <div className="w-2.5 h-2.5 rounded-full bg-foreground" />
+              }
             </div>
             <span className="text-[15px] font-medium text-foreground flex-1 text-left">Use credit or debit card</span>
             <div className="flex items-center gap-1.5 flex-wrap justify-end">
@@ -112,27 +112,27 @@ const Step4Checkout = ({ selectedPass, timeLeft, email, onChangePass, passOption
               <span className="text-[10px] font-bold text-muted-foreground">AMEX</span>
             </div>
           </button>
-          {paymentMethod === "card" && (
-            <div className="px-5 pb-4 space-y-3 animate-fade-in">
+          {paymentMethod === "card" &&
+          <div className="px-5 pb-4 space-y-3 animate-fade-in">
               <Input
-                placeholder="Credit Card Number"
-                className="h-12 rounded-lg border-border bg-background text-sm"
-              />
+              placeholder="Credit Card Number"
+              className="h-12 rounded-lg border-border bg-background text-sm" />
+            
               <div className="flex gap-3">
                 <Input
-                  placeholder="Expiration"
-                  className="h-12 rounded-lg border-border bg-background text-sm flex-1"
-                />
+                placeholder="Expiration"
+                className="h-12 rounded-lg border-border bg-background text-sm flex-1" />
+              
                 <div className="relative flex-1">
                   <Input
-                    placeholder="CVC"
-                    className="h-12 rounded-lg border-border bg-background text-sm pr-10"
-                  />
+                  placeholder="CVC"
+                  className="h-12 rounded-lg border-border bg-background text-sm pr-10" />
+                
                   <Lock className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 </div>
               </div>
             </div>
-          )}
+          }
         </div>
 
         {/* PayPal */}
@@ -140,14 +140,14 @@ const Step4Checkout = ({ selectedPass, timeLeft, email, onChangePass, passOption
           <button
             type="button"
             onClick={() => setPaymentMethod("paypal")}
-            className="w-full flex items-center gap-3.5 px-5 py-4 transition-colors hover:bg-muted/30"
-          >
+            className="w-full flex items-center gap-3.5 px-5 py-4 transition-colors hover:bg-muted/30">
+            
             <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 transition-colors ${
-              paymentMethod === "paypal" ? "border-foreground" : "border-muted-foreground/40"
-            }`}>
-              {paymentMethod === "paypal" && (
-                <div className="w-2.5 h-2.5 rounded-full bg-foreground" />
-              )}
+            paymentMethod === "paypal" ? "border-foreground" : "border-muted-foreground/40"}`
+            }>
+              {paymentMethod === "paypal" &&
+              <div className="w-2.5 h-2.5 rounded-full bg-foreground" />
+              }
             </div>
             <span className="text-[15px] font-medium text-foreground flex-1 text-left">Use PayPal account</span>
             <span className="text-[15px] font-extrabold">
@@ -155,50 +155,50 @@ const Step4Checkout = ({ selectedPass, timeLeft, email, onChangePass, passOption
               <span className="text-[#009cde]">Pal</span>
             </span>
           </button>
-          {paymentMethod === "paypal" && (
-            <div className="px-5 pb-4 animate-fade-in">
+          {paymentMethod === "paypal" &&
+          <div className="px-5 pb-4 animate-fade-in">
               <button
-                type="button"
-                className="w-full h-12 rounded-lg font-bold text-[16px] text-[#003087] transition-opacity hover:opacity-90"
-                style={{ backgroundColor: "#FFC439" }}
-              >
+              type="button"
+              className="w-full h-12 rounded-lg font-bold text-[16px] text-[#003087] transition-opacity hover:opacity-90"
+              style={{ backgroundColor: "#FFC439" }}>
+              
                 <span className="text-[#003087]">Pay</span>
                 <span className="text-[#009cde]">Pal</span>
               </button>
             </div>
-          )}
+          }
         </div>
       </div>
 
       {/* Email */}
       <div className="border border-border rounded-xl px-5 py-3.5">
         <p className="text-[11px] text-muted-foreground mb-1">Email to deliver confirmation to:</p>
-        <p className="text-sm font-medium text-foreground">{email || "—"}</p>
+        <p className="text-sm font-medium text-muted-foreground">{email || "—"}</p>
       </div>
 
       {/* Legal */}
       <h3 className="text-base font-bold text-foreground px-1">From our Legal Team</h3>
       <div className="flex flex-col gap-3 px-1">
         {[
-          <>By continuing, you agree to our <a href="#" className="text-primary hover:underline">Privacy Policy</a> and <a href="#" className="text-primary hover:underline">Terms &amp; Conditions</a>, which includes an arbitration agreement.</>,
-          <>By redeeming your voucher, you agree to enroll in Orlando's Oasis membership, and be charged $59/mo (taxes may apply) until you cancel.</>,
-          <>Cancel anytime online in your "Account Settings" or by <a href="#" className="text-primary hover:underline">submitting a help ticket</a>.</>,
-          <>Canceling within the first 6-months will result in an <a href="#" className="text-primary hover:underline">early termination fee</a> calculated based on the <a href="#" className="text-primary hover:underline">full price of your first pool service</a>.</>,
-          <>More information about autorenewal and cancelation terms, click <a href="#" className="text-primary hover:underline">here</a>.</>,
-        ].map((text, i) => (
-          <div key={i} className="flex gap-3 items-start">
+        <>By continuing, you agree to our <a href="#" className="text-primary hover:underline">Privacy Policy</a> and <a href="#" className="text-primary hover:underline">Terms &amp; Conditions</a>, which includes an arbitration agreement.</>,
+        <>By redeeming your voucher, you agree to enroll in Orlando's Oasis membership, and be charged $59/mo (taxes may apply) until you cancel.</>,
+        <>Cancel anytime online in your "Account Settings" or by <a href="#" className="text-primary hover:underline">submitting a help ticket</a>.</>,
+        <>Canceling within the first 6-months will result in an <a href="#" className="text-primary hover:underline">early termination fee</a> calculated based on the <a href="#" className="text-primary hover:underline">full price of your first pool service</a>.</>,
+        <>More information about autorenewal and cancelation terms, click <a href="#" className="text-primary hover:underline">here</a>.</>].
+        map((text, i) =>
+        <div key={i} className="flex gap-3 items-start">
             <div className="w-1.5 h-1.5 rounded-full bg-foreground shrink-0 mt-2" />
             <p className="text-[13px] text-muted-foreground leading-relaxed">{text}</p>
           </div>
-        ))}
+        )}
       </div>
 
       {/* CTA */}
       <Button
         disabled={!paymentMethod}
         onClick={onContinue}
-        className="w-full h-14 text-[17px] font-bold rounded-full shadow-md hover:shadow-lg"
-      >
+        className="w-full h-14 text-[17px] font-bold rounded-full shadow-md hover:shadow-lg">
+        
         Purchase &amp; schedule
       </Button>
 
@@ -213,8 +213,8 @@ const Step4Checkout = ({ selectedPass, timeLeft, email, onChangePass, passOption
             <p className="text-[15px] font-bold text-foreground">{selectedPass.label}</p>
             <button
               onClick={() => setEditOpen(true)}
-              className="inline-flex items-center gap-1 text-xs font-medium text-muted-foreground border border-border rounded-full px-3 py-1 hover:border-primary hover:text-primary transition-colors"
-            >
+              className="inline-flex items-center gap-1 text-xs font-medium text-muted-foreground border border-border rounded-full px-3 py-1 hover:border-primary hover:text-primary transition-colors">
+              
               <Pencil className="h-3 w-3" />
               Edit
             </button>
@@ -240,26 +240,26 @@ const Step4Checkout = ({ selectedPass, timeLeft, email, onChangePass, passOption
               onChangePass(val);
               setEditOpen(false);
             }}
-            className="space-y-3 mt-2"
-          >
-            {passOptions.map((pass) => (
-              <label
-                key={pass.id}
-                className={`relative flex items-center gap-4 p-4 rounded-xl border-2 cursor-pointer transition-all duration-200 ${
-                  selectedPass.id === pass.id
-                    ? "border-foreground bg-background shadow-sm"
-                    : "border-border bg-background hover:border-muted-foreground"
-                }`}
-              >
-                {pass.isMostPopular && (
-                  <Badge className="absolute -top-3 left-4 bg-primary text-primary-foreground text-xs px-3 py-1 rounded-full">
+            className="space-y-3 mt-2">
+            
+            {passOptions.map((pass) =>
+            <label
+              key={pass.id}
+              className={`relative flex items-center gap-4 p-4 rounded-xl border-2 cursor-pointer transition-all duration-200 ${
+              selectedPass.id === pass.id ?
+              "border-foreground bg-background shadow-sm" :
+              "border-border bg-background hover:border-muted-foreground"}`
+              }>
+              
+                {pass.isMostPopular &&
+              <Badge className="absolute -top-3 left-4 bg-primary text-primary-foreground text-xs px-3 py-1 rounded-full">
                     Most Popular
                   </Badge>
-                )}
+              }
                 <RadioGroupItem
-                  value={pass.id}
-                  className="h-5 w-5 border-2 border-muted-foreground data-[state=checked]:border-foreground data-[state=checked]:bg-foreground"
-                />
+                value={pass.id}
+                className="h-5 w-5 border-2 border-muted-foreground data-[state=checked]:border-foreground data-[state=checked]:bg-foreground" />
+              
                 <div className="flex-1 min-w-0">
                   <p className="font-semibold text-foreground text-[15px]">{pass.label}</p>
                   <p className="text-sm text-muted-foreground">{pass.description}</p>
@@ -275,15 +275,15 @@ const Step4Checkout = ({ selectedPass, timeLeft, email, onChangePass, passOption
                   </p>
                 </div>
               </label>
-            ))}
+            )}
           </RadioGroup>
           <p className="text-xs text-muted-foreground text-center px-2 mt-1">
             *Vouchers cover the full price of your first pool service. Don't worry - your technician will be paid in full!
           </p>
         </DialogContent>
       </Dialog>
-    </div>
-  );
+    </div>);
+
 };
 
 export default Step4Checkout;

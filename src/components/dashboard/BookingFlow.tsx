@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import { ChevronLeft, ChevronRight, Check, ArrowLeft, CreditCard, CheckCircle2, Loader2, Shield, Lock } from "lucide-react";
+import { ChevronLeft, ChevronRight, Check, ArrowLeft, CheckCircle2, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -59,13 +59,11 @@ const BookingFlow = ({ onClose, onComplete }: BookingFlowProps) => {
   const [keyLocation, setKeyLocation] = useState("");
   const [otherInstructions, setOtherInstructions] = useState("");
 
-  // Step 3 — Notes + Payment
+  // Step 2 — Notes
   const [specialNotes, setSpecialNotes] = useState("");
-  type PaymentMethod = "google_pay" | "card" | "paypal";
-  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod | null>(null);
   
   const [isProcessing, setIsProcessing] = useState(false);
-  const [paymentSuccess, setPaymentSuccess] = useState(false);
+  const [bookingSuccess, setBookingSuccess] = useState(false);
 
   const selectedPass = DURATION_OPTIONS.find(o => o.id === selectedDuration)!;
   const totalPrice = selectedPass.discountPrice;
@@ -87,7 +85,6 @@ const BookingFlow = ({ onClose, onComplete }: BookingFlowProps) => {
       if (accessMethod === "other" && !otherInstructions.trim()) return false;
       return true;
     }
-    if (step === 3) return !!paymentMethod;
     return true;
   };
 
@@ -105,12 +102,10 @@ const BookingFlow = ({ onClose, onComplete }: BookingFlowProps) => {
     return "";
   };
 
-  const handlePayment = async () => {
-    if (!paymentMethod) return;
+  const handleConfirmBooking = async () => {
     setIsProcessing(true);
-    await new Promise(r => setTimeout(r, 2200));
+    await new Promise(r => setTimeout(r, 1200));
     setIsProcessing(false);
-    setPaymentSuccess(true);
 
     const scheduleData: ScheduleData = {
       selectedDate,
@@ -139,25 +134,23 @@ const BookingFlow = ({ onClose, onComplete }: BookingFlowProps) => {
         accessDetail: getAccessDetail(),
       },
     });
+
+    setBookingSuccess(true);
   };
 
-  const TOTAL_STEPS = 3;
-  const STEP_LABELS = ["Service Setup", "Pool / Property", "Notes & Payment"];
+  const TOTAL_STEPS = 2;
+  const STEP_LABELS = ["Service Setup", "Pool / Property"];
 
   // Success screen
-  if (paymentSuccess) {
+  if (bookingSuccess) {
     return (
       <div className="fixed inset-0 z-50 bg-background overflow-y-auto">
         <div className="max-w-[760px] mx-auto px-5 py-12 flex flex-col items-center text-center">
           <div className="w-16 h-16 rounded-full bg-green-500/15 flex items-center justify-center mb-5">
             <CheckCircle2 className="h-8 w-8 text-green-600" />
           </div>
-          <h2 className="text-xl font-bold text-foreground mb-1">
-            {frequency === "once" ? "Payment Successful!" : "Monthly Service Started!"}
-          </h2>
-          <p className="text-sm text-muted-foreground mb-8">
-            {frequency === "once" ? "Your pool service has been booked." : "Your recurring pool service is set up."}
-          </p>
+          <h2 className="text-xl font-bold text-foreground mb-1">Service Booked!</h2>
+          <p className="text-sm text-muted-foreground mb-8">Your pool service has been scheduled.</p>
 
           <div className="w-full bg-card rounded-2xl border border-border p-6 shadow-sm text-left space-y-3 mb-8">
             <h3 className="text-sm font-semibold text-foreground mb-3">Booking Summary</h3>
@@ -420,252 +413,23 @@ const BookingFlow = ({ onClose, onComplete }: BookingFlowProps) => {
           </div>
         )}
 
-        {/* ── Step 3: Payment ── */}
-        {step === 3 && (
-          <div className="space-y-5 animate-fade-in">
-            <div>
-              <h2 className="text-lg font-semibold text-foreground mb-1">Review & Pay</h2>
-              <p className="text-sm text-muted-foreground">Confirm your details and complete your booking.</p>
-            </div>
-
-            {/* Service & Pool Details */}
-            <div className="bg-card rounded-2xl border border-border p-5 shadow-sm">
-              <p className="text-[11px] font-semibold tracking-[0.8px] uppercase text-muted-foreground mb-3">SERVICE DETAILS</p>
-              <div className="space-y-2 text-sm">
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Service</span>
-                  <span className="font-medium text-foreground">{selectedPass.label}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Frequency</span>
-                  <span className="font-medium text-foreground">{frequency === "monthly" ? "Monthly" : "One-time"}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">{frequency === "once" ? "Date" : "Start date"}</span>
-                  <span className="font-medium text-foreground">{FULL_DAYS[selectedDate.getDay()]}, {MONTHS[selectedDate.getMonth()].slice(0, 3)} {selectedDate.getDate()}, {selectedDate.getFullYear()}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Arrival window</span>
-                  <span className="font-medium text-foreground">{TIME_LABELS[timeWindow]}</span>
-                </div>
-              </div>
-
-              <div className="border-t border-border my-4" />
-
-              <p className="text-[11px] font-semibold tracking-[0.8px] uppercase text-muted-foreground mb-3">POOL DETAILS</p>
-              <div className="space-y-2 text-sm">
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Address</span>
-                  <span className="font-medium text-foreground text-right max-w-[60%]">{[address, city, state, zip].filter(Boolean).join(", ")}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Pool type</span>
-                  <span className="font-medium text-foreground">{poolType}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Pool size</span>
-                  <span className="font-medium text-foreground">{poolSize}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Access</span>
-                  <span className="font-medium text-foreground">
-                    {accessMethod === "home" ? "Owner will be home" : accessMethod === "gate" ? "Gate code" : accessMethod === "key" ? "Key on property" : "Custom instructions"}
-                  </span>
-                </div>
-              </div>
-              {specialNotes && (
-                <>
-                  <div className="border-t border-border my-3" />
-                  <p className="text-[11px] font-semibold tracking-[0.8px] uppercase text-muted-foreground mb-1.5">CLEANING NOTES</p>
-                  <p className="text-[13px] text-muted-foreground leading-relaxed line-clamp-3">{specialNotes}</p>
-                </>
-              )}
-            </div>
-
-            {/* Pricing Breakdown */}
-            <div className="bg-card rounded-2xl border border-border p-5 shadow-sm">
-              <p className="text-[11px] font-semibold tracking-[0.8px] uppercase text-muted-foreground mb-3">PRICING</p>
-              <div className="space-y-2 text-sm">
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Base service</span>
-                  <span className="font-medium text-foreground">${totalPrice}{frequency === "monthly" ? "/mo" : ""}</span>
-                </div>
-                <div className="border-t border-border pt-2 flex justify-between">
-                  <span className="font-semibold text-foreground">
-                    {frequency === "once" ? "Total" : "Today's charge"}
-                  </span>
-                  <span className="text-lg font-bold text-primary">${totalPrice}</span>
-                </div>
-                {frequency === "monthly" && (
-                  <>
-                    <div className="flex justify-between text-xs">
-                      <span className="text-muted-foreground">Ongoing monthly charge</span>
-                      <span className="font-medium text-foreground">${totalPrice}/mo</span>
-                    </div>
-                    <div className="flex justify-between text-xs">
-                      <span className="text-muted-foreground">Next billing date</span>
-                      <span className="font-medium text-foreground">{getNextBillingDate()}</span>
-                    </div>
-                  </>
-                )}
-              </div>
-            </div>
-
-            {/* Payment methods */}
-            <div className="space-y-4">
-              {/* Google Pay — prominent top button */}
-              <button
-                type="button"
-                onClick={() => setPaymentMethod("google_pay")}
-                className={`w-full flex items-center justify-center gap-2.5 rounded-xl h-14 text-[17px] font-bold transition-all select-none ${
-                  paymentMethod === "google_pay"
-                    ? "bg-foreground text-background ring-2 ring-primary ring-offset-2"
-                    : "bg-foreground text-background hover:opacity-90"
-                }`}
-              >
-                <svg viewBox="0 0 24 24" className="h-5 w-auto" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M12.24 10.285V14.4h6.806c-.275 1.765-2.056 5.174-6.806 5.174-4.095 0-7.439-3.389-7.439-7.574s3.345-7.574 7.439-7.574c2.33 0 3.891.989 4.785 1.849l3.254-3.138C18.189 1.186 15.479 0 12.24 0c-6.635 0-12 5.365-12 12s5.365 12 12 12c6.926 0 11.52-4.869 11.52-11.726 0-.788-.085-1.39-.189-1.989H12.24z" fill="#4285F4"/>
-                </svg>
-                Pay
-              </button>
-
-              {/* Divider */}
-              <div className="flex items-center gap-3">
-                <div className="flex-1 h-px bg-border" />
-                <span className="text-xs text-muted-foreground">Or pay with</span>
-                <div className="flex-1 h-px bg-border" />
-              </div>
-
-              {/* Card & PayPal options */}
-              <div className="bg-card rounded-2xl border border-border overflow-hidden shadow-sm">
-                {/* Credit / Debit Card */}
-                <div>
-                  <button
-                    type="button"
-                    onClick={() => setPaymentMethod("card")}
-                    className={`w-full flex items-center gap-3.5 p-4 transition-all text-left select-none ${
-                      paymentMethod === "card" ? "bg-primary/[0.04]" : "hover:bg-muted/40"
-                    }`}
-                  >
-                    <div className={`w-[22px] h-[22px] rounded-full border-2 flex items-center justify-center shrink-0 transition-all ${
-                      paymentMethod === "card" ? "bg-primary border-primary text-primary-foreground" : "border-border text-transparent"
-                    }`}>
-                      <Check className="h-3 w-3" />
-                    </div>
-                    <span className="text-sm font-medium text-foreground flex-1">Use credit or debit card</span>
-                    <div className="flex items-center gap-1.5">
-                      <span className="text-xs font-bold tracking-wide text-[#1a1f71]">VISA</span>
-                      <span className="w-6 h-4 rounded-[3px] bg-gradient-to-br from-[#f79e1b] to-[#ea001b]" />
-                      <span className="text-xs font-bold tracking-wide text-muted-foreground">AMEX</span>
-                    </div>
-                  </button>
-
-                  {/* Card input fields — shown when selected */}
-                  {paymentMethod === "card" && (
-                    <div className="px-4 pb-4 space-y-3 animate-fade-in">
-                      <Input
-                        placeholder="Credit Card Number"
-                        className="h-12 rounded-xl border-2 border-border bg-muted/30 text-sm"
-                        maxLength={19}
-                      />
-                      <div className="grid grid-cols-2 gap-3">
-                        <Input
-                          placeholder="Expiration"
-                          className="h-12 rounded-xl border-2 border-border bg-muted/30 text-sm"
-                          maxLength={5}
-                        />
-                        <div className="relative">
-                          <Input
-                            placeholder="CVC"
-                            className="h-12 rounded-xl border-2 border-border bg-muted/30 text-sm pr-10"
-                            maxLength={4}
-                          />
-                          <Lock className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                </div>
-
-                <div className="h-px bg-border mx-4" />
-
-                {/* PayPal */}
-                <div>
-                  <button
-                    type="button"
-                    onClick={() => setPaymentMethod("paypal")}
-                    className={`w-full flex items-center gap-3.5 p-4 transition-all text-left select-none ${
-                      paymentMethod === "paypal" ? "bg-primary/[0.04]" : "hover:bg-muted/40"
-                    }`}
-                  >
-                    <div className={`w-[22px] h-[22px] rounded-full border-2 flex items-center justify-center shrink-0 transition-all ${
-                      paymentMethod === "paypal" ? "bg-primary border-primary text-primary-foreground" : "border-border text-transparent"
-                    }`}>
-                      <Check className="h-3 w-3" />
-                    </div>
-                    <span className="text-sm font-medium text-foreground flex-1">Use PayPal account</span>
-                    <span className="text-sm font-bold">
-                      <span className="text-[#003087]">Pay</span><span className="text-[#009cde]">Pal</span>
-                    </span>
-                  </button>
-
-                  {/* PayPal yellow button — shown when selected */}
-                  {paymentMethod === "paypal" && (
-                    <div className="px-4 pb-4 animate-fade-in">
-                      <button
-                        type="button"
-                        onClick={handlePayment}
-                        disabled={isProcessing}
-                        className="w-full h-12 rounded-xl bg-[#ffc439] hover:bg-[#f0b72d] text-[#003087] font-bold text-base transition-colors flex items-center justify-center gap-1 disabled:opacity-60"
-                      >
-                        {isProcessing ? (
-                          <span className="flex items-center gap-2">
-                            <Loader2 className="h-5 w-5 animate-spin" /> Processing…
-                          </span>
-                        ) : (
-                          <span className="text-base font-bold">
-                            <span className="text-[#003087]">Pay</span><span className="text-[#009cde]">Pal</span>
-                          </span>
-                        )}
-                      </button>
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-2 text-xs text-muted-foreground px-1">
-              <Shield className="h-3.5 w-3.5 shrink-0" />
-              <span>Your payment info is encrypted and securely processed.</span>
-            </div>
-          </div>
-        )}
       </div>
 
       {/* Sticky footer */}
       <div className="fixed bottom-0 left-0 right-0 bg-card border-t border-border">
         <div className="max-w-[760px] mx-auto px-5 py-4">
-          {step < 3 ? (
+          {step < 2 ? (
             <Button onClick={() => setStep(step + 1)} disabled={!canProceed()} className="w-full h-12 text-[15px] font-bold rounded-xl">
               Continue
             </Button>
-          ) : paymentMethod === "paypal" ? null : (
-            <Button onClick={handlePayment} disabled={!canProceed() || isProcessing} className="w-full h-14 text-[17px] font-bold rounded-2xl shadow-lg">
+          ) : (
+            <Button onClick={handleConfirmBooking} disabled={!canProceed() || isProcessing} className="w-full h-12 text-[15px] font-bold rounded-xl">
               {isProcessing ? (
                 <span className="flex items-center gap-2">
-                  <Loader2 className="h-5 w-5 animate-spin" /> Processing…
+                  <Loader2 className="h-5 w-5 animate-spin" /> Scheduling…
                 </span>
-              ) : paymentMethod === "google_pay" ? (
-                <span className="flex items-center gap-2">
-                  <svg viewBox="0 0 24 24" className="h-5 w-auto" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M12.24 10.285V14.4h6.806c-.275 1.765-2.056 5.174-6.806 5.174-4.095 0-7.439-3.389-7.439-7.574s3.345-7.574 7.439-7.574c2.33 0 3.891.989 4.785 1.849l3.254-3.138C18.189 1.186 15.479 0 12.24 0c-6.635 0-12 5.365-12 12s5.365 12 12 12c6.926 0 11.52-4.869 11.52-11.726 0-.788-.085-1.39-.189-1.989H12.24z" fill="currentColor"/>
-                  </svg>
-                  Pay
-                </span>
-              ) : frequency === "once" ? (
-                `Pay $${totalPrice}`
               ) : (
-                "Start Monthly Service"
+                "Confirm Booking"
               )}
             </Button>
           )}

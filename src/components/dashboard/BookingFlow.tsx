@@ -172,16 +172,27 @@ const BookingFlow = ({ onClose, onComplete }: BookingFlowProps) => {
               <span className="text-muted-foreground">Arrival Window</span>
               <span className="font-medium text-foreground">{TIME_LABELS[timeWindow]}</span>
             </div>
-            <div className="border-t border-border pt-3 flex justify-between text-sm">
-              <span className="font-semibold text-foreground">{frequency === "once" ? "Total Paid" : "Today's Charge"}</span>
-              <span className="text-lg font-bold text-primary">${totalPrice}</span>
+
+            <div className="border-t border-border pt-3" />
+            <p className="text-[11px] font-semibold tracking-[0.8px] uppercase text-muted-foreground">POOL DETAILS</p>
+            <div className="flex justify-between text-sm">
+              <span className="text-muted-foreground">Address</span>
+              <span className="font-medium text-foreground text-right max-w-[60%]">{[address, city, state, zip].filter(Boolean).join(", ")}</span>
             </div>
-            {frequency === "monthly" && (
-              <div className="flex justify-between text-sm">
-                <span className="text-muted-foreground">Next billing</span>
-                <span className="font-medium text-foreground">{getNextBillingDate()}</span>
-              </div>
-            )}
+            <div className="flex justify-between text-sm">
+              <span className="text-muted-foreground">Pool Type</span>
+              <span className="font-medium text-foreground">{poolType}</span>
+            </div>
+            <div className="flex justify-between text-sm">
+              <span className="text-muted-foreground">Pool Size</span>
+              <span className="font-medium text-foreground">{poolSize}</span>
+            </div>
+            <div className="flex justify-between text-sm">
+              <span className="text-muted-foreground">Access</span>
+              <span className="font-medium text-foreground">
+                {accessMethod === "home" ? "Owner will be home" : accessMethod === "gate" ? "Gate code" : accessMethod === "key" ? "Key on property" : "Custom instructions"}
+              </span>
+            </div>
           </div>
 
           <Button onClick={() => onComplete()} className="w-full h-14 text-[17px] font-bold rounded-2xl shadow-lg">

@@ -149,12 +149,8 @@ const BookingFlow = ({ onClose, onComplete }: BookingFlowProps) => {
           <div className="w-16 h-16 rounded-full bg-green-500/15 flex items-center justify-center mb-5">
             <CheckCircle2 className="h-8 w-8 text-green-600" />
           </div>
-          <h2 className="text-xl font-bold text-foreground mb-1">
-            {frequency === "once" ? "Payment Successful!" : "Monthly Service Started!"}
-          </h2>
-          <p className="text-sm text-muted-foreground mb-8">
-            {frequency === "once" ? "Your pool service has been booked." : "Your recurring pool service is set up."}
-          </p>
+          <h2 className="text-xl font-bold text-foreground mb-1">Service Booked!</h2>
+          <p className="text-sm text-muted-foreground mb-8">Your pool service has been scheduled.</p>
 
           <div className="w-full bg-card rounded-2xl border border-border p-6 shadow-sm text-left space-y-3 mb-8">
             <h3 className="text-sm font-semibold text-foreground mb-3">Booking Summary</h3>

@@ -493,6 +493,28 @@ const ServicePassSection = () => {
     );
   }
 
+  if (step === 4 && showPaymentSuccess) {
+    return (
+      <div className="fixed inset-0 z-50 bg-background flex items-center justify-center">
+        <div className="flex flex-col items-center gap-6 text-center px-6 max-w-md">
+          <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
+            <Check className="h-8 w-8 text-primary" />
+          </div>
+          <h1 className="text-2xl font-bold text-foreground">Payment successful</h1>
+          <p className="text-muted-foreground leading-relaxed">
+            Your payment has been confirmed. You can now schedule your pool service.
+          </p>
+          <Button
+            onClick={() => navigate("/dashboard?openBooking=true")}
+            className="h-14 px-10 text-[16px] font-bold rounded-full shadow-md"
+          >
+            Book a Service
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
   if (step === 4) {
     return (
       <>
@@ -507,24 +529,6 @@ const ServicePassSection = () => {
             onContinue={() => setShowPaymentSuccess(true)}
           />
         </div>
-
-        {/* Payment Success Modal */}
-        <Dialog open={showPaymentSuccess} onOpenChange={() => {}}>
-          <DialogContent className="max-w-sm rounded-2xl text-center pt-10 [&>button]:hidden" onPointerDownOutside={(e) => e.preventDefault()}>
-            <div className="flex flex-col items-center gap-4 py-2">
-              <div className="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center">
-                <Check className="h-7 w-7 text-primary" />
-              </div>
-              <DialogHeader className="space-y-2">
-                <DialogTitle className="text-xl font-bold text-foreground">Payment successful</DialogTitle>
-                <DialogDescription className="text-sm text-muted-foreground leading-relaxed">
-                  Your payment has been confirmed. We will redirect you to the booking page so you can schedule your pool service.
-                </DialogDescription>
-              </DialogHeader>
-              <p className="text-xs text-muted-foreground animate-pulse">Redirecting you to the booking page…</p>
-            </div>
-          </DialogContent>
-        </Dialog>
       </>
     );
   }

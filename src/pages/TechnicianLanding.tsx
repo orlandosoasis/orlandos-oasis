@@ -165,16 +165,15 @@ const TechnicianLanding = () => {
           <div className="container max-w-6xl mx-auto text-center">
             <h2 className="text-2xl md:text-3xl font-bold text-navy mb-2">How It Works</h2>
             <p className="text-muted-foreground mb-10">Start accepting pool service jobs in just a few steps.</p>
-            <div className="flex flex-wrap justify-center gap-4">
-              {STEPS.map((s, i) => (
-                <div key={s.num} className="flex items-center gap-4">
-                  <div className="flex flex-col items-center w-28">
-                    <div className="h-10 w-10 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold mb-2">{s.num}</div>
-                    <s.icon className="h-6 w-6 text-primary mb-2" />
-                    <h4 className="font-semibold text-navy text-sm mb-1">{s.title}</h4>
-                    <p className="text-xs text-muted-foreground">{s.desc}</p>
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-6">
+              {STEPS.map((s) => (
+                <div key={s.num} className="flex flex-col items-center text-center">
+                  <div className="h-14 w-14 rounded-full bg-primary flex items-center justify-center mb-3">
+                    <s.icon className="h-7 w-7 text-primary-foreground" />
                   </div>
-                  {i < STEPS.length - 1 && <ArrowRight className="h-4 w-4 text-muted-foreground hidden md:block" />}
+                  <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1">Step {s.num}</span>
+                  <h4 className="font-semibold text-navy text-sm mb-1">{s.title}</h4>
+                  <p className="text-xs text-muted-foreground">{s.desc}</p>
                 </div>
               ))}
             </div>

@@ -47,7 +47,7 @@ const AccountSettings = () => {
     <div className="min-h-screen bg-background">
       <header className="bg-card border-b border-border sticky top-0 z-10">
         <div className="max-w-[760px] mx-auto px-5 h-[60px] flex items-center justify-between">
-          <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-foreground hover:text-primary transition-colors">
+          <button onClick={() => navigate("/dashboard")} className="flex items-center gap-2 text-foreground hover:text-primary transition-colors">
             <ArrowLeft className="h-5 w-5" />
             <span className="font-medium text-sm">Back</span>
           </button>

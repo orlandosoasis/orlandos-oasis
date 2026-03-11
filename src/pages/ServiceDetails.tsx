@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Waves, ArrowLeft, Clock, Calendar, MapPin, Star, Key, Droplets, Wrench, Camera, FileText, RefreshCw, CreditCard, MessagesSquare, CalendarClock, CheckCircle2 } from "lucide-react";
+import { Waves, ArrowLeft, Clock, Calendar, MapPin, Star, Key, Droplets, Wrench, Camera, FileText, RefreshCw, CreditCard, MessagesSquare, CalendarClock, CheckCircle2, UserRoundCog, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import StatusBadge from "@/components/StatusBadge";
-import { useBooking, type TimeWindow } from "@/contexts/BookingContext";
+import { useBooking, type TimeWindow, type TechnicianInfo, matchTechnician } from "@/contexts/BookingContext";
+import { useToast } from "@/hooks/use-toast";
 import PoolSceneHero from "@/components/dashboard/PoolSceneHero";
 import RescheduleModal from "@/components/RescheduleModal";
 import LeaveReviewModal from "@/components/LeaveReviewModal";
@@ -51,6 +52,32 @@ const ServiceDetails = () => {
   const [showReschedule, setShowReschedule] = useState(false);
   const [reviewOpen, setReviewOpen] = useState(false);
   const [reviewSubmitted, setReviewSubmitted] = useState(false);
+  const [changingCleaner, setChangingCleaner] = useState(false);
+  const { toast } = useToast();
+
+  const handleChangeCleaner = useCallback(async () => {
+    if (!booking) return;
+    setChangingCleaner(true);
+    // Simulate network delay
+    await new Promise((resolve) => setTimeout(resolve, 1500));
+
+    let newTech: TechnicianInfo;
+    let attempts = 0;
+    do {
+      newTech = matchTechnician();
+      attempts++;
+    } while (newTech.name === booking.technician.name && attempts < 10);
+
+    if (newTech.name === booking.technician.name) {
+      toast({ title: "No other cleaners available at the moment.", variant: "destructive" });
+      setChangingCleaner(false);
+      return;
+    }
+
+    setBooking({ ...booking, technician: newTech });
+    setChangingCleaner(false);
+    toast({ title: "Cleaner updated.", variant: "success" as any });
+  }, [booking, setBooking, toast]);
 
   const handleReschedule = (newDate: Date, newTimeWindow: TimeWindow) => {
     if (booking) {
@@ -222,6 +249,28 @@ const ServiceDetails = () => {
                 )
               )}
             </div>
+
+            {/* Change Cleaner CTA (scheduled only) */}
+            {!isCompleted && technician.isAssigned && (
+              <Button
+                variant="ghost"
+                className="w-full mt-2 gap-1.5 text-muted-foreground hover:text-primary text-xs"
+                onClick={handleChangeCleaner}
+                disabled={changingCleaner}
+              >
+                {changingCleaner ? (
+                  <>
+                    <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                    Finding available cleaner…
+                  </>
+                ) : (
+                  <>
+                    <UserRoundCog className="h-3.5 w-3.5" />
+                    Change Cleaner
+                  </>
+                )}
+              </Button>
+            )}
           </div>
         </div>
 

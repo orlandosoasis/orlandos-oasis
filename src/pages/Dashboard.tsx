@@ -175,9 +175,33 @@ const Dashboard = () => {
               Book Service
             </Button>
             {user && (
-              <Button variant="ghost" size="icon" onClick={handleLogout} title="Sign out" className="hover:bg-primary hover:text-primary-foreground">
-                <LogOut className="h-4 w-4" />
-              </Button>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <button className="rounded-full focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2">
+                    <Avatar className="h-9 w-9 cursor-pointer">
+                      <AvatarImage src={user.avatarUrl} alt={user.fullName} />
+                      <AvatarFallback className="bg-primary text-primary-foreground text-sm font-semibold">
+                        {user.fullName?.split(" ").map(n => n[0]).join("").slice(0, 2).toUpperCase()}
+                      </AvatarFallback>
+                    </Avatar>
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-48">
+                  <DropdownMenuItem onClick={() => navigate("/profile")} className="cursor-pointer gap-2">
+                    <User className="h-4 w-4" /> Profile
+                  </DropdownMenuItem>
+                  <DropdownMenuItem className="cursor-pointer gap-2">
+                    <Settings className="h-4 w-4" /> Settings
+                  </DropdownMenuItem>
+                  <DropdownMenuItem className="cursor-pointer gap-2">
+                    <CreditCard className="h-4 w-4" /> Subscription
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={handleLogout} className="cursor-pointer gap-2 text-destructive focus:text-destructive">
+                    <LogOut className="h-4 w-4" /> Logout
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             )}
           </div>
         </div>

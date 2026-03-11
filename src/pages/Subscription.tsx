@@ -1,7 +1,10 @@
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Waves, ArrowLeft, RefreshCw, Calendar, CreditCard } from "lucide-react";
+import { Waves, ArrowLeft, RefreshCw, Calendar, CreditCard, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
 import { useBooking } from "@/contexts/BookingContext";
+import ManageMembershipModal from "@/components/ManageMembershipModal";
 
 const FULL_DAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 const SHORT_MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -9,19 +12,21 @@ const SHORT_MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "S
 const Subscription = () => {
   const navigate = useNavigate();
   const { booking } = useBooking();
+  const [manageOpen, setManageOpen] = useState(false);
 
   const isMonthly = booking?.frequency === "monthly";
   const d = booking?.scheduleData?.selectedDate || new Date();
 
-  const getNextServiceDate = () => {
+  const getNextDate = () => {
     const next = new Date(d);
     next.setMonth(next.getMonth() + 1);
     return `${FULL_DAYS[next.getDay()]}, ${SHORT_MONTHS[next.getMonth()]} ${next.getDate()}, ${next.getFullYear()}`;
   };
 
+  const nextDateStr = getNextDate();
+
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
       <header className="bg-card border-b border-border sticky top-0 z-10">
         <div className="max-w-[760px] mx-auto px-5 h-[60px] flex items-center justify-between">
           <button onClick={() => navigate("/dashboard")} className="flex items-center gap-2 text-foreground hover:text-primary transition-colors">
@@ -39,32 +44,66 @@ const Subscription = () => {
       <main className="max-w-[760px] mx-auto px-5 py-8 pb-16 space-y-4">
         <h1 className="text-2xl font-bold text-foreground mb-6">Subscription</h1>
 
-        {/* Recurring Schedule */}
-        {isMonthly && (
-          <div className="bg-card rounded-2xl border border-border p-6 shadow-sm">
-            <h2 className="text-[17px] font-bold text-foreground mb-4">Recurring Schedule</h2>
-            <div className="space-y-2.5 text-sm">
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">Frequency</span>
-                <span className="font-medium text-foreground">Monthly</span>
+        {isMonthly ? (
+          <div className="bg-card rounded-2xl border border-border shadow-sm overflow-hidden">
+            {/* Membership Status */}
+            <div className="p-6 space-y-3">
+              <div className="flex items-center gap-2">
+                <CheckCircle2 className="h-5 w-5 text-primary" />
+                <h2 className="text-[17px] font-bold text-foreground">Membership Status</h2>
               </div>
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">Next service date</span>
-                <span className="font-medium text-foreground">{getNextServiceDate()}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">Auto-renew</span>
-                <span className="font-medium text-foreground">Yes</span>
+              <div className="space-y-2.5 text-sm">
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Plan</span>
+                  <span className="font-medium text-foreground">Pool Care Membership</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Billing Cycle</span>
+                  <span className="font-medium text-foreground">Monthly</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Next Billing Date</span>
+                  <span className="font-medium text-foreground">{nextDateStr}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Auto-renew</span>
+                  <span className="font-medium text-foreground">Yes</span>
+                </div>
               </div>
             </div>
-            <Button variant="outline" className="w-full mt-4 hover:bg-primary hover:text-white hover:border-transparent" onClick={() => navigate("/dashboard")}>
-              <RefreshCw className="h-4 w-4 mr-2" />
-              Manage Plan
-            </Button>
-          </div>
-        )}
 
-        {!isMonthly && (
+            <Separator />
+
+            {/* Recurring Schedule */}
+            <div className="p-6 space-y-3">
+              <h2 className="text-[17px] font-bold text-foreground">Recurring Schedule</h2>
+              <div className="space-y-2.5 text-sm">
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Frequency</span>
+                  <span className="font-medium text-foreground">Monthly</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Next Service Date</span>
+                  <span className="font-medium text-foreground">{nextDateStr}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Auto-renew</span>
+                  <span className="font-medium text-foreground">Yes</span>
+                </div>
+              </div>
+            </div>
+
+            <Separator />
+
+            {/* Manage Plan CTA */}
+            <div className="p-6">
+              <Button className="w-full" onClick={() => setManageOpen(true)}>
+                <RefreshCw className="h-4 w-4 mr-2" />
+                Manage Plan
+              </Button>
+            </div>
+          </div>
+        ) : (
           <div className="bg-card rounded-2xl border border-border p-8 text-center">
             <Calendar className="h-10 w-10 text-muted-foreground mx-auto mb-3" />
             <p className="text-muted-foreground">No active subscription found.</p>
@@ -74,13 +113,19 @@ const Subscription = () => {
           </div>
         )}
 
-        {/* Footer */}
         <footer className="text-center text-xs text-muted-foreground mt-10 space-x-3">
           <Link to="/terms" className="text-primary hover:underline">Terms</Link>
           <Link to="/privacy" className="text-primary hover:underline">Privacy</Link>
           <p className="mt-3">© Orlando's Oasis 2015 – 2026</p>
         </footer>
       </main>
+
+      <ManageMembershipModal
+        open={manageOpen}
+        onOpenChange={setManageOpen}
+        nextServiceDate={nextDateStr}
+        currentFrequency="monthly"
+      />
     </div>
   );
 };

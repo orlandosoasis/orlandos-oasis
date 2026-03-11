@@ -38,6 +38,7 @@ const Index = () => {
         <TestimonialCard />
         <HowItWorks />
         <ServiceDetailsSection />
+        <NewsletterSection />
       </main>
       <Footer />
     </div>

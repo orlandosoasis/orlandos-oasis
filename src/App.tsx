@@ -61,6 +61,7 @@ const App = () => (
             <Route path="/account-settings/cleaning-notes" element={<CleaningNotes />} />
             <Route path="/account-settings/preferences" element={<Preferences />} />
             <Route path="/account-settings/experience-level" element={<ExperienceLevel />} />
+            <Route path="/technician" element={<TechnicianLanding />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

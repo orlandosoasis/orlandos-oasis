@@ -187,13 +187,13 @@ const Dashboard = () => {
                   </button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-48">
-                  <DropdownMenuItem onClick={() => navigate("/profile")} className="cursor-pointer gap-2">
+                  <DropdownMenuItem onClick={() => navigate("/profile")} className="cursor-pointer gap-2 focus:bg-accent-foreground focus:text-accent">
                     <User className="h-4 w-4" /> Profile
                   </DropdownMenuItem>
-                  <DropdownMenuItem className="cursor-pointer gap-2">
+                  <DropdownMenuItem className="cursor-pointer gap-2 focus:bg-accent-foreground focus:text-accent">
                     <Settings className="h-4 w-4" /> Settings
                   </DropdownMenuItem>
-                  <DropdownMenuItem className="cursor-pointer gap-2">
+                  <DropdownMenuItem className="cursor-pointer gap-2 focus:bg-accent-foreground focus:text-accent">
                     <CreditCard className="h-4 w-4" /> Subscription
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />

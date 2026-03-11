@@ -9,6 +9,7 @@ const Footer = () => {
           <div className="flex items-center gap-2">
             <img src={logo} alt="Orlando's Oasis" className="h-8 w-8 object-contain" />
             <span className="text-lg font-bold text-card">Orlando's Oasis</span>
+            <span className="text-sm text-slate-500 ml-2">© 2026 Orlando's Oasis. All rights reserved.</span>
           </div>
           
           <div className="flex flex-wrap justify-center gap-6 text-sm text-card/70">
@@ -25,10 +26,6 @@ const Footer = () => {
           <Link to="/login" className="text-sm transition-colors font-medium text-oasis-aqua">
             Log In
           </Link>
-          
-          <p className="text-sm text-slate-500">
-            © 2026 Orlando's Oasis. All rights reserved.
-          </p>
         </div>
       </div>
     </footer>);

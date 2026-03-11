@@ -17,6 +17,7 @@ import Privacy from "./pages/Privacy";
 import HelpCenter from "./pages/HelpCenter";
 import TechnicianDashboard from "./pages/TechnicianDashboard";
 import Profile from "./pages/Profile";
+import Subscription from "./pages/Subscription";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();

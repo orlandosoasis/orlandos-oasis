@@ -6,6 +6,7 @@ import TestimonialCard from "@/components/TestimonialCard";
 import ReviewsSection from "@/components/ReviewsSection";
 import HowItWorks from "@/components/HowItWorks";
 import ServiceDetailsSection from "@/components/ServiceDetailsSection";
+import NewsletterSection from "@/components/NewsletterSection";
 import Footer from "@/components/Footer";
 
 const Index = () => {

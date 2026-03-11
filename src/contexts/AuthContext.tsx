@@ -6,9 +6,15 @@ export interface User {
   id: string;
   email: string;
   fullName: string;
+  firstName?: string;
+  lastName?: string;
   role: UserRole;
   avatarUrl?: string;
   phone?: string;
+  streetAddress?: string;
+  city?: string;
+  state?: string;
+  zipCode?: string;
 }
 
 interface AuthContextType {
@@ -32,8 +38,14 @@ const MOCK_USERS: Record<string, { password: string; user: User }> = {
       id: "user-1",
       email: "demo@example.com",
       fullName: "John Smith",
+      firstName: "John",
+      lastName: "Smith",
       role: "homeowner",
       phone: "(407) 555-1234",
+      streetAddress: "1234 Sunshine Blvd",
+      city: "Orlando",
+      state: "FL",
+      zipCode: "32801",
     },
   },
   "tech@example.com": {

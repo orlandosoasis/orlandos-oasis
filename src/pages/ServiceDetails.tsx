@@ -9,6 +9,7 @@ import PoolSceneHero from "@/components/dashboard/PoolSceneHero";
 import RescheduleModal from "@/components/RescheduleModal";
 import LeaveReviewModal from "@/components/LeaveReviewModal";
 import ServiceReport from "@/components/ServiceReport";
+import ReportIssueModal from "@/components/ReportIssueModal";
 
 const FULL_DAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 const SHORT_MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -53,6 +54,7 @@ const ServiceDetails = () => {
   const [reviewOpen, setReviewOpen] = useState(false);
   const [reviewSubmitted, setReviewSubmitted] = useState(false);
   const [changingCleaner, setChangingCleaner] = useState(false);
+  const [reportIssueOpen, setReportIssueOpen] = useState(false);
   const { toast } = useToast();
 
   const handleChangeCleaner = useCallback(async () => {
@@ -334,7 +336,7 @@ const ServiceDetails = () => {
         <div className="bg-card rounded-2xl border border-border p-6 shadow-sm">
           <h2 className="text-[17px] font-bold text-foreground mb-3">Need More Help?</h2>
           <p className="text-[13.5px] text-muted-foreground leading-relaxed">
-            View our <Link to="/help" className="text-primary font-semibold hover:underline">help center</Link> for more information on what to expect and how Orlando's Oasis works, or <a href="#" className="text-primary font-semibold hover:underline">report an issue</a>.
+            View our <Link to="/help" className="text-primary font-semibold hover:underline">help center</Link> for more information on what to expect and how Orlando's Oasis works, or <button onClick={() => setReportIssueOpen(true)} className="text-primary font-semibold hover:underline">report an issue</button>.
           </p>
         </div>
 
@@ -368,6 +370,9 @@ const ServiceDetails = () => {
           }}
         />
       )}
+
+      {/* Report Issue Modal */}
+      <ReportIssueModal open={reportIssueOpen} onOpenChange={setReportIssueOpen} />
     </div>
   );
 };

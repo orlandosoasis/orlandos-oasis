@@ -52,6 +52,32 @@ const ServiceDetails = () => {
   const [showReschedule, setShowReschedule] = useState(false);
   const [reviewOpen, setReviewOpen] = useState(false);
   const [reviewSubmitted, setReviewSubmitted] = useState(false);
+  const [changingCleaner, setChangingCleaner] = useState(false);
+  const { toast } = useToast();
+
+  const handleChangeCleaner = useCallback(async () => {
+    if (!booking) return;
+    setChangingCleaner(true);
+    // Simulate network delay
+    await new Promise((resolve) => setTimeout(resolve, 1500));
+
+    let newTech: TechnicianInfo;
+    let attempts = 0;
+    do {
+      newTech = matchTechnician();
+      attempts++;
+    } while (newTech.name === booking.technician.name && attempts < 10);
+
+    if (newTech.name === booking.technician.name) {
+      toast({ title: "No other cleaners available at the moment.", variant: "destructive" });
+      setChangingCleaner(false);
+      return;
+    }
+
+    setBooking({ ...booking, technician: newTech });
+    setChangingCleaner(false);
+    toast({ title: "Cleaner updated.", variant: "success" as any });
+  }, [booking, setBooking, toast]);
 
   const handleReschedule = (newDate: Date, newTimeWindow: TimeWindow) => {
     if (booking) {

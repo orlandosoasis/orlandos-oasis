@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
-import { Waves, Calendar, ChevronRight, LogOut, Star, CalendarClock, User, Settings, CreditCard } from "lucide-react";
+import { Waves, Calendar, ChevronRight, LogOut, Star, CalendarClock, LayoutDashboard, Settings, CreditCard } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -187,14 +187,14 @@ const Dashboard = () => {
                   </button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-48">
-                  <DropdownMenuItem onClick={() => navigate("/profile")} className="cursor-pointer gap-2 focus:bg-muted focus:text-foreground">
-                    <User className="h-4 w-4" /> Profile
+                  <DropdownMenuItem onClick={() => navigate("/dashboard")} className="cursor-pointer gap-2 focus:bg-muted focus:text-foreground">
+                    <LayoutDashboard className="h-4 w-4" /> Dashboard
                   </DropdownMenuItem>
-                  <DropdownMenuItem className="cursor-pointer gap-2 focus:bg-muted focus:text-foreground">
-                    <Settings className="h-4 w-4" /> Settings
+                  <DropdownMenuItem onClick={() => navigate("/account-settings")} className="cursor-pointer gap-2 focus:bg-muted focus:text-foreground">
+                    <Settings className="h-4 w-4" /> Account Settings
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => navigate("/subscription")} className="cursor-pointer gap-2 focus:bg-muted focus:text-foreground">
-                    <CreditCard className="h-4 w-4" /> Subscription
+                    <CreditCard className="h-4 w-4" /> Membership
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={handleLogout} className="cursor-pointer gap-2 text-destructive focus:bg-muted focus:text-destructive">

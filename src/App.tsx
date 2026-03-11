@@ -53,6 +53,13 @@ const App = () => (
             <Route path="/help" element={<HelpCenter />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/subscription" element={<Subscription />} />
+            <Route path="/account-settings" element={<AccountSettings />} />
+            <Route path="/account-settings/personal-info" element={<PersonalInfo />} />
+            <Route path="/account-settings/payment-methods" element={<PaymentMethods />} />
+            <Route path="/account-settings/cleaning-address" element={<CleaningAddress />} />
+            <Route path="/account-settings/cleaning-notes" element={<CleaningNotes />} />
+            <Route path="/account-settings/preferences" element={<Preferences />} />
+            <Route path="/account-settings/experience-level" element={<ExperienceLevel />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

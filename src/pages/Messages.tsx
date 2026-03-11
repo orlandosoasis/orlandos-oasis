@@ -232,7 +232,7 @@ const Messages = () => {
             <Button
               variant="outline"
               size="sm"
-              className="gap-1.5 text-xs hover:bg-primary hover:text-primary-foreground hover:border-primary"
+              className="gap-1.5 text-xs"
               onClick={() => navigate(-1)}
             >
               <Calendar className="h-3.5 w-3.5" />

@@ -96,7 +96,7 @@ const HeroSection = () => {
                   Already a member?
                 </p>
                 <Link to="/login" className="block">
-                  <Button variant="outline" className="w-full h-11 font-semibold hover:bg-primary hover:text-primary-foreground hover:border-primary">
+                  <Button variant="outline" className="w-full h-11 font-semibold">
                     Log In to Your Account
                   </Button>
                 </Link>

@@ -365,7 +365,7 @@ const UpcomingRow = ({ service, canReschedule, onReschedule }: { service: Servic
         variant="outline"
         size="sm"
         disabled={!canReschedule}
-        className="shrink-0 gap-1.5 text-xs hover:bg-primary hover:text-primary-foreground hover:border-primary disabled:opacity-40 disabled:cursor-not-allowed"
+        className="shrink-0 gap-1.5 text-xs disabled:opacity-40 disabled:cursor-not-allowed"
         onClick={(e) => { e.stopPropagation(); onReschedule(); }}
       >
         <CalendarClock className="h-3.5 w-3.5" />

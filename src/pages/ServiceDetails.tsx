@@ -183,7 +183,7 @@ const ServiceDetails = () => {
             </div>
 
             {!isCompleted && (
-              <Button variant="outline" className="w-full mt-4 gap-1.5 hover:bg-primary hover:text-primary-foreground hover:border-primary" onClick={() => setShowReschedule(true)}>
+              <Button variant="outline" className="w-full mt-4 gap-1.5" onClick={() => setShowReschedule(true)}>
                 <CalendarClock className="h-4 w-4" />
                 Reschedule
               </Button>
@@ -233,7 +233,7 @@ const ServiceDetails = () => {
 
             {/* CTA Row */}
             <div className="flex gap-3 mt-4 w-full">
-              <Button variant="outline" className="flex-1 gap-1.5 hover:bg-primary hover:text-primary-foreground hover:border-primary" onClick={() => navigate("/messages")}>
+              <Button variant="outline" className="flex-1 gap-1.5" onClick={() => navigate("/messages")}>
                 <MessagesSquare className="h-4 w-4" />
                 Message
               </Button>
@@ -244,7 +244,7 @@ const ServiceDetails = () => {
                     Review Submitted
                   </Button>
                 ) : (
-                  <Button variant="outline" className="flex-1 gap-1.5 hover:bg-primary hover:text-primary-foreground hover:border-primary" onClick={(e) => { e.stopPropagation(); setReviewOpen(true); }}>
+                  <Button variant="outline" className="flex-1 gap-1.5" onClick={(e) => { e.stopPropagation(); setReviewOpen(true); }}>
                     <Star className="h-4 w-4" />
                     Leave a Review
                   </Button>
@@ -253,7 +253,7 @@ const ServiceDetails = () => {
               {!isCompleted && technician.isAssigned && (
                 <Button
                   variant="outline"
-                  className="flex-1 gap-1.5 hover:bg-primary hover:text-primary-foreground hover:border-primary"
+                  className="flex-1 gap-1.5"
                   onClick={handleChangeCleaner}
                   disabled={changingCleaner}
                 >

@@ -57,7 +57,7 @@ const Subscription = () => {
                 <span className="font-medium text-foreground">Yes</span>
               </div>
             </div>
-            <Button variant="outline" className="w-full mt-4 hover:bg-primary hover:text-primary-foreground hover:border-primary" onClick={() => navigate("/dashboard")}>
+            <Button variant="outline" className="w-full mt-4" onClick={() => navigate("/dashboard")}>
               <RefreshCw className="h-4 w-4 mr-2" />
               Manage Plan
             </Button>

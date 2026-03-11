@@ -155,7 +155,7 @@ const CompletedServiceDetails = () => {
             </div>
             {/* CTA Row */}
             <div className="flex gap-3 mt-4">
-              <Button variant="outline" className="flex-1 gap-1.5 hover:bg-primary hover:text-primary-foreground hover:border-primary" onClick={() => navigate("/messages")}>
+              <Button variant="outline" className="flex-1 gap-1.5" onClick={() => navigate("/messages")}>
                 <MessagesSquare className="h-4 w-4" />
                 Message
               </Button>

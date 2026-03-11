@@ -1,8 +1,6 @@
-import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Star, CheckCircle, Calendar, DollarSign, Briefcase, ClipboardList, CreditCard, ArrowRight, ChevronDown, MapPin } from "lucide-react";
+import { Star, CheckCircle, Calendar, DollarSign, Briefcase, ClipboardList, CreditCard, ArrowRight, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import logo from "@/assets/orlando-oasis-logo.png";
 import techHero from "@/assets/tech-hero.jpg";
@@ -42,7 +40,6 @@ const FAQS = [
 ];
 
 const TechnicianLanding = () => {
-  const [zip, setZip] = useState("");
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
@@ -72,34 +69,27 @@ const TechnicianLanding = () => {
           <div className="container max-w-6xl mx-auto px-4 md:px-8 py-12 md:py-16">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
               <div>
-                <p className="text-sm font-semibold text-primary uppercase tracking-wide mb-2">Orlando's Oasis Pro Network</p>
+                <p className="text-sm font-semibold text-primary uppercase tracking-wide mb-2">Orlando's Oasis Technician Application</p>
                 <h1 className="text-3xl md:text-4xl font-extrabold text-navy leading-tight mb-4">
-                  Earn consistent income as a pool service professional.
+                  Apply to become an Orlando's Oasis Pool Technician
                 </h1>
                 <p className="text-muted-foreground mb-6">
-                  Join Orlando's Oasis and get matched with homeowners who need reliable pool maintenance. Choose your schedule, accept the jobs you want, and build recurring accounts in your area.
+                  Submit your application to join the Orlando's Oasis technician network. Provide your experience, certifications, and resume so our team can review your qualifications and approve you to service homeowners in your area.
                 </p>
                 <ul className="space-y-2 mb-6">
-                  {["Set your own availability", "Access recurring weekly and biweekly clients", "Transparent payouts with earnings tracking", "Grow your income without marketing costs"].map((item) => (
+                  {["Submit your professional and contact information", "Upload your certifications, licenses, or training credentials", "Provide your resume and relevant work experience", "Our team reviews your application before approval"].map((item) => (
                     <li key={item} className="flex items-start gap-2 text-sm text-foreground">
                       <CheckCircle className="h-4 w-4 text-trust mt-0.5 shrink-0" />
                       {item}
                     </li>
                   ))}
                 </ul>
-                <div className="space-y-3 max-w-sm">
-                  <Input
-                    placeholder="Enter your ZIP code for base hourly rates"
-                    value={zip}
-                    onChange={(e) => setZip(e.target.value)}
-                    className="h-12"
-                  />
-                  <p className="text-xs text-muted-foreground flex items-center gap-1">
-                    <MapPin className="h-3 w-3" /> Price estimated in your area
-                  </p>
-                  <Button className="w-full h-12 text-base font-semibold">
-                    Join Our Pool Service Professional Network
-                  </Button>
+                <div className="max-w-sm">
+                  <Link to="/technician/apply">
+                    <Button className="w-full h-12 text-base font-semibold">
+                      Apply as a Pool Technician
+                    </Button>
+                  </Link>
                 </div>
               </div>
               <div className="hidden md:block">

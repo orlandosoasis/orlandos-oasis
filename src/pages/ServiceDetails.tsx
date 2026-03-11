@@ -54,6 +54,7 @@ const ServiceDetails = () => {
   const [reviewOpen, setReviewOpen] = useState(false);
   const [reviewSubmitted, setReviewSubmitted] = useState(false);
   const [changingCleaner, setChangingCleaner] = useState(false);
+  const [reportIssueOpen, setReportIssueOpen] = useState(false);
   const { toast } = useToast();
 
   const handleChangeCleaner = useCallback(async () => {

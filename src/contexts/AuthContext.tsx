@@ -6,9 +6,15 @@ export interface User {
   id: string;
   email: string;
   fullName: string;
+  firstName?: string;
+  lastName?: string;
   role: UserRole;
   avatarUrl?: string;
   phone?: string;
+  streetAddress?: string;
+  city?: string;
+  state?: string;
+  zipCode?: string;
 }
 
 interface AuthContextType {

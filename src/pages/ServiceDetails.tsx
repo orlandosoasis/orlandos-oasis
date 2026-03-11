@@ -249,6 +249,28 @@ const ServiceDetails = () => {
                 )
               )}
             </div>
+
+            {/* Change Cleaner CTA (scheduled only) */}
+            {!isCompleted && technician.isAssigned && (
+              <Button
+                variant="ghost"
+                className="w-full mt-2 gap-1.5 text-muted-foreground hover:text-primary text-xs"
+                onClick={handleChangeCleaner}
+                disabled={changingCleaner}
+              >
+                {changingCleaner ? (
+                  <>
+                    <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                    Finding available cleaner…
+                  </>
+                ) : (
+                  <>
+                    <UserRoundCog className="h-3.5 w-3.5" />
+                    Change Cleaner
+                  </>
+                )}
+              </Button>
+            )}
           </div>
         </div>
 

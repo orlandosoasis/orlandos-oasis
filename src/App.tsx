@@ -25,6 +25,7 @@ import CleaningAddress from "./pages/settings/CleaningAddress";
 import CleaningNotes from "./pages/settings/CleaningNotes";
 import Preferences from "./pages/settings/Preferences";
 import ExperienceLevel from "./pages/settings/ExperienceLevel";
+import TechnicianLanding from "./pages/TechnicianLanding";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();

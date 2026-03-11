@@ -336,7 +336,7 @@ const ServiceDetails = () => {
         <div className="bg-card rounded-2xl border border-border p-6 shadow-sm">
           <h2 className="text-[17px] font-bold text-foreground mb-3">Need More Help?</h2>
           <p className="text-[13.5px] text-muted-foreground leading-relaxed">
-            View our <Link to="/help" className="text-primary font-semibold hover:underline">help center</Link> for more information on what to expect and how Orlando's Oasis works, or <a href="#" className="text-primary font-semibold hover:underline">report an issue</a>.
+            View our <Link to="/help" className="text-primary font-semibold hover:underline">help center</Link> for more information on what to expect and how Orlando's Oasis works, or <button onClick={() => setReportIssueOpen(true)} className="text-primary font-semibold hover:underline">report an issue</button>.
           </p>
         </div>
 

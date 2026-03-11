@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
-import { Waves, Calendar, ChevronRight, LogOut, Star, CalendarClock } from "lucide-react";
+import { Waves, Calendar, ChevronRight, LogOut, Star, CalendarClock, User, Settings, CreditCard } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
 import { useBooking, type BookingData, type TimeWindow } from "@/contexts/BookingContext";

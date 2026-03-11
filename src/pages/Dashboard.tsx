@@ -121,7 +121,7 @@ const Dashboard = () => {
       setServices([{ id: "svc-custom", booking: { ...booking, status: "scheduled" } }]);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user?.email]);
+  }, [user?.email, booking]);
 
   const handleLogout = () => { logout(); navigate("/login", { replace: true }); };
 

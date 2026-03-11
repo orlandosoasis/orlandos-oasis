@@ -197,7 +197,7 @@ const Dashboard = () => {
                     <CreditCard className="h-4 w-4" /> Subscription
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={handleLogout} className="cursor-pointer gap-2 text-destructive focus:bg-muted focus:text-foreground">
+                  <DropdownMenuItem onClick={handleLogout} className="cursor-pointer gap-2 text-destructive focus:bg-muted focus:text-destructive">
                     <LogOut className="h-4 w-4" /> Logout
                   </DropdownMenuItem>
                 </DropdownMenuContent>

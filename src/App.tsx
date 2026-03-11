@@ -25,6 +25,7 @@ import CleaningAddress from "./pages/settings/CleaningAddress";
 import CleaningNotes from "./pages/settings/CleaningNotes";
 import Preferences from "./pages/settings/Preferences";
 import ExperienceLevel from "./pages/settings/ExperienceLevel";
+import TechnicianLanding from "./pages/TechnicianLanding";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -60,6 +61,7 @@ const App = () => (
             <Route path="/account-settings/cleaning-notes" element={<CleaningNotes />} />
             <Route path="/account-settings/preferences" element={<Preferences />} />
             <Route path="/account-settings/experience-level" element={<ExperienceLevel />} />
+            <Route path="/technician" element={<TechnicianLanding />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

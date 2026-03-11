@@ -18,6 +18,13 @@ import HelpCenter from "./pages/HelpCenter";
 import TechnicianDashboard from "./pages/TechnicianDashboard";
 import Profile from "./pages/Profile";
 import Subscription from "./pages/Subscription";
+import AccountSettings from "./pages/AccountSettings";
+import PersonalInfo from "./pages/settings/PersonalInfo";
+import PaymentMethods from "./pages/settings/PaymentMethods";
+import CleaningAddress from "./pages/settings/CleaningAddress";
+import CleaningNotes from "./pages/settings/CleaningNotes";
+import Preferences from "./pages/settings/Preferences";
+import ExperienceLevel from "./pages/settings/ExperienceLevel";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();

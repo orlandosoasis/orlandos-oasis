@@ -310,50 +310,8 @@ const ServiceDetails = () => {
           </div>
         )}
 
-        {/* Recurring Schedule (scheduled + monthly only) */}
-        {!isCompleted && isMonthly && (
-          <div className="bg-card rounded-2xl border border-border p-6 shadow-sm">
-            <h2 className="text-[17px] font-bold text-foreground mb-4">Recurring Schedule</h2>
-            <div className="space-y-2.5 text-sm">
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">Frequency</span>
-                <span className="font-medium text-foreground">Monthly</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">Next service date</span>
-                <span className="font-medium text-foreground">{getNextServiceDate()}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">Auto-renew</span>
-                <span className="font-medium text-foreground">Yes</span>
-              </div>
-            </div>
-            <Button variant="outline" className="w-full mt-4 hover:bg-primary hover:text-primary-foreground hover:border-primary" onClick={() => navigate("/dashboard")}>
-              <RefreshCw className="h-4 w-4 mr-2" />
-              Manage Plan
-            </Button>
-          </div>
-        )}
 
-        {/* Payment Details (scheduled only) */}
-        {!isCompleted && (
-          <div className="bg-card rounded-2xl border border-border p-6 shadow-sm">
-            <h2 className="text-[17px] font-bold text-foreground mb-3">Payment Details</h2>
-            <div className="space-y-2 text-sm">
-              {isMonthly ? (
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Recurring amount</span>
-                  <span className="text-foreground font-medium">${selectedPass.discountPrice.toFixed(2)}/mo</span>
-                </div>
-              ) : (
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Base service</span>
-                  <span className="text-foreground font-medium">${selectedPass.discountPrice.toFixed(2)}</span>
-                </div>
-              )}
-            </div>
-          </div>
-        )}
+
 
         {/* After Your Service (scheduled only) */}
         {!isCompleted && (

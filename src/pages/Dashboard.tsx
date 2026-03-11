@@ -187,17 +187,17 @@ const Dashboard = () => {
                   </button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-48">
-                  <DropdownMenuItem onClick={() => navigate("/profile")} className="cursor-pointer gap-2 focus:bg-muted">
+                  <DropdownMenuItem onClick={() => navigate("/profile")} className="cursor-pointer gap-2 focus:bg-muted focus:text-foreground">
                     <User className="h-4 w-4" /> Profile
                   </DropdownMenuItem>
-                  <DropdownMenuItem className="cursor-pointer gap-2 focus:bg-muted">
+                  <DropdownMenuItem className="cursor-pointer gap-2 focus:bg-muted focus:text-foreground">
                     <Settings className="h-4 w-4" /> Settings
                   </DropdownMenuItem>
-                  <DropdownMenuItem className="cursor-pointer gap-2 focus:bg-muted">
+                  <DropdownMenuItem className="cursor-pointer gap-2 focus:bg-muted focus:text-foreground">
                     <CreditCard className="h-4 w-4" /> Subscription
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={handleLogout} className="cursor-pointer gap-2 text-destructive focus:bg-muted focus:text-destructive">
+                  <DropdownMenuItem onClick={handleLogout} className="cursor-pointer gap-2 text-destructive focus:bg-muted focus:text-foreground">
                     <LogOut className="h-4 w-4" /> Logout
                   </DropdownMenuItem>
                 </DropdownMenuContent>

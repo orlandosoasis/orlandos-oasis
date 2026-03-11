@@ -155,7 +155,7 @@ const CompletedServiceDetails = () => {
             </div>
             {/* CTA Row */}
             <div className="flex gap-3 mt-4">
-              <Button variant="outline" className="flex-1 gap-1.5" onClick={() => navigate("/messages")}>
+              <Button variant="outline" className="flex-1 gap-1.5 hover:bg-primary hover:text-white hover:border-transparent" onClick={() => navigate("/messages")}>
                 <MessagesSquare className="h-4 w-4" />
                 Message
               </Button>
@@ -165,7 +165,7 @@ const CompletedServiceDetails = () => {
                   Review Submitted
                 </Button>
               ) : (
-                <Button variant="outline" className="flex-1 gap-1.5" onClick={(e) => { e.stopPropagation(); setReviewOpen(true); }}>
+                <Button variant="outline" className="flex-1 gap-1.5 hover:bg-primary hover:text-white hover:border-transparent" onClick={(e) => { e.stopPropagation(); setReviewOpen(true); }}>
                   <Star className="h-4 w-4" />
                   Leave a Review
                 </Button>

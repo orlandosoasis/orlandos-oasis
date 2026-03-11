@@ -276,7 +276,7 @@ const Dashboard = () => {
         <footer className="text-center text-xs text-muted-foreground mt-10 space-x-3">
           <Link to="/terms" className="text-primary hover:underline">Terms</Link>
           <Link to="/privacy" className="text-primary hover:underline">Privacy</Link>
-          <a href="#" className="text-primary hover:underline">Do Not Sell My Personal Information</a>
+          
           <p className="mt-3">© Orlando's Oasis 2015 – 2026</p>
         </footer>
       </main>

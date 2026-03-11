@@ -76,7 +76,7 @@ const ServiceDetails = () => {
 
     setBooking({ ...booking, technician: newTech });
     setChangingCleaner(false);
-    toast({ title: "Cleaner updated.", variant: "success" as any });
+    toast({ title: "Success! Cleaner updated.", variant: "success" as any });
   }, [booking, setBooking, toast]);
 
   const handleReschedule = (newDate: Date, newTimeWindow: TimeWindow) => {

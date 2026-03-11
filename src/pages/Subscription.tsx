@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Waves, ArrowLeft, RefreshCw, Calendar, CreditCard, CheckCircle2 } from "lucide-react";
+import { Waves, ArrowLeft, RefreshCw, Calendar } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { useBooking } from "@/contexts/BookingContext";
+import { useToast } from "@/hooks/use-toast";
 import ManageMembershipModal from "@/components/ManageMembershipModal";
 
 const FULL_DAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
@@ -12,10 +13,14 @@ const SHORT_MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "S
 const Subscription = () => {
   const navigate = useNavigate();
   const { booking } = useBooking();
+  const { toast } = useToast();
   const [manageOpen, setManageOpen] = useState(false);
+  const [cancelled, setCancelled] = useState(false);
 
   const isMonthly = booking?.frequency === "monthly";
   const d = booking?.scheduleData?.selectedDate || new Date();
+
+  const planName = booking?.selectedPass?.label || booking?.selectedPlan?.label || "Pool Care Membership";
 
   const getNextDate = () => {
     const next = new Date(d);
@@ -24,6 +29,14 @@ const Subscription = () => {
   };
 
   const nextDateStr = getNextDate();
+
+  const handleCancelled = () => {
+    setCancelled(true);
+    toast({
+      title: "Membership cancelled successfully",
+      description: "Your recurring service will no longer renew.",
+    });
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -48,14 +61,25 @@ const Subscription = () => {
           <div className="bg-card rounded-2xl border border-border shadow-sm overflow-hidden">
             {/* Membership Status */}
             <div className="p-6 space-y-3">
-              <div className="flex items-center gap-2">
-                <CheckCircle2 className="h-5 w-5 text-primary" />
-                <h2 className="text-[17px] font-bold text-foreground">Membership Status</h2>
-              </div>
+              <h2 className="text-[17px] font-bold text-foreground">Membership Status</h2>
+
+              {cancelled && (
+                <div className="bg-destructive/10 border border-destructive/20 rounded-xl p-4 text-sm">
+                  <p className="font-medium text-destructive">Your membership has been cancelled.</p>
+                  <p className="text-destructive/80 mt-1">No future recurring services will be scheduled.</p>
+                </div>
+              )}
+
               <div className="space-y-2.5 text-sm">
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Plan</span>
-                  <span className="font-medium text-foreground">Pool Care Membership</span>
+                  <span className="font-medium text-foreground">{planName}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Status</span>
+                  <span className={`font-medium ${cancelled ? "text-destructive" : "text-primary"}`}>
+                    {cancelled ? "Cancelled" : "Active"}
+                  </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Billing Cycle</span>
@@ -63,11 +87,11 @@ const Subscription = () => {
                 </div>
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Next Billing Date</span>
-                  <span className="font-medium text-foreground">{nextDateStr}</span>
+                  <span className="font-medium text-foreground">{cancelled ? "—" : nextDateStr}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Auto-renew</span>
-                  <span className="font-medium text-foreground">Yes</span>
+                  <span className="font-medium text-foreground">{cancelled ? "No" : "Yes"}</span>
                 </div>
               </div>
             </div>
@@ -84,11 +108,13 @@ const Subscription = () => {
                 </div>
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Next Service Date</span>
-                  <span className="font-medium text-foreground">{nextDateStr}</span>
+                  <span className="font-medium text-foreground">
+                    {cancelled ? "None scheduled" : nextDateStr}
+                  </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Auto-renew</span>
-                  <span className="font-medium text-foreground">Yes</span>
+                  <span className="font-medium text-foreground">{cancelled ? "No" : "Yes"}</span>
                 </div>
               </div>
             </div>
@@ -97,9 +123,13 @@ const Subscription = () => {
 
             {/* Manage Plan CTA */}
             <div className="p-6">
-              <Button className="w-full" onClick={() => setManageOpen(true)}>
+              <Button
+                className="w-full"
+                disabled={cancelled}
+                onClick={() => setManageOpen(true)}
+              >
                 <RefreshCw className="h-4 w-4 mr-2" />
-                Manage Plan
+                {cancelled ? "Membership Cancelled" : "Manage Plan"}
               </Button>
             </div>
           </div>
@@ -124,7 +154,7 @@ const Subscription = () => {
         open={manageOpen}
         onOpenChange={setManageOpen}
         nextServiceDate={nextDateStr}
-        currentFrequency="monthly"
+        onCancelled={handleCancelled}
       />
     </div>
   );

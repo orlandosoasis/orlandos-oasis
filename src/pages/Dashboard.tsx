@@ -180,7 +180,7 @@ const Dashboard = () => {
                   <button className="rounded-full focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2">
                     <Avatar className="h-9 w-9 cursor-pointer">
                       <AvatarImage src={user.avatarUrl} alt={user.fullName} />
-                      <AvatarFallback className="bg-oasis-navy text-primary-foreground text-sm font-semibold">
+                      <AvatarFallback className="bg-navy text-primary-foreground text-sm font-semibold">
                         {user.fullName?.split(" ").map(n => n[0]).join("").slice(0, 2).toUpperCase()}
                       </AvatarFallback>
                     </Avatar>

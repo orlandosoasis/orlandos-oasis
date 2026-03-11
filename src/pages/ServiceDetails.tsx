@@ -183,7 +183,7 @@ const ServiceDetails = () => {
             </div>
 
             {!isCompleted && (
-              <Button variant="outline" className="w-full mt-4 gap-1.5" onClick={() => setShowReschedule(true)}>
+              <Button variant="outline" className="w-full mt-4 gap-1.5 hover:bg-primary hover:text-white hover:border-transparent" onClick={() => setShowReschedule(true)}>
                 <CalendarClock className="h-4 w-4" />
                 Reschedule
               </Button>

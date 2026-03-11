@@ -40,7 +40,6 @@ const FAQS = [
 ];
 
 const TechnicianLanding = () => {
-  const [zip, setZip] = useState("");
 
   return (
     <div className="min-h-screen flex flex-col bg-background">

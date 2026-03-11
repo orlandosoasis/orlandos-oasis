@@ -1,18 +1,19 @@
 import { useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { ArrowLeft, Waves } from "lucide-react";
 
 const Terms = () => {
+  const navigate = useNavigate();
   useEffect(() => { window.scrollTo(0, 0); }, []);
 
   return (
     <div className="min-h-screen bg-background">
       <header className="bg-card border-b border-border sticky top-0 z-10">
         <div className="max-w-[760px] mx-auto px-5 h-[60px] flex items-center justify-between">
-          <Link to="/service-details" className="flex items-center gap-2 text-foreground hover:text-primary transition-colors">
+          <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-foreground hover:text-primary transition-colors">
             <ArrowLeft className="h-5 w-5" />
             <span className="font-medium text-sm">Back</span>
-          </Link>
+          </button>
           <Link to="/" className="flex items-center gap-1.5">
             <Waves className="h-5 w-5 text-primary" />
             <span className="text-[1.25rem] font-bold text-foreground tracking-tight">Orlando's Oasis</span>

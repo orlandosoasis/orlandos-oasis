@@ -76,7 +76,7 @@ const ServiceDetails = () => {
 
     setBooking({ ...booking, technician: newTech });
     setChangingCleaner(false);
-    toast({ title: "Cleaner updated.", variant: "success" as any });
+    toast({ title: "Success! Cleaner updated.", variant: "success" as any });
   }, [booking, setBooking, toast]);
 
   const handleReschedule = (newDate: Date, newTimeWindow: TimeWindow) => {
@@ -248,29 +248,27 @@ const ServiceDetails = () => {
                   </Button>
                 )
               )}
+              {!isCompleted && technician.isAssigned && (
+                <Button
+                  variant="outline"
+                  className="flex-1 gap-1.5 hover:bg-primary hover:text-primary-foreground hover:border-primary"
+                  onClick={handleChangeCleaner}
+                  disabled={changingCleaner}
+                >
+                  {changingCleaner ? (
+                    <>
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                      Finding…
+                    </>
+                  ) : (
+                    <>
+                      <UserRoundCog className="h-4 w-4" />
+                      Change Cleaner
+                    </>
+                  )}
+                </Button>
+              )}
             </div>
-
-            {/* Change Cleaner CTA (scheduled only) */}
-            {!isCompleted && technician.isAssigned && (
-              <Button
-                variant="ghost"
-                className="w-full mt-2 gap-1.5 text-muted-foreground hover:text-primary text-xs"
-                onClick={handleChangeCleaner}
-                disabled={changingCleaner}
-              >
-                {changingCleaner ? (
-                  <>
-                    <Loader2 className="h-3.5 w-3.5 animate-spin" />
-                    Finding available cleaner…
-                  </>
-                ) : (
-                  <>
-                    <UserRoundCog className="h-3.5 w-3.5" />
-                    Change Cleaner
-                  </>
-                )}
-              </Button>
-            )}
           </div>
         </div>
 

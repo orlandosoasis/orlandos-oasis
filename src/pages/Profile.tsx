@@ -27,7 +27,7 @@ const Profile = () => {
   }
 
   const handleSave = () => {
-    toast({ title: "Success! Profile updated." });
+    toast({ title: "Success! Profile updated.", variant: "success" });
   };
 
   return (

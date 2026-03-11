@@ -12,27 +12,27 @@ const Footer = () => {
           </div>
           
           <div className="flex flex-wrap justify-center gap-6 text-sm text-card/70">
-            <Link to="/terms" className="hover:text-card transition-colors">Terms of Service</Link>
-            <Link to="/privacy" className="hover:text-card transition-colors">Privacy Policy</Link>
-            <a href="#" className="hover:text-card transition-colors">Contact Us</a>
-            <a href="#" className="hover:text-card transition-colors">FAQ</a>
+            <Link to="/terms" className="transition-colors text-white">Terms</Link>
+            <Link to="/privacy" className="transition-colors text-white">Privacy</Link>
+            <a href="#" className="transition-colors text-white">Contact Us</a>
+            <a href="#" className="transition-colors text-white">FAQ</a>
           </div>
 
-          <Link to="/technician" className="text-sm text-oasis-aqua hover:text-card transition-colors font-semibold">
+          <Link to="/technician" className="text-sm text-oasis-aqua hover:text-card transition-colors font-medium">
             Apply as a Pool Technician
           </Link>
 
-          <Link to="/login" className="text-sm text-oasis hover:text-oasis-aqua transition-colors font-medium">
+          <Link to="/login" className="text-sm transition-colors font-medium text-oasis-aqua">
             Log In
           </Link>
           
-          <p className="text-sm text-card/60">
+          <p className="text-sm text-slate-500">
             © 2026 Orlando's Oasis. All rights reserved.
           </p>
         </div>
       </div>
-    </footer>
-  );
+    </footer>);
+
 };
 
 export default Footer;

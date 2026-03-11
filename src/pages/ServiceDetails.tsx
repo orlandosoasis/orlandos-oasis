@@ -253,7 +253,7 @@ const ServiceDetails = () => {
               {!isCompleted && technician.isAssigned && (
                 <Button
                   variant="outline"
-                  className="flex-1 gap-1.5 hover:bg-primary hover:text-primary-foreground hover:border-primary"
+                  className="flex-1 gap-1.5"
                   onClick={handleChangeCleaner}
                   disabled={changingCleaner}
                 >

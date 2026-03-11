@@ -193,7 +193,7 @@ const Dashboard = () => {
                   <DropdownMenuItem className="cursor-pointer gap-2 focus:bg-muted focus:text-foreground">
                     <Settings className="h-4 w-4" /> Settings
                   </DropdownMenuItem>
-                  <DropdownMenuItem className="cursor-pointer gap-2 focus:bg-muted focus:text-foreground">
+                  <DropdownMenuItem onClick={() => navigate("/subscription")} className="cursor-pointer gap-2 focus:bg-muted focus:text-foreground">
                     <CreditCard className="h-4 w-4" /> Subscription
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />

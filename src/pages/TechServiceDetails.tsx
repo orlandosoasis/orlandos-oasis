@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { ArrowLeft, MapPin, Calendar, Clock, Send, CalendarClock, Play, CheckCircle2, MessagesSquare, Camera } from "lucide-react";
+import { ArrowLeft, MapPin, Calendar, Clock, Send, CalendarClock, Play, CheckCircle2, MessagesSquare, Camera, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import StatusBadge from "@/components/StatusBadge";
@@ -16,6 +16,7 @@ import {
   TIME_LABELS,
   SHORT_MONTHS,
   type TechService,
+  SERVICE_TASKS,
 } from "@/data/techMockData";
 import poolBefore1 from "@/assets/pool-before-1.jpg";
 import poolBefore2 from "@/assets/pool-before-2.jpg";
@@ -261,22 +262,37 @@ const TechServiceDetails = () => {
           <div className="border-t border-border my-4" />
 
           {/* Completed Tasks */}
-          {service.completedTasks && service.completedTasks.length > 0 && (
+          <div>
+            <div className="flex items-center gap-2 mb-3">
+              <FileText className="h-4 w-4 text-muted-foreground" />
+              <span className="text-sm font-semibold text-foreground">Completed Tasks</span>
+            </div>
             <div className="space-y-2 mb-4">
-              {service.completedTasks.map((task, i) => (
+              {(service.completedTasks && service.completedTasks.length > 0
+                ? service.completedTasks
+                : SERVICE_TASKS
+              ).map((task, i) => (
                 <div key={i} className="flex items-center gap-2.5">
                   <CheckCircle2 className="h-4 w-4 text-primary shrink-0" />
                   <span className="text-sm text-foreground">{task}</span>
                 </div>
               ))}
             </div>
-          )}
-          {service.techNotes && (
-            <div className="bg-muted/50 rounded-xl px-4 py-3 mt-3">
-              <p className="text-xs font-semibold text-muted-foreground mb-1">Notes</p>
-              <p className="text-sm text-muted-foreground leading-relaxed">{service.techNotes}</p>
+          </div>
+
+          {/* Technician Notes */}
+          <div className="border-t border-border my-4" />
+          <div>
+            <div className="flex items-center gap-2 mb-3">
+              <FileText className="h-4 w-4 text-muted-foreground" />
+              <span className="text-sm font-semibold text-foreground">Other Notes</span>
             </div>
-          )}
+            <div className="bg-muted/50 rounded-xl px-4 py-3">
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                {service.techNotes || "Skimmer basket was heavily filled with leaves. Adjusted chlorine slightly due to recent rain. Filter pressure normal. Recommend checking again next visit if weather continues."}
+              </p>
+            </div>
+          </div>
         </div>
       )}
 

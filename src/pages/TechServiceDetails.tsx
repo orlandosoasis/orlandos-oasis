@@ -209,13 +209,13 @@ const TechServiceDetails = () => {
             <div className="space-y-1.5 mb-4 pb-4 border-b border-border">
               {service.startedAt && (
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <Play className="h-4 w-4 text-accent shrink-0" />
+                  <Clock className="h-4 w-4 text-accent shrink-0" />
                   <span>Start Time: {service.startedAt}</span>
                 </div>
               )}
               {service.completedAt && (
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <CheckCircle2 className="h-4 w-4 text-accent shrink-0" />
+                  <Clock className="h-4 w-4 text-accent shrink-0" />
                   <span>Completion Time: {service.completedAt}</span>
                 </div>
               )}

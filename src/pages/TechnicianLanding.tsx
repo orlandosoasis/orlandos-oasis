@@ -230,7 +230,7 @@ const TechnicianLanding = () => {
             <Link to="/" className="hover:text-foreground">Orlando's Oasis</Link>
             <Link to="/privacy" className="hover:text-foreground">Privacy Policy</Link>
             <Link to="/terms" className="hover:text-foreground">Terms</Link>
-            <a href="#" className="hover:text-foreground">Contact Us</a>
+            
             <Link to="/help" className="hover:text-foreground">Help</Link>
           </div>
           <p className="text-sm text-muted-foreground">© 2026 Orlando's Oasis. All rights reserved.</p>

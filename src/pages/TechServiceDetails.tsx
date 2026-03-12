@@ -118,8 +118,8 @@ const TechServiceDetails = () => {
       <div className="bg-card rounded-2xl border border-border p-6 shadow-sm mb-4">
         <div className="flex items-start justify-between mb-4">
           <div>
-            <h1 className="text-xl font-bold text-foreground">{service.serviceType}</h1>
-            <p className="text-sm text-muted-foreground mt-1">{homeowner.name}</p>
+            <h1 className="text-xl font-bold text-foreground">{homeowner.name}</h1>
+            <p className="text-sm text-muted-foreground mt-1">{service.serviceType}</p>
           </div>
           <StatusBadge status={service.status} />
         </div>

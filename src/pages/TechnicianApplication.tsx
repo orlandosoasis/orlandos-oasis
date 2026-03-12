@@ -174,7 +174,7 @@ const TechnicianApplication = () => {
           </div>
 
           <Button onClick={() => navigate("/technician")} className="w-full max-w-sm h-14 text-[17px] font-bold rounded-2xl shadow-lg">
-            ← Back to Home
+            Back to Home
           </Button>
         </div>
       </div>

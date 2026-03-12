@@ -151,7 +151,7 @@ const TechnicianApplication = () => {
             <CheckCircle2 className="h-8 w-8 text-green-600" />
           </div>
           <h2 className="text-xl font-bold text-foreground mb-1">Application Submitted Successfully</h2>
-          <p className="text-sm text-muted-foreground mb-2 max-w-md">
+          <p className="text-sm text-muted-foreground mb-8 max-w-md">
             Thank you for applying to become a pool technician with Orlando's Oasis. Our team will review your resume and certifications.
           </p>
 

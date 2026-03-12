@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { ArrowLeft, MapPin, Calendar, Clock, Send, CalendarClock, Play, CheckCircle2 } from "lucide-react";
+import { ArrowLeft, MapPin, Calendar, Clock, Send, CalendarClock, Play, CheckCircle2, MessagesSquare } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import StatusBadge from "@/components/StatusBadge";
@@ -156,10 +156,18 @@ const TechServiceDetails = () => {
             <Button
               variant="outline"
               className="flex-1 gap-1.5 hover:text-primary hover:border-primary hover:bg-transparent"
+              onClick={() => navigate("/tech/messages")}
+            >
+              <MessagesSquare className="h-4 w-4" />
+              Message
+            </Button>
+            <Button
+              variant="outline"
+              className="flex-1 gap-1.5 hover:text-primary hover:border-primary hover:bg-transparent"
               onClick={() => setShowReschedule(true)}
             >
               <CalendarClock className="h-4 w-4" />
-              Reschedule Service
+              Reschedule
             </Button>
           </div>
         )}

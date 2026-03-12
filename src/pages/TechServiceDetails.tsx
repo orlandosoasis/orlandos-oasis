@@ -156,10 +156,18 @@ const TechServiceDetails = () => {
             <Button
               variant="outline"
               className="flex-1 gap-1.5 hover:text-primary hover:border-primary hover:bg-transparent"
+              onClick={() => navigate("/tech/messages")}
+            >
+              <MessagesSquare className="h-4 w-4" />
+              Message
+            </Button>
+            <Button
+              variant="outline"
+              className="flex-1 gap-1.5 hover:text-primary hover:border-primary hover:bg-transparent"
               onClick={() => setShowReschedule(true)}
             >
               <CalendarClock className="h-4 w-4" />
-              Reschedule Service
+              Reschedule
             </Button>
           </div>
         )}

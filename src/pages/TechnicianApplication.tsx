@@ -154,9 +154,6 @@ const TechnicianApplication = () => {
           <p className="text-sm text-muted-foreground mb-2 max-w-md">
             Thank you for applying to become a pool technician with Orlando's Oasis. Our team will review your resume and certifications.
           </p>
-          <p className="text-xs text-muted-foreground mb-8">
-            If your qualifications match our needs, we will contact you with the next steps. Please allow a few days for review.
-          </p>
 
           <div className="w-full max-w-sm bg-card rounded-2xl border border-border p-6 shadow-sm text-left space-y-4 mb-8">
             <div>

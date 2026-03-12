@@ -108,10 +108,16 @@ const TechServiceDetails = () => {
     setShowCompletion(true);
   };
 
-  const handleCompletionSubmit = () => {
+  const handleCompletionSubmit = (data: { beforePhotos: File[]; afterPhotos: File[]; completedTasks: string[]; notes: string }) => {
     setServices((prev) =>
       prev.map((s) =>
-        s.id === service.id ? { ...s, status: "completed" as const, completedAt: new Date().toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit", hour12: true }) } : s
+        s.id === service.id ? {
+          ...s,
+          status: "completed" as const,
+          completedAt: new Date().toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit", hour12: true }),
+          completedTasks: data.completedTasks,
+          techNotes: data.notes || undefined,
+        } : s
       )
     );
   };

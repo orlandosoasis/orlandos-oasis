@@ -33,6 +33,7 @@ export interface TechService {
   status: TechServiceStatus;
   completedTasks?: string[];
   techNotes?: string;
+  startedAt?: string;
   completedAt?: string;
 }
 

@@ -208,7 +208,7 @@ const TechServiceDetails = () => {
           {(service.startedAt || service.completedAt) && (
             <div className="space-y-1.5 mb-4 pb-4 border-b border-border">
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <Clock className="h-4 w-4 text-accent shrink-0" />
+                <Play className="h-4 w-4 text-accent shrink-0" />
                 <span>Start Time: {service.startedAt || service.completedAt}</span>
               </div>
               {service.completedAt && (

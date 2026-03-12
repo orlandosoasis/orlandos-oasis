@@ -13,14 +13,14 @@ const Profile = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  const [firstName, setFirstName] = useState(user?.firstName || user?.fullName?.split(" ")[0] || "");
-  const [lastName, setLastName] = useState(user?.lastName || user?.fullName?.split(" ").slice(1).join(" ") || "");
+  const firstName = user?.firstName || user?.fullName?.split(" ")[0] || "";
+  const lastName = user?.lastName || user?.fullName?.split(" ").slice(1).join(" ") || "";
   const [email, setEmail] = useState(user?.email || "");
   const [phone, setPhone] = useState(user?.phone || "");
-  const [streetAddress, setStreetAddress] = useState(user?.streetAddress || "");
-  const [city, setCity] = useState(user?.city || "");
-  const [state, setState] = useState(user?.state || "");
-  const [zipCode, setZipCode] = useState(user?.zipCode || "");
+  const streetAddress = user?.streetAddress || "";
+  const city = user?.city || "";
+  const state = user?.state || "";
+  const zipCode = user?.zipCode || "";
 
   if (!isLoading && !isAuthenticated) {
     navigate("/login", { replace: true });
@@ -58,11 +58,11 @@ const Profile = () => {
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="firstName">First Name</Label>
-              <Input id="firstName" value={firstName} onChange={(e) => setFirstName(e.target.value)} />
+              <Input id="firstName" value={firstName} disabled className="bg-muted" />
             </div>
             <div className="space-y-2">
               <Label htmlFor="lastName">Last Name</Label>
-              <Input id="lastName" value={lastName} onChange={(e) => setLastName(e.target.value)} />
+              <Input id="lastName" value={lastName} disabled className="bg-muted" />
             </div>
           </div>
           <div className="space-y-2">
@@ -75,20 +75,20 @@ const Profile = () => {
           </div>
           <div className="space-y-2">
             <Label htmlFor="streetAddress">Street Address</Label>
-            <Input id="streetAddress" value={streetAddress} onChange={(e) => setStreetAddress(e.target.value)} placeholder="1234 Sunshine Blvd" />
+            <Input id="streetAddress" value={streetAddress} disabled className="bg-muted" />
           </div>
           <div className="grid grid-cols-3 gap-4">
             <div className="space-y-2">
               <Label htmlFor="city">City</Label>
-              <Input id="city" value={city} onChange={(e) => setCity(e.target.value)} placeholder="Orlando" />
+              <Input id="city" value={city} disabled className="bg-muted" />
             </div>
             <div className="space-y-2">
               <Label htmlFor="state">State</Label>
-              <Input id="state" value={state} onChange={(e) => setState(e.target.value)} placeholder="FL" />
+              <Input id="state" value={state} disabled className="bg-muted" />
             </div>
             <div className="space-y-2">
               <Label htmlFor="zipCode">Zip Code</Label>
-              <Input id="zipCode" value={zipCode} onChange={(e) => setZipCode(e.target.value)} placeholder="32801" />
+              <Input id="zipCode" value={zipCode} disabled className="bg-muted" />
             </div>
           </div>
           <Button onClick={handleSave} className="mt-4">Save Changes</Button>

@@ -2,6 +2,14 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import oasisLogo from "@/assets/oasis-logo-circle.png";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import {
   LayoutDashboard,
   Droplets,
@@ -10,7 +18,6 @@ import {
   CheckCircle2,
   User,
   LogOut,
-  Wrench,
   Menu,
   X,
 } from "lucide-react";
@@ -19,19 +26,19 @@ import { cn } from "@/lib/utils";
 
 const NAV_ITEMS = [
   { label: "Dashboard", path: "/tech-dashboard", icon: LayoutDashboard },
-  { label: "My Pools", path: "/tech/pools", icon: Droplets },
+  { label: "Pools", path: "/tech/pools", icon: Droplets },
   { label: "Schedule", path: "/tech/schedule", icon: CalendarDays },
   { label: "Messages", path: "/tech/messages", icon: MessagesSquare },
   { label: "Completed", path: "/tech/completed", icon: CheckCircle2 },
-  { label: "Profile", path: "/profile", icon: User },
 ];
 
 interface TechLayoutProps {
   children: ReactNode;
   title?: string;
+  unreadMessages?: number;
 }
 
-export default function TechLayout({ children, title }: TechLayoutProps) {
+export default function TechLayout({ children, title, unreadMessages = 3 }: TechLayoutProps) {
   const location = useLocation();
   const navigate = useNavigate();
   const { user, logout, isAuthenticated, isLoading } = useAuth();
@@ -49,6 +56,10 @@ export default function TechLayout({ children, title }: TechLayoutProps) {
   };
 
   const isActive = (path: string) => location.pathname === path;
+
+  const initials = user?.fullName
+    ? user.fullName.split(" ").map((n: string) => n[0]).join("").toUpperCase().slice(0, 2)
+    : "T";
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
@@ -70,19 +81,35 @@ export default function TechLayout({ children, title }: TechLayoutProps) {
             </Link>
           </div>
           <div className="flex items-center gap-3">
-            <div className="hidden sm:flex items-center gap-2 bg-primary/10 rounded-lg px-3 py-1.5">
-              <Wrench className="h-4 w-4 text-primary" />
-              <span className="text-sm font-semibold text-primary">Technician</span>
-            </div>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={handleLogout}
-              title="Sign out"
-              className="hover:bg-destructive/10 hover:text-destructive"
-            >
-              <LogOut className="h-4 w-4" />
-            </Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="icon" className="rounded-full h-9 w-9 p-0">
+                  <Avatar className="h-9 w-9">
+                    <AvatarImage src="" />
+                    <AvatarFallback className="bg-navy text-white text-xs font-semibold">
+                      {initials}
+                    </AvatarFallback>
+                  </Avatar>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-48">
+                <DropdownMenuItem
+                  onClick={() => navigate("/profile")}
+                  className="cursor-pointer hover:bg-muted focus:bg-muted"
+                >
+                  <User className="h-4 w-4 mr-2" />
+                  Profile
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  onClick={handleLogout}
+                  className="cursor-pointer text-destructive hover:bg-muted focus:bg-muted hover:text-destructive focus:text-destructive"
+                >
+                  <LogOut className="h-4 w-4 mr-2" />
+                  Logout
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </div>
       </header>
@@ -94,12 +121,13 @@ export default function TechLayout({ children, title }: TechLayoutProps) {
             {NAV_ITEMS.map((item) => {
               const Icon = item.icon;
               const active = isActive(item.path);
+              const hasUnread = item.label === "Messages" && unreadMessages > 0;
               return (
                 <Link
                   key={item.path}
                   to={item.path}
                   className={cn(
-                    "flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm font-medium transition-all",
+                    "flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm font-medium transition-all relative",
                     active
                       ? "bg-primary/10 text-primary font-semibold"
                       : "text-muted-foreground hover:bg-muted hover:text-foreground"
@@ -107,6 +135,9 @@ export default function TechLayout({ children, title }: TechLayoutProps) {
                 >
                   <Icon className="h-4.5 w-4.5" />
                   {item.label}
+                  {hasUnread && (
+                    <span className="absolute right-3 top-1/2 -translate-y-1/2 h-2.5 w-2.5 rounded-full bg-destructive" />
+                  )}
                 </Link>
               );
             })}
@@ -127,13 +158,14 @@ export default function TechLayout({ children, title }: TechLayoutProps) {
                 {NAV_ITEMS.map((item) => {
                   const Icon = item.icon;
                   const active = isActive(item.path);
+                  const hasUnread = item.label === "Messages" && unreadMessages > 0;
                   return (
                     <Link
                       key={item.path}
                       to={item.path}
                       onClick={() => setMobileMenuOpen(false)}
                       className={cn(
-                        "flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm font-medium transition-all",
+                        "flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm font-medium transition-all relative",
                         active
                           ? "bg-primary/10 text-primary font-semibold"
                           : "text-muted-foreground hover:bg-muted hover:text-foreground"
@@ -141,6 +173,9 @@ export default function TechLayout({ children, title }: TechLayoutProps) {
                     >
                       <Icon className="h-4.5 w-4.5" />
                       {item.label}
+                      {hasUnread && (
+                        <span className="absolute right-3 top-1/2 -translate-y-1/2 h-2.5 w-2.5 rounded-full bg-destructive" />
+                      )}
                     </Link>
                   );
                 })}

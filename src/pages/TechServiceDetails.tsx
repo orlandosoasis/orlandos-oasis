@@ -17,6 +17,24 @@ import {
   SHORT_MONTHS,
   type TechService,
 } from "@/data/techMockData";
+import poolBefore1 from "@/assets/pool-before-1.jpg";
+import poolBefore2 from "@/assets/pool-before-2.jpg";
+import poolBefore3 from "@/assets/pool-before-3.jpg";
+import poolAfter1 from "@/assets/pool-after-1.jpg";
+import poolAfter2 from "@/assets/pool-after-2.jpg";
+import poolAfter3 from "@/assets/pool-after-3.jpg";
+
+const BEFORE_PHOTOS = [
+  { id: "b1", src: poolBefore1, alt: "Pool before cleaning" },
+  { id: "b2", src: poolBefore2, alt: "Pool before cleaning" },
+  { id: "b3", src: poolBefore3, alt: "Pool before cleaning" },
+];
+
+const AFTER_PHOTOS = [
+  { id: "a1", src: poolAfter1, alt: "Pool after cleaning" },
+  { id: "a2", src: poolAfter2, alt: "Pool after cleaning" },
+  { id: "a3", src: poolAfter3, alt: "Pool after cleaning" },
+];
 
 interface ChatMsg {
   id: string;

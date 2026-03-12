@@ -77,6 +77,7 @@ const App = () => (
             <Route path="/tech/schedule" element={<TechSchedule />} />
             <Route path="/tech/completed" element={<TechCompletedServices />} />
             <Route path="/tech/messages" element={<TechMessages />} />
+            <Route path="/admin-dashboard" element={<AdminDashboard />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

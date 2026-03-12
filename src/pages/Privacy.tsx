@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { ArrowLeft, Waves } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
+import oasisLogo from "@/assets/oasis-logo-circle.png";
 
 const Privacy = () => {
   const navigate = useNavigate();

@@ -140,51 +140,6 @@ const TechServiceDetails = () => {
         </div>
       </div>
 
-      {/* Message Thread */}
-      <div className="bg-card rounded-2xl border border-border shadow-sm mb-4 overflow-hidden">
-        <div className="px-6 py-4 border-b border-border">
-          <h2 className="text-[15px] font-bold text-foreground">Messages with {homeowner.name}</h2>
-        </div>
-
-        <div className="h-[280px] overflow-y-auto px-5 py-4 bg-muted/30 space-y-2">
-          {messages.map((msg) => {
-            const isTech = msg.sender === "tech";
-            return (
-              <div
-                key={msg.id}
-                className={`flex flex-col max-w-[75%] ${isTech ? "self-end items-end ml-auto" : "self-start items-start"}`}
-              >
-                <div
-                  className={`px-3.5 py-2.5 text-[13.5px] leading-relaxed rounded-2xl ${
-                    isTech
-                      ? "bg-primary text-primary-foreground rounded-br-md"
-                      : "bg-card text-foreground rounded-bl-md border border-border shadow-sm"
-                  }`}
-                >
-                  {msg.text}
-                </div>
-                <span className="text-[11px] text-muted-foreground mt-0.5 px-1">{msg.time}</span>
-              </div>
-            );
-          })}
-          <div ref={messagesEndRef} />
-        </div>
-
-        <div className="px-5 py-3 border-t border-border">
-          <div className="flex items-center gap-2">
-            <Input
-              value={newMsg}
-              onChange={(e) => setNewMsg(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && handleSend()}
-              placeholder={`Message ${homeowner.name}...`}
-              className="flex-1 rounded-xl border-border bg-muted/50 focus-visible:ring-primary"
-            />
-            <Button size="icon" onClick={handleSend} disabled={!newMsg.trim()} className="rounded-xl shrink-0">
-              <Send className="h-4 w-4" />
-            </Button>
-          </div>
-        </div>
-      </div>
 
       {/* Service Actions */}
       {!isCompleted && (

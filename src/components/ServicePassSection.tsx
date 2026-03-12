@@ -508,7 +508,7 @@ const ServicePassSection = () => {
             onClick={() => navigate("/dashboard?openBooking=true")}
             className="h-14 px-10 text-[16px] font-bold rounded-full shadow-md"
           >
-            Book a Service
+            Schedule Your Pool Service
           </Button>
         </div>
       </div>

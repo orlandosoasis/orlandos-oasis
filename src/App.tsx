@@ -5,6 +5,17 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { BookingProvider } from "@/contexts/BookingContext";
+
+// Eagerly preload logo assets so they render instantly on navigation
+import oasisLogoCircle from "@/assets/oasis-logo-circle.png";
+import orlandoOasisLogo from "@/assets/orlando-oasis-logo.png";
+
+const preloadImage = (src: string) => {
+  const img = new Image();
+  img.src = src;
+};
+preloadImage(oasisLogoCircle);
+preloadImage(orlandoOasisLogo);
 import Index from "./pages/Index";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";

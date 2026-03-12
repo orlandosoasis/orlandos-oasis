@@ -63,6 +63,7 @@ const App = () => (
             <Route path="/account-settings/preferences" element={<Preferences />} />
             <Route path="/account-settings/experience-level" element={<ExperienceLevel />} />
             <Route path="/technician" element={<TechnicianLanding />} />
+            <Route path="/technician/apply" element={<TechnicianApplication />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { Waves, Eye, EyeOff, Loader2 } from "lucide-react";
+import { Eye, EyeOff, Loader2 } from "lucide-react";
+import oasisLogo from "@/assets/oasis-logo-circle.png";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -65,7 +66,7 @@ const Signup = () => {
       {/* Header */}
       <header className="p-6">
         <Link to="/" className="flex items-center gap-2 text-white">
-          <Waves className="h-8 w-8" />
+          <img src={oasisLogo} alt="Orlando's Oasis" className="h-8 w-8 object-contain" />
           <span className="text-2xl font-bold">Orlando's Oasis</span>
         </Link>
       </header>

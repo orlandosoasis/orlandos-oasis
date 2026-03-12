@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
-import { Waves, Calendar, ChevronRight, LogOut, Star, CalendarClock, LayoutDashboard, Settings, CreditCard } from "lucide-react";
+import { Calendar, ChevronRight, LogOut, Star, CalendarClock, LayoutDashboard, Settings, CreditCard } from "lucide-react";
+import oasisLogo from "@/assets/oasis-logo-circle.png";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -166,7 +167,7 @@ const Dashboard = () => {
       <header className="bg-card border-b border-border sticky top-0 z-10">
         <div className="container max-w-[760px] mx-auto px-5 h-[60px] flex items-center justify-between">
           <Link to="/" className="flex items-center gap-1.5">
-            <Waves className="h-5 w-5 text-primary" />
+            <img src={oasisLogo} alt="Orlando's Oasis" className="h-6 w-6 object-contain" />
             <span className="text-[1.25rem] font-bold text-navy tracking-tight">Orlando's Oasis</span>
           </Link>
           <div className="flex items-center gap-3">

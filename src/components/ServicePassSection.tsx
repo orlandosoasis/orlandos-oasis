@@ -617,8 +617,8 @@ const ServicePassSection = () => {
           key={pass.id}
           className={`relative flex items-center gap-4 p-4 rounded-xl border-2 cursor-pointer transition-all duration-200 ${
           selectedPass === pass.id ?
-          "border-foreground bg-background shadow-sm" :
-          "border-border bg-background hover:border-muted-foreground"}`
+          "border-primary bg-primary/5 shadow-sm" :
+          "border-border bg-background hover:border-primary"}`
           }>
 
             {pass.isMostPopular &&
@@ -629,7 +629,7 @@ const ServicePassSection = () => {
             
             <RadioGroupItem
             value={pass.id}
-            className="h-5 w-5 border-2 border-muted-foreground data-[state=checked]:border-foreground data-[state=checked]:bg-foreground" />
+            className="h-5 w-5 border-2 border-muted-foreground data-[state=checked]:border-primary data-[state=checked]:text-primary" />
 
             
             <div className="flex-1 min-w-0">

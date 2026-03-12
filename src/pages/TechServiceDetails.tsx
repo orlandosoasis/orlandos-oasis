@@ -255,14 +255,16 @@ const TechServiceDetails = () => {
           <div className="border-t border-border my-4" />
 
           {/* Completed Tasks */}
-          <div className="space-y-2 mb-4">
-            {service.completedTasks.map((task, i) => (
-              <div key={i} className="flex items-center gap-2.5">
-                <CheckCircle2 className="h-4 w-4 text-primary shrink-0" />
-                <span className="text-sm text-foreground">{task}</span>
-              </div>
-            ))}
-          </div>
+          {service.completedTasks && service.completedTasks.length > 0 && (
+            <div className="space-y-2 mb-4">
+              {service.completedTasks.map((task, i) => (
+                <div key={i} className="flex items-center gap-2.5">
+                  <CheckCircle2 className="h-4 w-4 text-primary shrink-0" />
+                  <span className="text-sm text-foreground">{task}</span>
+                </div>
+              ))}
+            </div>
+          )}
           {service.techNotes && (
             <div className="bg-muted/50 rounded-xl px-4 py-3 mt-3">
               <p className="text-xs font-semibold text-muted-foreground mb-1">Notes</p>

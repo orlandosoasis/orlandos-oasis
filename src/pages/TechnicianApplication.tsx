@@ -145,7 +145,7 @@ const TechnicianApplication = () => {
   /* ── Success Screen ── */
   if (submitted) {
     return (
-      <div className="min-h-screen bg-background">
+      <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="max-w-[760px] mx-auto px-5 py-12 flex flex-col items-center text-center">
           <div className="w-16 h-16 rounded-full bg-green-500/15 flex items-center justify-center mb-5">
             <CheckCircle2 className="h-8 w-8 text-green-600" />

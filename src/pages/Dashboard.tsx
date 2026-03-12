@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
-import { Waves, Calendar, ChevronRight, LogOut, Star, CalendarClock, LayoutDashboard, Settings, CreditCard } from "lucide-react";
+import { Calendar, ChevronRight, LogOut, Star, CalendarClock, LayoutDashboard, Settings, CreditCard } from "lucide-react";
+import oasisLogo from "@/assets/oasis-logo-circle.png";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {

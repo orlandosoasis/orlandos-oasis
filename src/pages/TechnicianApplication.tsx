@@ -340,9 +340,9 @@ const TechnicianApplication = () => {
               <div
                 onClick={() => setAgreed(!agreed)}
                 className={`flex items-start gap-3 p-4 rounded-xl border-2 cursor-pointer transition-all ${
-                  agreed
-                    ? "border-primary bg-primary/5"
-                    : "border-border hover:border-primary/40"
+              agreed
+                    ? "bg-primary/5"
+                    : "hover:bg-muted/30"
                 }`}
               >
                 <div className={`w-5 h-5 rounded-md border-2 flex items-center justify-center shrink-0 mt-0.5 transition-all ${

@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import oasisLogo from "@/assets/oasis-logo-circle.png";
 import { Link, useNavigate } from "react-router-dom";
 import {
   LogOut,

@@ -45,6 +45,7 @@ import TechSchedule from "./pages/TechSchedule";
 import TechCompletedServices from "./pages/TechCompletedServices";
 import TechMessages from "./pages/TechMessages";
 import AdminDashboard from "./pages/AdminDashboard";
+import Contact from "./pages/Contact";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();

@@ -16,7 +16,6 @@ import {
   TIME_LABELS,
   SHORT_MONTHS,
   type TechService,
-  type TechService,
   SERVICE_TASKS,
 } from "@/data/techMockData";
 import poolBefore1 from "@/assets/pool-before-1.jpg";

@@ -79,8 +79,10 @@ const TechServiceDetails = () => {
   };
 
   const handleStartService = () => {
+    const now = new Date();
+    const timeStr = now.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit", hour12: true });
     setServices((prev) =>
-      prev.map((s) => (s.id === service.id ? { ...s, status: "in_progress" as const } : s))
+      prev.map((s) => (s.id === service.id ? { ...s, status: "in_progress" as const, startedAt: timeStr } : s))
     );
   };
 

@@ -13,7 +13,7 @@ const Footer = () => {
             </div>
             <Link to="/privacy" className="transition-colors text-white hover:text-primary">Privacy Policy</Link>
             <Link to="/terms" className="transition-colors text-white hover:text-primary">Terms</Link>
-            <a href="#" className="transition-colors text-white hover:text-primary">Contact Us</a>
+            <Link to="/contact" className="transition-colors text-white hover:text-primary">Contact Us</Link>
             <a href="#" className="transition-colors text-white hover:text-primary">Help</a>
             <Link to="/technician" className="transition-colors text-white hover:text-primary">Apply as Pool Technician</Link>
           </div>

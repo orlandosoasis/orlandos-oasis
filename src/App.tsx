@@ -27,6 +27,12 @@ import Preferences from "./pages/settings/Preferences";
 import ExperienceLevel from "./pages/settings/ExperienceLevel";
 import TechnicianLanding from "./pages/TechnicianLanding";
 import TechnicianApplication from "./pages/TechnicianApplication";
+import TechPoolList from "./pages/TechPoolList";
+import TechPoolDetails from "./pages/TechPoolDetails";
+import TechServiceDetails from "./pages/TechServiceDetails";
+import TechSchedule from "./pages/TechSchedule";
+import TechCompletedServices from "./pages/TechCompletedServices";
+import TechMessages from "./pages/TechMessages";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();

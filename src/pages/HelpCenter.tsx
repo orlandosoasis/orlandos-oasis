@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, Waves, Search, CalendarDays, CreditCard, Award, FileText, Settings, ChevronRight, ArrowLeftIcon } from "lucide-react";
+import { ArrowLeft, Search, CalendarDays, CreditCard, Award, FileText, Settings, ChevronRight, ArrowLeftIcon } from "lucide-react";
+import oasisLogo from "@/assets/oasis-logo-circle.png";
 import { Input } from "@/components/ui/input";
 
 const CATEGORIES = [

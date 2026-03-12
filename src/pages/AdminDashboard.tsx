@@ -1,0 +1,577 @@
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
+import {
+  LayoutDashboard, Wrench, Users, AlertCircle, UserPlus, ChevronLeft,
+  Star, Mail, Check, X, LogOut, User, Menu, FileText, Download, Waves
+} from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
+import { useToast } from "@/hooks/use-toast";
+import oasisLogo from "@/assets/oasis-logo-circle.png";
+import {
+  INIT_TECHNICIANS, ADMIN_HOMEOWNERS, ADMIN_ISSUES, INIT_APPLICANTS,
+  type AdminTechnician, type AdminApplicant, type AdminIssue,
+} from "@/data/adminMockData";
+
+type AdminPage = "dashboard" | "technicians" | "techDetail" | "homeowners" | "homeDetail" | "issues" | "applicants" | "applicantDetail";
+
+const PAGE_TITLES: Record<string, string> = {
+  dashboard: "Dashboard",
+  technicians: "Pool Technicians",
+  techDetail: "Technician Details",
+  homeowners: "Homeowners",
+  homeDetail: "Homeowner Details",
+  issues: "Reported Issues",
+  applicants: "Applicants",
+  applicantDetail: "Application Details",
+};
+
+const StatusBadge = ({ status }: { status: string }) => {
+  const variants: Record<string, string> = {
+    Active: "bg-emerald-50 text-emerald-600 border-emerald-200",
+    Inactive: "bg-muted text-muted-foreground border-border",
+    Completed: "bg-emerald-50 text-emerald-600 border-emerald-200",
+    Scheduled: "bg-blue-50 text-blue-600 border-blue-200",
+    Open: "bg-amber-50 text-amber-600 border-amber-200",
+    Resolved: "bg-emerald-50 text-emerald-600 border-emerald-200",
+    Pending: "bg-amber-50 text-amber-600 border-amber-200",
+    Approved: "bg-emerald-50 text-emerald-600 border-emerald-200",
+    Rejected: "bg-red-50 text-red-600 border-red-200",
+  };
+  return (
+    <span className={`inline-flex px-2.5 py-0.5 rounded-full text-xs font-semibold border ${variants[status] || "bg-muted text-muted-foreground"}`}>
+      {status}
+    </span>
+  );
+};
+
+const Stars = ({ rating }: { rating: number }) => (
+  <span className="inline-flex items-center gap-1">
+    <Star className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />
+    <span className="text-sm font-semibold">{rating}</span>
+  </span>
+);
+
+const InfoRow = ({ label, value, badge }: { label: string; value: React.ReactNode; badge?: boolean }) => (
+  <div className="flex py-2.5 border-b border-border">
+    <span className="w-40 text-xs font-semibold text-muted-foreground shrink-0">{label}</span>
+    <span className="text-sm text-foreground font-medium">{badge ? <StatusBadge status={value as string} /> : value}</span>
+  </div>
+);
+
+const AdminDashboard = () => {
+  const [page, setPage] = useState<AdminPage>("dashboard");
+  const [detailId, setDetailId] = useState<number | null>(null);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [issueModal, setIssueModal] = useState<AdminIssue | null>(null);
+  const [technicians, setTechnicians] = useState(INIT_TECHNICIANS);
+  const [applicants, setApplicants] = useState(INIT_APPLICANTS);
+  const [confirmAction, setConfirmAction] = useState<{ type: "approve" | "reject"; applicant: AdminApplicant } | null>(null);
+  const { logout, user } = useAuth();
+  const navigate = useNavigate();
+  const { toast } = useToast();
+
+  const nav = (p: AdminPage, id: number | null = null) => { setPage(p); setDetailId(id); setSidebarOpen(false); };
+
+  const handleApprove = (applicant: AdminApplicant) => {
+    setApplicants(prev => prev.map(a => a.id === applicant.id ? { ...a, status: "Approved" as const } : a));
+    const newTech: AdminTechnician = {
+      id: Date.now(), name: `${applicant.firstName} ${applicant.lastName.charAt(0)}.`,
+      rating: 0, email: applicant.email, phone: applicant.phone, status: "Active",
+      assignedPools: 0, completedServices: 0, reviews: [], pools: [],
+    };
+    setTechnicians(prev => [...prev, newTech]);
+    setConfirmAction(null);
+    toast({ title: "Applicant Approved", description: `${applicant.firstName} ${applicant.lastName} approved and added as a technician.`, variant: "success" });
+    if (page === "applicantDetail") nav("applicants");
+  };
+
+  const handleReject = (applicant: AdminApplicant) => {
+    setApplicants(prev => prev.map(a => a.id === applicant.id ? { ...a, status: "Rejected" as const } : a));
+    setConfirmAction(null);
+    toast({ title: "Application Rejected", description: `${applicant.firstName} ${applicant.lastName}'s application rejected.`, variant: "destructive" });
+    if (page === "applicantDetail") nav("applicants");
+  };
+
+  const handleLogout = () => { logout(); navigate("/"); };
+
+  const pendingCount = applicants.filter(a => a.status === "Pending").length;
+  const openIssueCount = ADMIN_ISSUES.filter(i => i.status === "Open").length;
+
+  const menuItems = [
+    { key: "dashboard" as const, label: "Dashboard", icon: LayoutDashboard },
+    { key: "technicians" as const, label: "Technicians", icon: Wrench },
+    { key: "homeowners" as const, label: "Homeowners", icon: Users },
+    { key: "applicants" as const, label: "Applicants", icon: UserPlus, badge: pendingCount, badgeColor: "bg-violet-500" },
+    { key: "issues" as const, label: "Reported Issues", icon: AlertCircle, badge: openIssueCount, badgeColor: "bg-destructive" },
+  ];
+
+  const activeMenu = page === "techDetail" ? "technicians" : page === "homeDetail" ? "homeowners" : page === "applicantDetail" ? "applicants" : page;
+
+  // ═══════════ SIDEBAR ═══════════
+  const Sidebar = () => (
+    <>
+      {sidebarOpen && <div onClick={() => setSidebarOpen(false)} className="fixed inset-0 bg-black/40 z-[998] md:hidden" />}
+      <aside className={`w-[250px] bg-[hsl(var(--oasis-navy))] h-screen fixed top-0 z-[999] flex flex-col transition-transform duration-300 ${sidebarOpen ? "translate-x-0" : "-translate-x-full"} md:translate-x-0`}>
+        <div className="p-5 pb-4 flex items-center gap-3 border-b border-white/10">
+          <img src={oasisLogo} alt="Orlando's Oasis" className="h-9 w-9 object-contain" />
+          <div>
+            <div className="text-white font-bold text-sm tracking-tight">Orlando's Oasis</div>
+            <div className="text-white/50 text-[11px] font-medium mt-0.5">Admin Portal</div>
+          </div>
+        </div>
+        <nav className="p-3 flex-1 space-y-1">
+          {menuItems.map(item => {
+            const active = activeMenu === item.key;
+            const Icon = item.icon;
+            return (
+              <button key={item.key} onClick={() => nav(item.key)}
+                className={`flex items-center gap-3 w-full px-3.5 py-2.5 rounded-lg text-[13px] font-medium transition-all text-left ${active ? "bg-white/15 text-white font-semibold" : "text-white/60 hover:bg-white/10 hover:text-white"}`}>
+                <Icon className="h-[18px] w-[18px]" />
+                {item.label}
+                {item.badge ? <span className={`ml-auto text-[10px] font-bold text-white px-1.5 py-0.5 rounded-full ${item.badgeColor}`}>{item.badge}</span> : null}
+              </button>
+            );
+          })}
+        </nav>
+        <div className="p-3 border-t border-white/10">
+          <div className="flex items-center gap-2.5 px-2.5 py-2">
+            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center text-xs text-white font-bold">AD</div>
+            <div>
+              <div className="text-white text-xs font-semibold">{user?.fullName || "Admin User"}</div>
+              <div className="text-white/50 text-[10px]">{user?.email || "admin@oasis.com"}</div>
+            </div>
+          </div>
+          <button onClick={handleLogout} className="flex items-center gap-2 w-full px-2.5 py-2 mt-1 rounded-lg text-red-400 text-xs font-medium hover:bg-white/10 transition-colors">
+            <LogOut className="h-4 w-4" /> Logout
+          </button>
+        </div>
+      </aside>
+    </>
+  );
+
+  // ═══════════ TOP NAV ═══════════
+  const TopNav = () => (
+    <header className="h-[60px] bg-card border-b border-border flex items-center justify-between px-6 sticky top-0 z-[100]">
+      <div className="flex items-center gap-3">
+        <button onClick={() => setSidebarOpen(!sidebarOpen)} className="md:hidden text-foreground"><Menu className="h-5 w-5" /></button>
+        <h2 className="text-base font-bold text-foreground tracking-tight">{PAGE_TITLES[page] || "Dashboard"}</h2>
+      </div>
+    </header>
+  );
+
+  // ═══════════ DASHBOARD PAGE ═══════════
+  const DashboardPage = () => {
+    const stats = [
+      { label: "Total Homeowners", value: ADMIN_HOMEOWNERS.length, icon: Users, color: "text-primary", bg: "bg-blue-50" },
+      { label: "Pool Technicians", value: technicians.length, icon: Wrench, color: "text-violet-500", bg: "bg-violet-50" },
+      { label: "Active Services", value: ADMIN_HOMEOWNERS.reduce((a, h) => a + h.services.filter(s => s.status === "Scheduled").length, 0), icon: Waves, color: "text-emerald-500", bg: "bg-emerald-50" },
+      { label: "Reported Issues", value: openIssueCount, icon: AlertCircle, color: "text-amber-500", bg: "bg-amber-50" },
+      { label: "Pending Applicants", value: pendingCount, icon: UserPlus, color: "text-violet-500", bg: "bg-violet-50" },
+    ];
+
+    const recentServices = ADMIN_HOMEOWNERS.flatMap(h => h.services.map(s => ({ ...s, homeowner: h.name })))
+      .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()).slice(0, 5);
+
+    return (
+      <div className="space-y-6">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+          {stats.map((c, i) => (
+            <Card key={i}>
+              <CardContent className="p-5 flex items-center gap-4">
+                <div className={`w-11 h-11 rounded-xl ${c.bg} flex items-center justify-center ${c.color} shrink-0`}>
+                  <c.icon className="h-5 w-5" />
+                </div>
+                <div>
+                  <div className="text-2xl font-extrabold text-foreground tracking-tight">{c.value}</div>
+                  <div className="text-xs text-muted-foreground font-medium mt-1">{c.label}</div>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <Card>
+            <CardHeader className="pb-3"><CardTitle className="text-sm font-bold">Recent Services</CardTitle></CardHeader>
+            <CardContent>
+              <Table>
+                <TableHeader><TableRow>
+                  <TableHead>Homeowner</TableHead><TableHead>Service</TableHead><TableHead>Technician</TableHead><TableHead>Status</TableHead>
+                </TableRow></TableHeader>
+                <TableBody>
+                  {recentServices.map((r, i) => (
+                    <TableRow key={i}>
+                      <TableCell className="font-medium">{r.homeowner}</TableCell><TableCell>{r.type}</TableCell><TableCell>{r.technician}</TableCell>
+                      <TableCell><StatusBadge status={r.status} /></TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader className="pb-3"><CardTitle className="text-sm font-bold">Open Issues</CardTitle></CardHeader>
+            <CardContent>
+              <Table>
+                <TableHeader><TableRow>
+                  <TableHead>Homeowner</TableHead><TableHead>Type</TableHead><TableHead>Status</TableHead>
+                </TableRow></TableHeader>
+                <TableBody>
+                  {ADMIN_ISSUES.filter(i => i.status === "Open").map((issue, i) => (
+                    <TableRow key={i}>
+                      <TableCell className="font-medium">{issue.homeowner}</TableCell><TableCell>{issue.type}</TableCell>
+                      <TableCell><StatusBadge status={issue.status} /></TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    );
+  };
+
+  // ═══════════ TECHNICIANS ═══════════
+  const TechniciansPage = () => (
+    <Card>
+      <CardContent className="p-0">
+        <Table>
+          <TableHeader><TableRow>
+            <TableHead>Name</TableHead><TableHead>Rating</TableHead><TableHead>Pools</TableHead><TableHead>Services</TableHead><TableHead>Reviews</TableHead><TableHead>Actions</TableHead>
+          </TableRow></TableHeader>
+          <TableBody>
+            {technicians.map(t => (
+              <TableRow key={t.id}>
+                <TableCell className="font-semibold">{t.name}</TableCell>
+                <TableCell>{t.rating > 0 ? <Stars rating={t.rating} /> : <span className="text-muted-foreground text-xs italic">New</span>}</TableCell>
+                <TableCell>{t.assignedPools} pools</TableCell><TableCell>{t.completedServices}</TableCell><TableCell>{t.reviews.length} reviews</TableCell>
+                <TableCell><Button size="sm" onClick={() => nav("techDetail", t.id)}>View Details</Button></TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </CardContent>
+    </Card>
+  );
+
+  const TechDetailPage = () => {
+    const tech = technicians.find(t => t.id === detailId);
+    if (!tech) return null;
+    return (
+      <div className="space-y-5">
+        <button onClick={() => nav("technicians")} className="inline-flex items-center gap-1.5 text-primary text-sm font-semibold hover:underline">
+          <ChevronLeft className="h-4 w-4" /> Back to Technicians
+        </button>
+        <Card><CardHeader><CardTitle className="text-sm">Technician Information</CardTitle></CardHeader>
+          <CardContent>
+            <InfoRow label="Name" value={tech.name} /><InfoRow label="Rating" value={tech.rating > 0 ? <Stars rating={tech.rating} /> : "New — No ratings yet"} />
+            <InfoRow label="Email" value={tech.email} /><InfoRow label="Phone" value={tech.phone} /><InfoRow label="Status" value={tech.status} badge />
+          </CardContent></Card>
+        {tech.pools.length > 0 && (
+          <Card><CardHeader><CardTitle className="text-sm">Assigned Pools</CardTitle></CardHeader>
+            <CardContent className="p-0">
+              <Table><TableHeader><TableRow>
+                <TableHead>Address</TableHead><TableHead>Homeowner</TableHead><TableHead>Next Service</TableHead><TableHead>Type</TableHead>
+              </TableRow></TableHeader>
+              <TableBody>{tech.pools.map((p, i) => (
+                <TableRow key={i}><TableCell className="font-semibold">{p.address}</TableCell><TableCell>{p.homeowner}</TableCell><TableCell>{p.nextService}</TableCell><TableCell>{p.serviceType}</TableCell></TableRow>
+              ))}</TableBody></Table>
+            </CardContent></Card>
+        )}
+        {tech.reviews.length > 0 && (
+          <Card><CardHeader><CardTitle className="text-sm">Reviews</CardTitle></CardHeader>
+            <CardContent className="p-0">
+              <Table><TableHeader><TableRow>
+                <TableHead>Reviewer</TableHead><TableHead>Rating</TableHead><TableHead>Review</TableHead><TableHead>Date</TableHead>
+              </TableRow></TableHeader>
+              <TableBody>{tech.reviews.map((r, i) => (
+                <TableRow key={i}><TableCell className="font-semibold">{r.reviewer}</TableCell><TableCell><Stars rating={r.rating} /></TableCell><TableCell className="text-muted-foreground max-w-[300px] truncate">{r.message}</TableCell><TableCell className="whitespace-nowrap">{r.date}</TableCell></TableRow>
+              ))}</TableBody></Table>
+            </CardContent></Card>
+        )}
+        {tech.pools.length === 0 && tech.reviews.length === 0 && (
+          <Card><CardContent className="text-center py-10 text-muted-foreground text-sm">This technician is newly approved and has no assigned pools or reviews yet.</CardContent></Card>
+        )}
+      </div>
+    );
+  };
+
+  // ═══════════ HOMEOWNERS ═══════════
+  const HomeownersPage = () => (
+    <Card>
+      <CardContent className="p-0">
+        <Table>
+          <TableHeader><TableRow>
+            <TableHead>Name</TableHead><TableHead>Email</TableHead><TableHead>Phone</TableHead><TableHead>Pools</TableHead><TableHead>Plan</TableHead><TableHead>Actions</TableHead>
+          </TableRow></TableHeader>
+          <TableBody>
+            {ADMIN_HOMEOWNERS.map(h => (
+              <TableRow key={h.id}>
+                <TableCell className="font-semibold">{h.name}</TableCell><TableCell>{h.email}</TableCell><TableCell>{h.phone}</TableCell>
+                <TableCell>{h.pools.length}</TableCell><TableCell><StatusBadge status="Active" /></TableCell>
+                <TableCell><Button size="sm" onClick={() => nav("homeDetail", h.id)}>View Details</Button></TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </CardContent>
+    </Card>
+  );
+
+  const HomeDetailPage = () => {
+    const ho = ADMIN_HOMEOWNERS.find(h => h.id === detailId);
+    if (!ho) return null;
+    return (
+      <div className="space-y-5">
+        <button onClick={() => nav("homeowners")} className="inline-flex items-center gap-1.5 text-primary text-sm font-semibold hover:underline">
+          <ChevronLeft className="h-4 w-4" /> Back to Homeowners
+        </button>
+        <Card><CardHeader><CardTitle className="text-sm">Homeowner Information</CardTitle></CardHeader>
+          <CardContent>
+            <InfoRow label="Name" value={ho.name} /><InfoRow label="Email" value={ho.email} /><InfoRow label="Phone" value={ho.phone} />
+            <InfoRow label="Address" value={ho.address} /><InfoRow label="Plan" value={ho.plan} /><InfoRow label="Start Date" value={ho.startDate} />
+          </CardContent></Card>
+        <Card><CardHeader><CardTitle className="text-sm">Pools</CardTitle></CardHeader>
+          <CardContent className="p-0">
+            <Table><TableHeader><TableRow>
+              <TableHead>Address</TableHead><TableHead>Size</TableHead><TableHead>Technician</TableHead><TableHead>Next Service</TableHead>
+            </TableRow></TableHeader>
+            <TableBody>{ho.pools.map((p, i) => (
+              <TableRow key={i}><TableCell className="font-semibold">{p.address}</TableCell><TableCell>{p.size}</TableCell><TableCell>{p.technician}</TableCell><TableCell>{p.nextService}</TableCell></TableRow>
+            ))}</TableBody></Table>
+          </CardContent></Card>
+        <Card><CardHeader><CardTitle className="text-sm">Booked Services</CardTitle></CardHeader>
+          <CardContent className="p-0">
+            <Table><TableHeader><TableRow>
+              <TableHead>Date</TableHead><TableHead>Type</TableHead><TableHead>Technician</TableHead><TableHead>Status</TableHead>
+            </TableRow></TableHeader>
+            <TableBody>{ho.services.map((s, i) => (
+              <TableRow key={i}><TableCell className="font-semibold">{s.date}</TableCell><TableCell>{s.type}</TableCell><TableCell>{s.technician}</TableCell><TableCell><StatusBadge status={s.status} /></TableCell></TableRow>
+            ))}</TableBody></Table>
+          </CardContent></Card>
+      </div>
+    );
+  };
+
+  // ═══════════ APPLICANTS ═══════════
+  const ApplicantsPage = () => (
+    <Card>
+      <CardContent className="p-0">
+        <div className="overflow-x-auto">
+          <Table>
+            <TableHeader><TableRow>
+              <TableHead>Name</TableHead><TableHead>Email</TableHead><TableHead>Phone</TableHead><TableHead>City</TableHead><TableHead>Experience</TableHead>
+              <TableHead>Resume</TableHead><TableHead>Certs</TableHead><TableHead>Applied</TableHead><TableHead>Status</TableHead><TableHead>Actions</TableHead>
+            </TableRow></TableHeader>
+            <TableBody>
+              {applicants.map(a => (
+                <TableRow key={a.id}>
+                  <TableCell className="font-semibold whitespace-nowrap">{a.firstName} {a.lastName}</TableCell>
+                  <TableCell>{a.email}</TableCell>
+                  <TableCell className="whitespace-nowrap">{a.phone}</TableCell>
+                  <TableCell className="whitespace-nowrap">{a.city}, {a.state}</TableCell>
+                  <TableCell className="whitespace-nowrap">{a.experience}</TableCell>
+                  <TableCell><span className="text-primary font-semibold text-xs cursor-pointer inline-flex items-center gap-1"><FileText className="h-3 w-3" /> View</span></TableCell>
+                  <TableCell className="text-xs text-muted-foreground">{a.certifications.length > 0 ? `${a.certifications.length} uploaded` : "None"}</TableCell>
+                  <TableCell className="whitespace-nowrap">{a.appliedDate}</TableCell>
+                  <TableCell><StatusBadge status={a.status} /></TableCell>
+                  <TableCell>
+                    <div className="flex gap-1.5 flex-nowrap">
+                      <Button size="sm" variant="outline" onClick={() => nav("applicantDetail", a.id)}>View</Button>
+                      {a.status === "Pending" && <>
+                        <Button size="sm" className="bg-emerald-500 hover:bg-emerald-600 text-white" onClick={() => setConfirmAction({ type: "approve", applicant: a })}><Check className="h-3.5 w-3.5" /></Button>
+                        <Button size="sm" variant="outline" className="text-destructive border-destructive/40 hover:bg-destructive/10" onClick={() => setConfirmAction({ type: "reject", applicant: a })}><X className="h-3.5 w-3.5" /></Button>
+                      </>}
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
+      </CardContent>
+    </Card>
+  );
+
+  const ApplicantDetailPage = () => {
+    const a = applicants.find(ap => ap.id === detailId);
+    if (!a) return null;
+    const FileLink = ({ name, file }: { name: string; file: string }) => (
+      <div className="flex items-center justify-between p-3 bg-muted rounded-lg mb-2">
+        <div className="flex items-center gap-2.5">
+          <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center text-blue-500 shrink-0"><FileText className="h-4 w-4" /></div>
+          <div><div className="text-sm font-semibold text-foreground">{name}</div><div className="text-[11px] text-muted-foreground">{file}</div></div>
+        </div>
+        <Button variant="outline" size="sm" className="gap-1.5"><Download className="h-3.5 w-3.5" /> View File</Button>
+      </div>
+    );
+    return (
+      <div className="space-y-5">
+        <button onClick={() => nav("applicants")} className="inline-flex items-center gap-1.5 text-primary text-sm font-semibold hover:underline">
+          <ChevronLeft className="h-4 w-4" /> Back to Applicants
+        </button>
+        {/* Status bar */}
+        <Card>
+          <CardContent className="p-4 flex items-center justify-between flex-wrap gap-3">
+            <div className="flex items-center gap-2.5">
+              <StatusBadge status={a.status} />
+              <span className="text-sm text-muted-foreground">
+                {a.status === "Pending" && "This application is awaiting review."}
+                {a.status === "Approved" && "This applicant has been approved and added as a technician."}
+                {a.status === "Rejected" && "This application has been rejected."}
+              </span>
+            </div>
+            {a.status === "Pending" && (
+              <div className="flex gap-2">
+                <Button className="bg-emerald-500 hover:bg-emerald-600 text-white gap-1.5" size="sm" onClick={() => setConfirmAction({ type: "approve", applicant: a })}><Check className="h-3.5 w-3.5" /> Approve</Button>
+                <Button variant="outline" size="sm" className="text-destructive border-destructive/40 hover:bg-destructive/10 gap-1.5" onClick={() => setConfirmAction({ type: "reject", applicant: a })}><X className="h-3.5 w-3.5" /> Reject</Button>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+        <Card><CardHeader><CardTitle className="text-sm">Personal Details</CardTitle></CardHeader>
+          <CardContent>
+            <InfoRow label="First Name" value={a.firstName} /><InfoRow label="Last Name" value={a.lastName} />
+            <InfoRow label="Email" value={a.email} /><InfoRow label="Phone" value={a.phone} />
+          </CardContent></Card>
+        <Card><CardHeader><CardTitle className="text-sm">Service Area</CardTitle></CardHeader>
+          <CardContent><InfoRow label="City" value={a.city} /><InfoRow label="State" value={a.state} /><InfoRow label="ZIP Code" value={a.zip} /></CardContent></Card>
+        <Card><CardHeader><CardTitle className="text-sm">Experience</CardTitle></CardHeader>
+          <CardContent><InfoRow label="Years" value={a.experience} /></CardContent></Card>
+        <Card><CardHeader><CardTitle className="text-sm">Resume</CardTitle></CardHeader>
+          <CardContent><FileLink name="Resume" file={a.resume} /></CardContent></Card>
+        <Card><CardHeader><CardTitle className="text-sm">Certifications</CardTitle></CardHeader>
+          <CardContent>
+            {a.certifications.length > 0 ? a.certifications.map((cert, i) => <FileLink key={i} name={cert.name} file={cert.file} />)
+              : <p className="text-sm text-muted-foreground py-4">No certifications uploaded.</p>}
+          </CardContent></Card>
+        {a.status === "Pending" && (
+          <div className="flex gap-3 justify-end">
+            <Button className="bg-emerald-500 hover:bg-emerald-600 text-white gap-1.5" onClick={() => setConfirmAction({ type: "approve", applicant: a })}><Check className="h-4 w-4" /> Approve Technician</Button>
+            <Button variant="outline" className="text-destructive border-destructive/40 hover:bg-destructive/10 gap-1.5" onClick={() => setConfirmAction({ type: "reject", applicant: a })}><X className="h-4 w-4" /> Reject Application</Button>
+          </div>
+        )}
+      </div>
+    );
+  };
+
+  // ═══════════ ISSUES ═══════════
+  const IssuesPage = () => (
+    <Card>
+      <CardContent className="p-0">
+        <Table>
+          <TableHeader><TableRow>
+            <TableHead>Homeowner</TableHead><TableHead>Type</TableHead><TableHead>Message</TableHead><TableHead>Date</TableHead><TableHead>Email</TableHead><TableHead>Status</TableHead><TableHead>Actions</TableHead>
+          </TableRow></TableHeader>
+          <TableBody>
+            {ADMIN_ISSUES.map(issue => (
+              <TableRow key={issue.id}>
+                <TableCell className="font-semibold">{issue.homeowner}</TableCell><TableCell>{issue.type}</TableCell>
+                <TableCell className="max-w-[220px] truncate text-muted-foreground">{issue.message}</TableCell>
+                <TableCell className="whitespace-nowrap">{issue.serviceDate}</TableCell><TableCell>{issue.email}</TableCell>
+                <TableCell><StatusBadge status={issue.status} /></TableCell>
+                <TableCell>
+                  <div className="flex gap-2">
+                    <Button size="sm" variant="outline" className="gap-1.5" onClick={() => setIssueModal(issue)}><Mail className="h-3.5 w-3.5" /> Reply</Button>
+                    {issue.status === "Open" && <Button size="sm" className="gap-1.5"><Check className="h-3.5 w-3.5" /> Resolve</Button>}
+                  </div>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </CardContent>
+    </Card>
+  );
+
+  // ═══════════ PAGE ROUTER ═══════════
+  const renderPage = () => {
+    switch (page) {
+      case "dashboard": return <DashboardPage />;
+      case "technicians": return <TechniciansPage />;
+      case "techDetail": return <TechDetailPage />;
+      case "homeowners": return <HomeownersPage />;
+      case "homeDetail": return <HomeDetailPage />;
+      case "issues": return <IssuesPage />;
+      case "applicants": return <ApplicantsPage />;
+      case "applicantDetail": return <ApplicantDetailPage />;
+      default: return <DashboardPage />;
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-background text-foreground">
+      <Sidebar />
+      <div className="md:ml-[250px]">
+        <TopNav />
+        <main className="p-6">{renderPage()}</main>
+      </div>
+
+      {/* Issue Detail Modal */}
+      <Dialog open={!!issueModal} onOpenChange={() => setIssueModal(null)}>
+        <DialogContent className="sm:max-w-[520px]">
+          <DialogHeader>
+            <DialogTitle>Issue Details</DialogTitle>
+          </DialogHeader>
+          {issueModal && (
+            <div>
+              <InfoRow label="Homeowner" value={issueModal.homeowner} />
+              <InfoRow label="Email" value={issueModal.email} />
+              <InfoRow label="Phone" value={issueModal.phone} />
+              <InfoRow label="Issue Type" value={issueModal.type} />
+              <InfoRow label="Service Date" value={issueModal.serviceDate} />
+              <InfoRow label="Status" value={issueModal.status} badge />
+              <div className="mt-4 p-3.5 bg-muted rounded-lg text-sm text-foreground leading-relaxed">
+                <div className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-1.5">Message</div>
+                {issueModal.message}
+              </div>
+              <div className="mt-2.5 p-2.5 bg-blue-50 rounded-lg text-xs text-blue-600 font-medium">Related: {issueModal.relatedService}</div>
+              <div className="flex gap-2.5 mt-5 justify-end">
+                <Button variant="outline" className="gap-1.5" onClick={() => setIssueModal(null)}><Mail className="h-4 w-4" /> Reply via Email</Button>
+                {issueModal.status === "Open" && <Button className="gap-1.5" onClick={() => setIssueModal(null)}><Check className="h-4 w-4" /> Mark as Resolved</Button>}
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Confirm Approve/Reject Modal */}
+      <Dialog open={!!confirmAction} onOpenChange={() => setConfirmAction(null)}>
+        <DialogContent className="sm:max-w-[440px]">
+          {confirmAction && (() => {
+            const isApprove = confirmAction.type === "approve";
+            const a = confirmAction.applicant;
+            return (
+              <>
+                <DialogHeader>
+                  <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-2 ${isApprove ? "bg-emerald-50 text-emerald-500" : "bg-red-50 text-red-500"}`}>
+                    {isApprove ? <Check className="h-6 w-6" /> : <X className="h-6 w-6" />}
+                  </div>
+                  <DialogTitle>{isApprove ? "Approve Technician" : "Reject Application"}</DialogTitle>
+                  <DialogDescription>
+                    {isApprove
+                      ? `Are you sure you want to approve ${a.firstName} ${a.lastName}? This will create a new technician account.`
+                      : `Are you sure you want to reject ${a.firstName} ${a.lastName}'s application?`}
+                  </DialogDescription>
+                </DialogHeader>
+                <DialogFooter className="gap-2">
+                  <Button variant="outline" onClick={() => setConfirmAction(null)}>Cancel</Button>
+                  {isApprove
+                    ? <Button className="bg-emerald-500 hover:bg-emerald-600 text-white gap-1.5" onClick={() => handleApprove(a)}><Check className="h-4 w-4" /> Approve</Button>
+                    : <Button variant="destructive" className="gap-1.5" onClick={() => handleReject(a)}><X className="h-4 w-4" /> Reject</Button>}
+                </DialogFooter>
+              </>
+            );
+          })()}
+        </DialogContent>
+      </Dialog>
+    </div>
+  );
+};
+
+export default AdminDashboard;

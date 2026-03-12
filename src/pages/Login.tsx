@@ -29,10 +29,12 @@ const Login = () => {
         description: "You've successfully logged in.",
         variant: "success",
       });
-      // Route technicians to their dedicated dashboard
+      // Route by role
       const normalizedEmail = email.toLowerCase().trim();
       if (normalizedEmail === "tech@example.com") {
         navigate("/tech-dashboard");
+      } else if (normalizedEmail === "admin@example.com") {
+        navigate("/admin-dashboard");
       } else {
         navigate("/dashboard");
       }

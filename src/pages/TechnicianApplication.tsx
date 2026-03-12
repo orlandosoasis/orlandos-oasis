@@ -155,23 +155,8 @@ const TechnicianApplication = () => {
             Thank you for applying to become a pool technician with Orlando's Oasis. Our team will review your resume and certifications.
           </p>
 
-          <div className="w-full max-w-sm bg-card rounded-2xl border border-border p-6 shadow-sm text-left space-y-4 mb-8">
-            <div>
-              <p className="text-[11px] font-semibold tracking-[0.8px] uppercase text-muted-foreground mb-1">Application Reference</p>
-              <p className="text-sm font-semibold text-foreground">{appId}</p>
-            </div>
-            <div>
-              <p className="text-[11px] font-semibold tracking-[0.8px] uppercase text-muted-foreground mb-1">Applicant</p>
-              <p className="text-sm font-semibold text-foreground">{firstName} {lastName}</p>
-            </div>
-            <div>
-              <p className="text-[11px] font-semibold tracking-[0.8px] uppercase text-muted-foreground mb-1">Status</p>
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-yellow-100 text-yellow-800 border border-yellow-200">
-                <span className="w-1.5 h-1.5 rounded-full bg-yellow-500" />
-                Pending Review
-              </span>
-            </div>
-          </div>
+
+
 
           <Button onClick={() => navigate("/technician")} className="w-full max-w-sm h-14 text-[17px] font-bold rounded-2xl shadow-lg">
             Back to Home

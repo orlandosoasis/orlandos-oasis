@@ -364,7 +364,7 @@ const TechnicianApplication = () => {
         <div className="max-w-[760px] mx-auto px-5 py-4 flex gap-3">
           {step > 1 && (
             <Button variant="outline" onClick={handleBack} className="h-14 px-6 rounded-2xl text-sm font-semibold">
-              ← Back
+              Back
             </Button>
           )}
           <Button

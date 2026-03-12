@@ -66,7 +66,7 @@ const Signup = () => {
       {/* Header */}
       <header className="p-6">
         <Link to="/" className="flex items-center gap-2 text-white">
-          <Waves className="h-8 w-8" />
+          <img src={oasisLogo} alt="Orlando's Oasis" className="h-8 w-8 object-contain" />
           <span className="text-2xl font-bold">Orlando's Oasis</span>
         </Link>
       </header>

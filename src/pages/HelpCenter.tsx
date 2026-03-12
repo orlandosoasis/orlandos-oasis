@@ -78,7 +78,7 @@ const HelpCenter = () => {
             <span className="font-medium text-sm">Back</span>
           </Link>
           <Link to="/" className="flex items-center gap-1.5">
-            <Waves className="h-5 w-5 text-primary" />
+            <img src={oasisLogo} alt="Orlando's Oasis" className="h-6 w-6 object-contain" />
             <span className="text-[1.25rem] font-bold text-foreground tracking-tight">Orlando's Oasis</span>
           </Link>
           <div className="w-[60px]" />

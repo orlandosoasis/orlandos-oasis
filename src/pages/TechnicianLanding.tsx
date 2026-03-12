@@ -7,7 +7,7 @@ import techHero from "@/assets/tech-hero.jpg";
 
 const BENEFITS = [
   { icon: Calendar, title: "Control Your Schedule", desc: "Work full-time or part-time. Accept jobs only when you're available and build a routine that fits your life." },
-  { icon: Briefcase, title: "Build Recurring Accounts", desc: "Get matched with homeowners who need ongoing weekly or biweekly pool maintenance — steady, predictable work." },
+  { icon: Briefcase, title: "Build Recurring Accounts", desc: "Get matched with homeowners who need ongoing weekly or biweekly pool maintenance, giving you steady and predictable work." },
   { icon: CreditCard, title: "Reliable Weekly Payouts", desc: "Track completed jobs and receive secure payouts directly to your account with full earnings visibility." },
 ];
 

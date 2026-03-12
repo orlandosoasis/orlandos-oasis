@@ -200,7 +200,7 @@ const TechServiceDetails = () => {
       </div>
 
       {/* Completed info */}
-      {isCompleted && service.completedTasks && (
+      {isCompleted && (
         <div className="bg-card rounded-2xl border border-border p-6 shadow-sm">
           <h2 className="text-[17px] font-bold text-foreground mb-4">Service Report</h2>
 

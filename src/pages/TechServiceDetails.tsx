@@ -138,14 +138,10 @@ const TechServiceDetails = () => {
             <span>{TIME_LABELS[service.timeWindow]}</span>
           </div>
         </div>
-      </div>
 
-
-      {/* Service Actions */}
-      {!isCompleted && (
-        <div className="bg-card rounded-2xl border border-border p-6 shadow-sm">
-          <h2 className="text-[17px] font-bold text-foreground mb-4">Service Actions</h2>
-          <div className="flex gap-3">
+        {/* Service Actions */}
+        {!isCompleted && (
+          <div className="flex gap-3 mt-5 pt-5 border-t border-border">
             {!isInProgress ? (
               <Button className="flex-1 gap-1.5" onClick={handleStartService}>
                 <Play className="h-4 w-4" />
@@ -166,8 +162,8 @@ const TechServiceDetails = () => {
               Reschedule Service
             </Button>
           </div>
-        </div>
-      )}
+        )}
+      </div>
 
       {/* Completed info */}
       {isCompleted && service.completedTasks && (

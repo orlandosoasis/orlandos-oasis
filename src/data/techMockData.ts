@@ -159,6 +159,7 @@ export function createTechServices(): TechService[] {
       status: "completed",
       completedTasks: SERVICE_TASKS,
       techNotes: "Skimmer basket was heavily filled with leaves. Adjusted chlorine slightly due to recent rain. Filter pressure normal.",
+      startedAt: "8:02 AM",
       completedAt: "11:42 AM",
     },
     {
@@ -172,6 +173,7 @@ export function createTechServices(): TechService[] {
       status: "completed",
       completedTasks: ["Surface skimming & debris removal", "Check & adjust chemical levels", "Empty skimmer & pump baskets"],
       techNotes: "Quick refresh completed. Chemical levels were good. No issues found.",
+      startedAt: "1:08 PM",
       completedAt: "2:15 PM",
     },
     {

@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { ArrowLeft, MapPin, Calendar, Clock, Send, CalendarClock, Play, CheckCircle2, MessagesSquare } from "lucide-react";
+import { ArrowLeft, MapPin, Calendar, Clock, Send, CalendarClock, Play, CheckCircle2, MessagesSquare, Camera } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import StatusBadge from "@/components/StatusBadge";
@@ -17,6 +17,24 @@ import {
   SHORT_MONTHS,
   type TechService,
 } from "@/data/techMockData";
+import poolBefore1 from "@/assets/pool-before-1.jpg";
+import poolBefore2 from "@/assets/pool-before-2.jpg";
+import poolBefore3 from "@/assets/pool-before-3.jpg";
+import poolAfter1 from "@/assets/pool-after-1.jpg";
+import poolAfter2 from "@/assets/pool-after-2.jpg";
+import poolAfter3 from "@/assets/pool-after-3.jpg";
+
+const BEFORE_PHOTOS = [
+  { id: "b1", src: poolBefore1, alt: "Pool before cleaning" },
+  { id: "b2", src: poolBefore2, alt: "Pool before cleaning" },
+  { id: "b3", src: poolBefore3, alt: "Pool before cleaning" },
+];
+
+const AFTER_PHOTOS = [
+  { id: "a1", src: poolAfter1, alt: "Pool after cleaning" },
+  { id: "a2", src: poolAfter2, alt: "Pool after cleaning" },
+  { id: "a3", src: poolAfter3, alt: "Pool after cleaning" },
+];
 
 interface ChatMsg {
   id: string;
@@ -191,6 +209,42 @@ const TechServiceDetails = () => {
       {isCompleted && service.completedTasks && (
         <div className="bg-card rounded-2xl border border-border p-6 shadow-sm">
           <h2 className="text-[17px] font-bold text-foreground mb-4">Service Report</h2>
+
+          {/* Before Photos */}
+          <div className="mb-4">
+            <div className="flex items-center gap-2 mb-3">
+              <Camera className="h-4 w-4 text-muted-foreground" />
+              <span className="text-sm font-semibold text-foreground">Before Photos</span>
+            </div>
+            <div className="grid grid-cols-3 gap-3">
+              {BEFORE_PHOTOS.map((photo) => (
+                <div key={photo.id} className="rounded-xl overflow-hidden border border-border">
+                  <img src={photo.src} alt={photo.alt} className="h-[110px] w-full object-cover" />
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="border-t border-border my-4" />
+
+          {/* After Photos */}
+          <div className="mb-4">
+            <div className="flex items-center gap-2 mb-3">
+              <Camera className="h-4 w-4 text-muted-foreground" />
+              <span className="text-sm font-semibold text-foreground">After Photos</span>
+            </div>
+            <div className="grid grid-cols-3 gap-3">
+              {AFTER_PHOTOS.map((photo) => (
+                <div key={photo.id} className="rounded-xl overflow-hidden border border-border">
+                  <img src={photo.src} alt={photo.alt} className="h-[110px] w-full object-cover" />
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="border-t border-border my-4" />
+
+          {/* Completed Tasks */}
           <div className="space-y-2 mb-4">
             {service.completedTasks.map((task, i) => (
               <div key={i} className="flex items-center gap-2.5">

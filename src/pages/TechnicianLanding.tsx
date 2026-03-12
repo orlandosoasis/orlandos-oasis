@@ -229,7 +229,7 @@ const TechnicianLanding = () => {
           <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
             <Link to="/" className="hover:text-foreground">Orlando's Oasis</Link>
             <Link to="/privacy" className="hover:text-primary transition-colors">Privacy Policy</Link>
-            <Link to="/terms" className="hover:text-foreground">Terms</Link>
+            <Link to="/terms" className="hover:text-primary transition-colors">Terms</Link>
           </div>
           <span className="text-sm text-muted-foreground shrink-0">© 2026 Orlando's Oasis. All rights reserved.</span>
         </div>

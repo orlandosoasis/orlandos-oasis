@@ -27,6 +27,12 @@ import Preferences from "./pages/settings/Preferences";
 import ExperienceLevel from "./pages/settings/ExperienceLevel";
 import TechnicianLanding from "./pages/TechnicianLanding";
 import TechnicianApplication from "./pages/TechnicianApplication";
+import TechPoolList from "./pages/TechPoolList";
+import TechPoolDetails from "./pages/TechPoolDetails";
+import TechServiceDetails from "./pages/TechServiceDetails";
+import TechSchedule from "./pages/TechSchedule";
+import TechCompletedServices from "./pages/TechCompletedServices";
+import TechMessages from "./pages/TechMessages";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -64,6 +70,12 @@ const App = () => (
             <Route path="/account-settings/experience-level" element={<ExperienceLevel />} />
             <Route path="/technician" element={<TechnicianLanding />} />
             <Route path="/technician/apply" element={<TechnicianApplication />} />
+            <Route path="/tech/pools" element={<TechPoolList />} />
+            <Route path="/tech/pools/:poolId" element={<TechPoolDetails />} />
+            <Route path="/tech/service/:serviceId" element={<TechServiceDetails />} />
+            <Route path="/tech/schedule" element={<TechSchedule />} />
+            <Route path="/tech/completed" element={<TechCompletedServices />} />
+            <Route path="/tech/messages" element={<TechMessages />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

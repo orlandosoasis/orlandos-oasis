@@ -209,6 +209,42 @@ const TechServiceDetails = () => {
       {isCompleted && service.completedTasks && (
         <div className="bg-card rounded-2xl border border-border p-6 shadow-sm">
           <h2 className="text-[17px] font-bold text-foreground mb-4">Service Report</h2>
+
+          {/* Before Photos */}
+          <div className="mb-4">
+            <div className="flex items-center gap-2 mb-3">
+              <Camera className="h-4 w-4 text-muted-foreground" />
+              <span className="text-sm font-semibold text-foreground">Before Photos</span>
+            </div>
+            <div className="grid grid-cols-3 gap-3">
+              {BEFORE_PHOTOS.map((photo) => (
+                <div key={photo.id} className="rounded-xl overflow-hidden border border-border">
+                  <img src={photo.src} alt={photo.alt} className="h-[110px] w-full object-cover" />
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="border-t border-border my-4" />
+
+          {/* After Photos */}
+          <div className="mb-4">
+            <div className="flex items-center gap-2 mb-3">
+              <Camera className="h-4 w-4 text-muted-foreground" />
+              <span className="text-sm font-semibold text-foreground">After Photos</span>
+            </div>
+            <div className="grid grid-cols-3 gap-3">
+              {AFTER_PHOTOS.map((photo) => (
+                <div key={photo.id} className="rounded-xl overflow-hidden border border-border">
+                  <img src={photo.src} alt={photo.alt} className="h-[110px] w-full object-cover" />
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="border-t border-border my-4" />
+
+          {/* Completed Tasks */}
           <div className="space-y-2 mb-4">
             {service.completedTasks.map((task, i) => (
               <div key={i} className="flex items-center gap-2.5">

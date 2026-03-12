@@ -163,12 +163,6 @@ const TechServiceDetails = () => {
               <span>Start Time: {service.startedAt}</span>
             </div>
           )}
-          {service.completedAt && (
-            <div className="flex items-center gap-2 text-sm text-muted-foreground">
-              <CheckCircle2 className="h-4 w-4 text-accent shrink-0" />
-              <span>Completion Time: {service.completedAt}</span>
-            </div>
-          )}
         </div>
 
         {/* Service Actions */}

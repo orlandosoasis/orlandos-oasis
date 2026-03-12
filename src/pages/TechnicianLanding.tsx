@@ -225,15 +225,13 @@ const TechnicianLanding = () => {
 
       {/* Footer */}
       <footer className="bg-card border-t border-border py-8">
-        <div className="container max-w-6xl mx-auto px-4 text-center space-y-3">
-          <div className="flex flex-wrap justify-center gap-6 text-sm text-muted-foreground">
+        <div className="container max-w-6xl mx-auto px-4 flex flex-col md:flex-row items-center justify-between gap-4">
+          <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
             <Link to="/" className="hover:text-foreground">Orlando's Oasis</Link>
             <Link to="/privacy" className="hover:text-foreground">Privacy Policy</Link>
             <Link to="/terms" className="hover:text-foreground">Terms</Link>
-            
-            
           </div>
-          <p className="text-sm text-muted-foreground">© 2026 Orlando's Oasis. All rights reserved.</p>
+          <span className="text-sm text-muted-foreground shrink-0">© 2026 Orlando's Oasis. All rights reserved.</span>
         </div>
       </footer>
     </div>

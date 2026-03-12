@@ -220,14 +220,7 @@ const TechnicianLanding = () => {
           </div>
         </section>
 
-        {/* Final CTA */}
-        <section className="py-16 px-4 bg-background">
-          <div className="container max-w-2xl mx-auto text-center">
-            <h2 className="text-2xl md:text-3xl font-bold text-navy mb-3">Ready to grow your pool service business?</h2>
-            <p className="text-muted-foreground mb-6">Join Orlando's Oasis and start building consistent income today.</p>
-            <Button size="lg" className="h-12 px-8 text-base font-semibold">Get Started</Button>
-          </div>
-        </section>
+
       </main>
 
       {/* Footer */}

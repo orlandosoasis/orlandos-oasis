@@ -151,7 +151,7 @@ const TechnicianApplication = () => {
             <CheckCircle2 className="h-8 w-8 text-green-600" />
           </div>
           <h2 className="text-xl font-bold text-foreground mb-1">Application Submitted Successfully</h2>
-          <p className="text-sm text-muted-foreground mb-2 max-w-md">
+          <p className="text-sm text-muted-foreground mb-8 max-w-md">
             Thank you for applying to become a pool technician with Orlando's Oasis. Our team will review your resume and certifications.
           </p>
 
@@ -339,10 +339,10 @@ const TechnicianApplication = () => {
               <p className="text-[11px] font-semibold tracking-[0.8px] uppercase text-muted-foreground mb-3">AGREEMENT</p>
               <div
                 onClick={() => setAgreed(!agreed)}
-                className={`flex items-start gap-3 p-4 rounded-xl border-2 cursor-pointer transition-all ${
-                  agreed
-                    ? "border-primary bg-primary/5"
-                    : "border-border hover:border-primary/40"
+                className={`flex items-start gap-3 p-4 rounded-xl cursor-pointer transition-all ${
+              agreed
+                    ? "bg-primary/5"
+                    : "hover:bg-muted/30"
                 }`}
               >
                 <div className={`w-5 h-5 rounded-md border-2 flex items-center justify-center shrink-0 mt-0.5 transition-all ${
@@ -364,7 +364,7 @@ const TechnicianApplication = () => {
         <div className="max-w-[760px] mx-auto px-5 py-4 flex gap-3">
           {step > 1 && (
             <Button variant="outline" onClick={handleBack} className="h-14 px-6 rounded-2xl text-sm font-semibold">
-              ← Back
+              Back
             </Button>
           )}
           <Button
@@ -375,9 +375,9 @@ const TechnicianApplication = () => {
             {isProcessing ? (
               <Loader2 className="h-5 w-5 animate-spin" />
             ) : step < TOTAL_STEPS ? (
-              "Continue →"
+              "Continue"
             ) : (
-              "Submit Application ✓"
+              "Submit Application"
             )}
           </Button>
         </div>

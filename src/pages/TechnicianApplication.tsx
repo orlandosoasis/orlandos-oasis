@@ -339,7 +339,7 @@ const TechnicianApplication = () => {
               <p className="text-[11px] font-semibold tracking-[0.8px] uppercase text-muted-foreground mb-3">AGREEMENT</p>
               <div
                 onClick={() => setAgreed(!agreed)}
-                className={`flex items-start gap-3 p-4 rounded-xl border-2 cursor-pointer transition-all ${
+                className={`flex items-start gap-3 p-4 rounded-xl cursor-pointer transition-all ${
               agreed
                     ? "bg-primary/5"
                     : "hover:bg-muted/30"

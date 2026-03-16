@@ -10,8 +10,8 @@ const settingsItems = [
     path: "/account-settings/personal-info",
   },
   {
-    label: "Payment Methods",
-    description: "Manage billing information",
+    label: "Payment & Membership",
+    description: "Manage billing and subscription",
     icon: CreditCard,
     path: "/account-settings/payment-methods",
   },

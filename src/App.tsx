@@ -28,7 +28,7 @@ import Privacy from "./pages/Privacy";
 import HelpCenter from "./pages/HelpCenter";
 import TechnicianDashboard from "./pages/TechnicianDashboard";
 import Profile from "./pages/Profile";
-import Subscription from "./pages/Subscription";
+
 import AccountSettings from "./pages/AccountSettings";
 import PersonalInfo from "./pages/settings/PersonalInfo";
 import PaymentMethods from "./pages/settings/PaymentMethods";
@@ -73,7 +73,7 @@ const App = () => (
             <Route path="/privacy" element={<Privacy />} />
             <Route path="/help" element={<HelpCenter />} />
             <Route path="/profile" element={<Profile />} />
-            <Route path="/subscription" element={<Subscription />} />
+            
             <Route path="/account-settings" element={<AccountSettings />} />
             <Route path="/account-settings/personal-info" element={<PersonalInfo />} />
             <Route path="/account-settings/payment-methods" element={<PaymentMethods />} />

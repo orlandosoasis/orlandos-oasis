@@ -24,7 +24,7 @@ const Index = () => {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
               {/* Left: Service Pass Pricing (first on mobile too) */}
               <div className="lg:sticky lg:top-8">
-                <ServicePassSection />
+                <ServicesSection />
               </div>
               
               {/* Right: Reviews */}

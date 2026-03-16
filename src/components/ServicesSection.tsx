@@ -3,10 +3,10 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Check } from "lucide-react";
 import BookingStepper from "@/components/BookingStepper";
-import BookingPaymentForm from "@/components/BookingPaymentForm";
 import VoucherSelectionStep, { VOUCHER_PLANS } from "@/components/dashboard/VoucherSelectionStep";
 import VoucherConfirmationStep from "@/components/dashboard/VoucherConfirmationStep";
 import LandingContactStep, { type LandingFormData } from "@/components/LandingContactStep";
+import LandingPaymentStep from "@/components/LandingPaymentStep";
 
 const STEPS = [
   { label: "Voucher" },
@@ -132,12 +132,13 @@ const ServicesSection = () => {
 
       {/* Step 4: Payment */}
       {currentStep === 4 && (
-        <div className="bg-card border border-border rounded-xl p-6">
-          <BookingPaymentForm
-            onSubmit={handlePaymentSubmit}
-            onBack={() => goToStep(3)}
-          />
-        </div>
+        <LandingPaymentStep
+          selectedPlan={selectedPlan}
+          timeLeft={timeLeft}
+          email={formData.email}
+          onChangePlan={setSelectedPlanId}
+          onContinue={handlePaymentSubmit}
+        />
       )}
     </div>
   );

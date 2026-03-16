@@ -190,8 +190,9 @@ const BookingFlow = ({ onClose, onComplete, selectedService: selectedServiceProp
     setBookingSuccess(true);
   };
 
-  const TOTAL_STEPS = 2;
-  const STEP_LABELS = ["Service Setup", "Pool / Property"];
+  const firstStep = hasPreselectedService ? 1 : 0;
+  const TOTAL_STEPS = hasPreselectedService ? 2 : 3;
+  const displayStep = step - firstStep + 1;
 
   // Success screen
   if (bookingSuccess) {

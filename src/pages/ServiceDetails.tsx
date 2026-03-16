@@ -251,26 +251,6 @@ const ServiceDetails = () => {
                   </Button>
                 )
               )}
-              {!isCompleted && technician.isAssigned && (
-                <Button
-                  variant="outline"
-                  className="flex-1 gap-1.5 hover:bg-primary hover:text-white hover:border-transparent"
-                  onClick={handleChangeCleaner}
-                  disabled={changingCleaner}
-                >
-                  {changingCleaner ? (
-                    <>
-                      <Loader2 className="h-4 w-4 animate-spin" />
-                      Finding…
-                    </>
-                  ) : (
-                    <>
-                      <UserRoundCog className="h-4 w-4" />
-                      Change Cleaner
-                    </>
-                  )}
-                </Button>
-              )}
             </div>
           </div>
         </div>

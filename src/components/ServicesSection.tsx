@@ -91,25 +91,40 @@ const ServicesSection = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const [contactData, setContactData] = useState<any>(null);
   const [bookingComplete, setBookingComplete] = useState(false);
+  const sectionRef = useRef<HTMLDivElement>(null);
 
   const allServices = SERVICE_CATEGORIES.flatMap((c) => c.services);
   const selectedService = allServices.find((s) => s.id === selected);
+
+  const scrollToTop = useCallback(() => {
+    sectionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }, []);
 
   const handleServiceSelect = (serviceId: string) => {
     setSelected(serviceId);
   };
 
   const handleContinueToDetails = () => {
-    if (selected) setCurrentStep(2);
+    if (selected) {
+      setCurrentStep(2);
+      setTimeout(scrollToTop, 50);
+    }
   };
 
   const handleContactContinue = (data: any) => {
     setContactData(data);
     setCurrentStep(3);
+    setTimeout(scrollToTop, 50);
   };
 
   const handlePaymentSubmit = () => {
     setBookingComplete(true);
+    setTimeout(scrollToTop, 50);
+  };
+
+  const handleEditService = () => {
+    setCurrentStep(1);
+    setTimeout(scrollToTop, 50);
   };
 
   const handleReset = () => {

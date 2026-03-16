@@ -29,6 +29,7 @@ const PAGE_TITLES: Record<string, string> = {
   issues: "Reported Issues",
   applicants: "Applicants",
   applicantDetail: "Application Details",
+  reviews: "Review Moderation",
 };
 
 const StatusBadge = ({ status }: { status: string }) => {

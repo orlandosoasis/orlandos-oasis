@@ -181,7 +181,7 @@ export default function RescheduleModal({ open, onOpenChange, booking, onResched
             {(isDateChanged || isTimeChanged) && (
               <div className="flex items-start gap-2 text-xs text-muted-foreground bg-muted/50 rounded-lg px-3 py-2 border border-border">
                 <AlertCircle className="h-3.5 w-3.5 mt-0.5 shrink-0" />
-                <span>You may be assigned a different pool technician based on availability.</span>
+                <span>Arrival time is not guaranteed. Our team will do their best to arrive within the selected time window.</span>
               </div>
             )}
 

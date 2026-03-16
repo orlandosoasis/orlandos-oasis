@@ -292,7 +292,7 @@ const Dashboard = () => {
       {rescheduleService && (
         <RescheduleModal
           open={!!rescheduleService}
-          onOpenChange={(open) => { if (!open) setRescheduleService(null); }}
+          onOpenChange={handleRescheduleModalClose}
           booking={rescheduleService.booking}
           onReschedule={handleReschedule}
         />

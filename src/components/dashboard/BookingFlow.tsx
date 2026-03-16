@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import { ChevronLeft, ChevronRight, Check, ArrowLeft, CheckCircle2, Loader2 } from "lucide-react";
+import { ChevronLeft, ChevronRight, Check, ArrowLeft, CheckCircle2, Loader2, Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -281,9 +281,12 @@ const BookingFlow = ({ onClose, onComplete, selectedService: selectedServiceProp
             {/* Arrival window */}
             <div>
               <p className="text-[11px] font-semibold tracking-[0.8px] uppercase text-muted-foreground mb-2.5">PREFERRED ARRIVAL WINDOW</p>
-              <p className="text-xs text-muted-foreground mb-3">
-                Arrival time cannot be guaranteed, but we will do our best to arrive as close to the scheduled time as possible.
-              </p>
+              <div className="flex items-start gap-2 mb-3">
+                <Info className="h-4 w-4 text-muted-foreground shrink-0 mt-0.5" />
+                <p className="text-xs text-muted-foreground">
+                  Arrival time cannot be guaranteed, but we will do our best to arrive as close to the scheduled time as possible.
+                </p>
+              </div>
               <div className="grid grid-cols-3 gap-2.5">
                 {[
                   { value: "morning" as const, icon: "🌅", title: "Morning", label: "8am–12pm" },

@@ -98,11 +98,11 @@ export const INIT_TECHNICIANS: AdminTechnician[] = [
   {
     id: 1, name: "Carlos M.", rating: 4.9, email: "carlos@oasis.com", phone: "(407) 555-1234", status: "Active", assignedPools: 3, completedServices: 12,
     reviews: [
-      { reviewer: "John S.", rating: 5, message: "Great service. Pool looks perfect.", date: "Feb 25, 2026" },
-      { reviewer: "Maria L.", rating: 5, message: "Always on time and very thorough.", date: "Feb 18, 2026" },
-      { reviewer: "David K.", rating: 5, message: "Carlos is amazing. Highly recommend.", date: "Feb 10, 2026" },
-      { reviewer: "Susan P.", rating: 4, message: "Good job overall, minor miss on tiles.", date: "Jan 28, 2026" },
-      { reviewer: "Tom R.", rating: 5, message: "Excellent work as always!", date: "Jan 15, 2026" },
+      { id: 1, reviewer: "John S.", technicianName: "Carlos M.", rating: 5, message: "Great service. Pool looks perfect.", date: "Feb 25, 2026", status: "Approved" },
+      { id: 2, reviewer: "Maria L.", technicianName: "Carlos M.", rating: 5, message: "Always on time and very thorough.", date: "Feb 18, 2026", status: "Approved" },
+      { id: 3, reviewer: "David K.", technicianName: "Carlos M.", rating: 5, message: "Carlos is amazing. Highly recommend.", date: "Feb 10, 2026", status: "Pending" },
+      { id: 4, reviewer: "Susan P.", technicianName: "Carlos M.", rating: 4, message: "Good job overall, minor miss on tiles.", date: "Jan 28, 2026", status: "Approved" },
+      { id: 5, reviewer: "Tom R.", technicianName: "Carlos M.", rating: 5, message: "Excellent work as always!", date: "Jan 15, 2026", status: "Approved" },
     ],
     pools: [
       { address: "742 Palm Grove Dr", homeowner: "John S.", nextService: "Mar 18, 2026", serviceType: "3-Hour Pool Service" },

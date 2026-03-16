@@ -62,27 +62,29 @@ const ServicesSection = () => {
 
   if (bookingComplete) {
     return (
-      <div className="text-center py-12 space-y-4">
-        <div className="mx-auto h-16 w-16 rounded-full bg-primary/10 flex items-center justify-center">
-          <Check className="h-8 w-8 text-primary" />
+      <div className="fixed inset-0 z-50 bg-background flex items-center justify-center">
+        <div className="text-center space-y-5 px-6 max-w-md">
+          <div className="mx-auto h-20 w-20 rounded-full bg-green-100 flex items-center justify-center">
+            <Check className="h-10 w-10 text-green-600" />
+          </div>
+          <h2 className="text-2xl font-bold text-foreground">Payment Successful</h2>
+          <p className="text-muted-foreground">
+            Your <strong>{serviceName}</strong> is confirmed. You can now schedule your first cleaning.
+          </p>
+          <Button
+            onClick={() => {
+              const params = new URLSearchParams({
+                openBooking: "true",
+                serviceTitle: serviceName,
+                serviceDescription: selectedPlan.description,
+              });
+              navigate(`/dashboard?${params.toString()}`);
+            }}
+            className="mt-2 w-full h-14 text-[17px] font-bold rounded-full shadow-md hover:shadow-lg"
+          >
+            Schedule Pool Service
+          </Button>
         </div>
-        <h2 className="text-2xl font-bold text-foreground">Payment Successful</h2>
-        <p className="text-muted-foreground">
-          Your pool service <strong>{serviceName}</strong> has been successfully booked.
-        </p>
-        <Button
-          onClick={() => {
-            const params = new URLSearchParams({
-              openBooking: "true",
-              serviceTitle: serviceName,
-              serviceDescription: selectedPlan.description,
-            });
-            navigate(`/dashboard?${params.toString()}`);
-          }}
-          className="mt-4"
-        >
-          Schedule Pool Service
-        </Button>
       </div>
     );
   }

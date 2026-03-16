@@ -3,10 +3,10 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Check } from "lucide-react";
 import BookingStepper from "@/components/BookingStepper";
-import BookingPaymentForm from "@/components/BookingPaymentForm";
 import VoucherSelectionStep, { VOUCHER_PLANS } from "@/components/dashboard/VoucherSelectionStep";
 import VoucherConfirmationStep from "@/components/dashboard/VoucherConfirmationStep";
 import LandingContactStep, { type LandingFormData } from "@/components/LandingContactStep";
+import LandingPaymentStep from "@/components/LandingPaymentStep";
 
 const STEPS = [
   { label: "Voucher" },

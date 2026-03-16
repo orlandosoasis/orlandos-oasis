@@ -1,7 +1,7 @@
 import { Clock, CheckCircle2, Loader2, XCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-export type ServiceStatus = "scheduled" | "in_progress" | "completed" | "cancelled";
+export type ServiceStatus = "scheduled" | "in_progress" | "completed" | "cancelled" | "reschedule_requested";
 
 const STATUS_CONFIG: Record<
   ServiceStatus,

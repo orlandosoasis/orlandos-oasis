@@ -668,6 +668,42 @@ const AdminDashboard = () => {
           })()}
         </DialogContent>
       </Dialog>
+
+      {/* Reject Review Modal */}
+      <Dialog open={!!rejectReviewModal} onOpenChange={() => { setRejectReviewModal(null); setRejectionReason(""); }}>
+        <DialogContent className="sm:max-w-[440px]">
+          {rejectReviewModal && (
+            <>
+              <DialogHeader>
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-2 bg-red-50 text-red-500">
+                  <X className="h-6 w-6" />
+                </div>
+                <DialogTitle>Reject Review</DialogTitle>
+                <DialogDescription>
+                  Reject the review from <strong>{rejectReviewModal.reviewer}</strong> for <strong>{rejectReviewModal.technicianName}</strong>?
+                </DialogDescription>
+              </DialogHeader>
+              <div className="space-y-2 py-2">
+                <label className="text-sm font-medium text-foreground">Reason (optional)</label>
+                <Select value={rejectionReason} onValueChange={(v) => setRejectionReason(v as ReviewRejectionReason)}>
+                  <SelectTrigger><SelectValue placeholder="Select a reason..." /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="spam">Spam</SelectItem>
+                    <SelectItem value="inappropriate">Inappropriate Content</SelectItem>
+                    <SelectItem value="irrelevant">Irrelevant Feedback</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <DialogFooter className="gap-2">
+                <Button variant="outline" onClick={() => { setRejectReviewModal(null); setRejectionReason(""); }}>Cancel</Button>
+                <Button variant="destructive" className="gap-1.5" onClick={() => handleRejectReview(rejectReviewModal.id, rejectionReason)}>
+                  <X className="h-4 w-4" /> Reject Review
+                </Button>
+              </DialogFooter>
+            </>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

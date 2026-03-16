@@ -124,6 +124,7 @@ const BookingFlow = ({ onClose, onComplete, selectedService: selectedServiceProp
   const nextMonth = () => {if (calMonth === 11) {setCalMonth(0);setCalYear(calYear + 1);} else setCalMonth(calMonth + 1);};
 
   const canProceed = () => {
+    if (step === 0) return !!selectedServiceId;
     if (step === 1) return true;
     if (step === 2) {
       if (!address.trim()) return false;

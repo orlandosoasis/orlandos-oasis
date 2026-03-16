@@ -90,9 +90,6 @@ const ServicesSection = () => {
         <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-2">
           Get Professional Pool Service
         </h2>
-        <p className="text-sm text-muted-foreground max-w-md">
-          Complete cleaning, maintenance, and repair services for residential pools and spas.
-        </p>
       </div>
 
       {currentStep >= 3 && <BookingStepper currentStep={currentStep} steps={STEPS} />}

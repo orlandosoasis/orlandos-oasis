@@ -146,7 +146,14 @@ const ServicesSection = () => {
         <p className="text-muted-foreground">
           Your pool service <strong>{selectedService?.title}</strong> has been successfully booked.
         </p>
-        <Button onClick={() => window.location.href = '/dashboard'} className="mt-4">
+        <Button onClick={() => {
+          const params = new URLSearchParams({
+            openBooking: "true",
+            serviceTitle: selectedService?.title || "",
+            serviceDescription: selectedService?.description || "",
+          });
+          navigate(`/dashboard?${params.toString()}`);
+        }} className="mt-4">
           Schedule Pool Service
         </Button>
       </div>

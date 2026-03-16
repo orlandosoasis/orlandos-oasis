@@ -62,11 +62,11 @@ const ServicesSection = () => {
 
   return (
     <div id="discount-voucher" className="scroll-mt-8">
-      <div className="text-center mb-6">
+      <div className="mb-6">
         <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-2">
           Get Professional Pool Service
         </h2>
-        <p className="text-sm text-muted-foreground max-w-md mx-auto">
+        <p className="text-sm text-muted-foreground max-w-md">
           Complete cleaning, maintenance, and repair services for residential pools and spas.
         </p>
       </div>

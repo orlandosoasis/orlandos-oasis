@@ -71,6 +71,7 @@ function generateDemoServices(): ServiceInstance[] {
   });
 
   // Upcoming monthly visits — 3rd Wednesday, 8 months starting March
+  const unassignedTech = { name: "Pool Technician to be assigned", initials: "?", rating: 0, isAssigned: false };
   for (let i = 0; i < 8; i++) {
     const m = 2 + i;
     const year = 2026 + Math.floor(m / 12);
@@ -79,7 +80,7 @@ function generateDemoServices(): ServiceInstance[] {
     services.push({
       id: `svc-${SHORT_MONTHS[month].toLowerCase()}-${year}`,
       booking: {
-        frequency: "monthly", selectedPass: sharedPass, pool: sharedPool, technician: tech, status: "scheduled",
+        frequency: "monthly", selectedPass: sharedPass, pool: sharedPool, technician: i === 0 ? tech : unassignedTech, status: "scheduled",
         scheduleData: { ...baseSchedule, selectedDate: date },
       },
     });

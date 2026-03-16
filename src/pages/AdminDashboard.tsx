@@ -311,13 +311,13 @@ const AdminDashboard = () => {
               ))}</TableBody></Table>
             </CardContent></Card>
         )}
-        {tech.reviews.length > 0 && (
-          <Card><CardHeader><CardTitle className="text-sm">Reviews</CardTitle></CardHeader>
+        {tech.reviews.filter(r => r.status === "Approved").length > 0 && (
+          <Card><CardHeader><CardTitle className="text-sm">Approved Reviews</CardTitle></CardHeader>
             <CardContent className="p-0">
               <Table><TableHeader><TableRow>
                 <TableHead>Reviewer</TableHead><TableHead>Rating</TableHead><TableHead>Review</TableHead><TableHead>Date</TableHead>
               </TableRow></TableHeader>
-              <TableBody>{tech.reviews.map((r, i) => (
+              <TableBody>{tech.reviews.filter(r => r.status === "Approved").map((r, i) => (
                 <TableRow key={i}><TableCell className="font-semibold">{r.reviewer}</TableCell><TableCell><Stars rating={r.rating} /></TableCell><TableCell className="text-muted-foreground max-w-[300px] truncate">{r.message}</TableCell><TableCell className="whitespace-nowrap">{r.date}</TableCell></TableRow>
               ))}</TableBody></Table>
             </CardContent></Card>

@@ -123,11 +123,11 @@ const Dashboard = () => {
   }, [isLoading, isAuthenticated, isPostCheckout, navigate, searchParams]);
 
   useEffect(() => {
-    const isDemoUser = user?.email === "demo@example.com";
-    if (isDemoUser) {
-      setServices(generateDemoServices());
-    } else if (booking) {
-      setServices([{ id: "svc-custom", booking: { ...booking, status: "scheduled" } }]);
+    const demoServices = generateDemoServices();
+    if (booking) {
+      setServices([{ id: "svc-custom", booking: { ...booking, status: "scheduled" } }, ...demoServices]);
+    } else {
+      setServices(demoServices);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user?.email, booking]);

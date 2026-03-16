@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import {
   LayoutDashboard, Wrench, Users, AlertCircle, UserPlus, ChevronLeft,
-  Star, Mail, Check, X, LogOut, User, Menu, FileText, Download, Waves, MessageSquare
+  Star, Mail, Check, X, LogOut, User, Menu, FileText, Download, Waves, MessageSquare, Megaphone
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";

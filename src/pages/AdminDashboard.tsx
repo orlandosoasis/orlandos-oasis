@@ -3,21 +3,22 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import {
   LayoutDashboard, Wrench, Users, AlertCircle, UserPlus, ChevronLeft,
-  Star, Mail, Check, X, LogOut, User, Menu, FileText, Download, Waves
+  Star, Mail, Check, X, LogOut, User, Menu, FileText, Download, Waves, MessageSquare
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import oasisLogo from "@/assets/oasis-logo-circle.png";
 import {
   INIT_TECHNICIANS, ADMIN_HOMEOWNERS, ADMIN_ISSUES, INIT_APPLICANTS,
-  type AdminTechnician, type AdminApplicant, type AdminIssue,
+  type AdminTechnician, type AdminApplicant, type AdminIssue, type AdminTechReview, type ReviewStatus, type ReviewRejectionReason,
 } from "@/data/adminMockData";
 
-type AdminPage = "dashboard" | "technicians" | "techDetail" | "homeowners" | "homeDetail" | "issues" | "applicants" | "applicantDetail";
+type AdminPage = "dashboard" | "technicians" | "techDetail" | "homeowners" | "homeDetail" | "issues" | "applicants" | "applicantDetail" | "reviews";
 
 const PAGE_TITLES: Record<string, string> = {
   dashboard: "Dashboard",
@@ -28,6 +29,7 @@ const PAGE_TITLES: Record<string, string> = {
   issues: "Reported Issues",
   applicants: "Applicants",
   applicantDetail: "Application Details",
+  reviews: "Review Moderation",
 };
 
 const StatusBadge = ({ status }: { status: string }) => {
@@ -75,6 +77,10 @@ const AdminDashboard = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
 
+  const [reviewFilter, setReviewFilter] = useState<"All" | ReviewStatus>("All");
+  const [rejectReviewModal, setRejectReviewModal] = useState<AdminTechReview | null>(null);
+  const [rejectionReason, setRejectionReason] = useState<ReviewRejectionReason>("");
+
   const nav = (p: AdminPage, id: number | null = null) => { setPage(p); setDetailId(id); setSidebarOpen(false); };
 
   const handleApprove = (applicant: AdminApplicant) => {
@@ -99,6 +105,27 @@ const AdminDashboard = () => {
 
   const handleLogout = () => { logout(); navigate("/"); };
 
+  const allReviews = technicians.flatMap(t => t.reviews);
+  const pendingReviewCount = allReviews.filter(r => r.status === "Pending").length;
+
+  const handleApproveReview = (reviewId: number) => {
+    setTechnicians(prev => prev.map(t => ({
+      ...t,
+      reviews: t.reviews.map(r => r.id === reviewId ? { ...r, status: "Approved" as const } : r),
+    })));
+    toast({ title: "Review Approved", description: "The review is now publicly visible.", variant: "success" });
+  };
+
+  const handleRejectReview = (reviewId: number, reason: ReviewRejectionReason) => {
+    setTechnicians(prev => prev.map(t => ({
+      ...t,
+      reviews: t.reviews.map(r => r.id === reviewId ? { ...r, status: "Rejected" as const, rejectionReason: reason } : r),
+    })));
+    setRejectReviewModal(null);
+    setRejectionReason("");
+    toast({ title: "Review Rejected", description: "The review has been rejected and hidden from public view.", variant: "destructive" });
+  };
+
   const pendingCount = applicants.filter(a => a.status === "Pending").length;
   const openIssueCount = ADMIN_ISSUES.filter(i => i.status === "Open").length;
 
@@ -106,6 +133,7 @@ const AdminDashboard = () => {
     { key: "dashboard" as const, label: "Dashboard", icon: LayoutDashboard },
     { key: "technicians" as const, label: "Technicians", icon: Wrench },
     { key: "homeowners" as const, label: "Homeowners", icon: Users },
+    { key: "reviews" as const, label: "Reviews", icon: MessageSquare, badge: pendingReviewCount, badgeColor: "bg-amber-500" },
     { key: "applicants" as const, label: "Applicants", icon: UserPlus, badge: pendingCount, badgeColor: "bg-violet-500" },
     { key: "issues" as const, label: "Reported Issues", icon: AlertCircle, badge: openIssueCount, badgeColor: "bg-destructive" },
   ];
@@ -283,13 +311,13 @@ const AdminDashboard = () => {
               ))}</TableBody></Table>
             </CardContent></Card>
         )}
-        {tech.reviews.length > 0 && (
-          <Card><CardHeader><CardTitle className="text-sm">Reviews</CardTitle></CardHeader>
+        {tech.reviews.filter(r => r.status === "Approved").length > 0 && (
+          <Card><CardHeader><CardTitle className="text-sm">Approved Reviews</CardTitle></CardHeader>
             <CardContent className="p-0">
               <Table><TableHeader><TableRow>
                 <TableHead>Reviewer</TableHead><TableHead>Rating</TableHead><TableHead>Review</TableHead><TableHead>Date</TableHead>
               </TableRow></TableHeader>
-              <TableBody>{tech.reviews.map((r, i) => (
+              <TableBody>{tech.reviews.filter(r => r.status === "Approved").map((r, i) => (
                 <TableRow key={i}><TableCell className="font-semibold">{r.reviewer}</TableCell><TableCell><Stars rating={r.rating} /></TableCell><TableCell className="text-muted-foreground max-w-[300px] truncate">{r.message}</TableCell><TableCell className="whitespace-nowrap">{r.date}</TableCell></TableRow>
               ))}</TableBody></Table>
             </CardContent></Card>
@@ -489,6 +517,75 @@ const AdminDashboard = () => {
     </Card>
   );
 
+  // ═══════════ REVIEWS MODERATION ═══════════
+  const ReviewsPage = () => {
+    const reviews = technicians.flatMap(t => t.reviews);
+    const filtered = reviewFilter === "All" ? reviews : reviews.filter(r => r.status === reviewFilter);
+
+    return (
+      <div className="space-y-4">
+        <div className="flex items-center gap-2 flex-wrap">
+          {(["All", "Pending", "Approved", "Rejected"] as const).map(f => (
+            <Button key={f} size="sm" variant={reviewFilter === f ? "default" : "outline"} onClick={() => setReviewFilter(f)}>
+              {f}
+              {f !== "All" && (
+                <span className="ml-1.5 text-[10px] bg-background/20 px-1.5 py-0.5 rounded-full">
+                  {reviews.filter(r => r.status === f).length}
+                </span>
+              )}
+            </Button>
+          ))}
+        </div>
+        <Card>
+          <CardContent className="p-0">
+            <div className="overflow-x-auto">
+              <Table>
+                <TableHeader><TableRow>
+                  <TableHead>Reviewer</TableHead><TableHead>Technician</TableHead><TableHead>Rating</TableHead>
+                  <TableHead>Review</TableHead><TableHead>Date</TableHead><TableHead>Status</TableHead><TableHead>Actions</TableHead>
+                </TableRow></TableHeader>
+                <TableBody>
+                  {filtered.length === 0 ? (
+                    <TableRow><TableCell colSpan={7} className="text-center text-muted-foreground py-8">No reviews found.</TableCell></TableRow>
+                  ) : filtered.map(r => (
+                    <TableRow key={r.id}>
+                      <TableCell className="font-semibold">{r.reviewer}</TableCell>
+                      <TableCell>{r.technicianName}</TableCell>
+                      <TableCell><Stars rating={r.rating} /></TableCell>
+                      <TableCell className="text-muted-foreground max-w-[250px] truncate">{r.message}</TableCell>
+                      <TableCell className="whitespace-nowrap">{r.date}</TableCell>
+                      <TableCell><StatusBadge status={r.status} /></TableCell>
+                      <TableCell>
+                        <div className="flex gap-1.5 flex-nowrap">
+                          {r.status === "Pending" && (
+                            <>
+                              <Button size="sm" className="bg-emerald-500 hover:bg-emerald-600 text-white gap-1" onClick={() => handleApproveReview(r.id)}>
+                                <Check className="h-3.5 w-3.5" /> Approve
+                              </Button>
+                              <Button size="sm" variant="outline" className="text-destructive border-destructive/40 hover:bg-destructive/10 gap-1" onClick={() => { setRejectReviewModal(r); setRejectionReason(""); }}>
+                                <X className="h-3.5 w-3.5" /> Reject
+                              </Button>
+                            </>
+                          )}
+                          {r.status === "Rejected" && r.rejectionReason && (
+                            <span className="text-xs text-muted-foreground italic capitalize">{r.rejectionReason}</span>
+                          )}
+                          {r.status === "Approved" && (
+                            <span className="text-xs text-muted-foreground italic">Visible</span>
+                          )}
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  };
+
   // ═══════════ PAGE ROUTER ═══════════
   const renderPage = () => {
     switch (page) {
@@ -498,6 +595,7 @@ const AdminDashboard = () => {
       case "homeowners": return <HomeownersPage />;
       case "homeDetail": return <HomeDetailPage />;
       case "issues": return <IssuesPage />;
+      case "reviews": return <ReviewsPage />;
       case "applicants": return <ApplicantsPage />;
       case "applicantDetail": return <ApplicantDetailPage />;
       default: return <DashboardPage />;
@@ -568,6 +666,42 @@ const AdminDashboard = () => {
               </>
             );
           })()}
+        </DialogContent>
+      </Dialog>
+
+      {/* Reject Review Modal */}
+      <Dialog open={!!rejectReviewModal} onOpenChange={() => { setRejectReviewModal(null); setRejectionReason(""); }}>
+        <DialogContent className="sm:max-w-[440px]">
+          {rejectReviewModal && (
+            <>
+              <DialogHeader>
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-2 bg-red-50 text-red-500">
+                  <X className="h-6 w-6" />
+                </div>
+                <DialogTitle>Reject Review</DialogTitle>
+                <DialogDescription>
+                  Reject the review from <strong>{rejectReviewModal.reviewer}</strong> for <strong>{rejectReviewModal.technicianName}</strong>?
+                </DialogDescription>
+              </DialogHeader>
+              <div className="space-y-2 py-2">
+                <label className="text-sm font-medium text-foreground">Reason (optional)</label>
+                <Select value={rejectionReason} onValueChange={(v) => setRejectionReason(v as ReviewRejectionReason)}>
+                  <SelectTrigger><SelectValue placeholder="Select a reason..." /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="spam">Spam</SelectItem>
+                    <SelectItem value="inappropriate">Inappropriate Content</SelectItem>
+                    <SelectItem value="irrelevant">Irrelevant Feedback</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <DialogFooter className="gap-2">
+                <Button variant="outline" onClick={() => { setRejectReviewModal(null); setRejectionReason(""); }}>Cancel</Button>
+                <Button variant="destructive" className="gap-1.5" onClick={() => handleRejectReview(rejectReviewModal.id, rejectionReason)}>
+                  <X className="h-4 w-4" /> Reject Review
+                </Button>
+              </DialogFooter>
+            </>
+          )}
         </DialogContent>
       </Dialog>
     </div>

@@ -1,10 +1,18 @@
 // Admin Dashboard Mock Data
 
+export type ReviewStatus = "Pending" | "Approved" | "Rejected";
+
+export type ReviewRejectionReason = "spam" | "inappropriate" | "irrelevant" | "";
+
 export interface AdminTechReview {
+  id: number;
   reviewer: string;
+  technicianName: string;
   rating: number;
   message: string;
   date: string;
+  status: ReviewStatus;
+  rejectionReason?: ReviewRejectionReason;
 }
 
 export interface AdminTechPool {
@@ -90,11 +98,11 @@ export const INIT_TECHNICIANS: AdminTechnician[] = [
   {
     id: 1, name: "Carlos M.", rating: 4.9, email: "carlos@oasis.com", phone: "(407) 555-1234", status: "Active", assignedPools: 3, completedServices: 12,
     reviews: [
-      { reviewer: "John S.", rating: 5, message: "Great service. Pool looks perfect.", date: "Feb 25, 2026" },
-      { reviewer: "Maria L.", rating: 5, message: "Always on time and very thorough.", date: "Feb 18, 2026" },
-      { reviewer: "David K.", rating: 5, message: "Carlos is amazing. Highly recommend.", date: "Feb 10, 2026" },
-      { reviewer: "Susan P.", rating: 4, message: "Good job overall, minor miss on tiles.", date: "Jan 28, 2026" },
-      { reviewer: "Tom R.", rating: 5, message: "Excellent work as always!", date: "Jan 15, 2026" },
+      { id: 1, reviewer: "John S.", technicianName: "Carlos M.", rating: 5, message: "Great service. Pool looks perfect.", date: "Feb 25, 2026", status: "Approved" },
+      { id: 2, reviewer: "Maria L.", technicianName: "Carlos M.", rating: 5, message: "Always on time and very thorough.", date: "Feb 18, 2026", status: "Approved" },
+      { id: 3, reviewer: "David K.", technicianName: "Carlos M.", rating: 5, message: "Carlos is amazing. Highly recommend.", date: "Feb 10, 2026", status: "Pending" },
+      { id: 4, reviewer: "Susan P.", technicianName: "Carlos M.", rating: 4, message: "Good job overall, minor miss on tiles.", date: "Jan 28, 2026", status: "Approved" },
+      { id: 5, reviewer: "Tom R.", technicianName: "Carlos M.", rating: 5, message: "Excellent work as always!", date: "Jan 15, 2026", status: "Approved" },
     ],
     pools: [
       { address: "742 Palm Grove Dr", homeowner: "John S.", nextService: "Mar 18, 2026", serviceType: "3-Hour Pool Service" },
@@ -105,9 +113,9 @@ export const INIT_TECHNICIANS: AdminTechnician[] = [
   {
     id: 2, name: "Ana R.", rating: 4.7, email: "ana@oasis.com", phone: "(407) 555-5678", status: "Active", assignedPools: 2, completedServices: 8,
     reviews: [
-      { reviewer: "Susan P.", rating: 5, message: "Very professional and detail-oriented.", date: "Feb 20, 2026" },
-      { reviewer: "Tom R.", rating: 4, message: "Solid work, pool looks great.", date: "Feb 12, 2026" },
-      { reviewer: "Lisa M.", rating: 5, message: "Ana is wonderful. So reliable!", date: "Jan 30, 2026" },
+      { id: 6, reviewer: "Susan P.", technicianName: "Ana R.", rating: 5, message: "Very professional and detail-oriented.", date: "Feb 20, 2026", status: "Approved" },
+      { id: 7, reviewer: "Tom R.", technicianName: "Ana R.", rating: 4, message: "Solid work, pool looks great.", date: "Feb 12, 2026", status: "Pending" },
+      { id: 8, reviewer: "Lisa M.", technicianName: "Ana R.", rating: 5, message: "Ana is wonderful. So reliable!", date: "Jan 30, 2026", status: "Rejected", rejectionReason: "spam" },
     ],
     pools: [
       { address: "320 Ocean View Rd", homeowner: "Susan P.", nextService: "Mar 19, 2026", serviceType: "3-Hour Pool Service" },
@@ -117,8 +125,8 @@ export const INIT_TECHNICIANS: AdminTechnician[] = [
   {
     id: 3, name: "James T.", rating: 4.5, email: "james@oasis.com", phone: "(407) 555-9012", status: "Active", assignedPools: 4, completedServices: 20,
     reviews: [
-      { reviewer: "David K.", rating: 4, message: "Dependable and does quality work.", date: "Feb 22, 2026" },
-      { reviewer: "Emily W.", rating: 5, message: "Our pool has never looked better!", date: "Feb 14, 2026" },
+      { id: 9, reviewer: "David K.", technicianName: "James T.", rating: 4, message: "Dependable and does quality work.", date: "Feb 22, 2026", status: "Pending" },
+      { id: 10, reviewer: "Emily W.", technicianName: "James T.", rating: 5, message: "Our pool has never looked better!", date: "Feb 14, 2026", status: "Approved" },
     ],
     pools: [
       { address: "455 Cypress Way", homeowner: "Emily W.", nextService: "Mar 17, 2026", serviceType: "3-Hour Pool Service" },
@@ -130,8 +138,8 @@ export const INIT_TECHNICIANS: AdminTechnician[] = [
   {
     id: 4, name: "Priya S.", rating: 4.8, email: "priya@oasis.com", phone: "(407) 555-3456", status: "Inactive", assignedPools: 0, completedServices: 15,
     reviews: [
-      { reviewer: "Lisa M.", rating: 5, message: "Priya was exceptional every visit.", date: "Jan 20, 2026" },
-      { reviewer: "John S.", rating: 5, message: "Miss her service. Hope she returns!", date: "Jan 10, 2026" },
+      { id: 11, reviewer: "Lisa M.", technicianName: "Priya S.", rating: 5, message: "Priya was exceptional every visit.", date: "Jan 20, 2026", status: "Approved" },
+      { id: 12, reviewer: "John S.", technicianName: "Priya S.", rating: 5, message: "Miss her service. Hope she returns!", date: "Jan 10, 2026", status: "Approved" },
     ],
     pools: [],
   },

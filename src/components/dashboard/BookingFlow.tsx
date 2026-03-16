@@ -72,9 +72,16 @@ interface BookingFlowProps {
   selectedService?: SelectedServiceInfo | null;
 }
 
-const BookingFlow = ({ onClose, onComplete, selectedService }: BookingFlowProps) => {
+const BookingFlow = ({ onClose, onComplete, selectedService: selectedServiceProp }: BookingFlowProps) => {
   const { setBooking } = useBooking();
-  const [step, setStep] = useState(1);
+  const hasPreselectedService = !!selectedServiceProp;
+  const [step, setStep] = useState(hasPreselectedService ? 1 : 0);
+
+  // Step 0 — Service selection (only when opened from Dashboard CTA)
+  const allServices = useMemo(() => SERVICE_CATEGORIES.flatMap((c) => c.services), []);
+  const [selectedServiceId, setSelectedServiceId] = useState<string | null>(null);
+  const pickedService = useMemo(() => allServices.find((s) => s.id === selectedServiceId) || null, [allServices, selectedServiceId]);
+  const selectedService = selectedServiceProp || (pickedService ? { title: pickedService.title, description: pickedService.description } : null);
 
   // Step 1 — Frequency & Plan & Schedule
   const [frequency, setFrequency] = useState<CleaningFrequency>("monthly");

@@ -254,7 +254,7 @@ const Dashboard = () => {
         {/* Past Services */}
         {pastServices.length > 0 && (
           <section className="mb-8">
-            <h2 className="text-lg font-semibold text-foreground mb-3">Past Services</h2>
+            <h2 className="text-lg font-semibold text-foreground mb-3">Completed Services</h2>
             <div className="bg-card rounded-2xl border border-border shadow-sm divide-y divide-border overflow-hidden">
               {pastServices.map(svc => (
                 <PastRow key={svc.id} service={svc} onViewDetails={() => handleViewDetails(svc)} />

@@ -140,12 +140,12 @@ const ServicesSection = () => {
         <div className="mx-auto h-16 w-16 rounded-full bg-primary/10 flex items-center justify-center">
           <Check className="h-8 w-8 text-primary" />
         </div>
-        <h2 className="text-2xl font-bold text-foreground">Booking Confirmed!</h2>
+        <h2 className="text-2xl font-bold text-foreground">Payment Successful</h2>
         <p className="text-muted-foreground">
-          We'll reach out shortly to confirm your <strong>{selectedService?.title}</strong> appointment.
+          Your pool service <strong>{selectedService?.title}</strong> has been successfully booked.
         </p>
-        <Button variant="outline" onClick={handleReset} className="mt-4">
-          Book Another Service
+        <Button onClick={() => window.location.href = '/dashboard'} className="mt-4">
+          Go to My Dashboard
         </Button>
       </div>
     );

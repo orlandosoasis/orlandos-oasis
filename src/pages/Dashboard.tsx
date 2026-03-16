@@ -347,6 +347,7 @@ const UpcomingRow = ({ service, canReschedule, onReschedule }: { service: Servic
   const d = booking.scheduleData.selectedDate;
   const month = SHORT_MONTHS[d.getMonth()].toUpperCase();
   const day = d.getDate();
+  const isPendingReschedule = booking.status === "reschedule_requested";
 
   return (
     <div className="flex items-center gap-4 px-5 py-4">
@@ -360,16 +361,28 @@ const UpcomingRow = ({ service, canReschedule, onReschedule }: { service: Servic
           Pool Technician to be assigned · {TIME_LABELS[booking.scheduleData.timeWindow]}
         </p>
       </div>
-      <Button
-        variant="outline"
-        size="sm"
-        disabled={!canReschedule}
-        className="shrink-0 gap-1.5 text-xs hover:bg-primary hover:text-white hover:border-transparent disabled:opacity-40 disabled:cursor-not-allowed"
-        onClick={(e) => { e.stopPropagation(); onReschedule(); }}
-      >
-        <CalendarClock className="h-3.5 w-3.5" />
-        Reschedule
-      </Button>
+      {isPendingReschedule ? (
+        <Button
+          variant="outline"
+          size="sm"
+          disabled
+          className="shrink-0 gap-1.5 text-xs opacity-60 cursor-not-allowed"
+        >
+          <CalendarClock className="h-3.5 w-3.5" />
+          Pending Approval
+        </Button>
+      ) : (
+        <Button
+          variant="outline"
+          size="sm"
+          disabled={!canReschedule}
+          className="shrink-0 gap-1.5 text-xs hover:bg-primary hover:text-white hover:border-transparent disabled:opacity-40 disabled:cursor-not-allowed"
+          onClick={(e) => { e.stopPropagation(); onReschedule(); }}
+        >
+          <CalendarClock className="h-3.5 w-3.5" />
+          Reschedule
+        </Button>
+      )}
     </div>
   );
 };

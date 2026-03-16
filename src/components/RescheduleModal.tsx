@@ -238,25 +238,22 @@ export default function RescheduleModal({ open, onOpenChange, booking, onResched
 
         {/* Step 5: Success */}
         {step === 5 && selectedDate && selectedTime && (
-          <div className="p-6 pt-10 space-y-5">
-            <Alert className="border-primary/30 bg-primary/5">
-              <CheckCircle2 className="h-4 w-4 !text-primary" />
-              <AlertDescription className="ml-2">
-                <p className="font-semibold text-foreground text-sm">Reschedule Request Submitted</p>
-                <p className="text-xs text-muted-foreground mt-1">
+          <div className="p-6 pt-10 space-y-6 text-center">
+            <div className="flex flex-col items-center gap-3">
+              <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center">
+                <CheckCircle2 className="h-6 w-6 text-primary" />
+              </div>
+              <DialogHeader className="sm:text-center">
+                <DialogTitle className="text-xl font-bold text-foreground">Reschedule Request Submitted</DialogTitle>
+                <DialogDescription className="text-sm text-muted-foreground mt-1">
                   Your reschedule request has been submitted and is pending approval. Your current schedule remains unchanged until it is confirmed.
-                </p>
-              </AlertDescription>
-            </Alert>
-
-            <div className="flex gap-2.5">
-              <Button variant="outline" className="flex-1 hover:text-primary hover:border-primary hover:bg-transparent" onClick={() => { handleClose(); window.location.href = "/messages"; }}>
-                Message Technician
-              </Button>
-              <Button className="flex-1 font-semibold" onClick={handleClose}>
-                View Service Details
-              </Button>
+                </DialogDescription>
+              </DialogHeader>
             </div>
+
+            <Button className="w-full font-semibold" onClick={handleClose}>
+              Close
+            </Button>
           </div>
         )}
       </DialogContent>

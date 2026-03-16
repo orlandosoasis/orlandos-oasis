@@ -1,121 +1,49 @@
 import { useState, useRef, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Badge } from "@/components/ui/badge";
 import { Check, Pencil } from "lucide-react";
 import BookingStepper from "@/components/BookingStepper";
 import BookingContactForm from "@/components/BookingContactForm";
 import BookingPaymentForm from "@/components/BookingPaymentForm";
-
-const SERVICE_CATEGORIES = [
-  {
-    label: "Cleaning & Maintenance",
-    services: [
-      {
-        id: "weekly-cleaning",
-        title: "Weekly Pool / Spa Cleaning",
-        description: "Regular service that includes skimming debris, brushing walls, vacuuming the pool or spa, and emptying baskets to keep the water clean and clear.",
-      },
-      {
-        id: "chemical-balancing",
-        title: "Chemical Testing & Balancing",
-        description: "Technicians test and adjust chlorine, pH, alkalinity, and other chemicals to keep pool water safe and properly balanced.",
-      },
-      {
-        id: "filter-cleaning",
-        title: "Filter / Salt Cell Cleaning",
-        description: "Cleaning the filtration system and salt cell to maintain proper circulation and chlorine generation.",
-      },
-      {
-        id: "tile-cleaning",
-        title: "Tile & Surface Cleaning",
-        description: "Removal of calcium buildup and stains from waterline tile and pool surfaces.",
-      },
-    ],
-  },
-  {
-    label: "Repairs & Equipment",
-    services: [
-      {
-        id: "equipment-inspection",
-        title: "Pool Equipment Inspection",
-        description: "Inspection of pumps, motors, valves, and heaters to identify potential issues early.",
-      },
-      {
-        id: "equipment-repair",
-        title: "Pool Equipment Repair",
-        description: "Repair or replacement of pumps, motors, lights, and other pool equipment when needed.",
-      },
-    ],
-  },
-  {
-    label: "Deep Cleaning & Restoration",
-    services: [
-      {
-        id: "algae-treatment",
-        title: "Green-to-Clean / Algae Treatment",
-        description: "Deep cleaning and chemical treatment to restore pools affected by algae or green water.",
-      },
-      {
-        id: "acid-washing",
-        title: "Acid Washing",
-        description: "Deep surface cleaning to remove stains, mineral buildup, and embedded algae.",
-      },
-    ],
-  },
-  {
-    label: "Pool Setup & Evaluation",
-    services: [
-      {
-        id: "pool-inspections",
-        title: "Pool Inspections",
-        description: "Evaluation of pool condition including water clarity, equipment performance, and safety components.",
-      },
-      {
-        id: "pool-startups",
-        title: "Pool Startups",
-        description: "Initial service after a new pool build or resurfacing to balance chemicals and start equipment.",
-      },
-    ],
-  },
-];
+import VoucherSelectionStep, { VOUCHER_PLANS } from "@/components/dashboard/VoucherSelectionStep";
+import VoucherConfirmationStep from "@/components/dashboard/VoucherConfirmationStep";
 
 const STEPS = [
-  { label: "Service" },
+  { label: "Voucher" },
+  { label: "Confirm" },
   { label: "Your Details" },
   { label: "Payment" },
 ];
 
 const ServicesSection = () => {
   const navigate = useNavigate();
-  const [selected, setSelected] = useState<string | null>("weekly-cleaning");
+  const [selectedPlanId, setSelectedPlanId] = useState("weekly");
   const [currentStep, setCurrentStep] = useState(1);
   const [contactData, setContactData] = useState<any>(null);
   const [bookingComplete, setBookingComplete] = useState(false);
   const sectionRef = useRef<HTMLDivElement>(null);
 
-  const allServices = SERVICE_CATEGORIES.flatMap((c) => c.services);
-  const selectedService = allServices.find((s) => s.id === selected);
+  const selectedPlan = VOUCHER_PLANS.find((p) => p.id === selectedPlanId)!;
+  const serviceName = selectedPlan.label.replace("Most Popular – ", "");
 
   const scrollToTop = useCallback(() => {
     sectionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   }, []);
 
-  const handleServiceSelect = (serviceId: string) => {
-    setSelected(serviceId);
+  const handleContinueStep1 = () => {
+    setCurrentStep(2);
+    setTimeout(scrollToTop, 50);
   };
 
-  const handleContinueToDetails = () => {
-    if (selected) {
-      setCurrentStep(2);
-      setTimeout(scrollToTop, 50);
-    }
+  const handleContinueStep2 = () => {
+    setCurrentStep(3);
+    setTimeout(scrollToTop, 50);
   };
 
   const handleContactContinue = (data: any) => {
     setContactData(data);
-    setCurrentStep(3);
+    setCurrentStep(4);
     setTimeout(scrollToTop, 50);
   };
 
@@ -124,16 +52,9 @@ const ServicesSection = () => {
     setTimeout(scrollToTop, 50);
   };
 
-  const handleEditService = () => {
+  const handleEditVoucher = () => {
     setCurrentStep(1);
     setTimeout(scrollToTop, 50);
-  };
-
-  const handleReset = () => {
-    setSelected(null);
-    setCurrentStep(1);
-    setContactData(null);
-    setBookingComplete(false);
   };
 
   if (bookingComplete) {
@@ -144,16 +65,19 @@ const ServicesSection = () => {
         </div>
         <h2 className="text-2xl font-bold text-foreground">Payment Successful</h2>
         <p className="text-muted-foreground">
-          Your pool service <strong>{selectedService?.title}</strong> has been successfully booked.
+          Your pool service <strong>{serviceName}</strong> has been successfully booked.
         </p>
-        <Button onClick={() => {
-          const params = new URLSearchParams({
-            openBooking: "true",
-            serviceTitle: selectedService?.title || "",
-            serviceDescription: selectedService?.description || "",
-          });
-          navigate(`/dashboard?${params.toString()}`);
-        }} className="mt-4">
+        <Button
+          onClick={() => {
+            const params = new URLSearchParams({
+              openBooking: "true",
+              serviceTitle: serviceName,
+              serviceDescription: selectedPlan.description,
+            });
+            navigate(`/dashboard?${params.toString()}`);
+          }}
+          className="mt-4"
+        >
           Schedule Pool Service
         </Button>
       </div>
@@ -171,119 +95,89 @@ const ServicesSection = () => {
         </p>
       </div>
 
-      {/* Stepper — visible once a service is selected */}
-      {selected && (
-        <BookingStepper currentStep={currentStep} steps={STEPS} />
-      )}
+      <BookingStepper currentStep={currentStep} steps={STEPS} />
 
-      {/* Step 1: Service Selection */}
+      {/* Step 1: Voucher Selection */}
       {currentStep === 1 && (
         <>
-          <RadioGroup
-            value={selected || ""}
-            onValueChange={handleServiceSelect}
-            className="space-y-6"
-          >
-            {SERVICE_CATEGORIES.map((category) => (
-              <div key={category.label}>
-                <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">
-                  {category.label}
-                </h3>
-                <div className="space-y-3">
-                  {category.services.map((service) => (
-                    <label
-                      key={service.id}
-                      className={`flex items-start gap-3 p-4 rounded-xl border-2 cursor-pointer transition-all duration-200 ${
-                        selected === service.id
-                          ? "border-primary bg-primary/5 shadow-md"
-                          : "border-border bg-card hover:border-primary"
-                      }`}
-                    >
-                      <RadioGroupItem value={service.id} className="mt-1 shrink-0" />
-                      <div className="min-w-0">
-                        <h3 className="text-sm font-semibold text-foreground mb-1">
-                          {service.title}
-                        </h3>
-                        <p className="text-sm text-muted-foreground leading-relaxed">
-                          {service.description}
-                        </p>
-                      </div>
-                    </label>
-                  ))}
-                </div>
-              </div>
-            ))}
-          </RadioGroup>
-
+          <VoucherSelectionStep selectedPlanId={selectedPlanId} onSelectPlan={setSelectedPlanId} />
           <Button
-            onClick={handleContinueToDetails}
-            disabled={!selected}
+            onClick={handleContinueStep1}
             className="w-full h-14 text-[17px] font-bold rounded-full shadow-md hover:shadow-lg mt-6"
           >
-            {selected ? "Continue" : "Select a service to continue"}
+            Continue
           </Button>
         </>
       )}
 
-      {/* Step 2: Contact Details */}
+      {/* Step 2: Voucher Confirmation */}
       {currentStep === 2 && (
+        <>
+          <VoucherConfirmationStep plan={selectedPlan} />
+          <Button
+            onClick={handleContinueStep2}
+            className="w-full h-14 text-[17px] font-bold rounded-full shadow-md hover:shadow-lg mt-6"
+          >
+            Continue
+          </Button>
+        </>
+      )}
+
+      {/* Step 3: Contact Details */}
+      {currentStep === 3 && (
         <div className="bg-card border border-border rounded-xl p-6">
-          {selectedService && (
-            <div className="mb-5 p-4 rounded-lg bg-primary/5 border border-primary/20">
-              <div className="flex items-center justify-between mb-1">
-                <div className="flex items-center gap-2">
-                  <Badge className="bg-primary text-primary-foreground text-xs">Selected</Badge>
-                  <span className="text-sm font-semibold text-foreground">{selectedService.title}</span>
-                </div>
-                <button
-                  type="button"
-                  onClick={handleEditService}
-                  className="flex items-center gap-1 text-xs font-medium text-primary hover:underline"
-                >
-                  <Pencil className="h-3 w-3" />
-                  Edit
-                </button>
+          <div className="mb-5 p-4 rounded-lg bg-primary/5 border border-primary/20">
+            <div className="flex items-center justify-between mb-1">
+              <div className="flex items-center gap-2">
+                <Badge className="bg-primary text-primary-foreground text-xs">Selected</Badge>
+                <span className="text-sm font-semibold text-foreground">{serviceName}</span>
               </div>
-              <p className="text-sm text-muted-foreground leading-relaxed mt-1">
-                {selectedService.description}
-              </p>
+              <button
+                type="button"
+                onClick={handleEditVoucher}
+                className="flex items-center gap-1 text-xs font-medium text-primary hover:underline"
+              >
+                <Pencil className="h-3 w-3" />
+                Edit
+              </button>
             </div>
-          )}
+            <p className="text-sm text-muted-foreground leading-relaxed mt-1">
+              ${selectedPlan.discountPrice}/first month (Save ${selectedPlan.savings})
+            </p>
+          </div>
           <BookingContactForm
             onContinue={handleContactContinue}
-            onBack={handleEditService}
+            onBack={() => { setCurrentStep(2); setTimeout(scrollToTop, 50); }}
             initialData={contactData}
           />
         </div>
       )}
 
-      {/* Step 3: Payment */}
-      {currentStep === 3 && (
+      {/* Step 4: Payment */}
+      {currentStep === 4 && (
         <div className="bg-card border border-border rounded-xl p-6">
-          {selectedService && (
-            <div className="mb-5 p-4 rounded-lg bg-primary/5 border border-primary/20">
-              <div className="flex items-center justify-between mb-1">
-                <div className="flex items-center gap-2">
-                  <Badge className="bg-primary text-primary-foreground text-xs">Selected</Badge>
-                  <span className="text-sm font-semibold text-foreground">{selectedService.title}</span>
-                </div>
-                <button
-                  type="button"
-                  onClick={handleEditService}
-                  className="flex items-center gap-1 text-xs font-medium text-primary hover:underline"
-                >
-                  <Pencil className="h-3 w-3" />
-                  Edit
-                </button>
+          <div className="mb-5 p-4 rounded-lg bg-primary/5 border border-primary/20">
+            <div className="flex items-center justify-between mb-1">
+              <div className="flex items-center gap-2">
+                <Badge className="bg-primary text-primary-foreground text-xs">Selected</Badge>
+                <span className="text-sm font-semibold text-foreground">{serviceName}</span>
               </div>
-              <p className="text-sm text-muted-foreground leading-relaxed mt-1">
-                {selectedService.description}
-              </p>
+              <button
+                type="button"
+                onClick={handleEditVoucher}
+                className="flex items-center gap-1 text-xs font-medium text-primary hover:underline"
+              >
+                <Pencil className="h-3 w-3" />
+                Edit
+              </button>
             </div>
-          )}
+            <p className="text-sm text-muted-foreground leading-relaxed mt-1">
+              ${selectedPlan.discountPrice}/first month (Save ${selectedPlan.savings})
+            </p>
+          </div>
           <BookingPaymentForm
             onSubmit={handlePaymentSubmit}
-            onBack={() => setCurrentStep(2)}
+            onBack={() => { setCurrentStep(3); setTimeout(scrollToTop, 50); }}
           />
         </div>
       )}

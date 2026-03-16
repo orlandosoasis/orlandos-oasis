@@ -79,7 +79,7 @@ const ServicesSection = () => {
         {SERVICES.map((service) => (
           <label
             key={service.id}
-            className={`flex items-start gap-3 p-4 rounded-xl border cursor-pointer transition-all duration-200 ${
+            className={`flex items-start gap-3 p-4 rounded-xl border-2 cursor-pointer transition-all duration-200 ${
               selected === service.id
                 ? "border-primary bg-primary/5 shadow-md"
                 : "border-border bg-card hover:border-primary"

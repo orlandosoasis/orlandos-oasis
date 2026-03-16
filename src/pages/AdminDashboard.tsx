@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import {
   LayoutDashboard, Wrench, Users, AlertCircle, UserPlus, ChevronLeft,
-  Star, Mail, Check, X, LogOut, User, Menu, FileText, Download, Waves, MessageSquare
+  Star, Mail, Check, X, LogOut, User, Menu, FileText, Download, Waves, MessageSquare, Megaphone
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -11,6 +11,8 @@ import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import oasisLogo from "@/assets/oasis-logo-circle.png";
 import {
@@ -80,6 +82,11 @@ const AdminDashboard = () => {
   const [reviewFilter, setReviewFilter] = useState<"All" | ReviewStatus>("All");
   const [rejectReviewModal, setRejectReviewModal] = useState<AdminTechReview | null>(null);
   const [rejectionReason, setRejectionReason] = useState<ReviewRejectionReason>("");
+
+  const [announcementOpen, setAnnouncementOpen] = useState(false);
+  const [announcementTitle, setAnnouncementTitle] = useState("");
+  const [announcementMessage, setAnnouncementMessage] = useState("");
+  const [announcementSent, setAnnouncementSent] = useState(false);
 
   const nav = (p: AdminPage, id: number | null = null) => { setPage(p); setDetailId(id); setSidebarOpen(false); };
 
@@ -224,7 +231,12 @@ const AdminDashboard = () => {
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           <Card>
-            <CardHeader className="pb-3"><CardTitle className="text-sm font-bold">Services Today</CardTitle></CardHeader>
+             <CardHeader className="pb-3 flex flex-row items-center justify-between">
+              <CardTitle className="text-sm font-bold">Services Today</CardTitle>
+              <Button size="sm" variant="outline" className="gap-1.5 text-xs" onClick={() => { setAnnouncementOpen(true); setAnnouncementTitle(""); setAnnouncementMessage(""); setAnnouncementSent(false); }}>
+                <Megaphone className="h-3.5 w-3.5" /> Create Announcement
+              </Button>
+            </CardHeader>
             <CardContent>
               <Table>
                 <TableHeader><TableRow>
@@ -702,6 +714,64 @@ const AdminDashboard = () => {
               </DialogFooter>
             </>
           )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Announcement Modal */}
+      <Dialog open={announcementOpen} onOpenChange={setAnnouncementOpen}>
+        <DialogContent className="pt-10">
+          <DialogHeader>
+            <DialogTitle>Create Service Announcement</DialogTitle>
+            <DialogDescription>
+              This announcement will be sent to all homeowners with services scheduled for today.
+            </DialogDescription>
+          </DialogHeader>
+          {announcementSent ? (
+            <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-4 text-sm text-emerald-700 font-medium text-center">
+              Announcement sent successfully. Homeowners scheduled for today have been notified.
+            </div>
+          ) : (
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <label className="text-sm font-semibold text-foreground">Title</label>
+                <Input
+                  placeholder="e.g. Service Delay Notice"
+                  value={announcementTitle}
+                  onChange={(e) => setAnnouncementTitle(e.target.value)}
+                />
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-semibold text-foreground">Reason / Message</label>
+                <Textarea
+                  placeholder='e.g. "Due to heavy rain this morning, some pool services scheduled today may arrive later than expected."'
+                  value={announcementMessage}
+                  onChange={(e) => setAnnouncementMessage(e.target.value)}
+                  rows={4}
+                />
+              </div>
+              <div className="bg-muted/50 rounded-lg p-3 text-xs text-muted-foreground">
+                <span className="font-semibold text-foreground">Affected Services:</span> All services scheduled for today will be included automatically.
+              </div>
+            </div>
+          )}
+          <DialogFooter>
+            {announcementSent ? (
+              <Button variant="outline" onClick={() => setAnnouncementOpen(false)}>Close</Button>
+            ) : (
+              <>
+                <Button variant="outline" onClick={() => setAnnouncementOpen(false)}>Cancel</Button>
+                <Button
+                  disabled={!announcementTitle.trim() || !announcementMessage.trim()}
+                  onClick={() => {
+                    setAnnouncementSent(true);
+                    toast({ variant: "default", title: "Announcement sent", description: "Homeowners scheduled for today have been notified." });
+                  }}
+                >
+                  <Megaphone className="h-4 w-4 mr-1.5" /> Send Announcement
+                </Button>
+              </>
+            )}
+          </DialogFooter>
         </DialogContent>
       </Dialog>
     </div>

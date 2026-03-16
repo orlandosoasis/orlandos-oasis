@@ -211,12 +211,6 @@ const BookingFlow = ({ onClose, onComplete, selectedService: selectedServiceProp
               <span className="text-muted-foreground">Service</span>
               <span className="font-medium text-foreground">{selectedService ? selectedService.title : selectedPass.label}</span>
             </div>
-            {selectedService && (
-              <div className="flex justify-between text-sm">
-                <span className="text-muted-foreground">Details</span>
-                <span className="font-medium text-foreground text-right max-w-[60%]">{selectedService.description}</span>
-              </div>
-            )}
             {frequency === "monthly" &&
             <div className="flex justify-between text-sm">
                 <span className="text-muted-foreground">Recurrence</span>

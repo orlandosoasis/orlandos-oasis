@@ -1,4 +1,5 @@
 import { useState, useRef, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Badge } from "@/components/ui/badge";
@@ -87,6 +88,7 @@ const STEPS = [
 ];
 
 const ServicesSection = () => {
+  const navigate = useNavigate();
   const [selected, setSelected] = useState<string | null>("weekly-cleaning");
   const [currentStep, setCurrentStep] = useState(1);
   const [contactData, setContactData] = useState<any>(null);
@@ -144,7 +146,14 @@ const ServicesSection = () => {
         <p className="text-muted-foreground">
           Your pool service <strong>{selectedService?.title}</strong> has been successfully booked.
         </p>
-        <Button onClick={() => window.location.href = '/dashboard'} className="mt-4">
+        <Button onClick={() => {
+          const params = new URLSearchParams({
+            openBooking: "true",
+            serviceTitle: selectedService?.title || "",
+            serviceDescription: selectedService?.description || "",
+          });
+          navigate(`/dashboard?${params.toString()}`);
+        }} className="mt-4">
           Schedule Pool Service
         </Button>
       </div>

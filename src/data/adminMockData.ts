@@ -138,8 +138,8 @@ export const INIT_TECHNICIANS: AdminTechnician[] = [
   {
     id: 4, name: "Priya S.", rating: 4.8, email: "priya@oasis.com", phone: "(407) 555-3456", status: "Inactive", assignedPools: 0, completedServices: 15,
     reviews: [
-      { reviewer: "Lisa M.", rating: 5, message: "Priya was exceptional every visit.", date: "Jan 20, 2026" },
-      { reviewer: "John S.", rating: 5, message: "Miss her service. Hope she returns!", date: "Jan 10, 2026" },
+      { id: 11, reviewer: "Lisa M.", technicianName: "Priya S.", rating: 5, message: "Priya was exceptional every visit.", date: "Jan 20, 2026", status: "Approved" },
+      { id: 12, reviewer: "John S.", technicianName: "Priya S.", rating: 5, message: "Miss her service. Hope she returns!", date: "Jan 10, 2026", status: "Approved" },
     ],
     pools: [],
   },

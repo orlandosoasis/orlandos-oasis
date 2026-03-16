@@ -3,56 +3,76 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
-const SERVICES = [
+const SERVICE_CATEGORIES = [
   {
-    id: "weekly-cleaning",
-    title: "Weekly Pool / Spa Cleaning",
-    description: "Regular service that includes skimming debris, brushing walls, vacuuming the pool or spa, and emptying baskets to keep the water clean and clear.",
+    label: "Cleaning & Maintenance",
+    services: [
+      {
+        id: "weekly-cleaning",
+        title: "Weekly Pool / Spa Cleaning",
+        description: "Regular service that includes skimming debris, brushing walls, vacuuming the pool or spa, and emptying baskets to keep the water clean and clear.",
+      },
+      {
+        id: "chemical-balancing",
+        title: "Chemical Testing & Balancing",
+        description: "Technicians test and adjust chlorine, pH, alkalinity, and other chemicals to keep pool water safe and properly balanced.",
+      },
+      {
+        id: "filter-cleaning",
+        title: "Filter / Salt Cell Cleaning",
+        description: "Cleaning the filtration system and salt cell to maintain proper circulation and chlorine generation.",
+      },
+      {
+        id: "tile-cleaning",
+        title: "Tile & Surface Cleaning",
+        description: "Removal of calcium buildup and stains from waterline tile and pool surfaces.",
+      },
+    ],
   },
   {
-    id: "chemical-balancing",
-    title: "Chemical Testing & Balancing",
-    description: "Technicians test and adjust chlorine, pH, alkalinity, and other chemicals to keep pool water safe and properly balanced.",
+    label: "Repairs & Equipment",
+    services: [
+      {
+        id: "equipment-inspection",
+        title: "Pool Equipment Inspection",
+        description: "Inspection of pumps, motors, valves, and heaters to identify potential issues early.",
+      },
+      {
+        id: "equipment-repair",
+        title: "Pool Equipment Repair",
+        description: "Repair or replacement of pumps, motors, lights, and other pool equipment when needed.",
+      },
+    ],
   },
   {
-    id: "filter-cleaning",
-    title: "Filter Cleaning / Salt Cell Cleaning / Backwashing",
-    description: "Cleaning the filtration system and salt cell to maintain proper circulation and chlorine generation.",
+    label: "Deep Cleaning & Restoration",
+    services: [
+      {
+        id: "algae-treatment",
+        title: "Green-to-Clean / Algae Treatment",
+        description: "Deep cleaning and chemical treatment to restore pools affected by algae or green water.",
+      },
+      {
+        id: "acid-washing",
+        title: "Acid Washing",
+        description: "Deep surface cleaning to remove stains, mineral buildup, and embedded algae.",
+      },
+    ],
   },
   {
-    id: "equipment-inspection",
-    title: "Pool Equipment Inspection",
-    description: "Inspection of pumps, motors, valves, and heaters to identify potential issues early.",
-  },
-  {
-    id: "equipment-repair",
-    title: "Pool Equipment Repair",
-    description: "Repair or replacement of pumps, motors, lights, and other pool equipment when needed.",
-  },
-  {
-    id: "algae-treatment",
-    title: "Green-to-Clean / Algae Treatment",
-    description: "Deep cleaning and chemical treatment to restore pools affected by algae or green water.",
-  },
-  {
-    id: "tile-cleaning",
-    title: "Tile & Surface Cleaning",
-    description: "Removal of calcium buildup and stains from waterline tile and pool surfaces.",
-  },
-  {
-    id: "acid-washing",
-    title: "Acid Washing",
-    description: "Deep surface cleaning to remove stains, mineral buildup, and embedded algae.",
-  },
-  {
-    id: "pool-inspections",
-    title: "Pool Inspections",
-    description: "Evaluation of pool condition including water clarity, equipment performance, and safety components.",
-  },
-  {
-    id: "pool-startups",
-    title: "Pool Startups",
-    description: "Initial service after a new pool build or resurfacing to balance chemicals and start equipment.",
+    label: "Pool Setup & Evaluation",
+    services: [
+      {
+        id: "pool-inspections",
+        title: "Pool Inspections",
+        description: "Evaluation of pool condition including water clarity, equipment performance, and safety components.",
+      },
+      {
+        id: "pool-startups",
+        title: "Pool Startups",
+        description: "Initial service after a new pool build or resurfacing to balance chemicals and start equipment.",
+      },
+    ],
   },
 ];
 
@@ -74,27 +94,36 @@ const ServicesSection = () => {
       <RadioGroup
         value={selected || ""}
         onValueChange={setSelected}
-        className="space-y-3"
+        className="space-y-6"
       >
-        {SERVICES.map((service) => (
-          <label
-            key={service.id}
-            className={`flex items-start gap-3 p-4 rounded-xl border-2 cursor-pointer transition-all duration-200 ${
-              selected === service.id
-                ? "border-primary bg-primary/5 shadow-md"
-                : "border-border bg-card hover:border-primary"
-            }`}
-          >
-            <RadioGroupItem value={service.id} className="mt-1 shrink-0" />
-            <div className="min-w-0">
-              <h3 className="text-sm font-semibold text-foreground mb-1">
-                {service.title}
-              </h3>
-              <p className="text-sm text-muted-foreground leading-relaxed">
-                {service.description}
-              </p>
+        {SERVICE_CATEGORIES.map((category) => (
+          <div key={category.label}>
+            <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">
+              {category.label}
+            </h3>
+            <div className="space-y-3">
+              {category.services.map((service) => (
+                <label
+                  key={service.id}
+                  className={`flex items-start gap-3 p-4 rounded-xl border-2 cursor-pointer transition-all duration-200 ${
+                    selected === service.id
+                      ? "border-primary bg-primary/5 shadow-md"
+                      : "border-border bg-card hover:border-primary"
+                  }`}
+                >
+                  <RadioGroupItem value={service.id} className="mt-1 shrink-0" />
+                  <div className="min-w-0">
+                    <h3 className="text-sm font-semibold text-foreground mb-1">
+                      {service.title}
+                    </h3>
+                    <p className="text-sm text-muted-foreground leading-relaxed">
+                      {service.description}
+                    </p>
+                  </div>
+                </label>
+              ))}
             </div>
-          </label>
+          </div>
         ))}
       </RadioGroup>
 

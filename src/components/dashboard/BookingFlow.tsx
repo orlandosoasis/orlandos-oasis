@@ -282,7 +282,7 @@ const BookingFlow = ({ onClose, onComplete, selectedService: selectedServiceProp
             <div>
               <p className="text-[11px] font-semibold tracking-[0.8px] uppercase text-muted-foreground mb-2.5">PREFERRED ARRIVAL WINDOW</p>
               <div className="flex items-center gap-2 mb-3">
-                <Info className="h-4 w-4 text-muted-foreground shrink-0 mt-0.5" />
+                <Info className="h-4 w-4 text-muted-foreground shrink-0" />
                 <p className="text-xs text-muted-foreground">
                   Arrival time cannot be guaranteed, but we will do our best to arrive as close to the scheduled time as possible.
                 </p>

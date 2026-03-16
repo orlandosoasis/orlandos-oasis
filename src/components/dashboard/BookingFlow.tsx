@@ -122,9 +122,13 @@ const BookingFlow = ({ onClose, onComplete, selectedService }: BookingFlowProps)
       addonsTotal: 0
     };
 
+    const bookedPass = selectedService
+      ? { ...selectedPass, label: selectedService.title, description: selectedService.description }
+      : selectedPass;
+
     setBooking({
       frequency,
-      selectedPass,
+      selectedPass: bookedPass,
       recurrence: frequency === "monthly" ? "monthly" : undefined,
       scheduleData,
       technician: matchTechnician(),

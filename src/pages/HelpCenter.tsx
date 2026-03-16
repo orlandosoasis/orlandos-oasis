@@ -56,10 +56,7 @@ const CATEGORIES = [
 ];
 
 const HelpCenter = () => {
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [search, setSearch] = useState("");
-
-  const category = CATEGORIES.find((c) => c.id === selectedCategory);
 
   const filteredCategories = search.trim()
     ? CATEGORIES.filter(
@@ -94,59 +91,56 @@ const HelpCenter = () => {
           <Input
             placeholder="Search for help..."
             value={search}
-            onChange={(e) => { setSearch(e.target.value); setSelectedCategory(null); }}
+            onChange={(e) => setSearch(e.target.value)}
             className="pl-10"
           />
         </div>
 
-        {!category ? (
-          /* Category List */
-          <div className="space-y-2">
-            {filteredCategories.map((cat) => {
-              const Icon = cat.icon;
-              return (
-                <button
-                  key={cat.id}
-                  onClick={() => setSelectedCategory(cat.id)}
-                  className="w-full flex items-center gap-3 bg-card border border-border rounded-2xl p-4 hover:border-primary/40 transition-colors text-left"
-                >
-                  <Icon className="h-5 w-5 text-primary shrink-0" />
-                  <span className="text-sm font-semibold text-foreground flex-1">{cat.label}</span>
-                </button>
-              );
-            })}
-            {filteredCategories.length === 0 && (
-              <p className="text-sm text-muted-foreground text-center py-8">No results found. Try a different search term.</p>
-            )}
-          </div>
-        ) : (
-          /* Article List with Accordion */
-          <div>
-            <button
-              onClick={() => setSelectedCategory(null)}
-              className="flex items-center gap-1.5 text-sm text-primary font-semibold mb-4 hover:underline"
-            >
-              <ArrowLeftIcon className="h-4 w-4" />
-              All Categories
-            </button>
-            <h2 className="text-[17px] font-bold text-foreground mb-4">{category.label}</h2>
-            <Accordion type="single" collapsible className="space-y-2">
-              {category.articles.map((article, idx) => (
-                <AccordionItem
-                  key={idx}
-                  value={`item-${idx}`}
-                  className="bg-card border border-border rounded-2xl overflow-hidden px-4"
-                >
-                  <AccordionTrigger className="text-sm font-medium text-foreground text-left py-4 hover:no-underline">
-                    {article.title}
-                  </AccordionTrigger>
-                  <AccordionContent className="text-sm text-muted-foreground leading-relaxed pb-4">
-                    {article.body}
-                  </AccordionContent>
-                </AccordionItem>
-              ))}
-            </Accordion>
-          </div>
+        {/* Full Accordion Layout */}
+        <Accordion type="single" collapsible className="space-y-2">
+          {filteredCategories.map((cat) => {
+            const Icon = cat.icon;
+            return (
+              <AccordionItem
+                key={cat.id}
+                value={cat.id}
+                className="bg-card border border-border rounded-2xl overflow-hidden px-4"
+              >
+                <AccordionTrigger className="text-sm font-semibold text-foreground text-left py-4 hover:no-underline">
+                  <div className="flex items-center gap-3">
+                    <Icon className="h-5 w-5 text-primary shrink-0" />
+                    <span>{cat.label}</span>
+                  </div>
+                </AccordionTrigger>
+                <AccordionContent className="pb-4">
+                  <Accordion type="single" collapsible className="space-y-1.5">
+                    {cat.articles
+                      .filter((a) =>
+                        !search.trim() || a.title.toLowerCase().includes(search.toLowerCase())
+                      )
+                      .map((article, idx) => (
+                        <AccordionItem
+                          key={idx}
+                          value={`${cat.id}-${idx}`}
+                          className="border border-border rounded-xl overflow-hidden px-3 bg-muted/30"
+                        >
+                          <AccordionTrigger className="text-sm font-medium text-foreground text-left py-3 hover:no-underline">
+                            {article.title}
+                          </AccordionTrigger>
+                          <AccordionContent className="text-sm text-muted-foreground leading-relaxed pb-3">
+                            {article.body}
+                          </AccordionContent>
+                        </AccordionItem>
+                      ))}
+                  </Accordion>
+                </AccordionContent>
+              </AccordionItem>
+            );
+          })}
+        </Accordion>
+
+        {filteredCategories.length === 0 && (
+          <p className="text-sm text-muted-foreground text-center py-8">No results found. Try a different search term.</p>
         )}
       </main>
     </div>

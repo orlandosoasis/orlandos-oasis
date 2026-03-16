@@ -295,7 +295,7 @@ const Dashboard = () => {
         </footer>
       </main>
 
-      {showBooking && <BookingFlow onClose={() => setShowBooking(false)} onComplete={() => setShowBooking(false)} />}
+      {showBooking && <BookingFlow onClose={() => { setShowBooking(false); setSelectedServiceInfo(null); }} onComplete={() => { setShowBooking(false); setSelectedServiceInfo(null); }} selectedService={selectedServiceInfo} />}
 
       {rescheduleService && (
         <RescheduleModal

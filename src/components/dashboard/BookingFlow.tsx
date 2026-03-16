@@ -27,12 +27,18 @@ const TIME_LABELS: Record<string, string> = {
   evening: "4:00 PM – 6:00 PM"
 };
 
+export interface SelectedServiceInfo {
+  title: string;
+  description: string;
+}
+
 interface BookingFlowProps {
   onClose: () => void;
   onComplete: () => void;
+  selectedService?: SelectedServiceInfo | null;
 }
 
-const BookingFlow = ({ onClose, onComplete }: BookingFlowProps) => {
+const BookingFlow = ({ onClose, onComplete, selectedService }: BookingFlowProps) => {
   const { setBooking } = useBooking();
   const [step, setStep] = useState(1);
 

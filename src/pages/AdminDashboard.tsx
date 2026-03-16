@@ -517,6 +517,75 @@ const AdminDashboard = () => {
     </Card>
   );
 
+  // ═══════════ REVIEWS MODERATION ═══════════
+  const ReviewsPage = () => {
+    const reviews = technicians.flatMap(t => t.reviews);
+    const filtered = reviewFilter === "All" ? reviews : reviews.filter(r => r.status === reviewFilter);
+
+    return (
+      <div className="space-y-4">
+        <div className="flex items-center gap-2 flex-wrap">
+          {(["All", "Pending", "Approved", "Rejected"] as const).map(f => (
+            <Button key={f} size="sm" variant={reviewFilter === f ? "default" : "outline"} onClick={() => setReviewFilter(f)}>
+              {f}
+              {f !== "All" && (
+                <span className="ml-1.5 text-[10px] bg-background/20 px-1.5 py-0.5 rounded-full">
+                  {reviews.filter(r => f === "All" ? true : r.status === f).length}
+                </span>
+              )}
+            </Button>
+          ))}
+        </div>
+        <Card>
+          <CardContent className="p-0">
+            <div className="overflow-x-auto">
+              <Table>
+                <TableHeader><TableRow>
+                  <TableHead>Reviewer</TableHead><TableHead>Technician</TableHead><TableHead>Rating</TableHead>
+                  <TableHead>Review</TableHead><TableHead>Date</TableHead><TableHead>Status</TableHead><TableHead>Actions</TableHead>
+                </TableRow></TableHeader>
+                <TableBody>
+                  {filtered.length === 0 ? (
+                    <TableRow><TableCell colSpan={7} className="text-center text-muted-foreground py-8">No reviews found.</TableCell></TableRow>
+                  ) : filtered.map(r => (
+                    <TableRow key={r.id}>
+                      <TableCell className="font-semibold">{r.reviewer}</TableCell>
+                      <TableCell>{r.technicianName}</TableCell>
+                      <TableCell><Stars rating={r.rating} /></TableCell>
+                      <TableCell className="text-muted-foreground max-w-[250px] truncate">{r.message}</TableCell>
+                      <TableCell className="whitespace-nowrap">{r.date}</TableCell>
+                      <TableCell><StatusBadge status={r.status} /></TableCell>
+                      <TableCell>
+                        <div className="flex gap-1.5 flex-nowrap">
+                          {r.status === "Pending" && (
+                            <>
+                              <Button size="sm" className="bg-emerald-500 hover:bg-emerald-600 text-white gap-1" onClick={() => handleApproveReview(r.id)}>
+                                <Check className="h-3.5 w-3.5" /> Approve
+                              </Button>
+                              <Button size="sm" variant="outline" className="text-destructive border-destructive/40 hover:bg-destructive/10 gap-1" onClick={() => { setRejectReviewModal(r); setRejectionReason(""); }}>
+                                <X className="h-3.5 w-3.5" /> Reject
+                              </Button>
+                            </>
+                          )}
+                          {r.status === "Rejected" && r.rejectionReason && (
+                            <span className="text-xs text-muted-foreground italic capitalize">{r.rejectionReason}</span>
+                          )}
+                          {r.status === "Approved" && (
+                            <span className="text-xs text-muted-foreground italic">Visible</span>
+                          )}
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  };
+
   // ═══════════ PAGE ROUTER ═══════════
   const renderPage = () => {
     switch (page) {
@@ -526,6 +595,7 @@ const AdminDashboard = () => {
       case "homeowners": return <HomeownersPage />;
       case "homeDetail": return <HomeDetailPage />;
       case "issues": return <IssuesPage />;
+      case "reviews": return <ReviewsPage />;
       case "applicants": return <ApplicantsPage />;
       case "applicantDetail": return <ApplicantDetailPage />;
       default: return <DashboardPage />;

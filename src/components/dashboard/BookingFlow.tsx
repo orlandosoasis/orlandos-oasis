@@ -3,11 +3,9 @@ import { ChevronLeft, ChevronRight, Check, ArrowLeft, CheckCircle2, Loader2 } fr
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useBooking, matchTechnician } from "@/contexts/BookingContext";
 import type { PassOption, CleaningFrequency, TimeWindow, AccessMethod, ScheduleData } from "@/contexts/BookingContext";
-import VoucherSelectionStep, { VOUCHER_PLANS } from "./VoucherSelectionStep";
-import VoucherConfirmationStep from "./VoucherConfirmationStep";
+import { VOUCHER_PLANS } from "./VoucherSelectionStep";
 
 const DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 const MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
@@ -30,23 +28,20 @@ interface BookingFlowProps {
   selectedService?: SelectedServiceInfo | null;
 }
 
-const TOTAL_STEPS = 4; // Voucher Select, Voucher Confirm, Schedule, Pool & Property
+const TOTAL_STEPS = 2;
 
 const BookingFlow = ({ onClose, onComplete, selectedService: selectedServiceProp }: BookingFlowProps) => {
   const { setBooking } = useBooking();
   const [step, setStep] = useState(0);
 
-  // Step 0 — Voucher selection
-  const [selectedPlanId, setSelectedPlanId] = useState("weekly");
+  const selectedPlanId = "weekly";
   const selectedVoucherPlan = useMemo(() => VOUCHER_PLANS.find((p) => p.id === selectedPlanId)!, [selectedPlanId]);
 
-  // Build a service info from the voucher plan (or use preselected)
   const selectedService = selectedServiceProp || {
     title: selectedVoucherPlan.label.replace("Most Popular – ", ""),
     description: selectedVoucherPlan.description,
   };
 
-  // Build a PassOption from the voucher plan for booking context compatibility
   const selectedPass: PassOption = useMemo(() => ({
     id: selectedVoucherPlan.id,
     hours: 2,
@@ -58,7 +53,7 @@ const BookingFlow = ({ onClose, onComplete, selectedService: selectedServiceProp
     isMostPopular: selectedVoucherPlan.isMostPopular,
   }), [selectedVoucherPlan, selectedService]);
 
-  // Step 2 — Schedule
+  // Step 0 — Schedule
   const [frequency] = useState<CleaningFrequency>("monthly");
   const today = useMemo(() => { const d = new Date(); d.setHours(0, 0, 0, 0); return d; }, []);
   const [selectedDate, setSelectedDate] = useState<Date>(today);
@@ -66,7 +61,7 @@ const BookingFlow = ({ onClose, onComplete, selectedService: selectedServiceProp
   const [calMonth, setCalMonth] = useState(today.getMonth());
   const [timeWindow, setTimeWindow] = useState<TimeWindow>("morning");
 
-  // Step 3 — Pool / Property
+  // Step 1 — Pool / Property
   const [address, setAddress] = useState("");
   const [city, setCity] = useState("");
   const [state, setState] = useState("");
@@ -92,10 +87,8 @@ const BookingFlow = ({ onClose, onComplete, selectedService: selectedServiceProp
   const nextMonth = () => { if (calMonth === 11) { setCalMonth(0); setCalYear(calYear + 1); } else setCalMonth(calMonth + 1); };
 
   const canProceed = () => {
-    if (step === 0) return !!selectedPlanId;
-    if (step === 1) return true;
-    if (step === 2) return true;
-    if (step === 3) {
+    if (step === 0) return true;
+    if (step === 1) {
       if (!address.trim()) return false;
       if (accessMethod === "gate" && !gateCode.trim()) return false;
       if (accessMethod === "key" && !keyLocation.trim()) return false;
@@ -226,18 +219,8 @@ const BookingFlow = ({ onClose, onComplete, selectedService: selectedServiceProp
       {/* Content */}
       <div className="max-w-[760px] mx-auto px-5 py-6 pb-32">
 
-        {/* Step 0: Voucher Selection */}
+        {/* Step 0: Schedule */}
         {step === 0 && (
-          <VoucherSelectionStep selectedPlanId={selectedPlanId} onSelectPlan={setSelectedPlanId} />
-        )}
-
-        {/* Step 1: Voucher Confirmation */}
-        {step === 1 && (
-          <VoucherConfirmationStep plan={selectedVoucherPlan} />
-        )}
-
-        {/* Step 2: Schedule */}
-        {step === 2 && (
           <div className="space-y-6 animate-fade-in">
             {/* Selected Service */}
             <div>
@@ -322,8 +305,8 @@ const BookingFlow = ({ onClose, onComplete, selectedService: selectedServiceProp
           </div>
         )}
 
-        {/* Step 3: Pool & Property */}
-        {step === 3 && (
+        {/* Step 1: Pool & Property */}
+        {step === 1 && (
           <div className="space-y-5 animate-fade-in">
             <div>
               <h2 className="text-lg font-semibold text-foreground mb-1">Pool & Property</h2>
@@ -445,7 +428,7 @@ const BookingFlow = ({ onClose, onComplete, selectedService: selectedServiceProp
       {/* Sticky footer */}
       <div className="fixed bottom-0 left-0 right-0 bg-card border-t border-border">
         <div className="max-w-[760px] mx-auto px-5 py-4">
-          {step < 3 ? (
+          {step < 1 ? (
             <Button onClick={() => setStep(step + 1)} disabled={!canProceed()} className="w-full h-12 text-[15px] font-bold rounded-xl">
               Continue
             </Button>

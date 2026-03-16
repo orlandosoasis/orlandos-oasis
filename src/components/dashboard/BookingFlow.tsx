@@ -532,7 +532,7 @@ const BookingFlow = ({ onClose, onComplete, selectedService: selectedServiceProp
         <div className="max-w-[760px] mx-auto px-5 py-4">
           {step < 2 ?
           <Button onClick={() => setStep(step + 1)} disabled={!canProceed()} className="w-full h-12 text-[15px] font-bold rounded-xl">
-              Continue
+              {step === 0 ? (selectedServiceId ? "Continue" : "Select a service to continue") : "Continue"}
             </Button> :
 
           <Button onClick={handleConfirmBooking} disabled={!canProceed() || isProcessing} className="w-full h-12 text-[15px] font-bold rounded-xl">

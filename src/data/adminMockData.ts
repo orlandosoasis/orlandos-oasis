@@ -113,9 +113,9 @@ export const INIT_TECHNICIANS: AdminTechnician[] = [
   {
     id: 2, name: "Ana R.", rating: 4.7, email: "ana@oasis.com", phone: "(407) 555-5678", status: "Active", assignedPools: 2, completedServices: 8,
     reviews: [
-      { reviewer: "Susan P.", rating: 5, message: "Very professional and detail-oriented.", date: "Feb 20, 2026" },
-      { reviewer: "Tom R.", rating: 4, message: "Solid work, pool looks great.", date: "Feb 12, 2026" },
-      { reviewer: "Lisa M.", rating: 5, message: "Ana is wonderful. So reliable!", date: "Jan 30, 2026" },
+      { id: 6, reviewer: "Susan P.", technicianName: "Ana R.", rating: 5, message: "Very professional and detail-oriented.", date: "Feb 20, 2026", status: "Approved" },
+      { id: 7, reviewer: "Tom R.", technicianName: "Ana R.", rating: 4, message: "Solid work, pool looks great.", date: "Feb 12, 2026", status: "Pending" },
+      { id: 8, reviewer: "Lisa M.", technicianName: "Ana R.", rating: 5, message: "Ana is wonderful. So reliable!", date: "Jan 30, 2026", status: "Rejected", rejectionReason: "spam" },
     ],
     pools: [
       { address: "320 Ocean View Rd", homeowner: "Susan P.", nextService: "Mar 19, 2026", serviceType: "3-Hour Pool Service" },

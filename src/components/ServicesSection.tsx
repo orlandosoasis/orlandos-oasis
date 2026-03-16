@@ -1,7 +1,11 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Badge } from "@/components/ui/badge";
+import { Check } from "lucide-react";
+import BookingStepper from "@/components/BookingStepper";
+import BookingContactForm from "@/components/BookingContactForm";
+import BookingPaymentForm from "@/components/BookingPaymentForm";
 
 const SERVICE_CATEGORIES = [
   {
@@ -76,9 +80,61 @@ const SERVICE_CATEGORIES = [
   },
 ];
 
+const STEPS = [
+  { label: "Service" },
+  { label: "Your Details" },
+  { label: "Payment" },
+];
+
 const ServicesSection = () => {
-  const navigate = useNavigate();
   const [selected, setSelected] = useState<string | null>(null);
+  const [currentStep, setCurrentStep] = useState(1);
+  const [contactData, setContactData] = useState<any>(null);
+  const [bookingComplete, setBookingComplete] = useState(false);
+
+  const allServices = SERVICE_CATEGORIES.flatMap((c) => c.services);
+  const selectedService = allServices.find((s) => s.id === selected);
+
+  const handleServiceSelect = (serviceId: string) => {
+    setSelected(serviceId);
+  };
+
+  const handleContinueToDetails = () => {
+    if (selected) setCurrentStep(2);
+  };
+
+  const handleContactContinue = (data: any) => {
+    setContactData(data);
+    setCurrentStep(3);
+  };
+
+  const handlePaymentSubmit = () => {
+    setBookingComplete(true);
+  };
+
+  const handleReset = () => {
+    setSelected(null);
+    setCurrentStep(1);
+    setContactData(null);
+    setBookingComplete(false);
+  };
+
+  if (bookingComplete) {
+    return (
+      <div className="text-center py-12 space-y-4">
+        <div className="mx-auto h-16 w-16 rounded-full bg-primary/10 flex items-center justify-center">
+          <Check className="h-8 w-8 text-primary" />
+        </div>
+        <h2 className="text-2xl font-bold text-foreground">Booking Confirmed!</h2>
+        <p className="text-muted-foreground">
+          We'll reach out shortly to confirm your <strong>{selectedService?.title}</strong> appointment.
+        </p>
+        <Button variant="outline" onClick={handleReset} className="mt-4">
+          Book Another Service
+        </Button>
+      </div>
+    );
+  }
 
   return (
     <div id="discount-voucher" className="scroll-mt-8">
@@ -91,48 +147,92 @@ const ServicesSection = () => {
         </p>
       </div>
 
-      <RadioGroup
-        value={selected || ""}
-        onValueChange={setSelected}
-        className="space-y-6"
-      >
-        {SERVICE_CATEGORIES.map((category) => (
-          <div key={category.label}>
-            <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">
-              {category.label}
-            </h3>
-            <div className="space-y-3">
-              {category.services.map((service) => (
-                <label
-                  key={service.id}
-                  className={`flex items-start gap-3 p-4 rounded-xl border-2 cursor-pointer transition-all duration-200 ${
-                    selected === service.id
-                      ? "border-primary bg-primary/5 shadow-md"
-                      : "border-border bg-card hover:border-primary"
-                  }`}
-                >
-                  <RadioGroupItem value={service.id} className="mt-1 shrink-0" />
-                  <div className="min-w-0">
-                    <h3 className="text-sm font-semibold text-foreground mb-1">
-                      {service.title}
-                    </h3>
-                    <p className="text-sm text-muted-foreground leading-relaxed">
-                      {service.description}
-                    </p>
-                  </div>
-                </label>
-              ))}
-            </div>
-          </div>
-        ))}
-      </RadioGroup>
+      {/* Stepper — visible once a service is selected */}
+      {selected && (
+        <BookingStepper currentStep={currentStep} steps={STEPS} />
+      )}
 
-      <Button
-        onClick={() => navigate("/service-pass")}
-        className="w-full h-14 text-[17px] font-bold rounded-full shadow-md hover:shadow-lg mt-6"
-      >
-        Book Your Pool Service
-      </Button>
+      {/* Step 1: Service Selection */}
+      {currentStep === 1 && (
+        <>
+          <RadioGroup
+            value={selected || ""}
+            onValueChange={handleServiceSelect}
+            className="space-y-6"
+          >
+            {SERVICE_CATEGORIES.map((category) => (
+              <div key={category.label}>
+                <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">
+                  {category.label}
+                </h3>
+                <div className="space-y-3">
+                  {category.services.map((service) => (
+                    <label
+                      key={service.id}
+                      className={`flex items-start gap-3 p-4 rounded-xl border-2 cursor-pointer transition-all duration-200 ${
+                        selected === service.id
+                          ? "border-primary bg-primary/5 shadow-md"
+                          : "border-border bg-card hover:border-primary"
+                      }`}
+                    >
+                      <RadioGroupItem value={service.id} className="mt-1 shrink-0" />
+                      <div className="min-w-0">
+                        <h3 className="text-sm font-semibold text-foreground mb-1">
+                          {service.title}
+                        </h3>
+                        <p className="text-sm text-muted-foreground leading-relaxed">
+                          {service.description}
+                        </p>
+                      </div>
+                    </label>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </RadioGroup>
+
+          <Button
+            onClick={handleContinueToDetails}
+            disabled={!selected}
+            className="w-full h-14 text-[17px] font-bold rounded-full shadow-md hover:shadow-lg mt-6"
+          >
+            {selected ? "Continue" : "Select a service to continue"}
+          </Button>
+        </>
+      )}
+
+      {/* Step 2: Contact Details */}
+      {currentStep === 2 && (
+        <div className="bg-card border border-border rounded-xl p-6">
+          {selectedService && (
+            <div className="mb-5 p-3 rounded-lg bg-primary/5 border border-primary/20 flex items-center gap-2">
+              <Badge className="bg-primary text-primary-foreground text-xs">Selected</Badge>
+              <span className="text-sm font-semibold text-foreground">{selectedService.title}</span>
+            </div>
+          )}
+          <BookingContactForm
+            onContinue={handleContactContinue}
+            onBack={() => setCurrentStep(1)}
+            initialData={contactData}
+          />
+        </div>
+      )}
+
+      {/* Step 3: Payment */}
+      {currentStep === 3 && (
+        <div className="bg-card border border-border rounded-xl p-6">
+          {selectedService && (
+            <div className="mb-5 p-3 rounded-lg bg-primary/5 border border-primary/20 flex items-center gap-2">
+              <Badge className="bg-primary text-primary-foreground text-xs">Selected</Badge>
+              <span className="text-sm font-semibold text-foreground">{selectedService.title}</span>
+            </div>
+          )}
+          <BookingPaymentForm
+            onSubmit={handlePaymentSubmit}
+            onBack={() => setCurrentStep(2)}
+          />
+        </div>
+      )}
     </div>
   );
 };

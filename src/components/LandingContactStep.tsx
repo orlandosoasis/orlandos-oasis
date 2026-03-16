@@ -122,32 +122,6 @@ const LandingContactStep = ({
         />
       </div>
 
-      {/* Frequency Selection */}
-      <div className="bg-card border border-border rounded-xl p-5 shadow-sm">
-        <p className="text-[15px] font-semibold text-foreground text-center mb-4">
-          How often do you need cleanings?
-        </p>
-        <RadioGroup
-          value={formData.frequency}
-          onValueChange={(val) => onFormDataChange({ ...formData, frequency: val })}
-          className="space-y-3"
-        >
-          {FREQUENCY_OPTIONS.map((opt) => (
-            <label
-              key={opt.value}
-              className="flex items-center gap-3 cursor-pointer"
-            >
-              <RadioGroupItem value={opt.value} className="h-5 w-5 border-2 border-muted-foreground data-[state=checked]:border-foreground data-[state=checked]:bg-foreground" />
-              <span className="text-[15px] text-foreground">{opt.label}</span>
-              {opt.isMostPopular && (
-                <Badge variant="outline" className="text-xs font-medium border-border text-muted-foreground px-2 py-0.5">
-                  Most Popular
-                </Badge>
-              )}
-            </label>
-          ))}
-        </RadioGroup>
-      </div>
 
       {/* Consent */}
       <p className="text-xs text-muted-foreground text-center leading-relaxed px-1">

@@ -90,7 +90,7 @@ const ServicesSection = () => {
   return (
     <div id="discount-voucher" className="scroll-mt-8" ref={sectionRef}>
 
-      {currentStep >= 3 && <BookingStepper currentStep={currentStep} steps={STEPS} />}
+      {currentStep >= 3 && <BookingStepper currentStep={currentStep} steps={STEPS} onStepClick={goToStep} />}
 
       {/* Step 1: Voucher Selection */}
       {currentStep === 1 && (

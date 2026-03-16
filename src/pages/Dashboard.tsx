@@ -135,7 +135,7 @@ const Dashboard = () => {
 
   const handleLogout = () => { logout(); navigate("/login", { replace: true }); };
 
-  const upcomingServices = useMemo(() => services.filter(s => s.booking.status === "scheduled"), [services]);
+  const upcomingServices = useMemo(() => services.filter(s => s.booking.status === "scheduled" || s.booking.status === "reschedule_requested"), [services]);
   const pastServices = useMemo(() => services.filter(s => s.booking.status === "completed"), [services]);
 
   const nextService = upcomingServices[0] || null;

@@ -79,7 +79,7 @@ const VoucherSelectionStep = ({ selectedPlanId, onSelectPlan }: VoucherSelection
       <div className="grid grid-cols-2 gap-4">
         <div className="bg-card border border-border rounded-xl p-4 text-center shadow-sm">
           <Bell className="h-6 w-6 mx-auto mb-2 text-muted-foreground" />
-          <p className="text-sm text-muted-foreground">Only</p>
+          
           <p className="font-bold text-foreground text-base">
             {vouchersRemaining} Discount Vouchers
           </p>

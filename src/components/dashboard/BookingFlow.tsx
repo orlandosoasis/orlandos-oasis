@@ -287,6 +287,9 @@ const BookingFlow = ({ onClose, onComplete }: BookingFlowProps) => {
               <p className="text-[11px] font-semibold tracking-[0.8px] uppercase text-muted-foreground mb-2.5">
                 {frequency === "once" ? "ARRIVAL WINDOW" : "PREFERRED ARRIVAL WINDOW"}
               </p>
+              <p className="text-xs text-muted-foreground mb-3">
+                Arrival time cannot be guaranteed, but we will do our best to arrive as close to the scheduled time as possible.
+              </p>
               <div className="grid grid-cols-3 gap-2.5">
                 {[
               { value: "morning" as const, icon: "🌅", title: "Morning", label: "8am–12pm" },
@@ -303,9 +306,6 @@ const BookingFlow = ({ onClose, onComplete }: BookingFlowProps) => {
                   </button>
               )}
               </div>
-              <p className="text-xs text-muted-foreground mt-2.5">
-                Arrival time cannot be guaranteed, but we will do our best to arrive as close to the scheduled time as possible.
-              </p>
             </div>
           </div>
         }

@@ -132,12 +132,13 @@ const ServicesSection = () => {
 
       {/* Step 4: Payment */}
       {currentStep === 4 && (
-        <div className="bg-card border border-border rounded-xl p-6">
-          <BookingPaymentForm
-            onSubmit={handlePaymentSubmit}
-            onBack={() => goToStep(3)}
-          />
-        </div>
+        <LandingPaymentStep
+          selectedPlan={selectedPlan}
+          timeLeft={timeLeft}
+          email={formData.email}
+          onChangePlan={setSelectedPlanId}
+          onContinue={handlePaymentSubmit}
+        />
       )}
     </div>
   );

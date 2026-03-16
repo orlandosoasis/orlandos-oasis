@@ -1,7 +1,7 @@
 import { Clock, CheckCircle2, Loader2, XCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-export type ServiceStatus = "scheduled" | "in_progress" | "completed" | "cancelled";
+export type ServiceStatus = "scheduled" | "in_progress" | "completed" | "cancelled" | "reschedule_requested";
 
 const STATUS_CONFIG: Record<
   ServiceStatus,
@@ -34,6 +34,13 @@ const STATUS_CONFIG: Record<
     bgClass: "bg-[#FFE0E0]",
     textClass: "text-[#4a0505]",
     borderClass: "border border-[#FAC5C5]",
+  },
+  reschedule_requested: {
+    label: "Reschedule Requested",
+    icon: Clock,
+    bgClass: "bg-[#FFF4DB]",
+    textClass: "text-[#4a3505]",
+    borderClass: "border border-[#FAE5C5]",
   },
 };
 

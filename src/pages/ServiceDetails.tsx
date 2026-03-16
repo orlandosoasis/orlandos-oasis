@@ -87,6 +87,7 @@ const ServiceDetails = () => {
       setBooking({
         ...booking,
         scheduleData: { ...booking.scheduleData, selectedDate: newDate, timeWindow: newTimeWindow },
+        status: "reschedule_requested",
       });
     }
   };

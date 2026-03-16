@@ -153,7 +153,7 @@ const Dashboard = () => {
     setServices(prev =>
       prev.map(s =>
         s.id === rescheduleService.id
-          ? { ...s, booking: { ...s.booking, scheduleData: { ...s.booking.scheduleData, selectedDate: newDate, timeWindow: newTimeWindow } } }
+          ? { ...s, booking: { ...s.booking, status: "reschedule_requested" as const, scheduleData: { ...s.booking.scheduleData, selectedDate: newDate, timeWindow: newTimeWindow } } }
           : s
       )
     );

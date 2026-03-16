@@ -228,12 +228,9 @@ const Dashboard = () => {
           <section className="mb-8">
             <h2 className="text-lg font-semibold text-foreground mb-3">Upcoming Visits</h2>
             <div className="bg-card rounded-2xl border border-border shadow-sm divide-y divide-border overflow-hidden">
-              {visibleUpcoming.map((svc, idx) => {
-                // idx in remainingUpcoming (0-based); first 5 (indices 0–4) get reschedule since nextService takes slot 0 of 6
-                const globalIndex = remainingUpcoming.indexOf(svc);
-                const canReschedule = globalIndex < 5;
+              {visibleUpcoming.map((svc) => {
                 return (
-                  <UpcomingRow key={svc.id} service={svc} canReschedule={canReschedule} onReschedule={() => setRescheduleService(svc)} />
+                  <UpcomingRow key={svc.id} service={svc} canReschedule={true} onReschedule={() => setRescheduleService(svc)} />
                 );
               })}
             </div>

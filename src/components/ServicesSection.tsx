@@ -1,8 +1,8 @@
-import { useState } from "react";
+import { useState, useRef, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Badge } from "@/components/ui/badge";
-import { Check } from "lucide-react";
+import { Check, Pencil } from "lucide-react";
 import BookingStepper from "@/components/BookingStepper";
 import BookingContactForm from "@/components/BookingContactForm";
 import BookingPaymentForm from "@/components/BookingPaymentForm";

@@ -5,8 +5,42 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useBooking, matchTechnician } from "@/contexts/BookingContext";
 import type { PassOption, CleaningFrequency, TimeWindow, AccessMethod, ScheduleData } from "@/contexts/BookingContext";
+
+const SERVICE_CATEGORIES = [
+  {
+    label: "Cleaning & Maintenance",
+    services: [
+      { id: "weekly-cleaning", title: "Weekly Pool / Spa Cleaning", description: "Regular service that includes skimming debris, brushing walls, vacuuming the pool or spa, and emptying baskets to keep the water clean and clear." },
+      { id: "chemical-balancing", title: "Chemical Testing & Balancing", description: "Technicians test and adjust chlorine, pH, alkalinity, and other chemicals to keep pool water safe and properly balanced." },
+      { id: "filter-cleaning", title: "Filter / Salt Cell Cleaning", description: "Cleaning the filtration system and salt cell to maintain proper circulation and chlorine generation." },
+      { id: "tile-cleaning", title: "Tile & Surface Cleaning", description: "Removal of calcium buildup and stains from waterline tile and pool surfaces." },
+    ],
+  },
+  {
+    label: "Repairs & Equipment",
+    services: [
+      { id: "equipment-inspection", title: "Pool Equipment Inspection", description: "Inspection of pumps, motors, valves, and heaters to identify potential issues early." },
+      { id: "equipment-repair", title: "Pool Equipment Repair", description: "Repair or replacement of pumps, motors, lights, and other pool equipment when needed." },
+    ],
+  },
+  {
+    label: "Deep Cleaning & Restoration",
+    services: [
+      { id: "algae-treatment", title: "Green-to-Clean / Algae Treatment", description: "Deep cleaning and chemical treatment to restore pools affected by algae or green water." },
+      { id: "acid-washing", title: "Acid Washing", description: "Deep surface cleaning to remove stains, mineral buildup, and embedded algae." },
+    ],
+  },
+  {
+    label: "Pool Setup & Evaluation",
+    services: [
+      { id: "pool-inspections", title: "Pool Inspections", description: "Evaluation of pool condition including water clarity, equipment performance, and safety components." },
+      { id: "pool-startups", title: "Pool Startups", description: "Initial service after a new pool build or resurfacing to balance chemicals and start equipment." },
+    ],
+  },
+];
 
 /* ── Duration options (one-time) ── */
 const DURATION_OPTIONS: PassOption[] = [

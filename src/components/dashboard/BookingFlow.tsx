@@ -267,14 +267,14 @@ const BookingFlow = ({ onClose, onComplete, selectedService: selectedServiceProp
       {/* Header */}
       <div className="sticky top-0 z-10 bg-card border-b border-border">
         <div className="max-w-[760px] mx-auto px-5 h-[56px] flex items-center gap-3">
-          <button onClick={step === 1 ? onClose : () => setStep(step - 1)} className="w-8 h-8 rounded-lg flex items-center justify-center hover:bg-muted transition-colors">
+          <button onClick={step === firstStep ? onClose : () => setStep(step - 1)} className="w-8 h-8 rounded-lg flex items-center justify-center hover:bg-muted transition-colors">
             <ArrowLeft className="h-4 w-4 text-foreground" />
           </button>
           <span className="text-sm font-semibold text-foreground flex-1">Book a Service</span>
-          <span className="text-xs text-muted-foreground">Step {step} of {TOTAL_STEPS}</span>
+          <span className="text-xs text-muted-foreground">Step {displayStep} of {TOTAL_STEPS}</span>
         </div>
         <div className="h-1 bg-muted">
-          <div className="h-full bg-primary transition-all duration-300" style={{ width: `${step / TOTAL_STEPS * 100}%` }} />
+          <div className="h-full bg-primary transition-all duration-300" style={{ width: `${displayStep / TOTAL_STEPS * 100}%` }} />
         </div>
       </div>
 

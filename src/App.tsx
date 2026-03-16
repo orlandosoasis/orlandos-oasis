@@ -28,7 +28,7 @@ import Privacy from "./pages/Privacy";
 import HelpCenter from "./pages/HelpCenter";
 import TechnicianDashboard from "./pages/TechnicianDashboard";
 import Profile from "./pages/Profile";
-import Subscription from "./pages/Subscription";
+
 import AccountSettings from "./pages/AccountSettings";
 import PersonalInfo from "./pages/settings/PersonalInfo";
 import PaymentMethods from "./pages/settings/PaymentMethods";

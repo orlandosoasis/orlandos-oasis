@@ -236,7 +236,7 @@ export default function RescheduleModal({ open, onOpenChange, booking, onResched
               <AlertDescription className="ml-2">
                 <p className="font-semibold text-foreground text-sm">Reschedule Request Submitted</p>
                 <p className="text-xs text-muted-foreground mt-1">
-                  Your pool service is now scheduled for {formatDate(selectedDate)} from {getTimeRange(selectedTime)}.
+                  Your reschedule request has been submitted and is pending approval. Your current schedule remains unchanged until it is confirmed.
                 </p>
               </AlertDescription>
             </Alert>

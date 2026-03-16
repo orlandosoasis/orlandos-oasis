@@ -205,7 +205,7 @@ const ServiceDetails = () => {
           </div>
 
           {/* Technician */}
-          <div className="md:col-span-7 bg-card rounded-2xl border border-border p-6 shadow-sm flex-col flex items-start justify-start">
+          <div className="bg-card rounded-2xl border border-border p-6 shadow-sm flex-col flex items-start justify-start">
             {technician.isAssigned ? (
               <>
                 <h2 className="text-[17px] font-bold text-foreground mb-4">Your Technician</h2>

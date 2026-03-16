@@ -43,7 +43,7 @@ const ReviewsSection = () => {
       </h2>
       
       {/* Rating Summary */}
-      <div className="bg-card rounded-xl p-6 shadow-sm border border-border">
+      <div className="rounded-xl p-6 shadow-sm">
         <div className="flex items-center gap-4 flex-wrap">
           <span className="text-4xl font-bold text-navy">4.8</span>
           <div>

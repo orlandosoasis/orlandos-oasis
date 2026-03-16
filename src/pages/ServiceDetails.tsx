@@ -185,10 +185,22 @@ const ServiceDetails = () => {
             </div>
 
             {!isCompleted && (
-              <Button variant="outline" className="w-full mt-4 gap-1.5 hover:bg-primary hover:text-white hover:border-transparent" onClick={() => setShowReschedule(true)}>
-                <CalendarClock className="h-4 w-4" />
-                Reschedule
-              </Button>
+              <div className="mt-4 space-y-1.5">
+                {status === "reschedule_requested" ? (
+                  <>
+                    <Button variant="outline" className="w-full gap-1.5 opacity-60 cursor-not-allowed" disabled>
+                      <CalendarClock className="h-4 w-4" />
+                      Reschedule Request Pending
+                    </Button>
+                    <p className="text-xs text-muted-foreground text-center">Your reschedule request is awaiting approval.</p>
+                  </>
+                ) : (
+                  <Button variant="outline" className="w-full gap-1.5 hover:bg-primary hover:text-white hover:border-transparent" onClick={() => setShowReschedule(true)}>
+                    <CalendarClock className="h-4 w-4" />
+                    Reschedule
+                  </Button>
+                )}
+              </div>
             )}
           </div>
 

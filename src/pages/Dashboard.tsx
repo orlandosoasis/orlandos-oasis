@@ -202,8 +202,8 @@ const Dashboard = () => {
                   <DropdownMenuItem onClick={() => navigate("/account-settings")} className="cursor-pointer gap-2 focus:bg-muted focus:text-foreground">
                     <Settings className="h-4 w-4" /> Account Settings
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => navigate("/subscription")} className="cursor-pointer gap-2 focus:bg-muted focus:text-foreground">
-                    <CreditCard className="h-4 w-4" /> Membership
+                  <DropdownMenuItem onClick={() => navigate("/account-settings/payment-methods")} className="cursor-pointer gap-2 focus:bg-muted focus:text-foreground">
+                    <CreditCard className="h-4 w-4" /> Payment & Membership
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={handleLogout} className="cursor-pointer gap-2 text-destructive focus:bg-muted focus:text-destructive">

@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
+import { createPortal } from "react-dom";
 import { Button } from "@/components/ui/button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Badge } from "@/components/ui/badge";
@@ -91,6 +92,11 @@ const ServicesSection = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const [contactData, setContactData] = useState<any>(null);
   const [bookingComplete, setBookingComplete] = useState(false);
+  const [portalTarget, setPortalTarget] = useState<HTMLElement | null>(null);
+
+  useEffect(() => {
+    setPortalTarget(document.getElementById("step-indicator-portal"));
+  }, []);
 
   const allServices = SERVICE_CATEGORIES.flatMap((c) => c.services);
   const selectedService = allServices.find((s) => s.id === selected);
@@ -147,10 +153,12 @@ const ServicesSection = () => {
         </p>
       </div>
 
-      {/* Stepper — visible once a service is selected */}
-      {selected && (
-        <BookingStepper currentStep={currentStep} steps={STEPS} />
-      )}
+      {/* Stepper — portaled to full-width container */}
+      {selected && portalTarget &&
+        createPortal(
+          <BookingStepper currentStep={currentStep} steps={STEPS} />,
+          portalTarget
+        )}
 
       {/* Step 1: Service Selection */}
       {currentStep === 1 && (

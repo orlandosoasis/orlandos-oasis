@@ -81,6 +81,11 @@ const AdminDashboard = () => {
   const [rejectReviewModal, setRejectReviewModal] = useState<AdminTechReview | null>(null);
   const [rejectionReason, setRejectionReason] = useState<ReviewRejectionReason>("");
 
+  const [announcementOpen, setAnnouncementOpen] = useState(false);
+  const [announcementTitle, setAnnouncementTitle] = useState("");
+  const [announcementMessage, setAnnouncementMessage] = useState("");
+  const [announcementSent, setAnnouncementSent] = useState(false);
+
   const nav = (p: AdminPage, id: number | null = null) => { setPage(p); setDetailId(id); setSidebarOpen(false); };
 
   const handleApprove = (applicant: AdminApplicant) => {

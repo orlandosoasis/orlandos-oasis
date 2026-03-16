@@ -69,7 +69,7 @@ const ReviewsSection = () => {
       {reviews.map((review, index) =>
       <div
         key={index}
-        className="bg-card rounded-xl p-6 shadow-sm border border-border animate-fade-in"
+        className="rounded-xl p-6 shadow-sm animate-fade-in"
         style={{ animationDelay: `${index * 100}ms` }}>
         
           <div className="flex items-start gap-4">

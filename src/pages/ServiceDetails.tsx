@@ -159,9 +159,9 @@ const ServiceDetails = () => {
       <main className="max-w-[760px] mx-auto px-5 py-6 pb-16 space-y-4">
 
         {/* Appointment Details + Technician */}
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {/* Appointment Details */}
-          <div className="md:col-span-5 bg-card rounded-2xl border border-border p-6 shadow-sm flex flex-col">
+          <div className="bg-card rounded-2xl border border-border p-6 shadow-sm flex flex-col">
             <h2 className="text-[17px] font-bold text-foreground mb-4">Appointment Details</h2>
             <div className="space-y-2.5">
               <div className="flex items-center gap-2 text-sm text-foreground">

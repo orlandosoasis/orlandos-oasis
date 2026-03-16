@@ -178,12 +178,6 @@ export default function RescheduleModal({ open, onOpenChange, booking, onResched
               ))}
             </div>
 
-            {(isDateChanged || isTimeChanged) && (
-              <div className="flex items-start gap-2 text-xs text-muted-foreground bg-muted/50 rounded-lg px-3 py-2 border border-border">
-                <AlertCircle className="h-3.5 w-3.5 mt-0.5 shrink-0" />
-                <span>Arrival time is not guaranteed. Our team will do their best to arrive within the selected time window.</span>
-              </div>
-            )}
 
             <div className="flex gap-2.5">
               <Button variant="outline" className="flex-1 hover:text-primary hover:border-primary hover:bg-transparent" onClick={() => setStep(2)}>

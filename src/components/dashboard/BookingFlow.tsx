@@ -5,8 +5,42 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useBooking, matchTechnician } from "@/contexts/BookingContext";
 import type { PassOption, CleaningFrequency, TimeWindow, AccessMethod, ScheduleData } from "@/contexts/BookingContext";
+
+const SERVICE_CATEGORIES = [
+  {
+    label: "Cleaning & Maintenance",
+    services: [
+      { id: "weekly-cleaning", title: "Weekly Pool / Spa Cleaning", description: "Regular service that includes skimming debris, brushing walls, vacuuming the pool or spa, and emptying baskets to keep the water clean and clear." },
+      { id: "chemical-balancing", title: "Chemical Testing & Balancing", description: "Technicians test and adjust chlorine, pH, alkalinity, and other chemicals to keep pool water safe and properly balanced." },
+      { id: "filter-cleaning", title: "Filter / Salt Cell Cleaning", description: "Cleaning the filtration system and salt cell to maintain proper circulation and chlorine generation." },
+      { id: "tile-cleaning", title: "Tile & Surface Cleaning", description: "Removal of calcium buildup and stains from waterline tile and pool surfaces." },
+    ],
+  },
+  {
+    label: "Repairs & Equipment",
+    services: [
+      { id: "equipment-inspection", title: "Pool Equipment Inspection", description: "Inspection of pumps, motors, valves, and heaters to identify potential issues early." },
+      { id: "equipment-repair", title: "Pool Equipment Repair", description: "Repair or replacement of pumps, motors, lights, and other pool equipment when needed." },
+    ],
+  },
+  {
+    label: "Deep Cleaning & Restoration",
+    services: [
+      { id: "algae-treatment", title: "Green-to-Clean / Algae Treatment", description: "Deep cleaning and chemical treatment to restore pools affected by algae or green water." },
+      { id: "acid-washing", title: "Acid Washing", description: "Deep surface cleaning to remove stains, mineral buildup, and embedded algae." },
+    ],
+  },
+  {
+    label: "Pool Setup & Evaluation",
+    services: [
+      { id: "pool-inspections", title: "Pool Inspections", description: "Evaluation of pool condition including water clarity, equipment performance, and safety components." },
+      { id: "pool-startups", title: "Pool Startups", description: "Initial service after a new pool build or resurfacing to balance chemicals and start equipment." },
+    ],
+  },
+];
 
 /* ── Duration options (one-time) ── */
 const DURATION_OPTIONS: PassOption[] = [
@@ -38,9 +72,16 @@ interface BookingFlowProps {
   selectedService?: SelectedServiceInfo | null;
 }
 
-const BookingFlow = ({ onClose, onComplete, selectedService }: BookingFlowProps) => {
+const BookingFlow = ({ onClose, onComplete, selectedService: selectedServiceProp }: BookingFlowProps) => {
   const { setBooking } = useBooking();
-  const [step, setStep] = useState(1);
+  const hasPreselectedService = !!selectedServiceProp;
+  const [step, setStep] = useState(hasPreselectedService ? 1 : 0);
+
+  // Step 0 — Service selection (only when opened from Dashboard CTA)
+  const allServices = useMemo(() => SERVICE_CATEGORIES.flatMap((c) => c.services), []);
+  const [selectedServiceId, setSelectedServiceId] = useState<string | null>(null);
+  const pickedService = useMemo(() => allServices.find((s) => s.id === selectedServiceId) || null, [allServices, selectedServiceId]);
+  const selectedService = selectedServiceProp || (pickedService ? { title: pickedService.title, description: pickedService.description } : null);
 
   // Step 1 — Frequency & Plan & Schedule
   const [frequency, setFrequency] = useState<CleaningFrequency>("monthly");
@@ -83,6 +124,7 @@ const BookingFlow = ({ onClose, onComplete, selectedService }: BookingFlowProps)
   const nextMonth = () => {if (calMonth === 11) {setCalMonth(0);setCalYear(calYear + 1);} else setCalMonth(calMonth + 1);};
 
   const canProceed = () => {
+    if (step === 0) return !!selectedServiceId;
     if (step === 1) return true;
     if (step === 2) {
       if (!address.trim()) return false;
@@ -148,8 +190,9 @@ const BookingFlow = ({ onClose, onComplete, selectedService }: BookingFlowProps)
     setBookingSuccess(true);
   };
 
-  const TOTAL_STEPS = 2;
-  const STEP_LABELS = ["Service Setup", "Pool / Property"];
+  const firstStep = hasPreselectedService ? 1 : 0;
+  const TOTAL_STEPS = hasPreselectedService ? 2 : 3;
+  const displayStep = step - firstStep + 1;
 
   // Success screen
   if (bookingSuccess) {
@@ -224,19 +267,54 @@ const BookingFlow = ({ onClose, onComplete, selectedService }: BookingFlowProps)
       {/* Header */}
       <div className="sticky top-0 z-10 bg-card border-b border-border">
         <div className="max-w-[760px] mx-auto px-5 h-[56px] flex items-center gap-3">
-          <button onClick={step === 1 ? onClose : () => setStep(step - 1)} className="w-8 h-8 rounded-lg flex items-center justify-center hover:bg-muted transition-colors">
+          <button onClick={step === firstStep ? onClose : () => setStep(step - 1)} className="w-8 h-8 rounded-lg flex items-center justify-center hover:bg-muted transition-colors">
             <ArrowLeft className="h-4 w-4 text-foreground" />
           </button>
           <span className="text-sm font-semibold text-foreground flex-1">Book a Service</span>
-          <span className="text-xs text-muted-foreground">Step {step} of {TOTAL_STEPS}</span>
+          <span className="text-xs text-muted-foreground">Step {displayStep} of {TOTAL_STEPS}</span>
         </div>
         <div className="h-1 bg-muted">
-          <div className="h-full bg-primary transition-all duration-300" style={{ width: `${step / TOTAL_STEPS * 100}%` }} />
+          <div className="h-full bg-primary transition-all duration-300" style={{ width: `${displayStep / TOTAL_STEPS * 100}%` }} />
         </div>
       </div>
 
       {/* Content */}
       <div className="max-w-[760px] mx-auto px-5 py-6 pb-32">
+
+        {/* ── Step 0: Service Selection (Dashboard CTA only) ── */}
+        {step === 0 && (
+          <div className="space-y-6 animate-fade-in">
+            <div>
+              <h2 className="text-lg font-semibold text-foreground mb-1">Select a Service</h2>
+              <p className="text-sm text-muted-foreground">Choose the pool service you need.</p>
+            </div>
+            <RadioGroup value={selectedServiceId || ""} onValueChange={setSelectedServiceId} className="space-y-6">
+              {SERVICE_CATEGORIES.map((category) => (
+                <div key={category.label}>
+                  <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">{category.label}</h3>
+                  <div className="space-y-3">
+                    {category.services.map((service) => (
+                      <label
+                        key={service.id}
+                        className={`flex items-start gap-3 p-4 rounded-xl border-2 cursor-pointer transition-all duration-200 ${
+                          selectedServiceId === service.id
+                            ? "border-primary bg-primary/5 shadow-md"
+                            : "border-border bg-card hover:border-primary"
+                        }`}
+                      >
+                        <RadioGroupItem value={service.id} className="mt-1 shrink-0" />
+                        <div className="min-w-0">
+                          <h3 className="text-sm font-semibold text-foreground mb-1">{service.title}</h3>
+                          <p className="text-sm text-muted-foreground leading-relaxed">{service.description}</p>
+                        </div>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </RadioGroup>
+          </div>
+        )}
 
         {/* ── Step 1: Service Setup ── */}
         {step === 1 &&
@@ -454,7 +532,7 @@ const BookingFlow = ({ onClose, onComplete, selectedService }: BookingFlowProps)
         <div className="max-w-[760px] mx-auto px-5 py-4">
           {step < 2 ?
           <Button onClick={() => setStep(step + 1)} disabled={!canProceed()} className="w-full h-12 text-[15px] font-bold rounded-xl">
-              Continue
+              {step === 0 ? (selectedServiceId ? "Continue" : "Select a service to continue") : "Continue"}
             </Button> :
 
           <Button onClick={handleConfirmBooking} disabled={!canProceed() || isProcessing} className="w-full h-12 text-[15px] font-bold rounded-xl">

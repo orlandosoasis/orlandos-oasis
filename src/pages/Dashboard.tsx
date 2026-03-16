@@ -116,7 +116,7 @@ const Dashboard = () => {
   const [showMore, setShowMore] = useState(false);
   const [services, setServices] = useState<ServiceInstance[]>([]);
   const [rescheduleService, setRescheduleService] = useState<ServiceInstance | null>(null);
-
+  const [rescheduleConfirmed, setRescheduleConfirmed] = useState(false);
   const isPostCheckout = fromCheckout || showBooking || searchParams.get("openBooking") === "true";
 
   useEffect(() => {

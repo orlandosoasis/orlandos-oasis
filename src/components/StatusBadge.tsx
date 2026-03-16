@@ -35,6 +35,13 @@ const STATUS_CONFIG: Record<
     textClass: "text-[#4a0505]",
     borderClass: "border border-[#FAC5C5]",
   },
+  reschedule_requested: {
+    label: "Reschedule Requested",
+    icon: Clock,
+    bgClass: "bg-[#FFF4DB]",
+    textClass: "text-[#4a3505]",
+    borderClass: "border border-[#FAE5C5]",
+  },
 };
 
 interface StatusBadgeProps {

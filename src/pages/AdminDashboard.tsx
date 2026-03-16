@@ -530,7 +530,7 @@ const AdminDashboard = () => {
               {f}
               {f !== "All" && (
                 <span className="ml-1.5 text-[10px] bg-background/20 px-1.5 py-0.5 rounded-full">
-                  {reviews.filter(r => f === "All" ? true : r.status === f).length}
+                  {reviews.filter(r => r.status === f).length}
                 </span>
               )}
             </Button>

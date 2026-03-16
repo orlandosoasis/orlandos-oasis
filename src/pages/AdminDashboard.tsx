@@ -3,21 +3,22 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import {
   LayoutDashboard, Wrench, Users, AlertCircle, UserPlus, ChevronLeft,
-  Star, Mail, Check, X, LogOut, User, Menu, FileText, Download, Waves
+  Star, Mail, Check, X, LogOut, User, Menu, FileText, Download, Waves, MessageSquare
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import oasisLogo from "@/assets/oasis-logo-circle.png";
 import {
   INIT_TECHNICIANS, ADMIN_HOMEOWNERS, ADMIN_ISSUES, INIT_APPLICANTS,
-  type AdminTechnician, type AdminApplicant, type AdminIssue,
+  type AdminTechnician, type AdminApplicant, type AdminIssue, type AdminTechReview, type ReviewStatus, type ReviewRejectionReason,
 } from "@/data/adminMockData";
 
-type AdminPage = "dashboard" | "technicians" | "techDetail" | "homeowners" | "homeDetail" | "issues" | "applicants" | "applicantDetail";
+type AdminPage = "dashboard" | "technicians" | "techDetail" | "homeowners" | "homeDetail" | "issues" | "applicants" | "applicantDetail" | "reviews";
 
 const PAGE_TITLES: Record<string, string> = {
   dashboard: "Dashboard",

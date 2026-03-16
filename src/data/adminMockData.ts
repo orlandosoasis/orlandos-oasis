@@ -1,10 +1,18 @@
 // Admin Dashboard Mock Data
 
+export type ReviewStatus = "Pending" | "Approved" | "Rejected";
+
+export type ReviewRejectionReason = "spam" | "inappropriate" | "irrelevant" | "";
+
 export interface AdminTechReview {
+  id: number;
   reviewer: string;
+  technicianName: string;
   rating: number;
   message: string;
   date: string;
+  status: ReviewStatus;
+  rejectionReason?: ReviewRejectionReason;
 }
 
 export interface AdminTechPool {

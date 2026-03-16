@@ -82,7 +82,7 @@ const ServicesSection = () => {
             className={`flex items-start gap-3 p-4 rounded-xl border cursor-pointer transition-all duration-200 ${
               selected === service.id
                 ? "border-primary bg-primary/5 shadow-md"
-                : "border-border bg-card hover:border-primary/50"
+                : "border-border bg-card hover:border-primary"
             }`}
           >
             <RadioGroupItem value={service.id} className="mt-1 shrink-0" />

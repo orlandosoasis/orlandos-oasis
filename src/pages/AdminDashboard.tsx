@@ -105,6 +105,27 @@ const AdminDashboard = () => {
 
   const handleLogout = () => { logout(); navigate("/"); };
 
+  const allReviews = technicians.flatMap(t => t.reviews);
+  const pendingReviewCount = allReviews.filter(r => r.status === "Pending").length;
+
+  const handleApproveReview = (reviewId: number) => {
+    setTechnicians(prev => prev.map(t => ({
+      ...t,
+      reviews: t.reviews.map(r => r.id === reviewId ? { ...r, status: "Approved" as const } : r),
+    })));
+    toast({ title: "Review Approved", description: "The review is now publicly visible.", variant: "success" });
+  };
+
+  const handleRejectReview = (reviewId: number, reason: ReviewRejectionReason) => {
+    setTechnicians(prev => prev.map(t => ({
+      ...t,
+      reviews: t.reviews.map(r => r.id === reviewId ? { ...r, status: "Rejected" as const, rejectionReason: reason } : r),
+    })));
+    setRejectReviewModal(null);
+    setRejectionReason("");
+    toast({ title: "Review Rejected", description: "The review has been rejected and hidden from public view.", variant: "destructive" });
+  };
+
   const pendingCount = applicants.filter(a => a.status === "Pending").length;
   const openIssueCount = ADMIN_ISSUES.filter(i => i.status === "Open").length;
 

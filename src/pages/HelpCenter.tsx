@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, Search, CalendarDays, CreditCard, Award, FileText, Settings, ChevronRight, ArrowLeftIcon } from "lucide-react";
+import { ArrowLeft, Search, CalendarDays, CreditCard, Award, FileText, Settings, ArrowLeftIcon } from "lucide-react";
 import oasisLogo from "@/assets/oasis-logo-circle.png";
 import { Input } from "@/components/ui/input";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 
 const CATEGORIES = [
   {
@@ -56,7 +57,6 @@ const CATEGORIES = [
 
 const HelpCenter = () => {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  const [expandedArticle, setExpandedArticle] = useState<number | null>(null);
   const [search, setSearch] = useState("");
 
   const category = CATEGORIES.find((c) => c.id === selectedCategory);
@@ -107,12 +107,11 @@ const HelpCenter = () => {
               return (
                 <button
                   key={cat.id}
-                  onClick={() => { setSelectedCategory(cat.id); setExpandedArticle(null); }}
+                  onClick={() => setSelectedCategory(cat.id)}
                   className="w-full flex items-center gap-3 bg-card border border-border rounded-2xl p-4 hover:border-primary/40 transition-colors text-left"
                 >
                   <Icon className="h-5 w-5 text-primary shrink-0" />
                   <span className="text-sm font-semibold text-foreground flex-1">{cat.label}</span>
-                  <ChevronRight className="h-4 w-4 text-muted-foreground" />
                 </button>
               );
             })}
@@ -121,7 +120,7 @@ const HelpCenter = () => {
             )}
           </div>
         ) : (
-          /* Article List */
+          /* Article List with Accordion */
           <div>
             <button
               onClick={() => setSelectedCategory(null)}
@@ -131,24 +130,22 @@ const HelpCenter = () => {
               All Categories
             </button>
             <h2 className="text-[17px] font-bold text-foreground mb-4">{category.label}</h2>
-            <div className="space-y-2">
+            <Accordion type="single" collapsible className="space-y-2">
               {category.articles.map((article, idx) => (
-                <div key={idx} className="bg-card border border-border rounded-2xl overflow-hidden">
-                  <button
-                    onClick={() => setExpandedArticle(expandedArticle === idx ? null : idx)}
-                    className="w-full flex items-center justify-between p-4 text-left"
-                  >
-                    <span className="text-sm font-medium text-foreground">{article.title}</span>
-                    <ChevronRight className={`h-4 w-4 text-muted-foreground transition-transform ${expandedArticle === idx ? "rotate-90" : ""}`} />
-                  </button>
-                  {expandedArticle === idx && (
-                    <div className="px-4 pb-4">
-                      <p className="text-sm text-muted-foreground leading-relaxed">{article.body}</p>
-                    </div>
-                  )}
-                </div>
+                <AccordionItem
+                  key={idx}
+                  value={`item-${idx}`}
+                  className="bg-card border border-border rounded-2xl overflow-hidden px-4"
+                >
+                  <AccordionTrigger className="text-sm font-medium text-foreground text-left py-4 hover:no-underline">
+                    {article.title}
+                  </AccordionTrigger>
+                  <AccordionContent className="text-sm text-muted-foreground leading-relaxed pb-4">
+                    {article.body}
+                  </AccordionContent>
+                </AccordionItem>
               ))}
-            </div>
+            </Accordion>
           </div>
         )}
       </main>

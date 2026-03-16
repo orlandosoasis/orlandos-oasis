@@ -148,10 +148,12 @@ const ServicesSection = () => {
         </p>
       </div>
 
-      {/* Stepper — visible once a service is selected */}
-      {selected && (
-        <BookingStepper currentStep={currentStep} steps={STEPS} />
-      )}
+      {/* Stepper — portaled to full-width container */}
+      {selected && portalTarget &&
+        createPortal(
+          <BookingStepper currentStep={currentStep} steps={STEPS} />,
+          portalTarget
+        )}
 
       {/* Step 1: Service Selection */}
       {currentStep === 1 && (

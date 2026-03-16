@@ -86,11 +86,6 @@ const ServicesSection = () => {
 
   return (
     <div id="discount-voucher" className="scroll-mt-8" ref={sectionRef}>
-      <div className="mb-6">
-        <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-2">
-          Get Professional Pool Service
-        </h2>
-      </div>
 
       {currentStep >= 3 && <BookingStepper currentStep={currentStep} steps={STEPS} />}
 

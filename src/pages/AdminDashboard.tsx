@@ -77,6 +77,10 @@ const AdminDashboard = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
 
+  const [reviewFilter, setReviewFilter] = useState<"All" | ReviewStatus>("All");
+  const [rejectReviewModal, setRejectReviewModal] = useState<AdminTechReview | null>(null);
+  const [rejectionReason, setRejectionReason] = useState<ReviewRejectionReason>("");
+
   const nav = (p: AdminPage, id: number | null = null) => { setPage(p); setDetailId(id); setSidebarOpen(false); };
 
   const handleApprove = (applicant: AdminApplicant) => {

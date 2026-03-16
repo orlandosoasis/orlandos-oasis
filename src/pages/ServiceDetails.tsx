@@ -191,7 +191,7 @@ const ServiceDetails = () => {
                     <p className="text-xs text-muted-foreground text-center mb-1.5">Your reschedule request is awaiting approval.</p>
                     <Button variant="outline" className="w-full gap-1.5 opacity-60 cursor-not-allowed" disabled>
                       <CalendarClock className="h-4 w-4" />
-                      Reschedule Request Pending
+                      Pending Approval
                     </Button>
                   </>
                 ) : (

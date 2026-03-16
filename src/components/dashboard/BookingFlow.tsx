@@ -231,6 +231,22 @@ const BookingFlow = ({ onClose, onComplete, selectedService }: BookingFlowProps)
         {/* ── Step 1: Service Setup ── */}
         {step === 1 &&
         <div className="space-y-6 animate-fade-in">
+            {/* Selected Service from checkout (if any) */}
+            {selectedService && (
+              <div>
+                <p className="text-[11px] font-semibold tracking-[0.8px] uppercase text-muted-foreground mb-2.5">SELECTED SERVICE</p>
+                <div className="flex items-center gap-3.5 rounded-xl border-2 border-primary bg-primary/5 p-4">
+                  <div className="w-[22px] h-[22px] rounded-full bg-primary flex items-center justify-center shrink-0">
+                    <Check className="h-3 w-3 text-primary-foreground" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <span className="text-sm font-semibold text-foreground">{selectedService.title}</span>
+                    <p className="text-xs text-muted-foreground">{selectedService.description}</p>
+                  </div>
+                </div>
+              </div>
+            )}
+
             {/* Purchased Service (read-only) */}
             <div>
               <p className="text-[11px] font-semibold tracking-[0.8px] uppercase text-muted-foreground mb-2.5">PURCHASED SERVICE</p>

@@ -105,9 +105,17 @@ const Dashboard = () => {
   const [showBooking, setShowBooking] = useState(false);
   const [fromCheckout, setFromCheckout] = useState(false);
 
+  // State for selected service info from checkout
+  const [selectedServiceInfo, setSelectedServiceInfo] = useState<{ title: string; description: string } | null>(null);
+
   // Auto-open booking flow when redirected from checkout
   useEffect(() => {
     if (searchParams.get("openBooking") === "true") {
+      const title = searchParams.get("serviceTitle");
+      const description = searchParams.get("serviceDescription");
+      if (title) {
+        setSelectedServiceInfo({ title, description: description || "" });
+      }
       setShowBooking(true);
       setFromCheckout(true);
       setSearchParams({}, { replace: true });

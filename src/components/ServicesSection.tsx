@@ -1,18 +1,17 @@
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Check, Pencil } from "lucide-react";
+import { Check } from "lucide-react";
 import BookingStepper from "@/components/BookingStepper";
-import BookingContactForm from "@/components/BookingContactForm";
 import BookingPaymentForm from "@/components/BookingPaymentForm";
 import VoucherSelectionStep, { VOUCHER_PLANS } from "@/components/dashboard/VoucherSelectionStep";
 import VoucherConfirmationStep from "@/components/dashboard/VoucherConfirmationStep";
+import LandingContactStep, { type LandingFormData } from "@/components/LandingContactStep";
 
 const STEPS = [
   { label: "Voucher" },
-  { label: "Confirm" },
   { label: "Your Details" },
+  { label: "Confirm" },
   { label: "Payment" },
 ];
 
@@ -20,40 +19,44 @@ const ServicesSection = () => {
   const navigate = useNavigate();
   const [selectedPlanId, setSelectedPlanId] = useState("weekly");
   const [currentStep, setCurrentStep] = useState(1);
-  const [contactData, setContactData] = useState<any>(null);
   const [bookingComplete, setBookingComplete] = useState(false);
+  const [formData, setFormData] = useState<LandingFormData>({
+    firstName: "",
+    lastName: "",
+    email: "",
+    zipcode: "",
+    phone: "",
+    frequency: "biweekly",
+  });
+  const [timeLeft, setTimeLeft] = useState({ minutes: 9, seconds: 53 });
   const sectionRef = useRef<HTMLDivElement>(null);
 
   const selectedPlan = VOUCHER_PLANS.find((p) => p.id === selectedPlanId)!;
   const serviceName = selectedPlan.label.replace("Most Popular – ", "");
 
+  useEffect(() => {
+    if (currentStep < 2) return;
+    const timer = setInterval(() => {
+      setTimeLeft((prev) => {
+        if (prev.seconds > 0) return { ...prev, seconds: prev.seconds - 1 };
+        if (prev.minutes > 0) return { minutes: prev.minutes - 1, seconds: 59 };
+        return prev;
+      });
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [currentStep]);
+
   const scrollToTop = useCallback(() => {
     sectionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   }, []);
 
-  const handleContinueStep1 = () => {
-    setCurrentStep(2);
-    setTimeout(scrollToTop, 50);
-  };
-
-  const handleContinueStep2 = () => {
-    setCurrentStep(3);
-    setTimeout(scrollToTop, 50);
-  };
-
-  const handleContactContinue = (data: any) => {
-    setContactData(data);
-    setCurrentStep(4);
+  const goToStep = (step: number) => {
+    setCurrentStep(step);
     setTimeout(scrollToTop, 50);
   };
 
   const handlePaymentSubmit = () => {
     setBookingComplete(true);
-    setTimeout(scrollToTop, 50);
-  };
-
-  const handleEditVoucher = () => {
-    setCurrentStep(1);
     setTimeout(scrollToTop, 50);
   };
 
@@ -94,7 +97,7 @@ const ServicesSection = () => {
         <>
           <VoucherSelectionStep selectedPlanId={selectedPlanId} onSelectPlan={setSelectedPlanId} />
           <Button
-            onClick={handleContinueStep1}
+            onClick={() => goToStep(2)}
             className="w-full h-14 text-[17px] font-bold rounded-full shadow-md hover:shadow-lg mt-6"
           >
             Continue
@@ -102,74 +105,37 @@ const ServicesSection = () => {
         </>
       )}
 
-      {/* Step 2: Voucher Confirmation */}
+      {/* Step 2: Your Details (Contact + Frequency) */}
       {currentStep === 2 && (
+        <LandingContactStep
+          selectedPlan={selectedPlan}
+          timeLeft={timeLeft}
+          formData={formData}
+          onFormDataChange={setFormData}
+          onSubmit={() => goToStep(3)}
+          onChangePlan={setSelectedPlanId}
+        />
+      )}
+
+      {/* Step 3: Voucher Confirmation */}
+      {currentStep === 3 && (
         <>
           <VoucherConfirmationStep plan={selectedPlan} />
           <Button
-            onClick={handleContinueStep2}
+            onClick={() => goToStep(4)}
             className="w-full h-14 text-[17px] font-bold rounded-full shadow-md hover:shadow-lg mt-6"
           >
             Continue
           </Button>
         </>
-      )}
-
-      {/* Step 3: Contact Details */}
-      {currentStep === 3 && (
-        <div className="bg-card border border-border rounded-xl p-6">
-          <div className="mb-5 p-4 rounded-lg bg-primary/5 border border-primary/20">
-            <div className="flex items-center justify-between mb-1">
-              <div className="flex items-center gap-2">
-                <Badge className="bg-primary text-primary-foreground text-xs">Selected</Badge>
-                <span className="text-sm font-semibold text-foreground">{serviceName}</span>
-              </div>
-              <button
-                type="button"
-                onClick={handleEditVoucher}
-                className="flex items-center gap-1 text-xs font-medium text-primary hover:underline"
-              >
-                <Pencil className="h-3 w-3" />
-                Edit
-              </button>
-            </div>
-            <p className="text-sm text-muted-foreground leading-relaxed mt-1">
-              ${selectedPlan.discountPrice}/first month (Save ${selectedPlan.savings})
-            </p>
-          </div>
-          <BookingContactForm
-            onContinue={handleContactContinue}
-            onBack={() => { setCurrentStep(2); setTimeout(scrollToTop, 50); }}
-            initialData={contactData}
-          />
-        </div>
       )}
 
       {/* Step 4: Payment */}
       {currentStep === 4 && (
         <div className="bg-card border border-border rounded-xl p-6">
-          <div className="mb-5 p-4 rounded-lg bg-primary/5 border border-primary/20">
-            <div className="flex items-center justify-between mb-1">
-              <div className="flex items-center gap-2">
-                <Badge className="bg-primary text-primary-foreground text-xs">Selected</Badge>
-                <span className="text-sm font-semibold text-foreground">{serviceName}</span>
-              </div>
-              <button
-                type="button"
-                onClick={handleEditVoucher}
-                className="flex items-center gap-1 text-xs font-medium text-primary hover:underline"
-              >
-                <Pencil className="h-3 w-3" />
-                Edit
-              </button>
-            </div>
-            <p className="text-sm text-muted-foreground leading-relaxed mt-1">
-              ${selectedPlan.discountPrice}/first month (Save ${selectedPlan.savings})
-            </p>
-          </div>
           <BookingPaymentForm
             onSubmit={handlePaymentSubmit}
-            onBack={() => { setCurrentStep(3); setTimeout(scrollToTop, 50); }}
+            onBack={() => goToStep(3)}
           />
         </div>
       )}

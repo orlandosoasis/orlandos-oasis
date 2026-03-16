@@ -116,7 +116,7 @@ const Dashboard = () => {
   const [showMore, setShowMore] = useState(false);
   const [services, setServices] = useState<ServiceInstance[]>([]);
   const [rescheduleService, setRescheduleService] = useState<ServiceInstance | null>(null);
-
+  const [rescheduleConfirmed, setRescheduleConfirmed] = useState(false);
   const isPostCheckout = fromCheckout || showBooking || searchParams.get("openBooking") === "true";
 
   useEffect(() => {
@@ -157,7 +157,14 @@ const Dashboard = () => {
           : s
       )
     );
-    setRescheduleService(null);
+    setRescheduleConfirmed(true);
+  };
+
+  const handleRescheduleModalClose = (open: boolean) => {
+    if (!open) {
+      setRescheduleService(null);
+      setRescheduleConfirmed(false);
+    }
   };
 
   const firstName = user?.fullName?.split(" ")[0] || "there";
@@ -285,7 +292,7 @@ const Dashboard = () => {
       {rescheduleService && (
         <RescheduleModal
           open={!!rescheduleService}
-          onOpenChange={(open) => { if (!open) setRescheduleService(null); }}
+          onOpenChange={handleRescheduleModalClose}
           booking={rescheduleService.booking}
           onReschedule={handleReschedule}
         />

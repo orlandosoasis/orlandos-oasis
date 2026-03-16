@@ -157,7 +157,14 @@ const Dashboard = () => {
           : s
       )
     );
-    setRescheduleService(null);
+    setRescheduleConfirmed(true);
+  };
+
+  const handleRescheduleModalClose = (open: boolean) => {
+    if (!open) {
+      setRescheduleService(null);
+      setRescheduleConfirmed(false);
+    }
   };
 
   const firstName = user?.fullName?.split(" ")[0] || "there";

@@ -281,6 +281,41 @@ const BookingFlow = ({ onClose, onComplete, selectedService: selectedServiceProp
       {/* Content */}
       <div className="max-w-[760px] mx-auto px-5 py-6 pb-32">
 
+        {/* ── Step 0: Service Selection (Dashboard CTA only) ── */}
+        {step === 0 && (
+          <div className="space-y-6 animate-fade-in">
+            <div>
+              <h2 className="text-lg font-semibold text-foreground mb-1">Select a Service</h2>
+              <p className="text-sm text-muted-foreground">Choose the pool service you need.</p>
+            </div>
+            <RadioGroup value={selectedServiceId || ""} onValueChange={setSelectedServiceId} className="space-y-6">
+              {SERVICE_CATEGORIES.map((category) => (
+                <div key={category.label}>
+                  <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">{category.label}</h3>
+                  <div className="space-y-3">
+                    {category.services.map((service) => (
+                      <label
+                        key={service.id}
+                        className={`flex items-start gap-3 p-4 rounded-xl border-2 cursor-pointer transition-all duration-200 ${
+                          selectedServiceId === service.id
+                            ? "border-primary bg-primary/5 shadow-md"
+                            : "border-border bg-card hover:border-primary"
+                        }`}
+                      >
+                        <RadioGroupItem value={service.id} className="mt-1 shrink-0" />
+                        <div className="min-w-0">
+                          <h3 className="text-sm font-semibold text-foreground mb-1">{service.title}</h3>
+                          <p className="text-sm text-muted-foreground leading-relaxed">{service.description}</p>
+                        </div>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </RadioGroup>
+          </div>
+        )}
+
         {/* ── Step 1: Service Setup ── */}
         {step === 1 &&
         <div className="space-y-6 animate-fade-in">

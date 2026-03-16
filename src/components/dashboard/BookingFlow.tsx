@@ -289,19 +289,23 @@ const BookingFlow = ({ onClose, onComplete }: BookingFlowProps) => {
               </p>
               <div className="grid grid-cols-3 gap-2.5">
                 {([
-                  { value: "morning" as const, icon: "🌅", label: "8am–12pm" },
-                  { value: "afternoon" as const, icon: "☀️", label: "12pm–4pm" },
-                  { value: "evening" as const, icon: "🌤️", label: "4pm–6pm" },
+                  { value: "morning" as const, icon: "🌅", title: "Morning", label: "8am–12pm" },
+                  { value: "afternoon" as const, icon: "☀️", title: "Afternoon", label: "12pm–4pm" },
+                  { value: "evening" as const, icon: "🌤️", title: "Evening", label: "4pm–6pm" },
                 ]).map(opt => (
                   <button key={opt.value} type="button" onClick={() => setTimeWindow(opt.value)}
                     className={`flex flex-col items-center justify-center rounded-xl border-2 py-5 px-2 transition-all text-center ${
                       timeWindow === opt.value ? "border-primary bg-primary/[0.07] text-primary" : "border-border hover:border-primary/40 hover:bg-primary/5"
                     }`}>
                     <span className="text-2xl mb-1.5">{opt.icon}</span>
+                    <span className="text-xs font-semibold mb-0.5">{opt.title}</span>
                     <span className="text-[15px] font-semibold">{opt.label}</span>
                   </button>
                 ))}
               </div>
+              <p className="text-xs text-muted-foreground mt-2.5">
+                Arrival time cannot be guaranteed, but we will do our best to arrive as close to the scheduled time as possible.
+              </p>
             </div>
           </div>
         )}

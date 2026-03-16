@@ -95,7 +95,7 @@ const ServicesSection = () => {
         </p>
       </div>
 
-      <BookingStepper currentStep={currentStep} steps={STEPS} />
+      {currentStep >= 3 && <BookingStepper currentStep={currentStep} steps={STEPS} />}
 
       {/* Step 1: Voucher Selection */}
       {currentStep === 1 && (

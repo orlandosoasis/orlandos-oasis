@@ -252,9 +252,24 @@ const ServicesSection = () => {
       {currentStep === 3 && (
         <div className="bg-card border border-border rounded-xl p-6">
           {selectedService && (
-            <div className="mb-5 p-3 rounded-lg bg-primary/5 border border-primary/20 flex items-center gap-2">
-              <Badge className="bg-primary text-primary-foreground text-xs">Selected</Badge>
-              <span className="text-sm font-semibold text-foreground">{selectedService.title}</span>
+            <div className="mb-5 p-4 rounded-lg bg-primary/5 border border-primary/20">
+              <div className="flex items-center justify-between mb-1">
+                <div className="flex items-center gap-2">
+                  <Badge className="bg-primary text-primary-foreground text-xs">Selected</Badge>
+                  <span className="text-sm font-semibold text-foreground">{selectedService.title}</span>
+                </div>
+                <button
+                  type="button"
+                  onClick={handleEditService}
+                  className="flex items-center gap-1 text-xs font-medium text-primary hover:underline"
+                >
+                  <Pencil className="h-3 w-3" />
+                  Edit
+                </button>
+              </div>
+              <p className="text-sm text-muted-foreground leading-relaxed pl-[calc(theme(spacing.2)+3.5rem)]">
+                {selectedService.description}
+              </p>
             </div>
           )}
           <BookingPaymentForm

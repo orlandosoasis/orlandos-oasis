@@ -92,6 +92,11 @@ const ServicesSection = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const [contactData, setContactData] = useState<any>(null);
   const [bookingComplete, setBookingComplete] = useState(false);
+  const [portalTarget, setPortalTarget] = useState<HTMLElement | null>(null);
+
+  useEffect(() => {
+    setPortalTarget(document.getElementById("step-indicator-portal"));
+  }, []);
 
   const allServices = SERVICE_CATEGORIES.flatMap((c) => c.services);
   const selectedService = allServices.find((s) => s.id === selected);

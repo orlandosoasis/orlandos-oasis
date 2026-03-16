@@ -1,8 +1,8 @@
-import { useState } from "react";
+import { useState, useRef, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Badge } from "@/components/ui/badge";
-import { Check } from "lucide-react";
+import { Check, Pencil } from "lucide-react";
 import BookingStepper from "@/components/BookingStepper";
 import BookingContactForm from "@/components/BookingContactForm";
 import BookingPaymentForm from "@/components/BookingPaymentForm";
@@ -91,25 +91,40 @@ const ServicesSection = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const [contactData, setContactData] = useState<any>(null);
   const [bookingComplete, setBookingComplete] = useState(false);
+  const sectionRef = useRef<HTMLDivElement>(null);
 
   const allServices = SERVICE_CATEGORIES.flatMap((c) => c.services);
   const selectedService = allServices.find((s) => s.id === selected);
+
+  const scrollToTop = useCallback(() => {
+    sectionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }, []);
 
   const handleServiceSelect = (serviceId: string) => {
     setSelected(serviceId);
   };
 
   const handleContinueToDetails = () => {
-    if (selected) setCurrentStep(2);
+    if (selected) {
+      setCurrentStep(2);
+      setTimeout(scrollToTop, 50);
+    }
   };
 
   const handleContactContinue = (data: any) => {
     setContactData(data);
     setCurrentStep(3);
+    setTimeout(scrollToTop, 50);
   };
 
   const handlePaymentSubmit = () => {
     setBookingComplete(true);
+    setTimeout(scrollToTop, 50);
+  };
+
+  const handleEditService = () => {
+    setCurrentStep(1);
+    setTimeout(scrollToTop, 50);
   };
 
   const handleReset = () => {
@@ -137,7 +152,7 @@ const ServicesSection = () => {
   }
 
   return (
-    <div id="discount-voucher" className="scroll-mt-8">
+    <div id="discount-voucher" className="scroll-mt-8" ref={sectionRef}>
       <div className="mb-6">
         <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-2">
           Get Professional Pool Service
@@ -205,14 +220,29 @@ const ServicesSection = () => {
       {currentStep === 2 && (
         <div className="bg-card border border-border rounded-xl p-6">
           {selectedService && (
-            <div className="mb-5 p-3 rounded-lg bg-primary/5 border border-primary/20 flex items-center gap-2">
-              <Badge className="bg-primary text-primary-foreground text-xs">Selected</Badge>
-              <span className="text-sm font-semibold text-foreground">{selectedService.title}</span>
+            <div className="mb-5 p-4 rounded-lg bg-primary/5 border border-primary/20">
+              <div className="flex items-center justify-between mb-1">
+                <div className="flex items-center gap-2">
+                  <Badge className="bg-primary text-primary-foreground text-xs">Selected</Badge>
+                  <span className="text-sm font-semibold text-foreground">{selectedService.title}</span>
+                </div>
+                <button
+                  type="button"
+                  onClick={handleEditService}
+                  className="flex items-center gap-1 text-xs font-medium text-primary hover:underline"
+                >
+                  <Pencil className="h-3 w-3" />
+                  Edit
+                </button>
+              </div>
+              <p className="text-sm text-muted-foreground leading-relaxed mt-1">
+                {selectedService.description}
+              </p>
             </div>
           )}
           <BookingContactForm
             onContinue={handleContactContinue}
-            onBack={() => setCurrentStep(1)}
+            onBack={handleEditService}
             initialData={contactData}
           />
         </div>
@@ -222,9 +252,24 @@ const ServicesSection = () => {
       {currentStep === 3 && (
         <div className="bg-card border border-border rounded-xl p-6">
           {selectedService && (
-            <div className="mb-5 p-3 rounded-lg bg-primary/5 border border-primary/20 flex items-center gap-2">
-              <Badge className="bg-primary text-primary-foreground text-xs">Selected</Badge>
-              <span className="text-sm font-semibold text-foreground">{selectedService.title}</span>
+            <div className="mb-5 p-4 rounded-lg bg-primary/5 border border-primary/20">
+              <div className="flex items-center justify-between mb-1">
+                <div className="flex items-center gap-2">
+                  <Badge className="bg-primary text-primary-foreground text-xs">Selected</Badge>
+                  <span className="text-sm font-semibold text-foreground">{selectedService.title}</span>
+                </div>
+                <button
+                  type="button"
+                  onClick={handleEditService}
+                  className="flex items-center gap-1 text-xs font-medium text-primary hover:underline"
+                >
+                  <Pencil className="h-3 w-3" />
+                  Edit
+                </button>
+              </div>
+              <p className="text-sm text-muted-foreground leading-relaxed mt-1">
+                {selectedService.description}
+              </p>
             </div>
           )}
           <BookingPaymentForm

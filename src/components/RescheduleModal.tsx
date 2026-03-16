@@ -88,15 +88,13 @@ export default function RescheduleModal({ open, onOpenChange, booking, onResched
                 <MapPin className="h-4 w-4" />
                 <span>{fullAddress}</span>
               </div>
-              {technician.isAssigned && (
-                <>
-                  <div className="border-t border-border my-1" />
-                  <div>
-                    <p className="text-xs text-muted-foreground">Assigned Pool Technician</p>
-                    <p className="text-sm font-bold text-foreground mt-0.5">{technician.name}</p>
-                  </div>
-                </>
-              )}
+              <div className="border-t border-border my-1" />
+              <div>
+                <p className="text-xs text-muted-foreground">Assigned Pool Technician</p>
+                <p className="text-sm font-bold text-foreground mt-0.5">
+                  {technician.isAssigned ? technician.name : "Pool Technician to be assigned"}
+                </p>
+              </div>
             </div>
 
             <div className="flex flex-col gap-2.5">

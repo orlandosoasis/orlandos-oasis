@@ -165,7 +165,7 @@ const BookingFlow = ({ onClose, onComplete }: BookingFlowProps) => {
               </div>
             )}
             <div className="flex justify-between text-sm">
-              <span className="text-muted-foreground">{frequency === "once" ? "Date" : "Start Date"}</span>
+              <span className="text-muted-foreground">{frequency === "once" ? "Date" : "Select Date"}</span>
               <span className="font-medium text-foreground">{FULL_DAYS[selectedDate.getDay()]}, {MONTHS[selectedDate.getMonth()].slice(0, 3)} {selectedDate.getDate()}, {selectedDate.getFullYear()}</span>
             </div>
             <div className="flex justify-between text-sm">

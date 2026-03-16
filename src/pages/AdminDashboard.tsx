@@ -716,6 +716,64 @@ const AdminDashboard = () => {
           )}
         </DialogContent>
       </Dialog>
+
+      {/* Announcement Modal */}
+      <Dialog open={announcementOpen} onOpenChange={setAnnouncementOpen}>
+        <DialogContent className="pt-10">
+          <DialogHeader>
+            <DialogTitle>Create Service Announcement</DialogTitle>
+            <DialogDescription>
+              This announcement will be sent to all homeowners with services scheduled for today.
+            </DialogDescription>
+          </DialogHeader>
+          {announcementSent ? (
+            <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-4 text-sm text-emerald-700 font-medium text-center">
+              Announcement sent successfully. Homeowners scheduled for today have been notified.
+            </div>
+          ) : (
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <label className="text-sm font-semibold text-foreground">Title</label>
+                <Input
+                  placeholder="e.g. Service Delay Notice"
+                  value={announcementTitle}
+                  onChange={(e) => setAnnouncementTitle(e.target.value)}
+                />
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-semibold text-foreground">Reason / Message</label>
+                <Textarea
+                  placeholder='e.g. "Due to heavy rain this morning, some pool services scheduled today may arrive later than expected."'
+                  value={announcementMessage}
+                  onChange={(e) => setAnnouncementMessage(e.target.value)}
+                  rows={4}
+                />
+              </div>
+              <div className="bg-muted/50 rounded-lg p-3 text-xs text-muted-foreground">
+                <span className="font-semibold text-foreground">Affected Services:</span> All services scheduled for today will be included automatically.
+              </div>
+            </div>
+          )}
+          <DialogFooter>
+            {announcementSent ? (
+              <Button variant="outline" onClick={() => setAnnouncementOpen(false)}>Close</Button>
+            ) : (
+              <>
+                <Button variant="outline" onClick={() => setAnnouncementOpen(false)}>Cancel</Button>
+                <Button
+                  disabled={!announcementTitle.trim() || !announcementMessage.trim()}
+                  onClick={() => {
+                    setAnnouncementSent(true);
+                    toast({ variant: "default", title: "Announcement sent", description: "Homeowners scheduled for today have been notified." });
+                  }}
+                >
+                  <Megaphone className="h-4 w-4 mr-1.5" /> Send Announcement
+                </Button>
+              </>
+            )}
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

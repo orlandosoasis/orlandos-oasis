@@ -72,6 +72,9 @@ export default function RescheduleModal({ open, onOpenChange, booking, onResched
               <DialogDescription className="text-sm text-muted-foreground">
                 Choose a new date and time for your upcoming service.
               </DialogDescription>
+              <p className="text-xs text-muted-foreground mt-1">
+                Arrival time is not guaranteed. Our team will do their best to arrive within the selected time window.
+              </p>
             </DialogHeader>
 
             <div className="bg-muted/50 rounded-xl p-4 space-y-2.5 border border-border">

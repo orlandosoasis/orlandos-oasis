@@ -14,34 +14,34 @@ export interface VoucherPlan {
 }
 
 const VOUCHER_PLANS: VoucherPlan[] = [
-  {
-    id: "weekly",
-    label: "Most Popular – Weekly Pool Service",
-    description: "Ideal for most residential pools",
-    originalPrice: 120,
-    discountPrice: 95,
-    savings: 25,
-    isMostPopular: true,
-  },
-  {
-    id: "twice-weekly",
-    label: "Twice-Per-Week Pool Service",
-    description: "Best for larger pools or heavy usage",
-    originalPrice: 240,
-    discountPrice: 215,
-    savings: 25,
-    isMostPopular: false,
-  },
-  {
-    id: "three-weekly",
-    label: "Three-Times-Per-Week Pool Service",
-    description: "Ideal for luxury pools or high-traffic pools",
-    originalPrice: 360,
-    discountPrice: 335,
-    savings: 25,
-    isMostPopular: false,
-  },
-];
+{
+  id: "weekly",
+  label: "Most Popular – Weekly Pool Service",
+  description: "Ideal for most residential pools",
+  originalPrice: 120,
+  discountPrice: 95,
+  savings: 25,
+  isMostPopular: true
+},
+{
+  id: "twice-weekly",
+  label: "Twice-Per-Week Pool Service",
+  description: "Best for larger pools or heavy usage",
+  originalPrice: 240,
+  discountPrice: 215,
+  savings: 25,
+  isMostPopular: false
+},
+{
+  id: "three-weekly",
+  label: "Three-Times-Per-Week Pool Service",
+  description: "Ideal for luxury pools or high-traffic pools",
+  originalPrice: 360,
+  discountPrice: 335,
+  savings: 25,
+  isMostPopular: false
+}];
+
 
 interface VoucherSelectionStepProps {
   selectedPlanId: string;
@@ -80,7 +80,7 @@ const VoucherSelectionStep = ({ selectedPlanId, onSelectPlan }: VoucherSelection
         <div className="bg-card border border-border rounded-xl p-4 text-center shadow-sm">
           <Bell className="h-6 w-6 mx-auto mb-2 text-muted-foreground" />
           <p className="text-sm text-muted-foreground">Only</p>
-          <p className="text-xl font-bold text-foreground">
+          <p className="font-bold text-foreground text-base">
             {vouchersRemaining} Discount Vouchers
           </p>
           <p className="text-sm text-muted-foreground">Remaining</p>
@@ -88,7 +88,7 @@ const VoucherSelectionStep = ({ selectedPlanId, onSelectPlan }: VoucherSelection
         <div className="bg-card border border-border rounded-xl p-4 text-center shadow-sm">
           <Clock className="h-6 w-6 mx-auto mb-2 text-muted-foreground" />
           <p className="text-sm text-muted-foreground">Time Left</p>
-          <p className="text-2xl font-bold text-foreground tabular-nums">
+          <p className="font-bold text-foreground tabular-nums text-lg">
             {String(timeLeft.minutes).padStart(2, "0")}:
             {String(timeLeft.seconds).padStart(2, "0")}
           </p>
@@ -108,20 +108,20 @@ const VoucherSelectionStep = ({ selectedPlanId, onSelectPlan }: VoucherSelection
 
       {/* Plan Options */}
       <RadioGroup value={selectedPlanId} onValueChange={onSelectPlan} className="space-y-3">
-        {VOUCHER_PLANS.map((plan) => (
-          <label
-            key={plan.id}
-            className={`relative flex items-center gap-4 p-4 rounded-xl border-2 cursor-pointer transition-all duration-200 ${
-              selectedPlanId === plan.id
-                ? "border-primary bg-primary/5 shadow-md"
-                : "border-border bg-card hover:border-primary/50"
-            }`}
-          >
-            {plan.isMostPopular && (
-              <Badge className="absolute -top-2.5 left-4 bg-primary text-primary-foreground text-xs">
+        {VOUCHER_PLANS.map((plan) =>
+        <label
+          key={plan.id}
+          className={`relative flex items-center gap-4 p-4 rounded-xl border-2 cursor-pointer transition-all duration-200 ${
+          selectedPlanId === plan.id ?
+          "border-primary bg-primary/5 shadow-md" :
+          "border-border bg-card hover:border-primary/50"}`
+          }>
+          
+            {plan.isMostPopular &&
+          <Badge className="absolute -top-2.5 left-4 bg-primary text-primary-foreground text-xs">
                 Most Popular
               </Badge>
-            )}
+          }
             <RadioGroupItem value={plan.id} className="mt-0.5 shrink-0" />
 
             <div className="flex-1 min-w-0">
@@ -139,13 +139,13 @@ const VoucherSelectionStep = ({ selectedPlanId, onSelectPlan }: VoucherSelection
               <p className="text-xs font-semibold text-primary">Save ${plan.savings}</p>
             </div>
 
-            {selectedPlanId === plan.id && (
-              <div className="absolute -top-2 -right-2 bg-primary rounded-full p-1">
+            {selectedPlanId === plan.id &&
+          <div className="absolute -top-2 -right-2 bg-primary rounded-full p-1">
                 <Check className="h-3 w-3 text-primary-foreground" />
               </div>
-            )}
+          }
           </label>
-        ))}
+        )}
       </RadioGroup>
 
       {/* Footnote */}
@@ -154,8 +154,8 @@ const VoucherSelectionStep = ({ selectedPlanId, onSelectPlan }: VoucherSelection
         <br />
         Don't worry—your technician will still be paid in full!
       </p>
-    </div>
-  );
+    </div>);
+
 };
 
 export { VOUCHER_PLANS };

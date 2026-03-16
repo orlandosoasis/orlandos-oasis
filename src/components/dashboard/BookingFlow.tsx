@@ -165,7 +165,7 @@ const BookingFlow = ({ onClose, onComplete }: BookingFlowProps) => {
               </div>
             )}
             <div className="flex justify-between text-sm">
-              <span className="text-muted-foreground">{frequency === "once" ? "Date" : "Start Date"}</span>
+              <span className="text-muted-foreground">{frequency === "once" ? "Date" : "Select Date"}</span>
               <span className="font-medium text-foreground">{FULL_DAYS[selectedDate.getDay()]}, {MONTHS[selectedDate.getMonth()].slice(0, 3)} {selectedDate.getDate()}, {selectedDate.getFullYear()}</span>
             </div>
             <div className="flex justify-between text-sm">
@@ -242,7 +242,7 @@ const BookingFlow = ({ onClose, onComplete }: BookingFlowProps) => {
             {/* Date picker */}
             <div>
               <p className="text-[11px] font-semibold tracking-[0.8px] uppercase text-muted-foreground mb-2.5">
-                {frequency === "once" ? "SERVICE DATE" : "START DATE"}
+                {frequency === "once" ? "SERVICE DATE" : "SELECT DATE"}
               </p>
               <div className="bg-card rounded-2xl border border-border p-5 shadow-sm">
                 <div className="flex items-center justify-between mb-3.5">

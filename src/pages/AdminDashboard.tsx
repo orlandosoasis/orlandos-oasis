@@ -224,7 +224,7 @@ const AdminDashboard = () => {
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           <Card>
-            <CardHeader className="pb-3"><CardTitle className="text-sm font-bold">Recent Services</CardTitle></CardHeader>
+            <CardHeader className="pb-3"><CardTitle className="text-sm font-bold">Services Today</CardTitle></CardHeader>
             <CardContent>
               <Table>
                 <TableHeader><TableRow>

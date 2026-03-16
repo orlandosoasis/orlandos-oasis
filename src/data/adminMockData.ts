@@ -125,8 +125,8 @@ export const INIT_TECHNICIANS: AdminTechnician[] = [
   {
     id: 3, name: "James T.", rating: 4.5, email: "james@oasis.com", phone: "(407) 555-9012", status: "Active", assignedPools: 4, completedServices: 20,
     reviews: [
-      { reviewer: "David K.", rating: 4, message: "Dependable and does quality work.", date: "Feb 22, 2026" },
-      { reviewer: "Emily W.", rating: 5, message: "Our pool has never looked better!", date: "Feb 14, 2026" },
+      { id: 9, reviewer: "David K.", technicianName: "James T.", rating: 4, message: "Dependable and does quality work.", date: "Feb 22, 2026", status: "Pending" },
+      { id: 10, reviewer: "Emily W.", technicianName: "James T.", rating: 5, message: "Our pool has never looked better!", date: "Feb 14, 2026", status: "Approved" },
     ],
     pools: [
       { address: "455 Cypress Way", homeowner: "Emily W.", nextService: "Mar 17, 2026", serviceType: "3-Hour Pool Service" },

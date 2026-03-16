@@ -267,7 +267,7 @@ const ServicesSection = () => {
                   Edit
                 </button>
               </div>
-              <p className="text-sm text-muted-foreground leading-relaxed pl-[calc(theme(spacing.2)+3.5rem)]">
+              <p className="text-sm text-muted-foreground leading-relaxed mt-1">
                 {selectedService.description}
               </p>
             </div>

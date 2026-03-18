@@ -108,11 +108,22 @@ const AdminDashboard = () => {
     if (page === "applicantDetail") nav("applicants");
   };
 
+  const DEFAULT_REJECTION_MESSAGE = "Thank you for applying for the position. We appreciate the time and effort you put into your application. After careful review, we have decided to move forward with another candidate at this time. We wish you the best in your job search and future opportunities.";
+
   const handleReject = (applicant: AdminApplicant) => {
     setApplicants(prev => prev.map(a => a.id === applicant.id ? { ...a, status: "Rejected" as const } : a));
     setConfirmAction(null);
-    toast({ title: "Application Rejected", description: `${applicant.firstName} ${applicant.lastName}'s application rejected.`, variant: "destructive" });
+    // Open the rejection email modal
+    setRejectionEmailApplicant(applicant);
+    setRejectionEmailSubject("Thank you for applying");
+    setRejectionEmailBody(DEFAULT_REJECTION_MESSAGE);
     if (page === "applicantDetail") nav("applicants");
+  };
+
+  const handleSendRejectionEmail = () => {
+    if (!rejectionEmailApplicant) return;
+    toast({ title: "Email Sent", description: `Rejection email sent to ${rejectionEmailApplicant.email}.`, variant: "success" });
+    setRejectionEmailApplicant(null);
   };
 
   const handleLogout = () => { logout(); navigate("/"); };

@@ -17,7 +17,7 @@ import { useToast } from "@/hooks/use-toast";
 import oasisLogo from "@/assets/oasis-logo-circle.png";
 import {
   INIT_TECHNICIANS, ADMIN_HOMEOWNERS, ADMIN_ISSUES, INIT_APPLICANTS,
-  type AdminTechnician, type AdminApplicant, type AdminIssue, type AdminTechReview, type ReviewStatus, type ReviewRejectionReason,
+  type AdminTechnician, type AdminApplicant, type AdminApplicantCert, type AdminIssue, type AdminTechReview, type ReviewStatus, type ReviewRejectionReason,
 } from "@/data/adminMockData";
 
 type AdminPage = "dashboard" | "technicians" | "techDetail" | "homeowners" | "homeDetail" | "issues" | "applicants" | "applicantDetail" | "reviews";
@@ -83,6 +83,7 @@ const AdminDashboard = () => {
   const [rejectReviewModal, setRejectReviewModal] = useState<AdminTechReview | null>(null);
   const [rejectionReason, setRejectionReason] = useState<ReviewRejectionReason>("");
 
+  const [certModalData, setCertModalData] = useState<{ name: string; certs: AdminApplicantCert[] } | null>(null);
   const [announcementOpen, setAnnouncementOpen] = useState(false);
   const [announcementTitle, setAnnouncementTitle] = useState("");
   const [announcementMessage, setAnnouncementMessage] = useState("");
@@ -417,7 +418,18 @@ const AdminDashboard = () => {
                   <TableCell className="whitespace-nowrap">{a.city}, {a.state}</TableCell>
                   <TableCell className="whitespace-nowrap">{a.experience}</TableCell>
                   <TableCell><span className="text-primary font-semibold text-xs cursor-pointer inline-flex items-center gap-1"><FileText className="h-3 w-3" /> View</span></TableCell>
-                  <TableCell className="text-xs text-muted-foreground">{a.certifications.length > 0 ? `${a.certifications.length} uploaded` : "None"}</TableCell>
+                  <TableCell>
+                    {a.certifications.length > 0 ? (
+                      <button
+                        onClick={() => setCertModalData({ name: `${a.firstName} ${a.lastName}`, certs: a.certifications })}
+                        className="text-primary font-semibold text-xs cursor-pointer inline-flex items-center gap-1 hover:underline"
+                      >
+                        <FileText className="h-3 w-3" /> {a.certifications.length} uploaded
+                      </button>
+                    ) : (
+                      <span className="text-xs text-muted-foreground">None</span>
+                    )}
+                  </TableCell>
                   <TableCell className="whitespace-nowrap">{a.appliedDate}</TableCell>
                   <TableCell><StatusBadge status={a.status} /></TableCell>
                   <TableCell>
@@ -714,6 +726,36 @@ const AdminDashboard = () => {
               </DialogFooter>
             </>
           )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Certificates Modal */}
+      <Dialog open={!!certModalData} onOpenChange={(open) => !open && setCertModalData(null)}>
+        <DialogContent className="max-w-[520px] pt-10">
+          <DialogHeader>
+            <DialogTitle>Certificates — {certModalData?.name}</DialogTitle>
+            <DialogDescription>
+              {certModalData?.certs.length} certificate{(certModalData?.certs.length || 0) > 1 ? "s" : ""} uploaded. Click a file to open it.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-2 mt-2">
+            {certModalData?.certs.map((cert, i) => (
+              <button
+                key={i}
+                onClick={() => toast({ title: "Opening certificate", description: `${cert.file} would open in a new tab.` })}
+                className="w-full flex items-center gap-3 p-3.5 bg-muted/50 rounded-xl border border-border hover:bg-muted transition-colors text-left group"
+              >
+                <div className="w-10 h-10 rounded-lg bg-red-50 flex items-center justify-center text-red-500 shrink-0">
+                  <FileText className="h-5 w-5" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-semibold text-foreground group-hover:text-primary transition-colors">{cert.name}</p>
+                  <p className="text-xs text-muted-foreground truncate">{cert.file}</p>
+                </div>
+                <Download className="h-4 w-4 text-muted-foreground group-hover:text-primary shrink-0 transition-colors" />
+              </button>
+            ))}
+          </div>
         </DialogContent>
       </Dialog>
 

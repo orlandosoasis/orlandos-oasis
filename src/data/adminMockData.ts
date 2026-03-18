@@ -113,9 +113,9 @@ export const INIT_TECHNICIANS: AdminTechnician[] = [
   {
     id: 2, name: "Ana R.", rating: 4.7, email: "ana@oasis.com", phone: "(407) 555-5678", status: "Active", assignedPools: 2, completedServices: 8,
     reviews: [
-      { id: 6, reviewer: "Susan P.", technicianName: "Ana R.", rating: 5, message: "Very professional and detail-oriented.", date: "Feb 20, 2026", status: "Approved" },
-      { id: 7, reviewer: "Tom R.", technicianName: "Ana R.", rating: 4, message: "Solid work, pool looks great.", date: "Feb 12, 2026", status: "Pending" },
-      { id: 8, reviewer: "Lisa M.", technicianName: "Ana R.", rating: 5, message: "Ana is wonderful. So reliable!", date: "Jan 30, 2026", status: "Rejected", rejectionReason: "spam" },
+      { id: 6, reviewer: "Susan P.", technicianName: "Ana R.", rating: 5, message: "Very professional and detail-oriented. Ana checked every part of the pool system and even cleaned the pump basket without being asked. She left the area spotless.", date: "Feb 20, 2026", status: "Approved" },
+      { id: 7, reviewer: "Tom R.", technicianName: "Ana R.", rating: 4, message: "Solid work, pool looks great. Ana was efficient and the water clarity improved noticeably. Only reason for 4 stars is she arrived a bit later than expected, but the quality of work was excellent.", date: "Feb 12, 2026", status: "Pending" },
+      { id: 8, reviewer: "Lisa M.", technicianName: "Ana R.", rating: 2, message: "I was disappointed with the service this time. The technician arrived late and seemed rushed during the cleaning. Some debris was still floating in the pool after the visit and the tile line was not properly scrubbed. I also noticed the filter area was left slightly messy. I expected a more thorough job given the previous reviews.", date: "Jan 30, 2026", status: "Rejected", rejectionReason: "spam" },
     ],
     pools: [
       { address: "320 Ocean View Rd", homeowner: "Susan P.", nextService: "Mar 19, 2026", serviceType: "3-Hour Pool Service" },

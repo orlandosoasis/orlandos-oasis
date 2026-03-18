@@ -89,6 +89,10 @@ const AdminDashboard = () => {
   const [announcementMessage, setAnnouncementMessage] = useState("");
   const [announcementSent, setAnnouncementSent] = useState(false);
 
+  const [rejectionEmailApplicant, setRejectionEmailApplicant] = useState<AdminApplicant | null>(null);
+  const [rejectionEmailSubject, setRejectionEmailSubject] = useState("");
+  const [rejectionEmailBody, setRejectionEmailBody] = useState("");
+
   const nav = (p: AdminPage, id: number | null = null) => { setPage(p); setDetailId(id); setSidebarOpen(false); };
 
   const handleApprove = (applicant: AdminApplicant) => {

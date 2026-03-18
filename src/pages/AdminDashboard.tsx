@@ -17,7 +17,7 @@ import { useToast } from "@/hooks/use-toast";
 import oasisLogo from "@/assets/oasis-logo-circle.png";
 import {
   INIT_TECHNICIANS, ADMIN_HOMEOWNERS, ADMIN_ISSUES, INIT_APPLICANTS,
-  type AdminTechnician, type AdminApplicant, type AdminIssue, type AdminTechReview, type ReviewStatus, type ReviewRejectionReason,
+  type AdminTechnician, type AdminApplicant, type AdminApplicantCert, type AdminIssue, type AdminTechReview, type ReviewStatus, type ReviewRejectionReason,
 } from "@/data/adminMockData";
 
 type AdminPage = "dashboard" | "technicians" | "techDetail" | "homeowners" | "homeDetail" | "issues" | "applicants" | "applicantDetail" | "reviews";

@@ -83,6 +83,7 @@ const AdminDashboard = () => {
   const [rejectReviewModal, setRejectReviewModal] = useState<AdminTechReview | null>(null);
   const [rejectionReason, setRejectionReason] = useState<ReviewRejectionReason>("");
 
+  const [certModalData, setCertModalData] = useState<{ name: string; certs: AdminApplicantCert[] } | null>(null);
   const [announcementOpen, setAnnouncementOpen] = useState(false);
   const [announcementTitle, setAnnouncementTitle] = useState("");
   const [announcementMessage, setAnnouncementMessage] = useState("");

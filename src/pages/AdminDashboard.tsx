@@ -418,7 +418,18 @@ const AdminDashboard = () => {
                   <TableCell className="whitespace-nowrap">{a.city}, {a.state}</TableCell>
                   <TableCell className="whitespace-nowrap">{a.experience}</TableCell>
                   <TableCell><span className="text-primary font-semibold text-xs cursor-pointer inline-flex items-center gap-1"><FileText className="h-3 w-3" /> View</span></TableCell>
-                  <TableCell className="text-xs text-muted-foreground">{a.certifications.length > 0 ? `${a.certifications.length} uploaded` : "None"}</TableCell>
+                  <TableCell>
+                    {a.certifications.length > 0 ? (
+                      <button
+                        onClick={() => setCertModalData({ name: `${a.firstName} ${a.lastName}`, certs: a.certifications })}
+                        className="text-primary font-semibold text-xs cursor-pointer inline-flex items-center gap-1 hover:underline"
+                      >
+                        <FileText className="h-3 w-3" /> {a.certifications.length} uploaded
+                      </button>
+                    ) : (
+                      <span className="text-xs text-muted-foreground">None</span>
+                    )}
+                  </TableCell>
                   <TableCell className="whitespace-nowrap">{a.appliedDate}</TableCell>
                   <TableCell><StatusBadge status={a.status} /></TableCell>
                   <TableCell>

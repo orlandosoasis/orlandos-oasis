@@ -729,6 +729,36 @@ const AdminDashboard = () => {
         </DialogContent>
       </Dialog>
 
+      {/* Certificates Modal */}
+      <Dialog open={!!certModalData} onOpenChange={(open) => !open && setCertModalData(null)}>
+        <DialogContent className="max-w-[520px] pt-10">
+          <DialogHeader>
+            <DialogTitle>Certificates — {certModalData?.name}</DialogTitle>
+            <DialogDescription>
+              {certModalData?.certs.length} certificate{(certModalData?.certs.length || 0) > 1 ? "s" : ""} uploaded. Click a file to open it.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-2 mt-2">
+            {certModalData?.certs.map((cert, i) => (
+              <button
+                key={i}
+                onClick={() => toast({ title: "Opening certificate", description: `${cert.file} would open in a new tab.` })}
+                className="w-full flex items-center gap-3 p-3.5 bg-muted/50 rounded-xl border border-border hover:bg-muted transition-colors text-left group"
+              >
+                <div className="w-10 h-10 rounded-lg bg-red-50 flex items-center justify-center text-red-500 shrink-0">
+                  <FileText className="h-5 w-5" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-semibold text-foreground group-hover:text-primary transition-colors">{cert.name}</p>
+                  <p className="text-xs text-muted-foreground truncate">{cert.file}</p>
+                </div>
+                <Download className="h-4 w-4 text-muted-foreground group-hover:text-primary shrink-0 transition-colors" />
+              </button>
+            ))}
+          </div>
+        </DialogContent>
+      </Dialog>
+
       {/* Announcement Modal */}
       <Dialog open={announcementOpen} onOpenChange={setAnnouncementOpen}>
         <DialogContent className="pt-10">

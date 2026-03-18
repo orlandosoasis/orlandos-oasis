@@ -98,11 +98,11 @@ export const INIT_TECHNICIANS: AdminTechnician[] = [
   {
     id: 1, name: "Carlos M.", rating: 4.9, email: "carlos@oasis.com", phone: "(407) 555-1234", status: "Active", assignedPools: 3, completedServices: 12,
     reviews: [
-      { id: 1, reviewer: "John S.", technicianName: "Carlos M.", rating: 5, message: "Great service. Pool looks perfect.", date: "Feb 25, 2026", status: "Approved" },
-      { id: 2, reviewer: "Maria L.", technicianName: "Carlos M.", rating: 5, message: "Always on time and very thorough.", date: "Feb 18, 2026", status: "Approved" },
-      { id: 3, reviewer: "David K.", technicianName: "Carlos M.", rating: 5, message: "Carlos is amazing. Highly recommend.", date: "Feb 10, 2026", status: "Pending" },
-      { id: 4, reviewer: "Susan P.", technicianName: "Carlos M.", rating: 4, message: "Good job overall, minor miss on tiles.", date: "Jan 28, 2026", status: "Approved" },
-      { id: 5, reviewer: "Tom R.", technicianName: "Carlos M.", rating: 5, message: "Excellent work as always!", date: "Jan 15, 2026", status: "Approved" },
+      { id: 1, reviewer: "John S.", technicianName: "Carlos M.", rating: 5, message: "Great service. Pool looks perfect. Carlos was very professional and took the time to explain what he was doing at each step. He also gave me tips on maintaining the chemical balance between visits.", date: "Feb 25, 2026", status: "Approved" },
+      { id: 2, reviewer: "Maria L.", technicianName: "Carlos M.", rating: 5, message: "Always on time and very thorough. Carlos never misses a detail — from brushing the walls to cleaning the filter basket. Our pool always looks resort-quality after his visits.", date: "Feb 18, 2026", status: "Approved" },
+      { id: 3, reviewer: "David K.", technicianName: "Carlos M.", rating: 5, message: "Carlos did an excellent job servicing our pool. He arrived exactly on time, explained what he was going to check before starting, and was very thorough with the cleaning and inspection. He also pointed out a small issue with the filter system and gave helpful advice on how to prevent it from becoming a bigger problem later. The pool water looks crystal clear now and the tile line is noticeably cleaner. Overall, this was one of the most professional pool service experiences we've had.", date: "Feb 10, 2026", status: "Pending" },
+      { id: 4, reviewer: "Susan P.", technicianName: "Carlos M.", rating: 4, message: "Good job overall, minor miss on tiles. Carlos was friendly and efficient but I noticed a small section of the tile line near the steps wasn't scrubbed as thoroughly as usual. Still a solid service overall.", date: "Jan 28, 2026", status: "Approved" },
+      { id: 5, reviewer: "Tom R.", technicianName: "Carlos M.", rating: 5, message: "Excellent work as always! Carlos is our favorite technician. He's reliable, communicative, and the pool always looks amazing after his visits.", date: "Jan 15, 2026", status: "Approved" },
     ],
     pools: [
       { address: "742 Palm Grove Dr", homeowner: "John S.", nextService: "Mar 18, 2026", serviceType: "3-Hour Pool Service" },
@@ -113,9 +113,9 @@ export const INIT_TECHNICIANS: AdminTechnician[] = [
   {
     id: 2, name: "Ana R.", rating: 4.7, email: "ana@oasis.com", phone: "(407) 555-5678", status: "Active", assignedPools: 2, completedServices: 8,
     reviews: [
-      { id: 6, reviewer: "Susan P.", technicianName: "Ana R.", rating: 5, message: "Very professional and detail-oriented.", date: "Feb 20, 2026", status: "Approved" },
-      { id: 7, reviewer: "Tom R.", technicianName: "Ana R.", rating: 4, message: "Solid work, pool looks great.", date: "Feb 12, 2026", status: "Pending" },
-      { id: 8, reviewer: "Lisa M.", technicianName: "Ana R.", rating: 5, message: "Ana is wonderful. So reliable!", date: "Jan 30, 2026", status: "Rejected", rejectionReason: "spam" },
+      { id: 6, reviewer: "Susan P.", technicianName: "Ana R.", rating: 5, message: "Very professional and detail-oriented. Ana checked every part of the pool system and even cleaned the pump basket without being asked. She left the area spotless.", date: "Feb 20, 2026", status: "Approved" },
+      { id: 7, reviewer: "Tom R.", technicianName: "Ana R.", rating: 4, message: "Solid work, pool looks great. Ana was efficient and the water clarity improved noticeably. Only reason for 4 stars is she arrived a bit later than expected, but the quality of work was excellent.", date: "Feb 12, 2026", status: "Pending" },
+      { id: 8, reviewer: "Lisa M.", technicianName: "Ana R.", rating: 2, message: "I was disappointed with the service this time. The technician arrived late and seemed rushed during the cleaning. Some debris was still floating in the pool after the visit and the tile line was not properly scrubbed. I also noticed the filter area was left slightly messy. I expected a more thorough job given the previous reviews.", date: "Jan 30, 2026", status: "Rejected", rejectionReason: "spam" },
     ],
     pools: [
       { address: "320 Ocean View Rd", homeowner: "Susan P.", nextService: "Mar 19, 2026", serviceType: "3-Hour Pool Service" },

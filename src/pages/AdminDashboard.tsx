@@ -82,6 +82,7 @@ const AdminDashboard = () => {
   const [reviewFilter, setReviewFilter] = useState<"All" | ReviewStatus>("All");
   const [rejectReviewModal, setRejectReviewModal] = useState<AdminTechReview | null>(null);
   const [rejectionReason, setRejectionReason] = useState<ReviewRejectionReason>("");
+  const [reviewDetailModal, setReviewDetailModal] = useState<AdminTechReview | null>(null);
 
   const [certModalData, setCertModalData] = useState<{ name: string; certs: AdminApplicantCert[] } | null>(null);
   const [announcementOpen, setAnnouncementOpen] = useState(false);
@@ -587,7 +588,7 @@ const AdminDashboard = () => {
                   {filtered.length === 0 ? (
                     <TableRow><TableCell colSpan={7} className="text-center text-muted-foreground py-8">No reviews found.</TableCell></TableRow>
                   ) : filtered.map(r => (
-                    <TableRow key={r.id}>
+                    <TableRow key={r.id} className="cursor-pointer hover:bg-muted/50" onClick={() => setReviewDetailModal(r)}>
                       <TableCell className="font-semibold">{r.reviewer}</TableCell>
                       <TableCell>{r.technicianName}</TableCell>
                       <TableCell><Stars rating={r.rating} /></TableCell>
@@ -595,7 +596,7 @@ const AdminDashboard = () => {
                       <TableCell className="whitespace-nowrap">{r.date}</TableCell>
                       <TableCell><StatusBadge status={r.status} /></TableCell>
                       <TableCell>
-                        <div className="flex gap-1.5 flex-nowrap">
+                        <div className="flex gap-1.5 flex-nowrap" onClick={(e) => e.stopPropagation()}>
                           {r.status === "Pending" && (
                             <>
                               <Button size="sm" className="bg-emerald-500 hover:bg-emerald-600 text-white gap-1" onClick={() => handleApproveReview(r.id)}>
@@ -739,6 +740,41 @@ const AdminDashboard = () => {
               <Mail className="h-4 w-4" /> Send Email
             </Button>
           </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Review Detail Modal */}
+      <Dialog open={!!reviewDetailModal} onOpenChange={(open) => !open && setReviewDetailModal(null)}>
+        <DialogContent className="max-w-[520px] pt-10">
+          <DialogHeader>
+            <DialogTitle>Review Details</DialogTitle>
+            <DialogDescription>Full review information</DialogDescription>
+          </DialogHeader>
+          {reviewDetailModal && (
+            <div className="space-y-1 mt-1">
+              <InfoRow label="Reviewer" value={reviewDetailModal.reviewer} />
+              <InfoRow label="Technician" value={reviewDetailModal.technicianName} />
+              <InfoRow label="Rating" value={<Stars rating={reviewDetailModal.rating} />} />
+              <InfoRow label="Date" value={reviewDetailModal.date} />
+              <InfoRow label="Status" value={reviewDetailModal.status} badge />
+              <div className="pt-3">
+                <div className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-2">Review</div>
+                <div className="p-4 bg-muted/50 rounded-xl border border-border text-sm text-foreground leading-relaxed whitespace-pre-wrap">
+                  "{reviewDetailModal.message}"
+                </div>
+              </div>
+              {reviewDetailModal.status === "Pending" && (
+                <div className="flex gap-2 justify-end pt-4">
+                  <Button size="sm" className="bg-emerald-500 hover:bg-emerald-600 text-white gap-1.5" onClick={() => { handleApproveReview(reviewDetailModal.id); setReviewDetailModal({ ...reviewDetailModal, status: "Approved" }); }}>
+                    <Check className="h-4 w-4" /> Approve
+                  </Button>
+                  <Button size="sm" variant="outline" className="text-destructive border-destructive/40 hover:bg-destructive/10 gap-1.5" onClick={() => { setReviewDetailModal(null); setRejectReviewModal(reviewDetailModal); setRejectionReason(""); }}>
+                    <X className="h-4 w-4" /> Reject
+                  </Button>
+                </div>
+              )}
+            </div>
+          )}
         </DialogContent>
       </Dialog>
 

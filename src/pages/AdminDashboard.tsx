@@ -588,7 +588,7 @@ const AdminDashboard = () => {
                   {filtered.length === 0 ? (
                     <TableRow><TableCell colSpan={7} className="text-center text-muted-foreground py-8">No reviews found.</TableCell></TableRow>
                   ) : filtered.map(r => (
-                    <TableRow key={r.id}>
+                    <TableRow key={r.id} className="cursor-pointer hover:bg-muted/50" onClick={() => setReviewDetailModal(r)}>
                       <TableCell className="font-semibold">{r.reviewer}</TableCell>
                       <TableCell>{r.technicianName}</TableCell>
                       <TableCell><Stars rating={r.rating} /></TableCell>
@@ -596,7 +596,7 @@ const AdminDashboard = () => {
                       <TableCell className="whitespace-nowrap">{r.date}</TableCell>
                       <TableCell><StatusBadge status={r.status} /></TableCell>
                       <TableCell>
-                        <div className="flex gap-1.5 flex-nowrap">
+                        <div className="flex gap-1.5 flex-nowrap" onClick={(e) => e.stopPropagation()}>
                           {r.status === "Pending" && (
                             <>
                               <Button size="sm" className="bg-emerald-500 hover:bg-emerald-600 text-white gap-1" onClick={() => handleApproveReview(r.id)}>

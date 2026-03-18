@@ -89,6 +89,10 @@ const AdminDashboard = () => {
   const [announcementMessage, setAnnouncementMessage] = useState("");
   const [announcementSent, setAnnouncementSent] = useState(false);
 
+  const [rejectionEmailApplicant, setRejectionEmailApplicant] = useState<AdminApplicant | null>(null);
+  const [rejectionEmailSubject, setRejectionEmailSubject] = useState("");
+  const [rejectionEmailBody, setRejectionEmailBody] = useState("");
+
   const nav = (p: AdminPage, id: number | null = null) => { setPage(p); setDetailId(id); setSidebarOpen(false); };
 
   const handleApprove = (applicant: AdminApplicant) => {
@@ -104,11 +108,22 @@ const AdminDashboard = () => {
     if (page === "applicantDetail") nav("applicants");
   };
 
+  const DEFAULT_REJECTION_MESSAGE = "Thank you for applying for the position. We appreciate the time and effort you put into your application. After careful review, we have decided to move forward with another candidate at this time. We wish you the best in your job search and future opportunities.";
+
   const handleReject = (applicant: AdminApplicant) => {
     setApplicants(prev => prev.map(a => a.id === applicant.id ? { ...a, status: "Rejected" as const } : a));
     setConfirmAction(null);
-    toast({ title: "Application Rejected", description: `${applicant.firstName} ${applicant.lastName}'s application rejected.`, variant: "destructive" });
+    // Open the rejection email modal
+    setRejectionEmailApplicant(applicant);
+    setRejectionEmailSubject("Thank you for applying");
+    setRejectionEmailBody(DEFAULT_REJECTION_MESSAGE);
     if (page === "applicantDetail") nav("applicants");
+  };
+
+  const handleSendRejectionEmail = () => {
+    if (!rejectionEmailApplicant) return;
+    toast({ title: "Email Sent", description: `Rejection email sent to ${rejectionEmailApplicant.email}.`, variant: "success" });
+    setRejectionEmailApplicant(null);
   };
 
   const handleLogout = () => { logout(); navigate("/"); };
@@ -690,6 +705,40 @@ const AdminDashboard = () => {
               </>
             );
           })()}
+        </DialogContent>
+      </Dialog>
+
+      {/* Rejection Email Modal */}
+      <Dialog open={!!rejectionEmailApplicant} onOpenChange={(open) => !open && setRejectionEmailApplicant(null)}>
+        <DialogContent className="max-w-[520px] pt-10">
+          <DialogHeader>
+            <DialogTitle>Send Rejection Email</DialogTitle>
+            <DialogDescription>
+              Notify the applicant about the rejection. You can edit the message before sending.
+            </DialogDescription>
+          </DialogHeader>
+          {rejectionEmailApplicant && (
+            <div className="space-y-4 mt-1">
+              <div className="space-y-1.5">
+                <label className="text-xs font-semibold text-muted-foreground">To</label>
+                <Input value={rejectionEmailApplicant.email} readOnly className="bg-muted/50 text-muted-foreground" />
+              </div>
+              <div className="space-y-1.5">
+                <label className="text-xs font-semibold text-muted-foreground">Subject</label>
+                <Input value={rejectionEmailSubject} onChange={(e) => setRejectionEmailSubject(e.target.value)} />
+              </div>
+              <div className="space-y-1.5">
+                <label className="text-xs font-semibold text-muted-foreground">Message</label>
+                <Textarea value={rejectionEmailBody} onChange={(e) => setRejectionEmailBody(e.target.value)} rows={6} />
+              </div>
+            </div>
+          )}
+          <DialogFooter className="gap-2">
+            <Button variant="outline" onClick={() => setRejectionEmailApplicant(null)}>Cancel</Button>
+            <Button className="gap-1.5" onClick={handleSendRejectionEmail}>
+              <Mail className="h-4 w-4" /> Send Email
+            </Button>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
 

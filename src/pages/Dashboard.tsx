@@ -436,7 +436,7 @@ const PastRow = ({ service, onViewDetails }: { service: ServiceInstance; onViewD
       </div>
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2">
-          <p className="text-sm font-semibold text-foreground">{booking.selectedPass.hours}-Hour Pool Service</p>
+          <p className="text-sm font-semibold text-foreground">{booking.selectedPass.label}</p>
           <StatusBadge status="completed" />
         </div>
         <p className="text-xs text-muted-foreground">{booking.technician.name}</p>

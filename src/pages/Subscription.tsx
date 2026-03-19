@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { ArrowLeft, RefreshCw, Calendar } from "lucide-react";
-import oasisLogo from "@/assets/oasis-logo-circle.png";
+import { RefreshCw, Calendar } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { useBooking } from "@/contexts/BookingContext";

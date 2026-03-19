@@ -349,7 +349,7 @@ const ServiceDetails = () => {
 
       {/* Report Issue Modal */}
       <ReportIssueModal open={reportIssueOpen} onOpenChange={setReportIssueOpen} />
-    </div>
+    </>
   );
 };
 

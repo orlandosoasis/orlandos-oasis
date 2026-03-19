@@ -1,16 +1,7 @@
 import { useState, useEffect, useMemo } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
-import { Calendar, ChevronRight, LogOut, Star, CalendarClock, LayoutDashboard, Settings, CreditCard } from "lucide-react";
-import oasisLogo from "@/assets/oasis-logo-circle.png";
+import { Calendar, ChevronRight, Star, CalendarClock } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { useAuth } from "@/contexts/AuthContext";
 import { useBooking, type BookingData, type TimeWindow } from "@/contexts/BookingContext";
 import PoolSceneHero from "@/components/dashboard/PoolSceneHero";

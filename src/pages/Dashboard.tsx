@@ -124,6 +124,13 @@ const Dashboard = () => {
       setSearchParams({}, { replace: true });
     }
   }, [searchParams, setSearchParams]);
+  // Listen for header "Book Service" button
+  const openBooking = useCallback(() => setShowBooking(true), []);
+  useEffect(() => {
+    window.addEventListener("open-booking", openBooking);
+    return () => window.removeEventListener("open-booking", openBooking);
+  }, [openBooking]);
+
   const [showMore, setShowMore] = useState(false);
   const [services, setServices] = useState<ServiceInstance[]>([]);
   const [rescheduleService, setRescheduleService] = useState<ServiceInstance | null>(null);

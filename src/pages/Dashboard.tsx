@@ -151,14 +151,14 @@ const Dashboard = () => {
   }, [isLoading, isAuthenticated, isPostCheckout, navigate, searchParams]);
 
   useEffect(() => {
-    const demoServices = generateDemoServices();
+    const demoServices = generateDemoServices(checkoutData);
     if (booking) {
       setServices([{ id: "svc-custom", booking: { ...booking, status: "scheduled" } }, ...demoServices]);
     } else {
       setServices(demoServices);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user?.email, booking]);
+  }, [user?.email, booking, checkoutData]);
 
   const handleLogout = () => { logout(); navigate("/login", { replace: true }); };
 

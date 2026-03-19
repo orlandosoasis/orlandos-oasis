@@ -139,12 +139,6 @@ const PersistentHeader = memo(function PersistentHeader() {
                 >
                   <Settings className="h-4 w-4" /> Account Settings
                 </DropdownMenuItem>
-                <DropdownMenuItem
-                  onClick={() => navigate("/account-settings/payment-methods")}
-                  className="cursor-pointer gap-2 focus:bg-muted focus:text-foreground"
-                >
-                  <CreditCard className="h-4 w-4" /> Payment & Membership
-                </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem
                   onClick={handleLogout}

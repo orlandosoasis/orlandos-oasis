@@ -64,10 +64,10 @@ const BookingFlow = ({ onClose, onComplete, selectedService: selectedServiceProp
   const [timeWindow, setTimeWindow] = useState<TimeWindow>("morning");
 
   // Step 1 — Pool / Property
-  const [address, setAddress] = useState("");
-  const [city, setCity] = useState("");
-  const [state, setState] = useState("");
-  const [zip, setZip] = useState("");
+  const [address, setAddress] = useState(user?.streetAddress || "");
+  const [city, setCity] = useState(user?.city || "");
+  const [state, setState] = useState(user?.state || "");
+  const [zip, setZip] = useState(user?.zipCode || "");
   const [poolType, setPoolType] = useState("Inground");
   const [poolSize, setPoolSize] = useState("Small (<10k gal)");
   const [accessMethod, setAccessMethod] = useState<AccessMethod>("home");

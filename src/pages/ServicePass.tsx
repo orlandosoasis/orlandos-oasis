@@ -103,9 +103,7 @@ const ServicePass = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-background">
-      <Header />
-      
+    <>
       <main className="flex-1 py-8 px-4">
         <div className="max-w-lg mx-auto space-y-6">
           {/* Top Assurance Banner */}

@@ -33,12 +33,6 @@ const settingsItems = [
     icon: SlidersHorizontal,
     path: "/account-settings/preferences",
   },
-  {
-    label: "Cleaner Experience Level",
-    description: "Choose technician experience preference",
-    icon: Award,
-    path: "/account-settings/experience-level",
-  },
 ];
 
 const AccountSettings = () => {

@@ -277,17 +277,11 @@ const Dashboard = () => {
                 );
               })}
             </div>
-            {remainingUpcoming.length > 3 && (
+            {hasMoreUpcoming && (
               <div className="mt-3 text-center">
-                {showMore ? (
-                  <button onClick={() => { setShowMore(false); window.scrollTo({ top: 0, behavior: "smooth" }); }} className="text-sm font-semibold text-primary hover:underline">
-                    See less
-                  </button>
-                ) : (
-                  <button onClick={() => setShowMore(true)} className="text-sm font-semibold text-primary hover:underline">
-                    View full schedule this year ({currentYear})
-                  </button>
-                )}
+                <button onClick={() => setVisibleCount(prev => prev + LOAD_MORE_COUNT)} className="text-sm font-semibold text-primary hover:underline">
+                  Load more visits ({remainingUpcoming.length - visibleCount} remaining)
+                </button>
               </div>
             )}
           </section>

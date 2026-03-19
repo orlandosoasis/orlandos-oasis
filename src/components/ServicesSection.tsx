@@ -61,6 +61,20 @@ const ServicesSection = () => {
   };
 
   const handlePaymentSubmit = async () => {
+    // Save checkout data for dashboard to use
+    setCheckoutData({
+      serviceName: serviceName,
+      serviceDescription: selectedPlan.description,
+      frequency: formData.frequency,
+      originalPrice: selectedPlan.originalPrice,
+      discountPrice: selectedPlan.discountPrice,
+      customerEmail: formData.email,
+      customerFirstName: formData.firstName,
+      customerLastName: formData.lastName,
+      customerPhone: formData.phone,
+      customerZipcode: formData.zipcode,
+    });
+
     setBookingComplete(true);
     setTimeout(scrollToTop, 50);
 
@@ -72,7 +86,6 @@ const ServicesSection = () => {
       const signupResult = await signup(formData.email, tempPassword, fullName, "homeowner");
       
       if (!signupResult.success) {
-        // Account may already exist — try logging in
         const loginResult = await login(formData.email, tempPassword);
         if (!loginResult.success) {
           setAutoLoginFailed(true);

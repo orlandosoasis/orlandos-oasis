@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useBooking, matchTechnician } from "@/contexts/BookingContext";
+import { useAuth } from "@/contexts/AuthContext";
 import type { PassOption, CleaningFrequency, TimeWindow, AccessMethod, ScheduleData } from "@/contexts/BookingContext";
 import { VOUCHER_PLANS } from "./VoucherSelectionStep";
 

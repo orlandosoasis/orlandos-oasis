@@ -16,6 +16,7 @@ const preloadImage = (src: string) => {
 };
 preloadImage(oasisLogoCircle);
 preloadImage(orlandoOasisLogo);
+
 import Index from "./pages/Index";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
@@ -47,6 +48,7 @@ import TechMessages from "./pages/TechMessages";
 import AdminDashboard from "./pages/AdminDashboard";
 import Contact from "./pages/Contact";
 import NotFound from "./pages/NotFound";
+import CustomerLayout from "./components/CustomerLayout";
 
 const queryClient = new QueryClient();
 
@@ -62,25 +64,29 @@ const App = () => (
             <Route path="/" element={<Index />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/tech-dashboard" element={<TechnicianDashboard />} />
-            <Route path="/passes" element={<ServicePass />} />
-            <Route path="/service/:serviceId" element={<ServiceDetails />} />
-            <Route path="/service-details" element={<ServiceDetails />} />
-            <Route path="/service-details/completed" element={<ServiceDetails />} />
-            <Route path="/messages" element={<Messages />} />
+
+            {/* Customer pages with persistent header */}
+            <Route element={<CustomerLayout />}>
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/passes" element={<ServicePass />} />
+              <Route path="/service/:serviceId" element={<ServiceDetails />} />
+              <Route path="/service-details" element={<ServiceDetails />} />
+              <Route path="/service-details/completed" element={<ServiceDetails />} />
+              <Route path="/messages" element={<Messages />} />
+              <Route path="/help" element={<HelpCenter />} />
+              <Route path="/profile" element={<Profile />} />
+              <Route path="/account-settings" element={<AccountSettings />} />
+              <Route path="/account-settings/personal-info" element={<PersonalInfo />} />
+              <Route path="/account-settings/payment-methods" element={<PaymentMethods />} />
+              <Route path="/account-settings/cleaning-address" element={<CleaningAddress />} />
+              <Route path="/account-settings/cleaning-notes" element={<CleaningNotes />} />
+              <Route path="/account-settings/preferences" element={<Preferences />} />
+              <Route path="/account-settings/experience-level" element={<ExperienceLevel />} />
+            </Route>
+
             <Route path="/terms" element={<Terms />} />
             <Route path="/privacy" element={<Privacy />} />
-            <Route path="/help" element={<HelpCenter />} />
-            <Route path="/profile" element={<Profile />} />
-            
-            <Route path="/account-settings" element={<AccountSettings />} />
-            <Route path="/account-settings/personal-info" element={<PersonalInfo />} />
-            <Route path="/account-settings/payment-methods" element={<PaymentMethods />} />
-            <Route path="/account-settings/cleaning-address" element={<CleaningAddress />} />
-            <Route path="/account-settings/cleaning-notes" element={<CleaningNotes />} />
-            <Route path="/account-settings/preferences" element={<Preferences />} />
-            <Route path="/account-settings/experience-level" element={<ExperienceLevel />} />
+            <Route path="/tech-dashboard" element={<TechnicianDashboard />} />
             <Route path="/technician" element={<TechnicianLanding />} />
             <Route path="/technician/apply" element={<TechnicianApplication />} />
             <Route path="/tech/pools" element={<TechPoolList />} />

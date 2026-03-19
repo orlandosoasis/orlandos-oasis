@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
-import oasisLogo from "@/assets/oasis-logo-circle.png";
+import oasisLogo from "@/assets/oo-logo.png";
 
 const Terms = () => {
   const navigate = useNavigate();

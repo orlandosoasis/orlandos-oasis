@@ -55,7 +55,7 @@ const AccountSettings = () => {
       </header>
 
       <main className="max-w-[760px] mx-auto px-5 py-8 pb-16">
-        <h1 className="text-2xl font-bold text-foreground mb-6">Account Settings</h1>
+        <h1 className="text-2xl font-bold text-foreground mb-6">Settings</h1>
 
         <div className="bg-card rounded-2xl border border-border shadow-sm divide-y divide-border overflow-hidden">
           {settingsItems.map((item) => (

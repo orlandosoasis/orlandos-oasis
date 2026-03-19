@@ -192,7 +192,7 @@ const Dashboard = () => {
     return () => window.removeEventListener("open-booking", openBooking);
   }, [openBooking]);
 
-  const [showMore, setShowMore] = useState(false);
+  const [visibleCount, setVisibleCount] = useState(INITIAL_VISIBLE_COUNT);
   const [services, setServices] = useState<ServiceInstance[]>([]);
   const [rescheduleService, setRescheduleService] = useState<ServiceInstance | null>(null);
   const [rescheduleConfirmed, setRescheduleConfirmed] = useState(false);

@@ -390,7 +390,7 @@ const UpcomingRow = ({ service, canReschedule, onReschedule }: { service: Servic
         <p className="text-xl font-bold text-foreground">{day}</p>
       </div>
       <div className="flex-1 min-w-0">
-        <p className="text-sm font-semibold text-foreground">{booking.selectedPass.hours}-Hour Pool Service</p>
+        <p className="text-sm font-semibold text-foreground">{booking.selectedPass.label}</p>
         <p className="text-xs text-muted-foreground truncate">
           Pool Technician to be assigned · {TIME_LABELS[booking.scheduleData.timeWindow]}
         </p>

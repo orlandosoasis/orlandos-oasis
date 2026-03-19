@@ -79,6 +79,12 @@ const BookingFlow = ({ onClose, onComplete, selectedService: selectedServiceProp
 
   const [isProcessing, setIsProcessing] = useState(false);
   const [bookingSuccess, setBookingSuccess] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  // Scroll to top when step changes
+  useEffect(() => {
+    containerRef.current?.scrollTo({ top: 0, behavior: "smooth" });
+  }, [step]);
 
   // Calendar helpers
   const daysInMonth = new Date(calYear, calMonth + 1, 0).getDate();

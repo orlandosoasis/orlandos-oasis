@@ -219,8 +219,8 @@ const Dashboard = () => {
 
   const nextService = upcomingServices[0] || null;
   const remainingUpcoming = upcomingServices.slice(1);
-  const visibleUpcoming = showMore ? remainingUpcoming : remainingUpcoming.slice(0, 3);
-  const currentYear = new Date().getFullYear();
+  const visibleUpcoming = remainingUpcoming.slice(0, visibleCount);
+  const hasMoreUpcoming = visibleCount < remainingUpcoming.length;
 
   const handleViewDetails = (svc: ServiceInstance) => {
     setBooking(svc.booking);

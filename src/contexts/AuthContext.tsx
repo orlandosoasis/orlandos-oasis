@@ -121,7 +121,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     password: string,
     fullName: string,
     role: UserRole = "homeowner",
-    address?: { streetAddress?: string; city?: string; state?: string; zipCode?: string }
+    extra?: { streetAddress?: string; city?: string; state?: string; zipCode?: string; phone?: string; firstName?: string; lastName?: string }
   ): Promise<{ success: boolean; error?: string }> => {
     // Simulate network delay
     await new Promise((resolve) => setTimeout(resolve, 800));
@@ -137,11 +137,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       id: `user-${Date.now()}`,
       email: normalizedEmail,
       fullName,
+      firstName: extra?.firstName || fullName.split(" ")[0],
+      lastName: extra?.lastName || fullName.split(" ").slice(1).join(" "),
       role,
-      streetAddress: address?.streetAddress,
-      city: address?.city,
-      state: address?.state,
-      zipCode: address?.zipCode,
+      phone: extra?.phone,
+      streetAddress: extra?.streetAddress,
+      city: extra?.city,
+      state: extra?.state,
+      zipCode: extra?.zipCode,
     };
 
     // Store the new user

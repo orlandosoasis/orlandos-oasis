@@ -75,15 +75,16 @@ const ServicesSection = () => {
       customerZipcode: formData.zipcode,
     });
 
-    setBookingComplete(true);
-    setTimeout(scrollToTop, 50);
-
     // Auto-create account and login using form data
     if (!isAuthenticated && formData.email) {
       const tempPassword = `Oasis${Date.now()}!`;
       const fullName = `${formData.firstName} ${formData.lastName}`.trim();
       
-      const signupResult = await signup(formData.email, tempPassword, fullName, "homeowner");
+      const signupResult = await signup(formData.email, tempPassword, fullName, "homeowner", {
+        phone: formData.phone,
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+      });
       
       if (!signupResult.success) {
         const loginResult = await login(formData.email, tempPassword);
@@ -92,6 +93,9 @@ const ServicesSection = () => {
         }
       }
     }
+
+    setBookingComplete(true);
+    setTimeout(scrollToTop, 50);
   };
 
   if (bookingComplete) {
@@ -111,21 +115,17 @@ const ServicesSection = () => {
           </div>
           <h2 className="text-2xl font-bold text-foreground">Payment Successful</h2>
           <p className="text-muted-foreground">
-            Your <strong>{serviceName}</strong> is confirmed. You can now schedule your first cleaning.
+            Your <strong>{serviceName}</strong> is confirmed.<br />Your account is ready — access your dashboard to book your first service.
           </p>
           <Button
-            onClick={() => {
-              const params = new URLSearchParams({
-                openBooking: "true",
-                serviceTitle: serviceName,
-                serviceDescription: selectedPlan.description,
-              });
-              navigate(`/dashboard?${params.toString()}`);
-            }}
+            onClick={() => navigate("/dashboard")}
             className="mt-2 w-full h-14 text-[17px] font-bold rounded-full shadow-md hover:shadow-lg"
           >
-            Schedule Pool Service
+            Go to My Dashboard
           </Button>
+          <p className="text-xs text-muted-foreground">
+            You're logged in as <strong>{formData.email}</strong>
+          </p>
         </div>
       </div>
     );

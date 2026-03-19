@@ -1,0 +1,154 @@
+import React, { memo } from "react";
+import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
+import oasisLogo from "@/assets/oasis-logo-circle.png";
+import { ArrowLeft, LayoutDashboard, Settings, CreditCard, LogOut } from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { useAuth } from "@/contexts/AuthContext";
+
+const BACK_TARGETS: Record<string, string> = {
+  "/account-settings": "/dashboard",
+  "/account-settings/personal-info": "/account-settings",
+  "/account-settings/payment-methods": "/account-settings",
+  "/account-settings/cleaning-address": "/account-settings",
+  "/account-settings/cleaning-notes": "/account-settings",
+  "/account-settings/preferences": "/account-settings",
+  "/account-settings/experience-level": "/account-settings",
+  "/help": "/service-details",
+  "/profile": "/dashboard",
+};
+
+/** Persistent header — never unmounts across customer routes */
+const PersistentHeader = memo(function PersistentHeader() {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { user, logout } = useAuth();
+
+  const isDashboard = location.pathname === "/dashboard";
+  const isSubPage = !isDashboard;
+
+  // Determine back target: exact match, then dynamic service/messages routes
+  let backTarget: string | null = null;
+  if (isSubPage) {
+    backTarget =
+      BACK_TARGETS[location.pathname] ||
+      (location.pathname.startsWith("/service/") ? "/dashboard" : null) ||
+      (location.pathname === "/messages" ? "-1" : null) ||
+      (location.pathname.startsWith("/subscription") ? "/dashboard" : null) ||
+      "/dashboard";
+  }
+
+  const handleBack = () => {
+    if (backTarget === "-1") {
+      navigate(-1);
+    } else if (backTarget) {
+      navigate(backTarget);
+    }
+  };
+
+  const handleLogout = () => {
+    logout();
+    navigate("/login", { replace: true });
+  };
+
+  const initials = user?.fullName
+    ?.split(" ")
+    .map((n) => n[0])
+    .join("")
+    .slice(0, 2)
+    .toUpperCase();
+
+  return (
+    <header className="bg-card border-b border-border sticky top-0 z-10">
+      <div className="container max-w-[760px] mx-auto px-5 h-[60px] flex items-center justify-between">
+        {/* Left */}
+        {isSubPage && backTarget ? (
+          <button
+            onClick={handleBack}
+            className="flex items-center gap-2 text-foreground hover:text-primary transition-colors"
+          >
+            <ArrowLeft className="h-5 w-5" />
+            <span className="font-medium text-sm">Back</span>
+          </button>
+        ) : (
+          <Link to="/dashboard" className="flex items-center gap-1.5">
+            <img src={oasisLogo} alt="Orlando's Oasis" className="h-6 w-6 object-contain" />
+            <span className="text-[1.25rem] font-bold text-foreground tracking-tight">
+              Orlando's Oasis
+            </span>
+          </Link>
+        )}
+
+        {/* Center (only on sub-pages) */}
+        {isSubPage && (
+          <Link to="/dashboard" className="flex items-center gap-1.5">
+            <img src={oasisLogo} alt="Orlando's Oasis" className="h-6 w-6 object-contain" />
+            <span className="text-[1.25rem] font-bold text-foreground tracking-tight">
+              Orlando's Oasis
+            </span>
+          </Link>
+        )}
+
+        {/* Right */}
+        {user ? (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button className="rounded-full focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2">
+                <Avatar className="h-9 w-9 cursor-pointer">
+                  <AvatarImage src={user.avatarUrl} alt={user.fullName} />
+                  <AvatarFallback className="bg-navy text-primary-foreground text-sm font-semibold">
+                    {initials}
+                  </AvatarFallback>
+                </Avatar>
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-48">
+              <DropdownMenuItem
+                onClick={() => navigate("/dashboard")}
+                className="cursor-pointer gap-2 focus:bg-muted focus:text-foreground"
+              >
+                <LayoutDashboard className="h-4 w-4" /> Dashboard
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => navigate("/account-settings")}
+                className="cursor-pointer gap-2 focus:bg-muted focus:text-foreground"
+              >
+                <Settings className="h-4 w-4" /> Account Settings
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => navigate("/account-settings/payment-methods")}
+                className="cursor-pointer gap-2 focus:bg-muted focus:text-foreground"
+              >
+                <CreditCard className="h-4 w-4" /> Payment & Membership
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                onClick={handleLogout}
+                className="cursor-pointer gap-2 text-destructive focus:bg-muted focus:text-destructive"
+              >
+                <LogOut className="h-4 w-4" /> Logout
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        ) : (
+          isSubPage && <div className="w-9" />
+        )}
+      </div>
+    </header>
+  );
+});
+
+export default function CustomerLayout() {
+  return (
+    <div className="min-h-screen bg-background">
+      <PersistentHeader />
+      <Outlet />
+    </div>
+  );
+}

@@ -118,7 +118,7 @@ function formatGreetingDate(): string {
    ══════════════════════════════════════════════ */
 const Dashboard = () => {
   const { user, logout, isAuthenticated, isLoading } = useAuth();
-  const { booking, setBooking } = useBooking();
+  const { booking, setBooking, checkoutData } = useBooking();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const [showBooking, setShowBooking] = useState(false);

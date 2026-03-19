@@ -262,7 +262,7 @@ const Dashboard = () => {
           onReschedule={handleReschedule}
         />
       )}
-    </div>
+    </>
   );
 };
 

@@ -96,7 +96,7 @@ function getPreviousDate(startDate: Date, frequency: string): Date {
   return prev;
 }
 
-const INITIAL_VISIBLE_COUNT = 10;
+const INITIAL_VISIBLE_COUNT = 3;
 const LOAD_MORE_COUNT = 10;
 
 function generateDemoServices(checkoutData?: import("@/contexts/BookingContext").CheckoutData | null): ServiceInstance[] {

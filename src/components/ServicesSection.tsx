@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Check, AlertCircle } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
+import { useBooking } from "@/contexts/BookingContext";
 import BookingStepper from "@/components/BookingStepper";
 import VoucherSelectionStep, { VOUCHER_PLANS } from "@/components/dashboard/VoucherSelectionStep";
 import VoucherConfirmationStep from "@/components/dashboard/VoucherConfirmationStep";
@@ -19,6 +20,7 @@ const STEPS = [
 const ServicesSection = () => {
   const navigate = useNavigate();
   const { signup, login, isAuthenticated } = useAuth();
+  const { setCheckoutData } = useBooking();
   const [selectedPlanId, setSelectedPlanId] = useState("weekly");
   const [currentStep, setCurrentStep] = useState(1);
   const [bookingComplete, setBookingComplete] = useState(false);
@@ -59,6 +61,20 @@ const ServicesSection = () => {
   };
 
   const handlePaymentSubmit = async () => {
+    // Save checkout data for dashboard to use
+    setCheckoutData({
+      serviceName: serviceName,
+      serviceDescription: selectedPlan.description,
+      frequency: formData.frequency,
+      originalPrice: selectedPlan.originalPrice,
+      discountPrice: selectedPlan.discountPrice,
+      customerEmail: formData.email,
+      customerFirstName: formData.firstName,
+      customerLastName: formData.lastName,
+      customerPhone: formData.phone,
+      customerZipcode: formData.zipcode,
+    });
+
     setBookingComplete(true);
     setTimeout(scrollToTop, 50);
 
@@ -70,7 +86,6 @@ const ServicesSection = () => {
       const signupResult = await signup(formData.email, tempPassword, fullName, "homeowner");
       
       if (!signupResult.success) {
-        // Account may already exist — try logging in
         const loginResult = await login(formData.email, tempPassword);
         if (!loginResult.success) {
           setAutoLoginFailed(true);

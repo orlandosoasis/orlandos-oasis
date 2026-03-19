@@ -35,21 +35,23 @@ interface ServiceInstance {
 }
 
 /* ── Helpers ── */
-function getThirdWednesday(year: number, month: number): Date {
-  const d = new Date(year, month, 1);
-  const dow = d.getDay();
-  const firstWed = dow <= 3 ? 3 - dow + 1 : 10 - dow + 1;
-  return new Date(year, month, firstWed + 14);
-}
+function generateDemoServices(checkoutData?: import("@/contexts/BookingContext").CheckoutData | null): ServiceInstance[] {
+  // Derive service label and hours from checkout data or use defaults
+  const serviceLabel = checkoutData?.serviceName || "Deep Clean";
+  const serviceHours = checkoutData?.frequency === "weekly" ? 1
+    : checkoutData?.frequency === "twice-weekly" ? 1
+    : checkoutData?.frequency === "three-weekly" ? 1
+    : 3;
+  const servicePrice = checkoutData?.discountPrice || 149;
+  const serviceOriginalPrice = checkoutData?.originalPrice || 189;
 
-function generateDemoServices(): ServiceInstance[] {
   const sharedPass = {
-    id: "pass-2", hours: 3, label: "Deep Clean Pass",
-    description: "Full cleaning, chemical balance, filter check",
-    originalPrice: 189, discountPrice: 149, percentOff: 21, isMostPopular: true,
+    id: "pass-checkout", hours: serviceHours, label: serviceLabel,
+    description: checkoutData?.serviceDescription || "Full cleaning, chemical balance, filter check",
+    originalPrice: serviceOriginalPrice, discountPrice: servicePrice, percentOff: Math.round(((serviceOriginalPrice - servicePrice) / serviceOriginalPrice) * 100), isMostPopular: true,
   };
   const sharedPool = {
-    address: "123 Main Street", city: "Miami", state: "FL", zip: "33101",
+    address: "123 Main Street", city: "Miami", state: "FL", zip: checkoutData?.customerZipcode || "33101",
     poolType: "In-ground", poolSize: "Medium (15k–25k gallons)",
     accessMethod: "gate" as const, accessDetail: "Code: 4521",
   };
@@ -59,29 +61,39 @@ function generateDemoServices(): ServiceInstance[] {
     accessDetail: "Code: 4521", addons: [] as { id: string; name: string; price: number }[], addonsTotal: 0,
   };
 
-  const services: ServiceInstance[] = [];
+  // Determine recurrence interval in days
+  const frequency = checkoutData?.frequency || "monthly";
+  const intervalDays = frequency === "weekly" ? 7
+    : frequency === "biweekly" ? 14
+    : frequency === "twice-weekly" ? 3
+    : frequency === "three-weekly" ? 2
+    : 30; // monthly
 
-  // Past service — Feb 25, 2026
+  const services: ServiceInstance[] = [];
+  const today = new Date();
+
+  // Past service — 1 interval ago
+  const pastDate = new Date(today);
+  pastDate.setDate(pastDate.getDate() - intervalDays);
   services.push({
-    id: "svc-feb-2026",
+    id: "svc-past-1",
     booking: {
       frequency: "monthly", selectedPass: sharedPass, pool: sharedPool, technician: tech, status: "completed",
-      scheduleData: { ...baseSchedule, selectedDate: new Date(2026, 1, 25) },
+      scheduleData: { ...baseSchedule, selectedDate: pastDate },
     },
   });
 
-  // Upcoming monthly visits — 3rd Wednesday, 8 months starting March
+  // Upcoming services — generate 8 future visits based on frequency
   const unassignedTech = { name: "Pool Technician to be assigned", initials: "?", rating: 0, isAssigned: false };
   for (let i = 0; i < 8; i++) {
-    const m = 2 + i;
-    const year = 2026 + Math.floor(m / 12);
-    const month = m % 12;
-    const date = getThirdWednesday(year, month);
+    const futureDate = new Date(today);
+    futureDate.setDate(futureDate.getDate() + intervalDays * (i + 1));
     services.push({
-      id: `svc-${SHORT_MONTHS[month].toLowerCase()}-${year}`,
+      id: `svc-upcoming-${i}`,
       booking: {
-        frequency: "monthly", selectedPass: sharedPass, pool: sharedPool, technician: i === 0 ? tech : unassignedTech, status: "scheduled",
-        scheduleData: { ...baseSchedule, selectedDate: date },
+        frequency: "monthly", selectedPass: sharedPass, pool: sharedPool,
+        technician: i === 0 ? tech : unassignedTech, status: "scheduled",
+        scheduleData: { ...baseSchedule, selectedDate: futureDate },
       },
     });
   }
@@ -99,7 +111,7 @@ function formatGreetingDate(): string {
    ══════════════════════════════════════════════ */
 const Dashboard = () => {
   const { user, logout, isAuthenticated, isLoading } = useAuth();
-  const { booking, setBooking } = useBooking();
+  const { booking, setBooking, checkoutData } = useBooking();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const [showBooking, setShowBooking] = useState(false);
@@ -132,14 +144,14 @@ const Dashboard = () => {
   }, [isLoading, isAuthenticated, isPostCheckout, navigate, searchParams]);
 
   useEffect(() => {
-    const demoServices = generateDemoServices();
+    const demoServices = generateDemoServices(checkoutData);
     if (booking) {
       setServices([{ id: "svc-custom", booking: { ...booking, status: "scheduled" } }, ...demoServices]);
     } else {
       setServices(demoServices);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user?.email, booking]);
+  }, [user?.email, booking, checkoutData]);
 
   const handleLogout = () => { logout(); navigate("/login", { replace: true }); };
 
@@ -342,7 +354,7 @@ const NextServiceCard = ({ service, onViewDetails }: { service: ServiceInstance;
           <p className="text-xl font-bold text-foreground">{d.getDate()}</p>
         </div>
         <div className="flex-1 min-w-0">
-          <p className="text-sm font-semibold text-foreground">{selectedPass.hours}-Hour Pool Service</p>
+          <p className="text-sm font-semibold text-foreground">{selectedPass.label}</p>
           <p className="text-xs text-muted-foreground">
             Expected arrival {TIME_LABELS[scheduleData.timeWindow]}
           </p>
@@ -371,7 +383,7 @@ const UpcomingRow = ({ service, canReschedule, onReschedule }: { service: Servic
         <p className="text-xl font-bold text-foreground">{day}</p>
       </div>
       <div className="flex-1 min-w-0">
-        <p className="text-sm font-semibold text-foreground">{booking.selectedPass.hours}-Hour Pool Service</p>
+        <p className="text-sm font-semibold text-foreground">{booking.selectedPass.label}</p>
         <p className="text-xs text-muted-foreground truncate">
           Pool Technician to be assigned · {TIME_LABELS[booking.scheduleData.timeWindow]}
         </p>
@@ -405,9 +417,9 @@ const UpcomingRow = ({ service, canReschedule, onReschedule }: { service: Servic
 /* ── Past Service Row ── */
 const PastRow = ({ service, onViewDetails }: { service: ServiceInstance; onViewDetails: () => void }) => {
   const { booking } = service;
-  const displayDate = new Date(2026, 1, 25);
-  const month = SHORT_MONTHS[displayDate.getMonth()].toUpperCase();
-  const day = displayDate.getDate();
+  const d = booking.scheduleData.selectedDate;
+  const month = SHORT_MONTHS[d.getMonth()].toUpperCase();
+  const day = d.getDate();
 
   return (
     <div className="flex items-center gap-4 px-5 py-4 cursor-pointer hover:bg-muted/30 transition-colors group" onClick={onViewDetails}>
@@ -417,7 +429,7 @@ const PastRow = ({ service, onViewDetails }: { service: ServiceInstance; onViewD
       </div>
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2">
-          <p className="text-sm font-semibold text-foreground">{booking.selectedPass.hours}-Hour Pool Service</p>
+          <p className="text-sm font-semibold text-foreground">{booking.selectedPass.label}</p>
           <StatusBadge status="completed" />
         </div>
         <p className="text-xs text-muted-foreground">{booking.technician.name}</p>

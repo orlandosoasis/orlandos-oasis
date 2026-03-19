@@ -281,7 +281,7 @@ const Dashboard = () => {
               <div className="mt-3 text-center">
                 {hasMoreUpcoming ? (
                   <button onClick={() => setVisibleCount(prev => prev + LOAD_MORE_COUNT)} className="text-sm font-semibold text-primary hover:underline">
-                    Load more visits ({remainingUpcoming.length - visibleCount} remaining)
+                    Load more visits
                   </button>
                 ) : (
                   <button onClick={() => { setVisibleCount(INITIAL_VISIBLE_COUNT); window.scrollTo({ top: 0, behavior: "smooth" }); }} className="text-sm font-semibold text-primary hover:underline">

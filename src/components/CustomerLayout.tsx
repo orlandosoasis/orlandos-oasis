@@ -103,7 +103,17 @@ const PersistentHeader = memo(function PersistentHeader() {
           <BrandLogo />
         </Link>
 
-        <div className="ml-auto flex items-center justify-end">
+        <div className="ml-auto flex items-center justify-end gap-3">
+          {isDashboard && user && (
+            <Button
+              size="sm"
+              className="font-semibold text-sm rounded-lg px-4 py-2"
+              onClick={() => window.dispatchEvent(new CustomEvent("open-booking"))}
+            >
+              <Calendar className="h-4 w-4 mr-1" />
+              Book Service
+            </Button>
+          )}
           {user ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>

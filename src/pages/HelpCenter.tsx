@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, Search, CalendarDays, CreditCard, Award, FileText, Settings, HelpCircle, ArrowLeftIcon } from "lucide-react";
-import oasisLogo from "@/assets/oasis-logo-circle.png";
+import { Search, CalendarDays, CreditCard, Award, FileText, Settings, HelpCircle } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 

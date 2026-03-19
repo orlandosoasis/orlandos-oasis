@@ -250,7 +250,7 @@ const ServiceDetails = () => {
               )}
             </div>
           </div>
-        </div>
+    </>
 
         {/* Service Report (completed only) */}
         {isCompleted && <ServiceReport />}

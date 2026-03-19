@@ -222,7 +222,7 @@ const ServicePass = () => {
       </main>
 
       <Footer />
-    </div>
+    </>
   );
 };
 

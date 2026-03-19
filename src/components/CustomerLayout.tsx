@@ -24,6 +24,17 @@ const BACK_TARGETS: Record<string, string> = {
   "/profile": "/dashboard",
 };
 
+const BrandLogo = memo(function BrandLogo() {
+  return (
+    <>
+      <img src={oasisLogo} alt="Orlando's Oasis" className="h-6 w-6 object-contain" />
+      <span className="text-[1.25rem] font-bold text-foreground tracking-tight">
+        Orlando's Oasis
+      </span>
+    </>
+  );
+});
+
 /** Persistent header — never unmounts across customer routes */
 const PersistentHeader = memo(function PersistentHeader() {
   const location = useLocation();
@@ -33,7 +44,6 @@ const PersistentHeader = memo(function PersistentHeader() {
   const isDashboard = location.pathname === "/dashboard";
   const isSubPage = !isDashboard;
 
-  // Determine back target: exact match, then dynamic service/messages routes
   let backTarget: string | null = null;
   if (isSubPage) {
     backTarget =
@@ -43,6 +53,8 @@ const PersistentHeader = memo(function PersistentHeader() {
       (location.pathname.startsWith("/subscription") ? "/dashboard" : null) ||
       "/dashboard";
   }
+
+  const showBackButton = Boolean(isSubPage && backTarget);
 
   const handleBack = () => {
     if (backTarget === "-1") {
@@ -66,79 +78,78 @@ const PersistentHeader = memo(function PersistentHeader() {
 
   return (
     <header className="bg-card border-b border-border sticky top-0 z-10">
-      <div className="container max-w-[760px] mx-auto px-5 h-[60px] flex items-center justify-between">
-        {/* Left */}
-        {isSubPage && backTarget ? (
+      <div className="container relative max-w-[760px] mx-auto px-5 h-[60px] flex items-center">
+        <div className="flex min-w-[72px] items-center">
           <button
             onClick={handleBack}
-            className="flex items-center gap-2 text-foreground hover:text-primary transition-colors"
+            className={showBackButton
+              ? "flex items-center gap-2 text-foreground hover:text-primary transition-colors"
+              : "invisible pointer-events-none flex items-center gap-2 text-foreground"
+            }
+            aria-hidden={!showBackButton}
+            tabIndex={showBackButton ? 0 : -1}
           >
             <ArrowLeft className="h-5 w-5" />
             <span className="font-medium text-sm">Back</span>
           </button>
-        ) : (
-          <Link to="/dashboard" className="flex items-center gap-1.5">
-            <img src={oasisLogo} alt="Orlando's Oasis" className="h-6 w-6 object-contain" />
-            <span className="text-[1.25rem] font-bold text-foreground tracking-tight">
-              Orlando's Oasis
-            </span>
-          </Link>
-        )}
+        </div>
 
-        {/* Center (only on sub-pages) */}
-        {isSubPage && (
-          <Link to="/dashboard" className="flex items-center gap-1.5">
-            <img src={oasisLogo} alt="Orlando's Oasis" className="h-6 w-6 object-contain" />
-            <span className="text-[1.25rem] font-bold text-foreground tracking-tight">
-              Orlando's Oasis
-            </span>
-          </Link>
-        )}
+        <Link
+          to="/dashboard"
+          aria-label="Go to dashboard"
+          className={isSubPage
+            ? "absolute left-1/2 top-1/2 flex -translate-x-1/2 -translate-y-1/2 items-center gap-1.5"
+            : "flex items-center gap-1.5"
+          }
+        >
+          <BrandLogo />
+        </Link>
 
-        {/* Right */}
-        {user ? (
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <button className="rounded-full focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2">
-                <Avatar className="h-9 w-9 cursor-pointer">
-                  <AvatarImage src={user.avatarUrl} alt={user.fullName} />
-                  <AvatarFallback className="bg-navy text-primary-foreground text-sm font-semibold">
-                    {initials}
-                  </AvatarFallback>
-                </Avatar>
-              </button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-48">
-              <DropdownMenuItem
-                onClick={() => navigate("/dashboard")}
-                className="cursor-pointer gap-2 focus:bg-muted focus:text-foreground"
-              >
-                <LayoutDashboard className="h-4 w-4" /> Dashboard
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => navigate("/account-settings")}
-                className="cursor-pointer gap-2 focus:bg-muted focus:text-foreground"
-              >
-                <Settings className="h-4 w-4" /> Account Settings
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => navigate("/account-settings/payment-methods")}
-                className="cursor-pointer gap-2 focus:bg-muted focus:text-foreground"
-              >
-                <CreditCard className="h-4 w-4" /> Payment & Membership
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem
-                onClick={handleLogout}
-                className="cursor-pointer gap-2 text-destructive focus:bg-muted focus:text-destructive"
-              >
-                <LogOut className="h-4 w-4" /> Logout
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        ) : (
-          isSubPage && <div className="w-9" />
-        )}
+        <div className="ml-auto flex items-center justify-end">
+          {user ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button className="rounded-full focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2">
+                  <Avatar className="h-9 w-9 cursor-pointer">
+                    <AvatarImage src={user.avatarUrl} alt={user.fullName} />
+                    <AvatarFallback className="bg-navy text-primary-foreground text-sm font-semibold">
+                      {initials}
+                    </AvatarFallback>
+                  </Avatar>
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-48">
+                <DropdownMenuItem
+                  onClick={() => navigate("/dashboard")}
+                  className="cursor-pointer gap-2 focus:bg-muted focus:text-foreground"
+                >
+                  <LayoutDashboard className="h-4 w-4" /> Dashboard
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() => navigate("/account-settings")}
+                  className="cursor-pointer gap-2 focus:bg-muted focus:text-foreground"
+                >
+                  <Settings className="h-4 w-4" /> Account Settings
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() => navigate("/account-settings/payment-methods")}
+                  className="cursor-pointer gap-2 focus:bg-muted focus:text-foreground"
+                >
+                  <CreditCard className="h-4 w-4" /> Payment & Membership
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  onClick={handleLogout}
+                  className="cursor-pointer gap-2 text-destructive focus:bg-muted focus:text-destructive"
+                >
+                  <LogOut className="h-4 w-4" /> Logout
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : (
+            <div className="h-9 w-9 shrink-0" aria-hidden="true" />
+          )}
+        </div>
       </div>
     </header>
   );

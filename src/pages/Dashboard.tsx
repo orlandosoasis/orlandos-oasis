@@ -27,20 +27,89 @@ interface ServiceInstance {
 }
 
 /* ── Helpers ── */
+
+/**
+ * Generate future visit dates based on frequency, anchored to a start date.
+ * - weekly: every 7 days
+ * - twice-weekly: 2x/week with 3-4 day spacing (e.g., Mon/Thu)
+ * - three-weekly: 3x/week with ~2-3 day spacing (e.g., Mon/Wed/Fri)
+ * - biweekly: every 14 days
+ * - monthly: every 30 days
+ */
+function generateFutureDates(startDate: Date, frequency: string, count: number): Date[] {
+  const dates: Date[] = [];
+  const endOfYear = new Date(startDate.getFullYear(), 11, 31);
+
+  if (frequency === "twice-weekly") {
+    // Pattern: +3, +4, +3, +4... (e.g., Mon→Thu→Mon)
+    let current = new Date(startDate);
+    let toggle = true; // true = +3, false = +4
+    while (dates.length < count) {
+      current = new Date(current);
+      current.setDate(current.getDate() + (toggle ? 3 : 4));
+      toggle = !toggle;
+      if (current > endOfYear) break;
+      dates.push(new Date(current));
+    }
+  } else if (frequency === "three-weekly") {
+    // Pattern: +2, +2, +3, repeating (e.g., Mon→Wed→Fri→Mon)
+    const gaps = [2, 2, 3];
+    let current = new Date(startDate);
+    let gapIdx = 0;
+    while (dates.length < count) {
+      current = new Date(current);
+      current.setDate(current.getDate() + gaps[gapIdx % 3]);
+      gapIdx++;
+      if (current > endOfYear) break;
+      dates.push(new Date(current));
+    }
+  } else {
+    const intervalDays = frequency === "weekly" ? 7
+      : frequency === "biweekly" ? 14
+      : 30; // monthly
+    let current = new Date(startDate);
+    while (dates.length < count) {
+      current = new Date(current);
+      current.setDate(current.getDate() + intervalDays);
+      if (current > endOfYear) break;
+      dates.push(new Date(current));
+    }
+  }
+
+  return dates;
+}
+
+/** Get the most recent past visit date (one interval back from start). */
+function getPreviousDate(startDate: Date, frequency: string): Date {
+  const prev = new Date(startDate);
+  if (frequency === "twice-weekly") {
+    prev.setDate(prev.getDate() - 3);
+  } else if (frequency === "three-weekly") {
+    prev.setDate(prev.getDate() - 2);
+  } else if (frequency === "weekly") {
+    prev.setDate(prev.getDate() - 7);
+  } else if (frequency === "biweekly") {
+    prev.setDate(prev.getDate() - 14);
+  } else {
+    prev.setDate(prev.getDate() - 30);
+  }
+  return prev;
+}
+
+const INITIAL_VISIBLE_COUNT = 10;
+const LOAD_MORE_COUNT = 10;
+
 function generateDemoServices(checkoutData?: import("@/contexts/BookingContext").CheckoutData | null): ServiceInstance[] {
-  // Derive service label and hours from checkout data or use defaults
   const serviceLabel = checkoutData?.serviceName || "Deep Clean";
-  const serviceHours = checkoutData?.frequency === "weekly" ? 1
-    : checkoutData?.frequency === "twice-weekly" ? 1
-    : checkoutData?.frequency === "three-weekly" ? 1
-    : 3;
   const servicePrice = checkoutData?.discountPrice || 149;
   const serviceOriginalPrice = checkoutData?.originalPrice || 189;
 
   const sharedPass = {
-    id: "pass-checkout", hours: serviceHours, label: serviceLabel,
+    id: "pass-checkout", hours: 1, label: serviceLabel,
     description: checkoutData?.serviceDescription || "Full cleaning, chemical balance, filter check",
-    originalPrice: serviceOriginalPrice, discountPrice: servicePrice, percentOff: Math.round(((serviceOriginalPrice - servicePrice) / serviceOriginalPrice) * 100), isMostPopular: true,
+    originalPrice: serviceOriginalPrice, discountPrice: servicePrice,
+    percentOff: Math.round(((serviceOriginalPrice - servicePrice) / serviceOriginalPrice) * 100),
+    isMostPopular: true,
   };
   const sharedPool = {
     address: "123 Main Street", city: "Miami", state: "FL", zip: checkoutData?.customerZipcode || "33101",
@@ -53,20 +122,12 @@ function generateDemoServices(checkoutData?: import("@/contexts/BookingContext")
     accessDetail: "Code: 4521", addons: [] as { id: string; name: string; price: number }[], addonsTotal: 0,
   };
 
-  // Determine recurrence interval in days
   const frequency = checkoutData?.frequency || "monthly";
-  const intervalDays = frequency === "weekly" ? 7
-    : frequency === "biweekly" ? 14
-    : frequency === "twice-weekly" ? 3
-    : frequency === "three-weekly" ? 2
-    : 30; // monthly
-
-  const services: ServiceInstance[] = [];
   const today = new Date();
+  const services: ServiceInstance[] = [];
 
-  // Past service — 1 interval ago
-  const pastDate = new Date(today);
-  pastDate.setDate(pastDate.getDate() - intervalDays);
+  // 1 past service (most recent interval before today)
+  const pastDate = getPreviousDate(today, frequency);
   services.push({
     id: "svc-past-1",
     booking: {
@@ -75,20 +136,19 @@ function generateDemoServices(checkoutData?: import("@/contexts/BookingContext")
     },
   });
 
-  // Upcoming services — generate 8 future visits based on frequency
+  // Future services — generate a generous batch; UI controls how many are shown
   const unassignedTech = { name: "Pool Technician to be assigned", initials: "?", rating: 0, isAssigned: false };
-  for (let i = 0; i < 8; i++) {
-    const futureDate = new Date(today);
-    futureDate.setDate(futureDate.getDate() + intervalDays * (i + 1));
+  const futureDates = generateFutureDates(today, frequency, 52); // up to ~1 year
+  futureDates.forEach((date, i) => {
     services.push({
       id: `svc-upcoming-${i}`,
       booking: {
         frequency: "monthly", selectedPass: sharedPass, pool: sharedPool,
         technician: i === 0 ? tech : unassignedTech, status: "scheduled",
-        scheduleData: { ...baseSchedule, selectedDate: futureDate },
+        scheduleData: { ...baseSchedule, selectedDate: date },
       },
     });
-  }
+  });
 
   return services;
 }

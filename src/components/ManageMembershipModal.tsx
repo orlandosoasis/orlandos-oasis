@@ -59,7 +59,7 @@ const ManageMembershipModal = ({
   onPlanChanged,
 }: ManageMembershipModalProps) => {
   const { toast } = useToast();
-  const { checkoutData, booking } = useBooking();
+  const { checkoutData, setCheckoutData, booking } = useBooking();
   const [showCancelModal, setShowCancelModal] = useState(false);
 
   // Determine current plan from context

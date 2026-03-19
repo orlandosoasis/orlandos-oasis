@@ -18,7 +18,11 @@ const STEPS = [
 
 const ServicesSection = () => {
   const navigate = useNavigate();
+  const { signup, login, isAuthenticated } = useAuth();
   const [selectedPlanId, setSelectedPlanId] = useState("weekly");
+  const [currentStep, setCurrentStep] = useState(1);
+  const [bookingComplete, setBookingComplete] = useState(false);
+  const [autoLoginFailed, setAutoLoginFailed] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
   const [bookingComplete, setBookingComplete] = useState(false);
   const [formData, setFormData] = useState<LandingFormData>({

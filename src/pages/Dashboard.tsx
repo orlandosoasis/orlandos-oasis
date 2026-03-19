@@ -196,10 +196,6 @@ const Dashboard = () => {
             <h1 className="text-2xl font-bold text-foreground">Hi, {firstName} 👋</h1>
             <p className="text-sm text-muted-foreground mt-1">{formatGreetingDate()}</p>
           </div>
-          <Button size="sm" className="font-semibold text-sm rounded-lg px-5 py-2" onClick={() => setShowBooking(true)}>
-            <Calendar className="h-4 w-4 mr-1" />
-            Book Service
-          </Button>
         </div>
         {/* Next Service */}
         {nextService && (

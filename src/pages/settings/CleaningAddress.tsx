@@ -20,6 +20,7 @@ const CleaningAddress = () => {
   const [unitInfo, setUnitInfo] = useState("");
 
   const handleSave = () => {
+    updateUser({ streetAddress, city, state, zipCode });
     toast({ title: "Cleaning address updated.", variant: "success" });
   };
 

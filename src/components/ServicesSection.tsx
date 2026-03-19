@@ -23,8 +23,6 @@ const ServicesSection = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const [bookingComplete, setBookingComplete] = useState(false);
   const [autoLoginFailed, setAutoLoginFailed] = useState(false);
-  const [currentStep, setCurrentStep] = useState(1);
-  const [bookingComplete, setBookingComplete] = useState(false);
   const [formData, setFormData] = useState<LandingFormData>({
     firstName: "",
     lastName: "",

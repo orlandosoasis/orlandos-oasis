@@ -127,7 +127,7 @@ const Subscription = () => {
             <Button className="mt-4" onClick={() => navigate("/dashboard")}>
               Back to Dashboard
             </Button>
-          </div>
+    </>
         )}
 
         <footer className="text-center text-xs text-muted-foreground mt-10 space-x-3">

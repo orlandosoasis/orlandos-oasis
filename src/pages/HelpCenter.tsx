@@ -147,7 +147,7 @@ const HelpCenter = () => {
           <p className="text-sm text-muted-foreground text-center py-8">No results found. Try a different search term.</p>
         )}
       </main>
-    </div>
+    </>
   );
 };
 

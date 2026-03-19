@@ -194,7 +194,7 @@ const PaymentMethods = () => {
             <div className="bg-card rounded-2xl border border-border p-8 text-center">
               <Calendar className="h-10 w-10 text-muted-foreground mx-auto mb-3" />
               <p className="text-muted-foreground">No active membership found.</p>
-            </div>
+    </>
           )}
         </section>
 

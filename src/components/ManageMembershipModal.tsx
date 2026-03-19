@@ -59,7 +59,7 @@ const ManageMembershipModal = ({
   onPlanChanged,
 }: ManageMembershipModalProps) => {
   const { toast } = useToast();
-  const { checkoutData, booking } = useBooking();
+  const { checkoutData, setCheckoutData, booking } = useBooking();
   const [showCancelModal, setShowCancelModal] = useState(false);
 
   // Determine current plan from context
@@ -100,6 +100,20 @@ const ManageMembershipModal = ({
   }, [isSamePlan, selectedPlan, currentPlan]);
 
   const handleConfirmChange = () => {
+    // Update checkoutData in context so Dashboard re-renders with new plan
+    setCheckoutData({
+      serviceName: selectedPlan.name,
+      serviceDescription: `${selectedPlan.frequencyLabel} pool cleaning service`,
+      frequency: selectedPlan.frequency,
+      originalPrice: selectedPlan.originalPrice,
+      discountPrice: voucherApplies ? selectedPlan.discountPrice : selectedPlan.originalPrice,
+      customerEmail: checkoutData?.customerEmail || "",
+      customerFirstName: checkoutData?.customerFirstName || "",
+      customerLastName: checkoutData?.customerLastName || "",
+      customerPhone: checkoutData?.customerPhone || "",
+      customerZipcode: checkoutData?.customerZipcode || "",
+    });
+
     onPlanChanged?.(selectedPlan);
     onOpenChange(false);
     toast({

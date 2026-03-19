@@ -1,7 +1,7 @@
 import React, { memo } from "react";
 import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import oasisLogo from "@/assets/oo-logo.png";
-import { ArrowLeft, LayoutDashboard, Settings, CreditCard, LogOut } from "lucide-react";
+import { ArrowLeft, Calendar, LayoutDashboard, Settings, CreditCard, LogOut } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -10,6 +10,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
 
 const BACK_TARGETS: Record<string, string> = {
@@ -102,7 +103,17 @@ const PersistentHeader = memo(function PersistentHeader() {
           <BrandLogo />
         </Link>
 
-        <div className="ml-auto flex items-center justify-end">
+        <div className="ml-auto flex items-center justify-end gap-3">
+          {isDashboard && user && (
+            <Button
+              size="sm"
+              className="font-semibold text-sm rounded-lg px-4 py-2"
+              onClick={() => window.dispatchEvent(new CustomEvent("open-booking"))}
+            >
+              <Calendar className="h-4 w-4 mr-1" />
+              Book Service
+            </Button>
+          )}
           {user ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>

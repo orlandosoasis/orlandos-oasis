@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
 import { useBooking } from "@/contexts/BookingContext";
-import ManageMembershipModal from "@/components/ManageMembershipModal";
+import ManageMembershipModal, { type ServicePlan } from "@/components/ManageMembershipModal";
 
 interface SavedCard {
   id: string;

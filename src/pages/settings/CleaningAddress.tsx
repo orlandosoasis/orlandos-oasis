@@ -42,7 +42,7 @@ const CleaningAddress = () => {
 
       <main className="max-w-[760px] mx-auto px-5 py-8">
         <h1 className="text-2xl font-bold text-foreground mb-6">Cleaning Address</h1>
-        <div className="bg-card rounded-2xl border border-border shadow-sm p-6 space-y-5 max-w-md">
+        <div className="bg-card rounded-2xl border border-border shadow-sm p-6 space-y-5">
           <div className="space-y-2">
             <Label htmlFor="streetAddress">Street Address</Label>
             <Input id="streetAddress" value={streetAddress} onChange={(e) => setStreetAddress(e.target.value)} placeholder="1234 Sunshine Blvd" />

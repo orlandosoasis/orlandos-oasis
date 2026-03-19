@@ -9,7 +9,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 
 const CleaningAddress = () => {
-  const { user } = useAuth();
+  const { user, updateUser } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -20,6 +20,7 @@ const CleaningAddress = () => {
   const [unitInfo, setUnitInfo] = useState("");
 
   const handleSave = () => {
+    updateUser({ streetAddress, city, state, zipCode });
     toast({ title: "Cleaning address updated.", variant: "success" });
   };
 

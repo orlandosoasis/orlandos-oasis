@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useBooking, matchTechnician } from "@/contexts/BookingContext";
+import { useAuth } from "@/contexts/AuthContext";
 import type { PassOption, CleaningFrequency, TimeWindow, AccessMethod, ScheduleData } from "@/contexts/BookingContext";
 import { VOUCHER_PLANS } from "./VoucherSelectionStep";
 
@@ -32,6 +33,7 @@ const TOTAL_STEPS = 2;
 
 const BookingFlow = ({ onClose, onComplete, selectedService: selectedServiceProp }: BookingFlowProps) => {
   const { setBooking } = useBooking();
+  const { user, updateUser } = useAuth();
   const [step, setStep] = useState(0);
 
   const selectedPlanId = "weekly";
@@ -62,10 +64,10 @@ const BookingFlow = ({ onClose, onComplete, selectedService: selectedServiceProp
   const [timeWindow, setTimeWindow] = useState<TimeWindow>("morning");
 
   // Step 1 — Pool / Property
-  const [address, setAddress] = useState("");
-  const [city, setCity] = useState("");
-  const [state, setState] = useState("");
-  const [zip, setZip] = useState("");
+  const [address, setAddress] = useState(user?.streetAddress || "");
+  const [city, setCity] = useState(user?.city || "");
+  const [state, setState] = useState(user?.state || "");
+  const [zip, setZip] = useState(user?.zipCode || "");
   const [poolType, setPoolType] = useState("Inground");
   const [poolSize, setPoolSize] = useState("Small (<10k gal)");
   const [accessMethod, setAccessMethod] = useState<AccessMethod>("home");
@@ -109,6 +111,9 @@ const BookingFlow = ({ onClose, onComplete, selectedService: selectedServiceProp
     setIsProcessing(true);
     await new Promise((r) => setTimeout(r, 1200));
     setIsProcessing(false);
+
+    // Persist address to user profile
+    updateUser({ streetAddress: address, city, state, zipCode: zip });
 
     const scheduleData: ScheduleData = {
       selectedDate,

@@ -28,7 +28,7 @@ const Preferences = () => {
             <ArrowLeft className="h-5 w-5" />
             <span className="font-medium text-sm">Back</span>
           </button>
-          <Link to="/" className="flex items-center gap-1.5">
+          <Link to="/dashboard" className="flex items-center gap-1.5">
             <img src={oasisLogo} alt="Orlando's Oasis" className="h-6 w-6 object-contain" />
             <span className="text-[1.25rem] font-bold text-foreground tracking-tight">Orlando's Oasis</span>
           </Link>

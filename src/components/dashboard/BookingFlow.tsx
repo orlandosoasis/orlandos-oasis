@@ -212,7 +212,7 @@ const BookingFlow = ({ onClose, onComplete, selectedService: selectedServiceProp
   }
 
   return (
-    <div className="fixed inset-0 z-50 bg-background overflow-y-auto">
+    <div ref={containerRef} className="fixed inset-0 z-50 bg-background overflow-y-auto">
       {/* Header */}
       <div className="sticky top-0 z-10 bg-card border-b border-border">
         <div className="max-w-[760px] mx-auto px-5 h-[56px] flex items-center gap-3">

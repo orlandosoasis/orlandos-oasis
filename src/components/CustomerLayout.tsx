@@ -1,7 +1,7 @@
 import React, { memo } from "react";
 import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import oasisLogo from "@/assets/oo-logo.png";
-import { ArrowLeft, Calendar, LayoutDashboard, Settings, CreditCard, LogOut } from "lucide-react";
+import { ArrowLeft, Calendar, LayoutDashboard, Settings, LogOut } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -138,12 +138,6 @@ const PersistentHeader = memo(function PersistentHeader() {
                   className="cursor-pointer gap-2 focus:bg-muted focus:text-foreground"
                 >
                   <Settings className="h-4 w-4" /> Account Settings
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  onClick={() => navigate("/account-settings/payment-methods")}
-                  className="cursor-pointer gap-2 focus:bg-muted focus:text-foreground"
-                >
-                  <CreditCard className="h-4 w-4" /> Payment & Membership
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem

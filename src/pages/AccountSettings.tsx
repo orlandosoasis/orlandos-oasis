@@ -1,6 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
-import { ArrowLeft, ChevronRight, User, CreditCard, MapPin, StickyNote, SlidersHorizontal } from "lucide-react";
-import oasisLogo from "@/assets/oasis-logo-circle.png";
+import { ChevronRight, User, CreditCard, MapPin, StickyNote, SlidersHorizontal } from "lucide-react";
 
 const settingsItems = [
   {

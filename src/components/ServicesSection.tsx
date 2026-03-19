@@ -116,7 +116,7 @@ const ServicesSection = () => {
           <h2 className="text-2xl font-bold text-foreground">Payment Successful</h2>
           <p className="text-muted-foreground">Your Weekly Pool Service is confirmed. Access your dashboard to book your first service.</p>
           <Button
-            onClick={() => navigate("/dashboard")}
+            onClick={() => navigate(`/dashboard?openBooking=true&serviceTitle=${encodeURIComponent(serviceName)}&serviceDescription=${encodeURIComponent(selectedPlan.description)}`)}
             className="mt-2 w-full h-14 text-[17px] font-bold rounded-full shadow-md hover:shadow-lg">
             Schedule a Service
           </Button>

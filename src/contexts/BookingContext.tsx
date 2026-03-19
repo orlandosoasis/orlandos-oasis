@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, ReactNode } from "react";
+import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import type { ServiceStatus } from "@/components/StatusBadge";
 
 export type CleaningFrequency = "once" | "monthly";
@@ -77,13 +77,33 @@ export interface BookingData {
   status?: ServiceStatus;
 }
 
+/** Data saved from the checkout/voucher flow on the landing page */
+export interface CheckoutData {
+  serviceName: string;
+  serviceDescription: string;
+  frequency: string; // weekly, biweekly, monthly, once
+  originalPrice: number;
+  discountPrice: number;
+  customerEmail: string;
+  customerFirstName: string;
+  customerLastName: string;
+  customerPhone: string;
+  customerZipcode: string;
+}
+
 interface BookingContextType {
   booking: BookingData | null;
   setBooking: (data: BookingData) => void;
   clearBooking: () => void;
+  checkoutData: CheckoutData | null;
+  setCheckoutData: (data: CheckoutData) => void;
+  clearCheckoutData: () => void;
 }
 
 const BookingContext = createContext<BookingContextType | undefined>(undefined);
+
+const CHECKOUT_STORAGE_KEY = "orlandos_oasis_checkout";
+const BOOKING_STORAGE_KEY = "orlandos_oasis_booking";
 
 // Mock technician pool for auto-matching
 const TECH_POOL: TechnicianInfo[] = [
@@ -98,19 +118,51 @@ function matchTechnician(): TechnicianInfo {
   return TECH_POOL[index];
 }
 
+function loadFromStorage<T>(key: string): T | null {
+  try {
+    const stored = localStorage.getItem(key);
+    if (!stored) return null;
+    return JSON.parse(stored) as T;
+  } catch {
+    return null;
+  }
+}
+
 export function BookingProvider({ children }: { children: ReactNode }) {
-  const [booking, setBookingState] = useState<BookingData | null>(null);
+  const [booking, setBookingState] = useState<BookingData | null>(() => {
+    const stored = loadFromStorage<BookingData>(BOOKING_STORAGE_KEY);
+    if (stored?.scheduleData?.selectedDate) {
+      stored.scheduleData.selectedDate = new Date(stored.scheduleData.selectedDate);
+    }
+    return stored;
+  });
+
+  const [checkoutData, setCheckoutDataState] = useState<CheckoutData | null>(
+    () => loadFromStorage<CheckoutData>(CHECKOUT_STORAGE_KEY)
+  );
 
   const setBooking = (data: BookingData) => {
     setBookingState(data);
+    localStorage.setItem(BOOKING_STORAGE_KEY, JSON.stringify(data));
   };
 
   const clearBooking = () => {
     setBookingState(null);
+    localStorage.removeItem(BOOKING_STORAGE_KEY);
+  };
+
+  const setCheckoutData = (data: CheckoutData) => {
+    setCheckoutDataState(data);
+    localStorage.setItem(CHECKOUT_STORAGE_KEY, JSON.stringify(data));
+  };
+
+  const clearCheckoutData = () => {
+    setCheckoutDataState(null);
+    localStorage.removeItem(CHECKOUT_STORAGE_KEY);
   };
 
   return (
-    <BookingContext.Provider value={{ booking, setBooking, clearBooking }}>
+    <BookingContext.Provider value={{ booking, setBooking, clearBooking, checkoutData, setCheckoutData, clearCheckoutData }}>
       {children}
     </BookingContext.Provider>
   );

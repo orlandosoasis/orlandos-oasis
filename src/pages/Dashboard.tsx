@@ -424,9 +424,9 @@ const UpcomingRow = ({ service, canReschedule, onReschedule }: { service: Servic
 /* ── Past Service Row ── */
 const PastRow = ({ service, onViewDetails }: { service: ServiceInstance; onViewDetails: () => void }) => {
   const { booking } = service;
-  const displayDate = new Date(2026, 1, 25);
-  const month = SHORT_MONTHS[displayDate.getMonth()].toUpperCase();
-  const day = displayDate.getDate();
+  const d = booking.scheduleData.selectedDate;
+  const month = SHORT_MONTHS[d.getMonth()].toUpperCase();
+  const day = d.getDate();
 
   return (
     <div className="flex items-center gap-4 px-5 py-4 cursor-pointer hover:bg-muted/30 transition-colors group" onClick={onViewDetails}>

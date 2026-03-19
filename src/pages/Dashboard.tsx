@@ -260,7 +260,7 @@ const Dashboard = () => {
           
           <p className="mt-3">© Orlando's Oasis 2015 – 2026</p>
         </footer>
-      </main>
+      </PageContainer>
 
       {showBooking && <BookingFlow onClose={() => { setShowBooking(false); setSelectedServiceInfo(null); }} onComplete={() => { setShowBooking(false); setSelectedServiceInfo(null); }} selectedService={selectedServiceInfo} />}
 

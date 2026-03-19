@@ -66,7 +66,7 @@ const AccountSettings = () => {
           <Link to="/privacy" className="text-primary hover:underline">Privacy</Link>
           <p className="mt-3">© Orlando's Oasis 2015 – 2026</p>
         </footer>
-      </main>
+      </PageContainer>
     </>
   );
 };

@@ -118,8 +118,7 @@ const ServicesSection = () => {
           <Button
             onClick={() => navigate("/dashboard")}
             className="mt-2 w-full h-14 text-[17px] font-bold rounded-full shadow-md hover:shadow-lg">
-            
-            Go to My Dashboard
+            Schedule a Service
           </Button>
           <p className="text-xs text-muted-foreground">
             You're logged in as <strong>{formData.email}</strong>

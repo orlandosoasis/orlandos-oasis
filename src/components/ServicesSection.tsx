@@ -1,7 +1,8 @@
 import { useState, useRef, useCallback, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Check } from "lucide-react";
+import { Check, AlertCircle } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
 import BookingStepper from "@/components/BookingStepper";
 import VoucherSelectionStep, { VOUCHER_PLANS } from "@/components/dashboard/VoucherSelectionStep";
 import VoucherConfirmationStep from "@/components/dashboard/VoucherConfirmationStep";

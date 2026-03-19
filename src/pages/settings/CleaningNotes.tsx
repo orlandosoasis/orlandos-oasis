@@ -1,7 +1,5 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { ArrowLeft } from "lucide-react";
-import oasisLogo from "@/assets/oasis-logo-circle.png";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";

@@ -38,7 +38,7 @@ const Preferences = () => {
 
       <main className="max-w-[760px] mx-auto px-5 py-8">
         <h1 className="text-2xl font-bold text-foreground mb-6">Preferences</h1>
-        <div className="bg-card rounded-2xl border border-border shadow-sm p-6 space-y-6 max-w-md">
+        <div className="bg-card rounded-2xl border border-border shadow-sm p-6 space-y-6">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-[15px] font-semibold text-foreground">Pets on Property</p>

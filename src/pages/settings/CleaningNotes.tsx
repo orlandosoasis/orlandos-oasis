@@ -34,7 +34,7 @@ const CleaningNotes = () => {
 
       <main className="max-w-[760px] mx-auto px-5 py-8">
         <h1 className="text-2xl font-bold text-foreground mb-6">Cleaning Notes</h1>
-        <div className="bg-card rounded-2xl border border-border shadow-sm p-6 space-y-5 max-w-md">
+        <div className="bg-card rounded-2xl border border-border shadow-sm p-6 space-y-5">
           <p className="text-sm text-muted-foreground">
             Add persistent instructions visible to your pool technician. Include gate access codes, equipment notes, or special requests.
           </p>

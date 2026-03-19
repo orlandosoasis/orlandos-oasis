@@ -1,7 +1,6 @@
 import { useState, useRef, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { ArrowLeft, Calendar, Send } from "lucide-react";
-import oasisLogo from "@/assets/oasis-logo-circle.png";
+import { useNavigate } from "react-router-dom";
+import { Calendar, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
@@ -177,21 +176,7 @@ const Messages = () => {
   const lastTechMsg = [...items].reverse().find((i) => i.type === "text" && i.sender === "tech");
 
   return (
-    <div className="min-h-screen bg-background flex flex-col h-screen">
-      {/* Header */}
-      <header className="bg-card border-b border-border sticky top-0 z-10">
-        <div className="mx-auto px-5 h-[60px] flex items-center justify-between">
-          <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-foreground hover:text-primary transition-colors">
-            <ArrowLeft className="h-5 w-5" />
-            <span className="font-medium text-sm">Back</span>
-          </button>
-          <Link to="/" className="flex items-center gap-1.5">
-            <img src={oasisLogo} alt="Orlando's Oasis" className="h-6 w-6 object-contain" />
-            <span className="text-[1.25rem] font-bold text-foreground tracking-tight">Orlando's Oasis</span>
-          </Link>
-          <div className="w-[60px]" />
-        </div>
-      </header>
+    <div className="flex flex-col flex-1" style={{ height: 'calc(100vh - 60px)' }}>
 
       <div className="flex flex-1 overflow-hidden">
         {/* ─── Contacts Sidebar ─── */}

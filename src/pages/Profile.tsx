@@ -1,7 +1,6 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
-import oasisLogo from "@/assets/oasis-logo-circle.png";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -32,15 +31,7 @@ const Profile = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      <header className="bg-card border-b border-border sticky top-0 z-10">
-        <div className="container max-w-[760px] mx-auto px-5 h-[60px] flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-1.5">
-            <img src={oasisLogo} alt="Orlando's Oasis" className="h-6 w-6 object-contain" />
-            <span className="text-[1.25rem] font-bold text-navy tracking-tight">Orlando's Oasis</span>
-          </Link>
-        </div>
-      </header>
+    <>
 
       <main className="max-w-[760px] mx-auto px-5 py-8">
         <Button
@@ -85,7 +76,7 @@ const Profile = () => {
             <div className="space-y-2">
               <Label htmlFor="state">State</Label>
               <Input id="state" value={state} disabled className="bg-muted" />
-            </div>
+    </div>
             <div className="space-y-2">
               <Label htmlFor="zipCode">Zip Code</Label>
               <Input id="zipCode" value={zipCode} disabled className="bg-muted" />
@@ -94,7 +85,7 @@ const Profile = () => {
           <Button onClick={handleSave} className="mt-4">Save Changes</Button>
         </div>
       </main>
-    </div>
+    </>
   );
 };
 

@@ -1,6 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
-import { ArrowLeft, ChevronRight, User, CreditCard, MapPin, StickyNote, SlidersHorizontal } from "lucide-react";
-import oasisLogo from "@/assets/oasis-logo-circle.png";
+import { ChevronRight, User, CreditCard, MapPin, StickyNote, SlidersHorizontal } from "lucide-react";
 
 const settingsItems = [
   {
@@ -39,21 +38,7 @@ const AccountSettings = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-background">
-      <header className="bg-card border-b border-border sticky top-0 z-10">
-        <div className="max-w-[760px] mx-auto px-5 h-[60px] flex items-center justify-between">
-          <button onClick={() => navigate("/dashboard")} className="flex items-center gap-2 text-foreground hover:text-primary transition-colors">
-            <ArrowLeft className="h-5 w-5" />
-            <span className="font-medium text-sm">Back</span>
-          </button>
-          <Link to="/dashboard" className="flex items-center gap-1.5">
-            <img src={oasisLogo} alt="Orlando's Oasis" className="h-6 w-6 object-contain" />
-            <span className="text-[1.25rem] font-bold text-foreground tracking-tight">Orlando's Oasis</span>
-          </Link>
-          <div className="w-[60px]" />
-        </div>
-      </header>
-
+    <>
       <main className="max-w-[760px] mx-auto px-5 py-8 pb-16">
         <h1 className="text-2xl font-bold text-foreground mb-6">Settings</h1>
 
@@ -75,14 +60,13 @@ const AccountSettings = () => {
             </button>
           ))}
         </div>
-
         <footer className="text-center text-xs text-muted-foreground mt-10 space-x-3">
           <Link to="/terms" className="text-primary hover:underline">Terms</Link>
           <Link to="/privacy" className="text-primary hover:underline">Privacy</Link>
           <p className="mt-3">© Orlando's Oasis 2015 – 2026</p>
         </footer>
       </main>
-    </div>
+    </>
   );
 };
 

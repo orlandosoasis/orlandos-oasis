@@ -1,7 +1,6 @@
 import { useState, useCallback } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { ArrowLeft, Clock, Calendar, MapPin, Star, Key, Droplets, Wrench, Camera, FileText, RefreshCw, CreditCard, MessagesSquare, CalendarClock, CheckCircle2, UserRoundCog, Loader2 } from "lucide-react";
-import oasisLogo from "@/assets/oasis-logo-circle.png";
+import { Clock, Calendar, MapPin, Star, Key, Droplets, Wrench, Camera, FileText, RefreshCw, CreditCard, MessagesSquare, CalendarClock, CheckCircle2, UserRoundCog, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import StatusBadge from "@/components/StatusBadge";
 import { useBooking, type TimeWindow, type TechnicianInfo, matchTechnician } from "@/contexts/BookingContext";
@@ -121,22 +120,7 @@ const ServiceDetails = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="bg-card border-b border-border sticky top-0 z-10">
-        <div className="max-w-[760px] mx-auto px-5 h-[60px] flex items-center justify-between">
-          <button onClick={() => navigate("/dashboard")} className="flex items-center gap-2 text-foreground hover:text-primary transition-colors">
-            <ArrowLeft className="h-5 w-5" />
-            <span className="font-medium text-sm">Back</span>
-          </button>
-          <Link to="/" className="flex items-center gap-1.5">
-            <img src={oasisLogo} alt="Orlando's Oasis" className="h-6 w-6 object-contain" />
-            <span className="text-[1.25rem] font-bold text-foreground tracking-tight">Orlando's Oasis</span>
-          </Link>
-          <div className="w-[60px]" />
-        </div>
-      </header>
-
+    <>
       {/* Hero */}
       <div className="relative h-[200px] overflow-hidden">
         <PoolSceneHero />
@@ -267,7 +251,6 @@ const ServiceDetails = () => {
             </div>
           </div>
         </div>
-
         {/* Service Report (completed only) */}
         {isCompleted && <ServiceReport />}
 
@@ -333,7 +316,6 @@ const ServiceDetails = () => {
             View our <Link to="/help" className="text-primary font-semibold hover:underline">help center</Link> for more information on what to expect and how Orlando's Oasis works, or <button onClick={() => setReportIssueOpen(true)} className="text-primary font-semibold hover:underline">report an issue</button>.
           </p>
         </div>
-
         {/* Footer */}
         <footer className="text-center text-xs text-muted-foreground mt-10 space-x-3">
           <Link to="/terms" className="text-primary hover:underline">Terms</Link>
@@ -367,7 +349,7 @@ const ServiceDetails = () => {
 
       {/* Report Issue Modal */}
       <ReportIssueModal open={reportIssueOpen} onOpenChange={setReportIssueOpen} />
-    </div>
+    </>
   );
 };
 

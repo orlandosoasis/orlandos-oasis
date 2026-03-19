@@ -1,16 +1,7 @@
 import { useState, useEffect, useMemo } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
-import { Calendar, ChevronRight, LogOut, Star, CalendarClock, LayoutDashboard, Settings, CreditCard } from "lucide-react";
-import oasisLogo from "@/assets/oasis-logo-circle.png";
+import { Calendar, ChevronRight, Star, CalendarClock } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { useAuth } from "@/contexts/AuthContext";
 import { useBooking, type BookingData, type TimeWindow } from "@/contexts/BookingContext";
 import PoolSceneHero from "@/components/dashboard/PoolSceneHero";
@@ -190,59 +181,19 @@ const Dashboard = () => {
   const firstName = user?.fullName?.split(" ")[0] || "there";
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="bg-card border-b border-border sticky top-0 z-10">
-        <div className="container max-w-[760px] mx-auto px-5 h-[60px] flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-1.5">
-            <img src={oasisLogo} alt="Orlando's Oasis" className="h-6 w-6 object-contain" />
-            <span className="text-[1.25rem] font-bold text-navy tracking-tight">Orlando's Oasis</span>
-          </Link>
-          <div className="flex items-center gap-3">
-            <Button size="sm" className="font-semibold text-sm rounded-lg px-5 py-2" onClick={() => setShowBooking(true)}>
-              <Calendar className="h-4 w-4 mr-1" />
-              Book Service
-            </Button>
-            {user && (
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <button className="rounded-full focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2">
-                    <Avatar className="h-9 w-9 cursor-pointer">
-                      <AvatarImage src={user.avatarUrl} alt={user.fullName} />
-                      <AvatarFallback className="bg-navy text-primary-foreground text-sm font-semibold">
-                        {user.fullName?.split(" ").map(n => n[0]).join("").slice(0, 2).toUpperCase()}
-                      </AvatarFallback>
-                    </Avatar>
-                  </button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-48">
-                  <DropdownMenuItem onClick={() => navigate("/dashboard")} className="cursor-pointer gap-2 focus:bg-muted focus:text-foreground">
-                    <LayoutDashboard className="h-4 w-4" /> Dashboard
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => navigate("/account-settings")} className="cursor-pointer gap-2 focus:bg-muted focus:text-foreground">
-                    <Settings className="h-4 w-4" /> Account Settings
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => navigate("/account-settings/payment-methods")} className="cursor-pointer gap-2 focus:bg-muted focus:text-foreground">
-                    <CreditCard className="h-4 w-4" /> Payment & Membership
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={handleLogout} className="cursor-pointer gap-2 text-destructive focus:bg-muted focus:text-destructive">
-                    <LogOut className="h-4 w-4" /> Logout
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            )}
-          </div>
-        </div>
-      </header>
-
+    <>
       <main className="max-w-[760px] mx-auto px-5 py-8 pb-16">
         {/* Greeting */}
-        <div className="mb-8">
-          <h1 className="text-2xl font-bold text-foreground">Hi, {firstName} 👋</h1>
-          <p className="text-sm text-muted-foreground mt-1">{formatGreetingDate()}</p>
+        <div className="flex items-center justify-between mb-8">
+          <div>
+            <h1 className="text-2xl font-bold text-foreground">Hi, {firstName} 👋</h1>
+            <p className="text-sm text-muted-foreground mt-1">{formatGreetingDate()}</p>
+          </div>
+          <Button size="sm" className="font-semibold text-sm rounded-lg px-5 py-2" onClick={() => setShowBooking(true)}>
+            <Calendar className="h-4 w-4 mr-1" />
+            Book Service
+          </Button>
         </div>
-
         {/* Next Service */}
         {nextService && (
           <section className="mb-8">
@@ -317,7 +268,7 @@ const Dashboard = () => {
           onReschedule={handleReschedule}
         />
       )}
-    </div>
+    </>
   );
 };
 

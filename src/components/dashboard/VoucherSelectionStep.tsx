@@ -16,7 +16,7 @@ export interface VoucherPlan {
 const VOUCHER_PLANS: VoucherPlan[] = [
 {
   id: "weekly",
-  label: "Most Popular – Weekly Pool Service",
+  label: "Weekly Pool Service",
   description: "Ideal for most residential pools",
   originalPrice: 120,
   discountPrice: 95,

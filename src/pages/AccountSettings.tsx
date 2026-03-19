@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
-import { ArrowLeft, ChevronRight, User, CreditCard, MapPin, StickyNote, SlidersHorizontal, Award } from "lucide-react";
+import { ArrowLeft, ChevronRight, User, CreditCard, MapPin, StickyNote, SlidersHorizontal } from "lucide-react";
 import oasisLogo from "@/assets/oasis-logo-circle.png";
 
 const settingsItems = [
@@ -33,12 +33,6 @@ const settingsItems = [
     icon: SlidersHorizontal,
     path: "/account-settings/preferences",
   },
-  {
-    label: "Cleaner Experience Level",
-    description: "Choose technician experience preference",
-    icon: Award,
-    path: "/account-settings/experience-level",
-  },
 ];
 
 const AccountSettings = () => {
@@ -61,7 +55,7 @@ const AccountSettings = () => {
       </header>
 
       <main className="max-w-[760px] mx-auto px-5 py-8 pb-16">
-        <h1 className="text-2xl font-bold text-foreground mb-6">Account Settings</h1>
+        <h1 className="text-2xl font-bold text-foreground mb-6">Settings</h1>
 
         <div className="bg-card rounded-2xl border border-border shadow-sm divide-y divide-border overflow-hidden">
           {settingsItems.map((item) => (

@@ -126,7 +126,7 @@ const ServiceDetails = () => {
         <PoolSceneHero />
         <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
         <div className="absolute bottom-0 left-0 right-0 p-6 max-w-[760px] mx-auto">
-          <h1 className="text-xl font-bold text-white">{selectedPass.hours}-Hour Pool Service</h1>
+          <h1 className="text-xl font-bold text-white">{selectedPass.label}</h1>
           {isCompleted ? (
             <p className="text-sm font-semibold text-white/90 mt-1">Completed on {formattedDateFull}</p>
           ) : (

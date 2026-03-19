@@ -84,7 +84,7 @@ const Profile = () => {
           <Button onClick={handleSave} className="mt-4">Save Changes</Button>
         </div>
       </main>
-    </div>
+    </>
   );
 };
 

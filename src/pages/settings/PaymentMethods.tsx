@@ -211,7 +211,7 @@ const PaymentMethods = () => {
         nextServiceDate={nextDateStr}
         onCancelled={handleCancelled}
       />
-    </div>
+    </>
   );
 };
 

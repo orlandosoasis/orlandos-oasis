@@ -143,7 +143,7 @@ const Subscription = () => {
         nextServiceDate={nextDateStr}
         onCancelled={handleCancelled}
       />
-    </div>
+    </>
   );
 };
 

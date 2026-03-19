@@ -1,7 +1,6 @@
 import { useState, useCallback } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { ArrowLeft, Clock, Calendar, MapPin, Star, Key, Droplets, Wrench, Camera, FileText, RefreshCw, CreditCard, MessagesSquare, CalendarClock, CheckCircle2, UserRoundCog, Loader2 } from "lucide-react";
-import oasisLogo from "@/assets/oasis-logo-circle.png";
+import { useNavigate } from "react-router-dom";
+import { Clock, Calendar, MapPin, Star, Key, Droplets, Wrench, Camera, FileText, RefreshCw, CreditCard, MessagesSquare, CalendarClock, CheckCircle2, UserRoundCog, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import StatusBadge from "@/components/StatusBadge";
 import { useBooking, type TimeWindow, type TechnicianInfo, matchTechnician } from "@/contexts/BookingContext";

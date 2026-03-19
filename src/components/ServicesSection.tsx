@@ -120,9 +120,6 @@ const ServicesSection = () => {
             className="mt-2 w-full h-14 text-[17px] font-bold rounded-full shadow-md hover:shadow-lg">
             Schedule a Service
           </Button>
-          <p className="text-xs text-muted-foreground">
-            You're logged in as <strong>{formData.email}</strong>
-          </p>
         </div>
       </div>);
 

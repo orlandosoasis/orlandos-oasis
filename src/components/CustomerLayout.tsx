@@ -1,7 +1,7 @@
 import React, { memo } from "react";
 import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import oasisLogo from "@/assets/oo-logo.png";
-import { ArrowLeft, Calendar, LayoutDashboard, Settings, CreditCard, LogOut } from "lucide-react";
+import { ArrowLeft, Calendar, LayoutDashboard, Settings, LogOut } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,

@@ -35,13 +35,6 @@ interface ServiceInstance {
 }
 
 /* ── Helpers ── */
-function getThirdWednesday(year: number, month: number): Date {
-  const d = new Date(year, month, 1);
-  const dow = d.getDay();
-  const firstWed = dow <= 3 ? 3 - dow + 1 : 10 - dow + 1;
-  return new Date(year, month, firstWed + 14);
-}
-
 function generateDemoServices(checkoutData?: import("@/contexts/BookingContext").CheckoutData | null): ServiceInstance[] {
   // Derive service label and hours from checkout data or use defaults
   const serviceLabel = checkoutData?.serviceName || "Deep Clean";

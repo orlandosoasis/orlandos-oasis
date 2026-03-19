@@ -1,7 +1,6 @@
 import { useState, useRef, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { ArrowLeft, Calendar, Send } from "lucide-react";
-import oasisLogo from "@/assets/oasis-logo-circle.png";
+import { useNavigate } from "react-router-dom";
+import { Calendar, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";

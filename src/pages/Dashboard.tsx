@@ -3,6 +3,7 @@ import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { Calendar, ChevronRight, Star, CalendarClock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
+import PageContainer from "@/components/PageContainer";
 import { useBooking, type BookingData, type TimeWindow } from "@/contexts/BookingContext";
 import PoolSceneHero from "@/components/dashboard/PoolSceneHero";
 import BookingFlow from "@/components/dashboard/BookingFlow";
@@ -189,7 +190,7 @@ const Dashboard = () => {
 
   return (
     <>
-      <main className="max-w-[760px] mx-auto px-5 py-8 pb-16">
+      <PageContainer>
         {/* Greeting */}
         <div className="flex items-center justify-between mb-8">
           <div>
@@ -259,7 +260,7 @@ const Dashboard = () => {
           
           <p className="mt-3">© Orlando's Oasis 2015 – 2026</p>
         </footer>
-      </main>
+      </PageContainer>
 
       {showBooking && <BookingFlow onClose={() => { setShowBooking(false); setSelectedServiceInfo(null); }} onComplete={() => { setShowBooking(false); setSelectedServiceInfo(null); }} selectedService={selectedServiceInfo} />}
 

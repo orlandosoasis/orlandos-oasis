@@ -1,5 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import { ChevronRight, User, CreditCard, MapPin, StickyNote, SlidersHorizontal } from "lucide-react";
+import PageContainer from "@/components/PageContainer";
 
 const settingsItems = [
   {
@@ -39,7 +40,7 @@ const AccountSettings = () => {
 
   return (
     <>
-      <main className="max-w-[760px] mx-auto px-5 py-8 pb-16">
+      <PageContainer>
         <h1 className="text-2xl font-bold text-foreground mb-6">Settings</h1>
 
         <div className="bg-card rounded-2xl border border-border shadow-sm divide-y divide-border overflow-hidden">
@@ -65,7 +66,7 @@ const AccountSettings = () => {
           <Link to="/privacy" className="text-primary hover:underline">Privacy</Link>
           <p className="mt-3">© Orlando's Oasis 2015 – 2026</p>
         </footer>
-      </main>
+      </PageContainer>
     </>
   );
 };

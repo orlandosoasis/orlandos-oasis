@@ -79,20 +79,17 @@ const PersistentHeader = memo(function PersistentHeader() {
   return (
     <header className="bg-card border-b border-border sticky top-0 z-10">
       <div className="container relative max-w-[760px] mx-auto px-5 h-[60px] flex items-center">
-        <div className="flex min-w-[72px] items-center">
-          <button
-            onClick={handleBack}
-            className={showBackButton
-              ? "flex items-center gap-2 text-foreground hover:text-primary transition-colors"
-              : "invisible pointer-events-none flex items-center gap-2 text-foreground"
-            }
-            aria-hidden={!showBackButton}
-            tabIndex={showBackButton ? 0 : -1}
-          >
-            <ArrowLeft className="h-5 w-5" />
-            <span className="font-medium text-sm">Back</span>
-          </button>
-        </div>
+        {isSubPage && (
+          <div className="flex min-w-[72px] items-center">
+            <button
+              onClick={handleBack}
+              className="flex items-center gap-2 text-foreground hover:text-primary transition-colors"
+            >
+              <ArrowLeft className="h-5 w-5" />
+              <span className="font-medium text-sm">Back</span>
+            </button>
+          </div>
+        )}
 
         <Link
           to="/dashboard"

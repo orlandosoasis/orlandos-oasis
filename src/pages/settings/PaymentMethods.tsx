@@ -147,6 +147,7 @@ const PaymentMethods = () => {
 
           {isMonthly ? (
             <div className="bg-card rounded-2xl border border-border shadow-sm overflow-hidden">
+              {/* Membership Status */}
               <div className="p-6 space-y-3">
                 <h3 className="text-[15px] font-semibold text-foreground">Membership Status</h3>
 
@@ -162,6 +163,19 @@ const PaymentMethods = () => {
                     <span className="text-muted-foreground">Plan</span>
                     <span className="font-medium text-foreground">{planName}</span>
                   </div>
+                  {hasVoucher && (
+                    <div className="flex justify-between items-baseline">
+                      <span className="text-muted-foreground">First Month</span>
+                      <span className="font-medium text-foreground">
+                        <span className="text-primary">${discountPrice}</span>
+                        <span className="text-muted-foreground line-through ml-1.5 text-xs">${originalPrice}/mo</span>
+                      </span>
+                    </div>
+                  )}
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">{hasVoucher ? "Regular Price" : "Price"}</span>
+                    <span className="font-medium text-foreground">${originalPrice ?? "—"}/month</span>
+                  </div>
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">Status</span>
                     <span className={`font-medium ${cancelled ? "text-destructive" : "text-primary"}`}>
@@ -173,28 +187,58 @@ const PaymentMethods = () => {
                     <span className="font-medium text-foreground">Monthly</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-muted-foreground">Next Billing Date</span>
-                    <span className="font-medium text-foreground">{cancelled ? "—" : nextDateStr}</span>
-                  </div>
-                  <div className="flex justify-between">
                     <span className="text-muted-foreground">Auto-renew</span>
                     <span className="font-medium text-foreground">{cancelled ? "No" : "Yes"}</span>
+                  </div>
+                </div>
+
+                {/* Voucher Context */}
+                {hasVoucher && !cancelled && (
+                  <div className="flex items-center gap-2 bg-primary/10 border border-primary/20 rounded-xl px-4 py-3 text-sm">
+                    <BadgePercent className="h-4 w-4 text-primary shrink-0" />
+                    <span className="text-primary font-medium">${savings} discount applied to first month</span>
+                  </div>
+                )}
+              </div>
+
+              <Separator />
+
+              {/* Billing Summary */}
+              <div className="p-6 space-y-3">
+                <h3 className="text-[15px] font-semibold text-foreground">Billing Summary</h3>
+                <div className="space-y-2.5 text-sm">
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">First Payment</span>
+                    <span className="font-medium text-foreground">
+                      {cancelled ? "—" : `$${hasVoucher ? discountPrice : originalPrice ?? "—"} on ${serviceDateStr}`}
+                    </span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Recurring Payment</span>
+                    <span className="font-medium text-foreground">
+                      {cancelled ? "—" : `$${originalPrice ?? "—"}/month starting next cycle`}
+                    </span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Next Billing Date</span>
+                    <span className="font-medium text-foreground">{cancelled ? "—" : nextDateStr}</span>
                   </div>
                 </div>
               </div>
 
               <Separator />
 
+              {/* Recurring Schedule */}
               <div className="p-6 space-y-3">
                 <h3 className="text-[15px] font-semibold text-foreground">Recurring Schedule</h3>
                 <div className="space-y-2.5 text-sm">
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">Frequency</span>
-                    <span className="font-medium text-foreground">Monthly</span>
+                    <span className="font-medium text-foreground">{frequencyLabel}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">Next Service Date</span>
-                    <span className="font-medium text-foreground">{cancelled ? "None scheduled" : nextDateStr}</span>
+                    <span className="font-medium text-foreground">{cancelled ? "None scheduled" : serviceDateStr}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">Auto-renew</span>
@@ -202,6 +246,18 @@ const PaymentMethods = () => {
                   </div>
                 </div>
               </div>
+
+              {/* Savings Indicator */}
+              {hasVoucher && !cancelled && (
+                <>
+                  <Separator />
+                  <div className="p-6">
+                    <div className="bg-primary/5 border border-primary/15 rounded-xl px-4 py-3 text-center text-sm font-medium text-primary">
+                      You saved ${savings} on your first month 🎉
+                    </div>
+                  </div>
+                </>
+              )}
 
               <Separator />
 

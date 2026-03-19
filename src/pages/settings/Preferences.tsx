@@ -58,12 +58,12 @@ const Preferences = () => {
               onChange={(e) => setAccessInstructions(e.target.value)}
               placeholder="e.g., Use the side gate on the left"
             />
-    </>
+          </div>
 
           <Button onClick={handleSave} className="mt-2">Save Changes</Button>
         </div>
       </main>
-    </div>
+    </>
   );
 };
 

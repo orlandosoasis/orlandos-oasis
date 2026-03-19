@@ -46,7 +46,7 @@ const PersonalInfo = () => {
           <Button onClick={handleSave} className="mt-2">Save Changes</Button>
         </div>
       </main>
-    </div>
+    </>
   );
 };
 

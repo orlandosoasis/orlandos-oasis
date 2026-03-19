@@ -65,7 +65,7 @@ const ExperienceLevel = () => {
           <Button onClick={handleSave} className="mt-4 w-full">Save Changes</Button>
         </div>
       </main>
-    </div>
+    </>
   );
 };
 

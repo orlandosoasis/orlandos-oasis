@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 import { ChevronLeft, ChevronRight, Check, ArrowLeft, CheckCircle2, Loader2, Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -79,6 +79,12 @@ const BookingFlow = ({ onClose, onComplete, selectedService: selectedServiceProp
 
   const [isProcessing, setIsProcessing] = useState(false);
   const [bookingSuccess, setBookingSuccess] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  // Scroll to top when step changes
+  useEffect(() => {
+    containerRef.current?.scrollTo({ top: 0, behavior: "smooth" });
+  }, [step]);
 
   // Calendar helpers
   const daysInMonth = new Date(calYear, calMonth + 1, 0).getDate();
@@ -206,7 +212,7 @@ const BookingFlow = ({ onClose, onComplete, selectedService: selectedServiceProp
   }
 
   return (
-    <div className="fixed inset-0 z-50 bg-background overflow-y-auto">
+    <div ref={containerRef} className="fixed inset-0 z-50 bg-background overflow-y-auto">
       {/* Header */}
       <div className="sticky top-0 z-10 bg-card border-b border-border">
         <div className="max-w-[760px] mx-auto px-5 h-[56px] flex items-center gap-3">

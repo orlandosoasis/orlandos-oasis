@@ -23,6 +23,7 @@ interface AuthContextType {
   login: (email: string, password: string) => Promise<{ success: boolean; error?: string }>;
   signup: (email: string, password: string, fullName: string, role?: UserRole, address?: { streetAddress?: string; city?: string; state?: string; zipCode?: string }) => Promise<{ success: boolean; error?: string }>;
   logout: () => void;
+  updateUser: (updates: Partial<User>) => void;
   isAuthenticated: boolean;
 }
 

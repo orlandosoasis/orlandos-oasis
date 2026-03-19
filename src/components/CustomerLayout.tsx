@@ -1,7 +1,7 @@
 import React, { memo } from "react";
 import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import oasisLogo from "@/assets/oo-logo.png";
-import { ArrowLeft, LayoutDashboard, Settings, CreditCard, LogOut } from "lucide-react";
+import { ArrowLeft, Calendar, LayoutDashboard, Settings, CreditCard, LogOut } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -10,6 +10,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
 
 const BACK_TARGETS: Record<string, string> = {

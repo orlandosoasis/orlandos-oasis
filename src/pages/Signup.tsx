@@ -13,6 +13,10 @@ const Signup = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [streetAddress, setStreetAddress] = useState("");
+  const [city, setCity] = useState("");
+  const [state, setState] = useState("");
+  const [zipCode, setZipCode] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const { signup } = useAuth();
@@ -42,7 +46,7 @@ const Signup = () => {
 
     setIsLoading(true);
 
-    const result = await signup(email, password, fullName);
+    const result = await signup(email, password, fullName, "homeowner", { streetAddress, city, state, zipCode });
 
     if (result.success) {
       toast({
@@ -140,6 +144,32 @@ const Signup = () => {
                   required
                   className="h-12"
                 />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="streetAddress">Street Address</Label>
+                <Input
+                  id="streetAddress"
+                  placeholder="1234 Sunshine Blvd"
+                  value={streetAddress}
+                  onChange={(e) => setStreetAddress(e.target.value)}
+                  className="h-12"
+                />
+              </div>
+
+              <div className="grid grid-cols-3 gap-3">
+                <div className="space-y-2">
+                  <Label htmlFor="city">City</Label>
+                  <Input id="city" placeholder="Orlando" value={city} onChange={(e) => setCity(e.target.value)} className="h-12" />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="state">State</Label>
+                  <Input id="state" placeholder="FL" value={state} onChange={(e) => setState(e.target.value)} className="h-12" />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="zipCode">Zip Code</Label>
+                  <Input id="zipCode" placeholder="32801" value={zipCode} onChange={(e) => setZipCode(e.target.value)} className="h-12" />
+                </div>
               </div>
 
               <Button type="submit" className="w-full h-12 text-lg font-semibold" disabled={isLoading}>

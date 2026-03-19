@@ -21,7 +21,7 @@ interface AuthContextType {
   user: User | null;
   isLoading: boolean;
   login: (email: string, password: string) => Promise<{ success: boolean; error?: string }>;
-  signup: (email: string, password: string, fullName: string, role?: UserRole) => Promise<{ success: boolean; error?: string }>;
+  signup: (email: string, password: string, fullName: string, role?: UserRole, address?: { streetAddress?: string; city?: string; state?: string; zipCode?: string }) => Promise<{ success: boolean; error?: string }>;
   logout: () => void;
   isAuthenticated: boolean;
 }
@@ -119,7 +119,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     email: string,
     password: string,
     fullName: string,
-    role: UserRole = "homeowner"
+    role: UserRole = "homeowner",
+    address?: { streetAddress?: string; city?: string; state?: string; zipCode?: string }
   ): Promise<{ success: boolean; error?: string }> => {
     // Simulate network delay
     await new Promise((resolve) => setTimeout(resolve, 800));
@@ -136,6 +137,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       email: normalizedEmail,
       fullName,
       role,
+      streetAddress: address?.streetAddress,
+      city: address?.city,
+      state: address?.state,
+      zipCode: address?.zipCode,
     };
 
     // Store the new user

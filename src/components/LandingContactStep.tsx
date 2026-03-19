@@ -108,13 +108,6 @@ const LandingContactStep = ({
           className="h-12 rounded-xl border-[1.5px] border-border bg-background shadow-sm text-[15px] placeholder:text-muted-foreground/60 focus-visible:ring-primary focus-visible:border-primary"
         />
         <Input
-          name="zipcode"
-          placeholder="Zipcode"
-          value={formData.zipcode}
-          onChange={handleChange}
-          className="h-12 rounded-xl border-[1.5px] border-border bg-background shadow-sm text-[15px] placeholder:text-muted-foreground/60 focus-visible:ring-primary focus-visible:border-primary"
-        />
-        <Input
           name="phone"
           type="tel"
           placeholder="Phone Number"

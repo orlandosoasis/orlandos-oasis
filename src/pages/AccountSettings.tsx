@@ -66,7 +66,7 @@ const AccountSettings = () => {
           <p className="mt-3">© Orlando's Oasis 2015 – 2026</p>
         </footer>
       </main>
-    </div>
+    </>
   );
 };
 

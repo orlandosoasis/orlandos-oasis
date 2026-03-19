@@ -146,6 +146,32 @@ const Signup = () => {
                 />
               </div>
 
+              <div className="space-y-2">
+                <Label htmlFor="streetAddress">Street Address</Label>
+                <Input
+                  id="streetAddress"
+                  placeholder="1234 Sunshine Blvd"
+                  value={streetAddress}
+                  onChange={(e) => setStreetAddress(e.target.value)}
+                  className="h-12"
+                />
+              </div>
+
+              <div className="grid grid-cols-3 gap-3">
+                <div className="space-y-2">
+                  <Label htmlFor="city">City</Label>
+                  <Input id="city" placeholder="Orlando" value={city} onChange={(e) => setCity(e.target.value)} className="h-12" />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="state">State</Label>
+                  <Input id="state" placeholder="FL" value={state} onChange={(e) => setState(e.target.value)} className="h-12" />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="zipCode">Zip Code</Label>
+                  <Input id="zipCode" placeholder="32801" value={zipCode} onChange={(e) => setZipCode(e.target.value)} className="h-12" />
+                </div>
+              </div>
+
               <Button type="submit" className="w-full h-12 text-lg font-semibold" disabled={isLoading}>
                 {isLoading ? (
                   <>

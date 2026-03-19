@@ -42,14 +42,23 @@ function getThirdWednesday(year: number, month: number): Date {
   return new Date(year, month, firstWed + 14);
 }
 
-function generateDemoServices(): ServiceInstance[] {
+function generateDemoServices(checkoutData?: import("@/contexts/BookingContext").CheckoutData | null): ServiceInstance[] {
+  // Derive service label and hours from checkout data or use defaults
+  const serviceLabel = checkoutData?.serviceName || "Deep Clean";
+  const serviceHours = checkoutData?.frequency === "weekly" ? 1
+    : checkoutData?.frequency === "twice-weekly" ? 1
+    : checkoutData?.frequency === "three-weekly" ? 1
+    : 3;
+  const servicePrice = checkoutData?.discountPrice || 149;
+  const serviceOriginalPrice = checkoutData?.originalPrice || 189;
+
   const sharedPass = {
-    id: "pass-2", hours: 3, label: "Deep Clean Pass",
-    description: "Full cleaning, chemical balance, filter check",
-    originalPrice: 189, discountPrice: 149, percentOff: 21, isMostPopular: true,
+    id: "pass-checkout", hours: serviceHours, label: serviceLabel,
+    description: checkoutData?.serviceDescription || "Full cleaning, chemical balance, filter check",
+    originalPrice: serviceOriginalPrice, discountPrice: servicePrice, percentOff: Math.round(((serviceOriginalPrice - servicePrice) / serviceOriginalPrice) * 100), isMostPopular: true,
   };
   const sharedPool = {
-    address: "123 Main Street", city: "Miami", state: "FL", zip: "33101",
+    address: "123 Main Street", city: "Miami", state: "FL", zip: checkoutData?.customerZipcode || "33101",
     poolType: "In-ground", poolSize: "Medium (15k–25k gallons)",
     accessMethod: "gate" as const, accessDetail: "Code: 4521",
   };
@@ -59,29 +68,39 @@ function generateDemoServices(): ServiceInstance[] {
     accessDetail: "Code: 4521", addons: [] as { id: string; name: string; price: number }[], addonsTotal: 0,
   };
 
-  const services: ServiceInstance[] = [];
+  // Determine recurrence interval in days
+  const frequency = checkoutData?.frequency || "monthly";
+  const intervalDays = frequency === "weekly" ? 7
+    : frequency === "biweekly" ? 14
+    : frequency === "twice-weekly" ? 3
+    : frequency === "three-weekly" ? 2
+    : 30; // monthly
 
-  // Past service — Feb 25, 2026
+  const services: ServiceInstance[] = [];
+  const today = new Date();
+
+  // Past service — 1 interval ago
+  const pastDate = new Date(today);
+  pastDate.setDate(pastDate.getDate() - intervalDays);
   services.push({
-    id: "svc-feb-2026",
+    id: "svc-past-1",
     booking: {
       frequency: "monthly", selectedPass: sharedPass, pool: sharedPool, technician: tech, status: "completed",
-      scheduleData: { ...baseSchedule, selectedDate: new Date(2026, 1, 25) },
+      scheduleData: { ...baseSchedule, selectedDate: pastDate },
     },
   });
 
-  // Upcoming monthly visits — 3rd Wednesday, 8 months starting March
+  // Upcoming services — generate 8 future visits based on frequency
   const unassignedTech = { name: "Pool Technician to be assigned", initials: "?", rating: 0, isAssigned: false };
   for (let i = 0; i < 8; i++) {
-    const m = 2 + i;
-    const year = 2026 + Math.floor(m / 12);
-    const month = m % 12;
-    const date = getThirdWednesday(year, month);
+    const futureDate = new Date(today);
+    futureDate.setDate(futureDate.getDate() + intervalDays * (i + 1));
     services.push({
-      id: `svc-${SHORT_MONTHS[month].toLowerCase()}-${year}`,
+      id: `svc-upcoming-${i}`,
       booking: {
-        frequency: "monthly", selectedPass: sharedPass, pool: sharedPool, technician: i === 0 ? tech : unassignedTech, status: "scheduled",
-        scheduleData: { ...baseSchedule, selectedDate: date },
+        frequency: "monthly", selectedPass: sharedPass, pool: sharedPool,
+        technician: i === 0 ? tech : unassignedTech, status: "scheduled",
+        scheduleData: { ...baseSchedule, selectedDate: futureDate },
       },
     });
   }

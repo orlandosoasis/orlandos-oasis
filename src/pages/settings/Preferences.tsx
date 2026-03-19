@@ -59,7 +59,7 @@ const Preferences = () => {
                 <SelectItem value="evening">Evening (4 PM – 6 PM)</SelectItem>
               </SelectContent>
             </Select>
-            <div className="flex items-start gap-2 mt-1.5 p-3 rounded-lg bg-muted/50 border border-border">
+            <div className="flex items-start gap-2 mt-1.5">
               <Info className="h-4 w-4 text-muted-foreground shrink-0 mt-0.5" />
               <p className="text-xs text-muted-foreground">Arrival time cannot be guaranteed, but we will do our best to arrive as close to the scheduled time as possible.</p>
             </div>

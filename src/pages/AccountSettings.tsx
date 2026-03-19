@@ -1,5 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import { ChevronRight, User, CreditCard, MapPin, StickyNote, SlidersHorizontal } from "lucide-react";
+import PageContainer from "@/components/PageContainer";
 
 const settingsItems = [
   {

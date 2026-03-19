@@ -187,7 +187,7 @@ const Dashboard = () => {
         <div className="mb-8">
           <h1 className="text-2xl font-bold text-foreground">Hi, {firstName} 👋</h1>
           <p className="text-sm text-muted-foreground mt-1">{formatGreetingDate()}</p>
-        </div>
+    </>
 
         {/* Next Service */}
         {nextService && (

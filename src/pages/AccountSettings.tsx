@@ -59,7 +59,7 @@ const AccountSettings = () => {
               <ChevronRight className="h-5 w-5 text-muted-foreground shrink-0" />
             </button>
           ))}
-        </div>
+    </>
 
         <footer className="text-center text-xs text-muted-foreground mt-10 space-x-3">
           <Link to="/terms" className="text-primary hover:underline">Terms</Link>

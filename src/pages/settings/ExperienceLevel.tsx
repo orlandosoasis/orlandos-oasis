@@ -1,7 +1,6 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { ArrowLeft, Check } from "lucide-react";
-import oasisLogo from "@/assets/oasis-logo-circle.png";
+import { useNavigate } from "react-router-dom";
+import { Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";

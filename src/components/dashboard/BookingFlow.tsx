@@ -112,6 +112,9 @@ const BookingFlow = ({ onClose, onComplete, selectedService: selectedServiceProp
     await new Promise((r) => setTimeout(r, 1200));
     setIsProcessing(false);
 
+    // Persist address to user profile
+    updateUser({ streetAddress: address, city, state, zipCode: zip });
+
     const scheduleData: ScheduleData = {
       selectedDate,
       timeWindow,

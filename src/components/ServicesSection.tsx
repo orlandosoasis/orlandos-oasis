@@ -114,9 +114,7 @@ const ServicesSection = () => {
             <Check className="h-10 w-10 text-green-600" />
           </div>
           <h2 className="text-2xl font-bold text-foreground">Payment Successful</h2>
-          <p className="text-muted-foreground">Your Weekly Pool Service is confirmed.
-Access your dashboard to book your first service.<strong>{serviceName}</strong> is confirmed.<br />Your account is ready — access your dashboard to book your first service.
-          </p>
+          <p className="text-muted-foreground">Your Weekly Pool Service is confirmed. Access your dashboard to book your first service.</p>
           <Button
             onClick={() => navigate("/dashboard")}
             className="mt-2 w-full h-14 text-[17px] font-bold rounded-full shadow-md hover:shadow-lg">

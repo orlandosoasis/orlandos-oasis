@@ -289,6 +289,10 @@ const PaymentMethods = () => {
         onOpenChange={setManageOpen}
         nextServiceDate={nextDateStr}
         onCancelled={handleCancelled}
+        onPlanChanged={(plan) => {
+          setOverridePlan(plan);
+          setCancelled(false);
+        }}
       />
     </>
   );

@@ -33,6 +33,7 @@ const TOTAL_STEPS = 2;
 
 const BookingFlow = ({ onClose, onComplete, selectedService: selectedServiceProp }: BookingFlowProps) => {
   const { setBooking } = useBooking();
+  const { user, updateUser } = useAuth();
   const [step, setStep] = useState(0);
 
   const selectedPlanId = "weekly";

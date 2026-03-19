@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { CreditCard, Plus, Trash2, RefreshCw, Calendar } from "lucide-react";
+import { CreditCard, Plus, Trash2, RefreshCw, Calendar, BadgePercent } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -19,10 +19,19 @@ interface SavedCard {
 const FULL_DAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 const SHORT_MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
+const FREQUENCY_LABELS: Record<string, string> = {
+  weekly: "Weekly",
+  "twice-weekly": "Twice per week",
+  "three-weekly": "Three times per week",
+  biweekly: "Every two weeks",
+  monthly: "Monthly",
+  once: "One-time",
+};
+
 const PaymentMethods = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { booking } = useBooking();
+  const { booking, checkoutData } = useBooking();
   const [cards, setCards] = useState<SavedCard[]>([
     { id: "card-1", last4: "4242", brand: "Visa", expiry: "12/27" },
   ]);
@@ -33,14 +42,27 @@ const PaymentMethods = () => {
 
   const isMonthly = booking?.frequency === "monthly";
   const d = booking?.scheduleData?.selectedDate || new Date();
-  const planName = booking?.selectedPass?.label || booking?.selectedPlan?.label || "Pool Care Membership";
 
-  const getNextDate = () => {
+  // Dynamic plan info from checkoutData (voucher flow) or booking
+  const planName = checkoutData?.serviceName || booking?.selectedPass?.label || booking?.selectedPlan?.label || "Pool Care Membership";
+  const discountPrice = checkoutData?.discountPrice ?? booking?.selectedPass?.discountPrice ?? null;
+  const originalPrice = checkoutData?.originalPrice ?? booking?.selectedPass?.originalPrice ?? null;
+  const hasVoucher = discountPrice !== null && originalPrice !== null && discountPrice < originalPrice;
+  const savings = hasVoucher ? originalPrice! - discountPrice! : 0;
+  const frequency = checkoutData?.frequency || booking?.frequency || "weekly";
+  const frequencyLabel = FREQUENCY_LABELS[frequency] || frequency;
+
+  const formatDate = (date: Date) =>
+    `${FULL_DAYS[date.getDay()]}, ${SHORT_MONTHS[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()}`;
+
+  const serviceDateStr = formatDate(d);
+
+  const getNextBillingDate = () => {
     const next = new Date(d);
     next.setMonth(next.getMonth() + 1);
-    return `${FULL_DAYS[next.getDay()]}, ${SHORT_MONTHS[next.getMonth()]} ${next.getDate()}, ${next.getFullYear()}`;
+    return formatDate(next);
   };
-  const nextDateStr = getNextDate();
+  const nextDateStr = getNextBillingDate();
 
   const handleRemove = (id: string) => {
     setCards(cards.filter(c => c.id !== id));

@@ -19,6 +19,7 @@ const PersonalInfo = () => {
   const [phone, setPhone] = useState(user?.phone || checkoutData?.customerPhone || "");
 
   const handleSave = () => {
+    updateUser({ firstName, lastName, email, phone });
     toast({ title: "Personal information updated.", variant: "success" });
   };
 

@@ -316,8 +316,7 @@ const ServiceDetails = () => {
           <p className="text-[13.5px] text-muted-foreground leading-relaxed">
             View our <Link to="/help" className="text-primary font-semibold hover:underline">help center</Link> for more information on what to expect and how Orlando's Oasis works, or <button onClick={() => setReportIssueOpen(true)} className="text-primary font-semibold hover:underline">report an issue</button>.
           </p>
-    </>
-
+        </div>
         {/* Footer */}
         <footer className="text-center text-xs text-muted-foreground mt-10 space-x-3">
           <Link to="/terms" className="text-primary hover:underline">Terms</Link>

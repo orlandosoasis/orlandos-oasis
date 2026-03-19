@@ -14,7 +14,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import oasisLogo from "@/assets/oasis-logo-circle.png";
+import oasisLogo from "@/assets/oo-logo.png";
 import {
   INIT_TECHNICIANS, ADMIN_HOMEOWNERS, ADMIN_ISSUES, INIT_APPLICANTS,
   type AdminTechnician, type AdminApplicant, type AdminApplicantCert, type AdminIssue, type AdminTechReview, type ReviewStatus, type ReviewRejectionReason,

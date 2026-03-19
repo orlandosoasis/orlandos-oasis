@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { Star, CheckCircle, Calendar, DollarSign, Briefcase, ClipboardList, CreditCard, ArrowRight, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import logo from "@/assets/orlando-oasis-logo.png";
+import logo from "@/assets/oo-logo.png";
 import techHero from "@/assets/tech-hero.jpg";
 
 const BENEFITS = [

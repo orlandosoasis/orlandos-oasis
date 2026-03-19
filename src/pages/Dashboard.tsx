@@ -361,7 +361,7 @@ const NextServiceCard = ({ service, onViewDetails }: { service: ServiceInstance;
           <p className="text-xl font-bold text-foreground">{d.getDate()}</p>
         </div>
         <div className="flex-1 min-w-0">
-          <p className="text-sm font-semibold text-foreground">{selectedPass.hours}-Hour Pool Service</p>
+          <p className="text-sm font-semibold text-foreground">{selectedPass.label}</p>
           <p className="text-xs text-muted-foreground">
             Expected arrival {TIME_LABELS[scheduleData.timeWindow]}
           </p>

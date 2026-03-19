@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
 import { useBooking } from "@/contexts/BookingContext";
-import ManageMembershipModal from "@/components/ManageMembershipModal";
+import ManageMembershipModal, { type ServicePlan } from "@/components/ManageMembershipModal";
 
 interface SavedCard {
   id: string;
@@ -39,17 +39,18 @@ const PaymentMethods = () => {
   const [newCard, setNewCard] = useState({ number: "", expiry: "", cvc: "" });
   const [manageOpen, setManageOpen] = useState(false);
   const [cancelled, setCancelled] = useState(false);
+  const [overridePlan, setOverridePlan] = useState<ServicePlan | null>(null);
 
   const isMonthly = booking?.frequency === "monthly";
   const d = booking?.scheduleData?.selectedDate || new Date();
 
-  // Dynamic plan info from checkoutData (voucher flow) or booking
-  const planName = checkoutData?.serviceName || booking?.selectedPass?.label || booking?.selectedPlan?.label || "Pool Care Membership";
-  const discountPrice = checkoutData?.discountPrice ?? booking?.selectedPass?.discountPrice ?? null;
-  const originalPrice = checkoutData?.originalPrice ?? booking?.selectedPass?.originalPrice ?? null;
+  // If user changed plan via modal, use that; otherwise fall back to context
+  const planName = overridePlan?.name || checkoutData?.serviceName || booking?.selectedPass?.label || booking?.selectedPlan?.label || "Pool Care Membership";
+  const discountPrice = overridePlan ? overridePlan.discountPrice : (checkoutData?.discountPrice ?? booking?.selectedPass?.discountPrice ?? null);
+  const originalPrice = overridePlan ? overridePlan.originalPrice : (checkoutData?.originalPrice ?? booking?.selectedPass?.originalPrice ?? null);
   const hasVoucher = discountPrice !== null && originalPrice !== null && discountPrice < originalPrice;
   const savings = hasVoucher ? originalPrice! - discountPrice! : 0;
-  const frequency = checkoutData?.frequency || booking?.frequency || "weekly";
+  const frequency = overridePlan?.frequency || checkoutData?.frequency || booking?.frequency || "weekly";
   const frequencyLabel = FREQUENCY_LABELS[frequency] || frequency;
 
   const formatDate = (date: Date) =>
@@ -288,6 +289,10 @@ const PaymentMethods = () => {
         onOpenChange={setManageOpen}
         nextServiceDate={nextDateStr}
         onCancelled={handleCancelled}
+        onPlanChanged={(plan) => {
+          setOverridePlan(plan);
+          setCancelled(false);
+        }}
       />
     </>
   );

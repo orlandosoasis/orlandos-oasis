@@ -1,7 +1,8 @@
 import { useState, useRef, useCallback, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Check } from "lucide-react";
+import { Check, AlertCircle } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
 import BookingStepper from "@/components/BookingStepper";
 import VoucherSelectionStep, { VOUCHER_PLANS } from "@/components/dashboard/VoucherSelectionStep";
 import VoucherConfirmationStep from "@/components/dashboard/VoucherConfirmationStep";
@@ -17,9 +18,11 @@ const STEPS = [
 
 const ServicesSection = () => {
   const navigate = useNavigate();
+  const { signup, login, isAuthenticated } = useAuth();
   const [selectedPlanId, setSelectedPlanId] = useState("weekly");
   const [currentStep, setCurrentStep] = useState(1);
   const [bookingComplete, setBookingComplete] = useState(false);
+  const [autoLoginFailed, setAutoLoginFailed] = useState(false);
   const [formData, setFormData] = useState<LandingFormData>({
     firstName: "",
     lastName: "",
@@ -55,15 +58,39 @@ const ServicesSection = () => {
     setTimeout(scrollToTop, 50);
   };
 
-  const handlePaymentSubmit = () => {
+  const handlePaymentSubmit = async () => {
     setBookingComplete(true);
     setTimeout(scrollToTop, 50);
+
+    // Auto-create account and login using form data
+    if (!isAuthenticated && formData.email) {
+      const tempPassword = `Oasis${Date.now()}!`;
+      const fullName = `${formData.firstName} ${formData.lastName}`.trim();
+      
+      const signupResult = await signup(formData.email, tempPassword, fullName, "homeowner");
+      
+      if (!signupResult.success) {
+        // Account may already exist — try logging in
+        const loginResult = await login(formData.email, tempPassword);
+        if (!loginResult.success) {
+          setAutoLoginFailed(true);
+        }
+      }
+    }
   };
 
   if (bookingComplete) {
     return (
       <div className="fixed inset-0 z-50 bg-background flex items-center justify-center">
         <div className="text-center space-y-5 px-6 max-w-md">
+          {autoLoginFailed && (
+            <div className="flex items-center gap-2 bg-muted border border-border rounded-xl px-4 py-3 text-left">
+              <AlertCircle className="h-5 w-5 text-muted-foreground shrink-0" />
+              <p className="text-sm text-muted-foreground">
+                Account created. Check your email to set your password.
+              </p>
+            </div>
+          )}
           <div className="mx-auto h-20 w-20 rounded-full bg-green-100 flex items-center justify-center">
             <Check className="h-10 w-10 text-green-600" />
           </div>

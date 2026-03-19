@@ -277,11 +277,17 @@ const Dashboard = () => {
                 );
               })}
             </div>
-            {hasMoreUpcoming && (
+            {remainingUpcoming.length > INITIAL_VISIBLE_COUNT && (
               <div className="mt-3 text-center">
-                <button onClick={() => setVisibleCount(prev => prev + LOAD_MORE_COUNT)} className="text-sm font-semibold text-primary hover:underline">
-                  Load more visits ({remainingUpcoming.length - visibleCount} remaining)
-                </button>
+                {hasMoreUpcoming ? (
+                  <button onClick={() => setVisibleCount(prev => prev + LOAD_MORE_COUNT)} className="text-sm font-semibold text-primary hover:underline">
+                    Load more visits ({remainingUpcoming.length - visibleCount} remaining)
+                  </button>
+                ) : (
+                  <button onClick={() => { setVisibleCount(INITIAL_VISIBLE_COUNT); window.scrollTo({ top: 0, behavior: "smooth" }); }} className="text-sm font-semibold text-primary hover:underline">
+                    Show less
+                  </button>
+                )}
               </div>
             )}
           </section>

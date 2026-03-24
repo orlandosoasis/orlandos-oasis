@@ -89,7 +89,7 @@ const TechnicianApplication = () => {
   const [zip, setZip] = useState("");
   const [yearsExp, setYearsExp] = useState("");
 
-  // Step 2 — Resume & Certifications
+  // Step 2 - Resume & Certifications
   const [resume, setResume] = useState<File | null>(null);
   const [certifications, setCertifications] = useState<Certification[]>([emptyCert()]);
   const [agreed, setAgreed] = useState(false);

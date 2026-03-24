@@ -55,7 +55,7 @@ const BookingFlow = ({ onClose, onComplete, selectedService: selectedServiceProp
     isMostPopular: selectedVoucherPlan.isMostPopular
   }), [selectedVoucherPlan, selectedService]);
 
-  // Step 0 — Schedule
+  // Step 0 - Schedule
   const [frequency] = useState<CleaningFrequency>("monthly");
   const today = useMemo(() => {const d = new Date();d.setHours(0, 0, 0, 0);return d;}, []);
   const [selectedDate, setSelectedDate] = useState<Date>(today);

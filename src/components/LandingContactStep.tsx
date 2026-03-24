@@ -86,7 +86,7 @@ const LandingContactStep = ({
       </div>
 
       {/* Order Summary */}
-      <div className="bg-background rounded-xl p-4 px-5 flex items-center justify-between shadow-sm border border-border">
+      <div className="bg-card rounded-2xl p-5 px-6 flex items-center justify-between shadow-sm border border-border">
         <div>
           <p className="text-[11px] text-muted-foreground font-medium uppercase tracking-widest mb-0.5">You're Getting</p>
           <div className="flex items-center gap-2.5">

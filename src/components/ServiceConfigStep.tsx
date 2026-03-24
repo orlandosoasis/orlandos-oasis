@@ -223,8 +223,7 @@ const ServiceConfigStep = ({ config, onConfigChange }: ServiceConfigStepProps) =
             <p className="text-base font-bold text-foreground">Today you pay</p>
             <p className="text-xs text-primary font-medium">$25 off applied</p>
           </div>
-          <div className="flex items-baseline gap-2">
-            <span className="text-sm text-muted-foreground line-through tabular-nums">${monthlyPrice}</span>
+          <div className="text-right">
             <span className="text-3xl font-extrabold text-primary tabular-nums">${firstMonthPrice}</span>
           </div>
         </div>

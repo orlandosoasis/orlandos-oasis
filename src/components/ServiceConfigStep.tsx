@@ -120,7 +120,7 @@ const ServiceConfigStep = ({ config, onConfigChange }: ServiceConfigStepProps) =
           {FREQUENCIES.map((freq) => {
             const isSelected = config.frequency === freq.value;
             const sizePrice = POOL_SIZES.find((s) => s.value === config.poolSize)!.price;
-            const totalPrice = sizePrice * freq.multiplier;
+            const extraPrice = sizePrice * (freq.multiplier - 1);
             return (
               <label
                 key={freq.value}
@@ -142,8 +142,10 @@ const ServiceConfigStep = ({ config, onConfigChange }: ServiceConfigStepProps) =
                   </p>
                   <p className="text-xs text-muted-foreground">{freq.description}</p>
                 </div>
-                <p className={`text-lg font-bold shrink-0 ${isSelected ? "text-primary" : "text-foreground"}`}>
-                  ${totalPrice}<span className="text-xs font-medium text-muted-foreground">/mo</span>
+                <p className={`text-sm font-bold shrink-0 ${freq.multiplier === 1 ? "text-muted-foreground" : isSelected ? "text-primary" : "text-foreground"}`}>
+                  {freq.multiplier === 1
+                    ? "Included in base price"
+                    : `+$${extraPrice}/mo`}
                 </p>
               </label>
             );

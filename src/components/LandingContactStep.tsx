@@ -82,12 +82,6 @@ const LandingContactStep = ({
 
   return (
     <div className="space-y-5 animate-fade-in">
-      {/* Confirmation Banner */}
-      <div className="bg-primary rounded-2xl py-5 px-6 text-center">
-        <p className="text-base font-bold text-primary-foreground leading-relaxed">
-          Congratulations, you reserved one of our last<br />remaining discount cleanings for…
-        </p>
-      </div>
 
       {/* Order Summary with pool size & frequency details */}
       <div className="bg-card rounded-2xl p-5 px-6 border border-border">

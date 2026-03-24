@@ -33,7 +33,7 @@ const VoucherConfirmationStep = ({ plan }: VoucherConfirmationStepProps) => {
           <p className="text-lg font-bold text-foreground">
             for <span className="text-primary">only ${plan.discountPrice}!</span>{" "}
             <span className="text-muted-foreground font-normal">
-              — regularly <span className="line-through">${plan.originalPrice}</span>
+              , regularly <span className="line-through">${plan.originalPrice}</span>
             </span>
           </p>
         </div>

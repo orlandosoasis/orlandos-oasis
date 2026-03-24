@@ -17,7 +17,7 @@ import LandingPaymentStep from "@/components/LandingPaymentStep";
 import type { VoucherPlan } from "@/components/dashboard/VoucherSelectionStep";
 
 const STEPS = [
-  { label: "Configure" },
+  { label: "Select Service" },
   { label: "Your Details" },
   { label: "Confirm" },
   { label: "Payment" },
@@ -149,7 +149,7 @@ const ServicesSection = () => {
 
   return (
     <div id="discount-voucher" className="scroll-mt-8" ref={sectionRef}>
-      {currentStep >= 3 && <BookingStepper currentStep={currentStep} steps={STEPS} onStepClick={goToStep} />}
+      {currentStep >= 2 && <BookingStepper currentStep={currentStep} steps={STEPS} onStepClick={goToStep} />}
 
       {/* Step 1: Configure Pool Size + Frequency */}
       {currentStep === 1 && (
@@ -168,6 +168,7 @@ const ServicesSection = () => {
       {currentStep === 2 && (
         <LandingContactStep
           selectedPlan={selectedPlan}
+          serviceConfig={serviceConfig}
           timeLeft={timeLeft}
           formData={formData}
           onFormDataChange={setFormData}

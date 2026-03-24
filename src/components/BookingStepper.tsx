@@ -8,7 +8,7 @@ interface BookingStepperProps {
 
 const BookingStepper = ({ currentStep, steps, onStepClick }: BookingStepperProps) => {
   return (
-    <div className="flex items-center justify-center gap-0 mb-8">
+    <div className="flex items-center justify-between mb-8">
       {steps.map((step, index) => {
         const stepNum = index + 1;
         const isCompleted = stepNum < currentStep;

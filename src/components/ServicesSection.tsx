@@ -18,8 +18,8 @@ import AddonsStep from "@/components/AddonsStep";
 import type { VoucherPlan } from "@/components/dashboard/VoucherSelectionStep";
 
 const STEPS = [
-  { label: "Select Service" },
-  { label: "Your Details" },
+  { label: "Service" },
+  { label: "Details" },
   { label: "Add-ons" },
   { label: "Confirmation" },
   { label: "Payment" },

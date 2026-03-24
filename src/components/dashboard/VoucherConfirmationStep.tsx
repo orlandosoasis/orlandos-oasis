@@ -45,7 +45,7 @@ const VoucherConfirmationStep = ({ plan }: VoucherConfirmationStepProps) => {
             <div className="flex items-start gap-3">
               <Check className="h-5 w-5 text-primary shrink-0 mt-0.5" />
               <p className="text-sm text-foreground">
-                This discount voucher is valid for 4 weekly pool cleanings over your first month—for only <strong>${plan.discountPrice} total</strong>.
+                This discount voucher is valid for 4 weekly pool cleanings over your first month, for only <strong>${plan.discountPrice} total</strong>.
               </p>
             </div>
 

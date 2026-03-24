@@ -42,10 +42,37 @@ const LandingContactStep = ({
   onChangePlan,
 }: LandingContactStepProps) => {
   const [editOpen, setEditOpen] = useState(false);
+  const [errors, setErrors] = useState<Partial<Record<keyof LandingFormData, string>>>({});
+  const [touched, setTouched] = useState(false);
+
+  const validate = (): boolean => {
+    const errs: Partial<Record<keyof LandingFormData, string>> = {};
+    if (!formData.firstName.trim()) errs.firstName = "First name is required";
+    if (!formData.lastName.trim()) errs.lastName = "Last name is required";
+    if (!formData.email.trim()) errs.email = "Email is required";
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) errs.email = "Please enter a valid email";
+    if (!formData.phone.trim()) errs.phone = "Phone number is required";
+    setErrors(errs);
+    return Object.keys(errs).length === 0;
+  };
+
+  const handleSubmit = () => {
+    setTouched(true);
+    if (validate()) {
+      onSubmit();
+    }
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     onFormDataChange({ ...formData, [e.target.name]: e.target.value });
+    if (touched) {
+      // Clear error for this field on change
+      setErrors((prev) => ({ ...prev, [e.target.name]: undefined }));
+    }
   };
+
+  const inputErrorClass = (field: keyof LandingFormData) =>
+    errors[field] ? "border-destructive focus-visible:ring-destructive focus-visible:border-destructive" : "";
 
   const serviceName = selectedPlan.label.replace("Most Popular – ", "");
 

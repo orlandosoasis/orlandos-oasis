@@ -266,7 +266,7 @@ const TechnicianApplication = () => {
           <div className="space-y-5 animate-fade-in">
             <div>
               <h2 className="text-lg font-semibold text-foreground mb-1">Resume & Certifications</h2>
-              <p className="text-sm text-muted-foreground">Upload your resume. Certifications are optional — add any you have.</p>
+              <p className="text-sm text-muted-foreground">Upload your resume. Certifications are optional, add any you have.</p>
             </div>
 
             {/* Resume */}

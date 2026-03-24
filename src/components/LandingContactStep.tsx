@@ -37,6 +37,94 @@ interface LandingContactStepProps {
   onChangePlan: (planId?: string) => void;
 }
 
+const LandingContactStep = ({
+  selectedPlan,
+  serviceConfig,
+  timeLeft,
+  formData,
+  onFormDataChange,
+  onSubmit,
+  onChangePlan,
+}: LandingContactStepProps) => {
+  const [errors, setErrors] = useState<Partial<Record<keyof LandingFormData, string>>>({});
+  const [touched, setTouched] = useState(false);
+
+  const monthlyPrice = getMonthlyPrice(serviceConfig);
+  const discountPrice = getDiscountPrice(serviceConfig);
+
+  const validate = (): boolean => {
+    const errs: Partial<Record<keyof LandingFormData, string>> = {};
+    if (!formData.firstName.trim()) errs.firstName = "First name is required";
+    if (!formData.lastName.trim()) errs.lastName = "Last name is required";
+    if (!formData.email.trim()) errs.email = "Email is required";
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) errs.email = "Please enter a valid email";
+    if (!formData.phone.trim()) errs.phone = "Phone number is required";
+    setErrors(errs);
+    return Object.keys(errs).length === 0;
+  };
+
+  const handleSubmit = () => {
+    setTouched(true);
+    if (validate()) {
+      onSubmit();
+    }
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    onFormDataChange({ ...formData, [e.target.name]: e.target.value });
+    if (touched) {
+      setErrors((prev) => ({ ...prev, [e.target.name]: undefined }));
+    }
+  };
+
+  const inputErrorClass = (field: keyof LandingFormData) =>
+    errors[field] ? "border-destructive focus-visible:ring-destructive focus-visible:border-destructive" : "";
+
+  return (
+    <div className="space-y-5 animate-fade-in">
+      {/* Confirmation Banner */}
+      <div className="bg-primary rounded-2xl py-5 px-6 text-center">
+        <p className="text-base font-bold text-primary-foreground leading-relaxed">
+          Congratulations, you reserved one of our last<br />remaining discount cleanings for…
+        </p>
+      </div>
+
+      {/* Order Summary with pool size & frequency details */}
+      <div className="bg-card rounded-2xl p-5 px-6 border border-border">
+        <div className="flex items-start justify-between">
+          <div className="space-y-2">
+            <p className="text-[11px] text-muted-foreground uppercase tracking-widest font-semibold">Your Plan</p>
+            <div className="space-y-1">
+              <div className="flex items-center gap-2">
+                <span className="text-xs text-muted-foreground">Pool Size:</span>
+                <span className="text-sm font-semibold text-foreground">{POOL_SIZE_LABELS[serviceConfig.poolSize]}</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="text-xs text-muted-foreground">Frequency:</span>
+                <span className="text-sm font-semibold text-foreground">{FREQUENCY_LABELS[serviceConfig.frequency]}</span>
+              </div>
+            </div>
+          </div>
+          <div className="text-right">
+            <div className="flex items-baseline gap-1.5 justify-end">
+              <span className="text-sm text-muted-foreground line-through">${monthlyPrice}</span>
+              <span className="text-[22px] font-extrabold text-foreground">${discountPrice}</span>
+            </div>
+            <p className="text-[11px] font-bold text-primary tracking-wide mt-0.5">$25 OFF</p>
+          </div>
+        </div>
+        <div className="mt-3 pt-3 border-t border-border flex items-center justify-between">
+          <p className="text-xs text-muted-foreground">Then ${monthlyPrice}/mo after first month</p>
+          <button
+            onClick={() => onChangePlan()}
+            className="inline-flex items-center gap-1 text-xs font-medium text-muted-foreground border border-border rounded-full px-3 py-1 hover:border-primary hover:text-primary transition-colors"
+          >
+            <Pencil className="h-3 w-3" />
+            Edit
+          </button>
+        </div>
+      </div>
+
       {/* Hold Notice */}
       <div className="flex items-center justify-center gap-2">
         <Clock className="h-4 w-4 text-muted-foreground shrink-0" strokeWidth={1.8} />
@@ -101,7 +189,6 @@ interface LandingContactStepProps {
         </div>
       </div>
 
-
       {/* Consent */}
       <p className="text-xs text-muted-foreground text-center leading-relaxed px-1">
         <span className="font-semibold text-muted-foreground/80">Get exclusive deals and updates by signing up!</span>{" "}
@@ -111,7 +198,6 @@ interface LandingContactStepProps {
         <span className="font-semibold text-muted-foreground/80">Opt-out anytime.</span>
       </p>
 
-
       {/* CTA */}
       <Button
         onClick={handleSubmit}
@@ -119,7 +205,6 @@ interface LandingContactStepProps {
       >
         Lock in your discount!
       </Button>
-
     </div>
   );
 };

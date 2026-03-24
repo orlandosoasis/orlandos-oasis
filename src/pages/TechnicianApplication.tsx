@@ -168,7 +168,7 @@ const TechnicianApplication = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Sticky Header — matches BookingFlow */}
+      {/* Sticky Header - matches BookingFlow */}
       <div className="sticky top-0 z-10 bg-card border-b border-border">
         <div className="max-w-[760px] mx-auto px-5 h-[56px] flex items-center gap-3">
           <button

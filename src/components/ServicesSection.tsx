@@ -210,7 +210,7 @@ const ServicesSection = () => {
       {/* Step 4: Confirmation */}
       {currentStep === 4 && (
         <>
-          <VoucherConfirmationStep plan={selectedPlan} />
+          <VoucherConfirmationStep plan={selectedPlan} serviceConfig={serviceConfig} />
           <Button
             onClick={() => goToStep(5)}
             className="w-full h-14 text-[17px] font-bold rounded-full shadow-md hover:shadow-lg mt-6"

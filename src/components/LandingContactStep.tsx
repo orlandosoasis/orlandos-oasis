@@ -3,6 +3,8 @@ import { Clock, Pencil } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import type { VoucherPlan } from "@/components/dashboard/VoucherSelectionStep";
+import type { ServiceConfig } from "@/components/ServiceConfigStep";
+import { getMonthlyPrice, getDiscountPrice } from "@/components/ServiceConfigStep";
 
 export interface LandingFormData {
   firstName: string;
@@ -13,98 +15,27 @@ export interface LandingFormData {
   frequency: string;
 }
 
+const POOL_SIZE_LABELS: Record<string, string> = {
+  small: "Small Pool",
+  medium: "Medium Pool",
+  large: "Large Pool",
+};
+
+const FREQUENCY_LABELS: Record<string, string> = {
+  weekly: "Weekly",
+  "twice-weekly": "Twice per week",
+  "three-weekly": "Three times per week",
+};
+
 interface LandingContactStepProps {
   selectedPlan: VoucherPlan;
+  serviceConfig: ServiceConfig;
   timeLeft: { minutes: number; seconds: number };
   formData: LandingFormData;
   onFormDataChange: (data: LandingFormData) => void;
   onSubmit: () => void;
   onChangePlan: (planId?: string) => void;
 }
-
-const FREQUENCY_OPTIONS = [
-  { value: "monthly", label: "Monthly" },
-  { value: "biweekly", label: "Every 2 weeks", isMostPopular: true },
-  { value: "weekly", label: "Weekly" },
-  { value: "once", label: "One-time" },
-];
-
-const LandingContactStep = ({
-  selectedPlan,
-  timeLeft,
-  formData,
-  onFormDataChange,
-  onSubmit,
-  onChangePlan,
-}: LandingContactStepProps) => {
-  const [errors, setErrors] = useState<Partial<Record<keyof LandingFormData, string>>>({});
-  const [touched, setTouched] = useState(false);
-
-  const validate = (): boolean => {
-    const errs: Partial<Record<keyof LandingFormData, string>> = {};
-    if (!formData.firstName.trim()) errs.firstName = "First name is required";
-    if (!formData.lastName.trim()) errs.lastName = "Last name is required";
-    if (!formData.email.trim()) errs.email = "Email is required";
-    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) errs.email = "Please enter a valid email";
-    if (!formData.phone.trim()) errs.phone = "Phone number is required";
-    setErrors(errs);
-    return Object.keys(errs).length === 0;
-  };
-
-  const handleSubmit = () => {
-    setTouched(true);
-    if (validate()) {
-      onSubmit();
-    }
-  };
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    onFormDataChange({ ...formData, [e.target.name]: e.target.value });
-    if (touched) {
-      // Clear error for this field on change
-      setErrors((prev) => ({ ...prev, [e.target.name]: undefined }));
-    }
-  };
-
-  const inputErrorClass = (field: keyof LandingFormData) =>
-    errors[field] ? "border-destructive focus-visible:ring-destructive focus-visible:border-destructive" : "";
-
-  const serviceName = selectedPlan.label.replace("Most Popular – ", "");
-
-  return (
-    <div className="space-y-5 animate-fade-in">
-      {/* Confirmation Banner */}
-      <div className="bg-primary rounded-2xl py-5 px-6 text-center">
-        <p className="text-base font-bold text-primary-foreground leading-relaxed">
-          Congratulations, you reserved one of our last<br />remaining discount cleanings for…
-        </p>
-      </div>
-
-      {/* Order Summary */}
-      <div className="bg-card rounded-2xl p-5 px-6 flex items-center justify-between border border-border">
-        <div>
-          <p className="text-[11px] text-muted-foreground uppercase tracking-widest mb-0.5 font-semibold">You're Getting</p>
-          <div className="flex items-center gap-2.5">
-            <p className="text-[15px] font-bold text-foreground">{serviceName}</p>
-            <button
-              onClick={() => onChangePlan()}
-              className="inline-flex items-center gap-1 text-xs font-medium text-muted-foreground border border-border rounded-full px-3 py-1 hover:border-primary hover:text-primary transition-colors"
-            >
-              <Pencil className="h-3 w-3" />
-              Edit
-            </button>
-          </div>
-        </div>
-        <div className="text-right">
-          <div className="flex items-baseline gap-1.5 justify-end">
-            <span className="text-sm text-muted-foreground line-through">${selectedPlan.originalPrice}</span>
-            <span className="text-[22px] font-extrabold text-foreground">${selectedPlan.discountPrice}</span>
-          </div>
-          <p className="text-[11px] font-bold text-muted-foreground tracking-wide mt-0.5">
-            {Math.round(((selectedPlan.originalPrice - selectedPlan.discountPrice) / selectedPlan.originalPrice) * 100)}% OFF
-          </p>
-        </div>
-      </div>
 
       {/* Hold Notice */}
       <div className="flex items-center justify-center gap-2">

@@ -15,7 +15,6 @@ interface LandingPaymentStepProps {
 type PaymentMethod = "card" | "paypal" | "gpay" | null;
 
 const LandingPaymentStep = ({ selectedPlan, timeLeft, email, onChangePlan, onContinue }: LandingPaymentStepProps) => {
-  const [editOpen, setEditOpen] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>(null);
   const [cardData, setCardData] = useState({ number: "", expiry: "", cvc: "" });
   const [errors, setErrors] = useState<Record<string, string>>({});

@@ -194,44 +194,40 @@ const ServiceConfigStep = ({ config, onConfigChange }: ServiceConfigStepProps) =
         </p>
 
         {/* Line items */}
-        <div className="space-y-2">
+        <div className="space-y-1.5">
           <div className="flex justify-between items-center">
-            <p className="text-sm text-foreground">
-              Base price <span className="text-muted-foreground">({POOL_SIZES.find(s => s.value === config.poolSize)!.label})</span>
+            <p className="text-sm text-muted-foreground">
+              {POOL_SIZES.find(s => s.value === config.poolSize)!.label}
             </p>
-            <p className="text-sm font-semibold text-foreground tabular-nums">${basePrice}/mo</p>
+            <p className="text-sm text-muted-foreground tabular-nums">${basePrice}/mo</p>
           </div>
-          {freqOption.multiplier > 1 && (
-            <div className="flex justify-between items-center">
-              <p className="text-sm text-foreground">
-                Extra visits <span className="text-muted-foreground">({freqOption.label})</span>
-              </p>
-              <p className="text-sm font-semibold text-foreground tabular-nums">+${extraPrice}/mo</p>
-            </div>
-          )}
+          <div className="flex justify-between items-center">
+            <p className="text-sm text-muted-foreground">
+              {freqOption.label}
+            </p>
+            <p className="text-sm text-muted-foreground tabular-nums">
+              {freqOption.multiplier === 1 ? "Included" : `+$${extraPrice}/mo`}
+            </p>
+          </div>
+          <div className="flex justify-between items-center">
+            <p className="text-sm text-muted-foreground">First-month voucher</p>
+            <p className="text-sm font-semibold text-primary tabular-nums">−$25</p>
+          </div>
         </div>
 
         <div className="h-px bg-border" />
 
-        {/* Monthly total */}
-        <div className="flex justify-between items-center">
-          <p className="text-sm font-semibold text-foreground">Monthly total</p>
-          <p className="text-lg font-bold text-foreground tabular-nums">${monthlyPrice}/mo</p>
-        </div>
-
-        {/* First month */}
-        <div className="flex justify-between items-center bg-primary/5 rounded-xl px-4 py-3 -mx-1">
-          <div>
-            <p className="text-sm font-bold text-primary">First month with voucher</p>
-            <p className="text-xs text-muted-foreground">$25 discount applied</p>
-          </div>
-          <div className="text-right">
-            <p className="text-2xl font-extrabold text-primary tabular-nums">${firstMonthPrice}</p>
+        {/* Due today — primary focus */}
+        <div className="flex justify-between items-center bg-primary/5 rounded-xl px-4 py-4 -mx-1">
+          <p className="text-base font-bold text-foreground">Due today</p>
+          <div className="flex items-baseline gap-2">
+            <span className="text-sm text-muted-foreground line-through tabular-nums">${monthlyPrice}</span>
+            <span className="text-3xl font-extrabold text-primary tabular-nums">${firstMonthPrice}</span>
           </div>
         </div>
 
         <p className="text-[11px] text-muted-foreground leading-relaxed">
-          Final price may vary based on pool condition. Additional charges for extended service will be billed monthly.
+          Then ${monthlyPrice}/mo. Final price may vary based on pool condition.
         </p>
       </div>
     </div>

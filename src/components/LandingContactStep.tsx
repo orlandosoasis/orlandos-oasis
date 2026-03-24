@@ -194,57 +194,6 @@ const LandingContactStep = ({
         Lock in your discount!
       </Button>
 
-      {/* Edit Package Dialog */}
-      <Dialog open={editOpen} onOpenChange={setEditOpen}>
-        <DialogContent className="max-w-md p-6 rounded-2xl">
-          <DialogHeader>
-            <DialogTitle className="text-xl font-bold text-foreground">Change Plan</DialogTitle>
-            <DialogDescription className="text-sm text-muted-foreground">Select your preferred service plan</DialogDescription>
-          </DialogHeader>
-          <RadioGroup
-            value={selectedPlan.id}
-            onValueChange={(val) => {
-              onChangePlan(val);
-              setEditOpen(false);
-            }}
-            className="space-y-3 mt-2"
-          >
-            {VOUCHER_PLANS.map((plan) => {
-              const name = plan.label.replace("Most Popular – ", "");
-              const isSelected = selectedPlan.id === plan.id;
-              return (
-                <label
-                  key={plan.id}
-                  className={`relative flex items-center gap-4 p-4 rounded-xl border-2 cursor-pointer transition-all duration-200 ${
-                    isSelected
-                      ? "border-primary bg-primary/5 shadow-md ring-1 ring-primary/20"
-                      : "border-border bg-background hover:border-primary/50"
-                  }`}
-                >
-                  {plan.isMostPopular && (
-                    <Badge className="absolute -top-3 left-4 bg-primary text-primary-foreground text-xs px-3 py-1 rounded-full">
-                      Most Popular
-                    </Badge>
-                  )}
-                  <RadioGroupItem
-                    value={plan.id}
-                    className="h-5 w-5 border-2 border-muted-foreground data-[state=checked]:border-primary data-[state=checked]:bg-primary"
-                  />
-                  <div className="flex-1 min-w-0">
-                    <p className={`font-semibold text-sm ${isSelected ? "text-primary" : "text-foreground"}`}>{name}</p>
-                    <p className="text-xs text-muted-foreground">{plan.description}</p>
-                  </div>
-                  <div className="text-right shrink-0">
-                    <p className="text-xs text-muted-foreground line-through">${plan.originalPrice}</p>
-                    <p className={`text-lg font-bold ${isSelected ? "text-primary" : "text-foreground"}`}>${plan.discountPrice}</p>
-                    <p className="text-xs font-semibold text-primary">Save ${plan.savings}</p>
-                  </div>
-                </label>
-              );
-            })}
-          </RadioGroup>
-        </DialogContent>
-      </Dialog>
     </div>
   );
 };

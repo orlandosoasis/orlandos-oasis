@@ -85,12 +85,6 @@ const LandingContactStep = ({
         </p>
       </div>
 
-      {/* Package Summary */}
-      <div className="bg-muted rounded-xl py-3 px-5 text-center">
-        <p className="text-[15px] font-bold text-foreground">
-          {serviceName} for ${selectedPlan.discountPrice} – {Math.round(((selectedPlan.originalPrice - selectedPlan.discountPrice) / selectedPlan.originalPrice) * 100)}% off!
-        </p>
-      </div>
 
       {/* Hold Notice */}
       <div className="flex items-center justify-center gap-2">

@@ -85,6 +85,31 @@ const LandingContactStep = ({
         </p>
       </div>
 
+      {/* Order Summary */}
+      <div className="bg-background rounded-xl p-4 px-5 flex items-center justify-between shadow-sm border border-border">
+        <div>
+          <p className="text-[11px] text-muted-foreground font-medium uppercase tracking-widest mb-0.5">You're Getting</p>
+          <div className="flex items-center gap-2.5">
+            <p className="text-[15px] font-bold text-foreground">{serviceName}</p>
+            <button
+              onClick={() => setEditOpen(true)}
+              className="inline-flex items-center gap-1 text-xs font-medium text-muted-foreground border border-border rounded-full px-3 py-1 hover:border-primary hover:text-primary transition-colors"
+            >
+              <Pencil className="h-3 w-3" />
+              Edit
+            </button>
+          </div>
+        </div>
+        <div className="text-right">
+          <div className="flex items-baseline gap-1.5 justify-end">
+            <span className="text-sm text-muted-foreground line-through">${selectedPlan.originalPrice}</span>
+            <span className="text-[22px] font-extrabold text-foreground">${selectedPlan.discountPrice}</span>
+          </div>
+          <p className="text-[11px] font-bold text-muted-foreground tracking-wide mt-0.5">
+            {Math.round(((selectedPlan.originalPrice - selectedPlan.discountPrice) / selectedPlan.originalPrice) * 100)}% OFF
+          </p>
+        </div>
+      </div>
 
       {/* Hold Notice */}
       <div className="flex items-center justify-center gap-2">

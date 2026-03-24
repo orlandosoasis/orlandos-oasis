@@ -119,7 +119,7 @@ const ServiceConfigStep = ({ config, onConfigChange }: ServiceConfigStepProps) =
       {/* Section B: Service Frequency */}
       <div>
         <h3 className="text-lg font-bold text-foreground mb-0.5">Service Frequency</h3>
-        <p className="text-xs text-muted-foreground mb-2.5">Weekly is included. Add extra visits if needed</p>
+        <p className="text-xs text-muted-foreground mb-2.5">Weekly is included. Add extra visits if needed.</p>
         <RadioGroup
           value={config.frequency}
           onValueChange={(val) => onConfigChange({ ...config, frequency: val as ServiceFrequency })}

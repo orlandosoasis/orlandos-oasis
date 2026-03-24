@@ -121,7 +121,7 @@ const LandingContactStep = ({
       {/* Consent */}
       <p className="text-xs text-muted-foreground text-center leading-relaxed px-1">
         <span className="font-semibold text-muted-foreground/80">Get exclusive deals and updates by signing up!</span>{" "}
-        By submitting your details, you agree to <span className="font-semibold text-muted-foreground/80">receive our best discounts</span> — via emails, phone calls, and automated SMS and you agree to our{" "}
+        By submitting your details, you agree to <span className="font-semibold text-muted-foreground/80">receive our best discounts</span> via emails, phone calls, and automated SMS and you agree to our{" "}
         <a href="/terms" className="text-primary hover:underline">Terms</a> and{" "}
         <a href="/privacy" className="text-primary hover:underline">Privacy Policy</a>.{" "}
         <span className="font-semibold text-muted-foreground/80">Opt-out anytime.</span>

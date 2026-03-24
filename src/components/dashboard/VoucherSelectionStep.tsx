@@ -152,7 +152,7 @@ const VoucherSelectionStep = ({ selectedPlanId, onSelectPlan }: VoucherSelection
       <p className="text-sm text-muted-foreground text-center px-4">
         *Voucher applies $25 off your first month of weekly pool service.
         <br />
-        Don't worry—your technician will still be paid in full!
+        Don't worry, your technician will still be paid in full!
       </p>
     </div>);
 

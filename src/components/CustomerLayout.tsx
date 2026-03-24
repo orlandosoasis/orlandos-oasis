@@ -36,7 +36,7 @@ const BrandLogo = memo(function BrandLogo() {
   );
 });
 
-/** Persistent header — never unmounts across customer routes */
+/** Persistent header - never unmounts across customer routes */
 const PersistentHeader = memo(function PersistentHeader() {
   const location = useLocation();
   const navigate = useNavigate();

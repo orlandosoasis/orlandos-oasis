@@ -74,7 +74,7 @@ const Subscription = () => {
                 </div>
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Next Billing Date</span>
-                  <span className="font-medium text-foreground">{cancelled ? "—" : nextDateStr}</span>
+                  <span className="font-medium text-foreground">{cancelled ? "-" : nextDateStr}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Auto-renew</span>

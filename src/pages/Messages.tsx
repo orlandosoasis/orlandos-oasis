@@ -199,7 +199,7 @@ const Messages = () => {
             </div>
           </button>
 
-          {/* Future contacts render here — divider ready */}
+          {/* Future contacts render here - divider ready */}
         </aside>
 
         {/* ─── Chat Thread ─── */}

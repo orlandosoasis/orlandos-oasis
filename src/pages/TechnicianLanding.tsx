@@ -143,7 +143,7 @@ const TechnicianLanding = () => {
                 <blockquote className="text-foreground italic mb-3">
                   "What I value most is the consistency. I've built a reliable weekly route, and I can clearly see my upcoming jobs and earnings."
                 </blockquote>
-                <p className="text-sm font-semibold text-navy">— Daniel R.</p>
+                <p className="text-sm font-semibold text-navy">- Daniel R.</p>
                 <p className="text-xs text-trust flex items-center gap-1"><CheckCircle className="h-3 w-3" /> Verified Pool Pro · 112 Services Completed</p>
               </div>
             </div>

@@ -359,7 +359,7 @@ const TechnicianApplication = () => {
         )}
       </div>
 
-      {/* Bottom CTA — matches BookingFlow */}
+      {/* Bottom CTA - matches BookingFlow */}
       <div className="fixed bottom-0 left-0 right-0 bg-card border-t border-border z-10">
         <div className="max-w-[760px] mx-auto px-5 py-4 flex gap-3">
           {step > 1 && (

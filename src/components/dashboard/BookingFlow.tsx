@@ -284,7 +284,7 @@ const BookingFlow = ({ onClose, onComplete, selectedService: selectedServiceProp
                 })}
                 </div>
                 <p className="flex items-center gap-1.5 text-secondary-foreground text-sm mt-4">
-                  Selected: <strong>{MONTHS[selectedDate.getMonth()].slice(0, 3)} {selectedDate.getDate()}, {selectedDate.getFullYear()} — {FULL_DAYS[selectedDate.getDay()]}</strong>
+                  Selected: <strong>{MONTHS[selectedDate.getMonth()].slice(0, 3)} {selectedDate.getDate()}, {selectedDate.getFullYear()}, {FULL_DAYS[selectedDate.getDay()]}</strong>
                 </p>
               </div>
             </div>

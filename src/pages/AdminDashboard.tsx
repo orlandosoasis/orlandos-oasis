@@ -818,7 +818,7 @@ const AdminDashboard = () => {
       <Dialog open={!!certModalData} onOpenChange={(open) => !open && setCertModalData(null)}>
         <DialogContent className="max-w-[520px] pt-10">
           <DialogHeader>
-            <DialogTitle>Certificates — {certModalData?.name}</DialogTitle>
+            <DialogTitle>Certificates - {certModalData?.name}</DialogTitle>
             <DialogDescription>
               {certModalData?.certs.length} certificate{(certModalData?.certs.length || 0) > 1 ? "s" : ""} uploaded. Click a file to open it.
             </DialogDescription>

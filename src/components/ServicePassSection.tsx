@@ -303,7 +303,7 @@ const Step3Membership = ({ selectedPass, onChangePass, onContinue }: Step3Props)
           Get unlimited follow-up pool services at your{" "}
            <span className="text-primary">discounted rate of ${hourlyRate}/hr *</span>
           <br />
-          <span className="text-primary">— a {selectedPass.percentOff}% savings!</span>
+          <span className="text-primary">- a {selectedPass.percentOff}% savings!</span>
         </h2>
 
         <p className="text-base font-bold text-foreground tracking-wide mb-4">

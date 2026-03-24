@@ -211,7 +211,7 @@ const PaymentMethods = () => {
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">First Payment</span>
                     <span className="font-medium text-foreground">
-                      {cancelled ? "—" : `$${hasVoucher ? discountPrice : originalPrice ?? "—"} on ${serviceDateStr}`}
+                      {cancelled ? "-" : `$${hasVoucher ? discountPrice : originalPrice ?? "-"} on ${serviceDateStr}`}
                     </span>
                   </div>
                   <div className="flex justify-between">

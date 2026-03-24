@@ -41,7 +41,7 @@ const LandingContactStep = ({
   onSubmit,
   onChangePlan,
 }: LandingContactStepProps) => {
-  const [editOpen, setEditOpen] = useState(false);
+  const [errors, setErrors] = useState<Partial<Record<keyof LandingFormData, string>>>({});
   const [errors, setErrors] = useState<Partial<Record<keyof LandingFormData, string>>>({});
   const [touched, setTouched] = useState(false);
 

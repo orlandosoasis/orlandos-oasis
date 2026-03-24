@@ -189,7 +189,13 @@ const ServicesSection = () => {
       {/* Step 3: Add-ons */}
       {currentStep === 3 && (
         <>
-          <AddonsStep selectedAddons={selectedAddons} onToggleAddon={handleToggleAddon} />
+          <AddonsStep
+            selectedAddons={selectedAddons}
+            onToggleAddon={handleToggleAddon}
+            serviceConfig={serviceConfig}
+            timeLeft={timeLeft}
+            onChangePlan={() => goToStep(1)}
+          />
           <Button
             onClick={() => goToStep(4)}
             className="w-full h-14 text-[17px] font-bold rounded-full shadow-md hover:shadow-lg mt-6"

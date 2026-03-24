@@ -2,11 +2,7 @@ import { useState } from "react";
 import { Clock, Pencil } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import type { VoucherPlan } from "@/components/dashboard/VoucherSelectionStep";
-import { VOUCHER_PLANS } from "@/components/dashboard/VoucherSelectionStep";
 
 export interface LandingFormData {
   firstName: string;

@@ -12,7 +12,7 @@ interface LandingPaymentStepProps {
   selectedPlan: VoucherPlan;
   timeLeft: { minutes: number; seconds: number };
   email: string;
-  onChangePlan: (planId: string) => void;
+  onChangePlan: () => void;
   onContinue: () => void;
 }
 

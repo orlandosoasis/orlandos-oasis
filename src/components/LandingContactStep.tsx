@@ -23,7 +23,7 @@ interface LandingContactStepProps {
   formData: LandingFormData;
   onFormDataChange: (data: LandingFormData) => void;
   onSubmit: () => void;
-  onChangePlan: (planId: string) => void;
+  onChangePlan: (planId?: string) => void;
 }
 
 const FREQUENCY_OPTIONS = [

@@ -217,7 +217,7 @@ const PaymentMethods = () => {
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">Recurring Payment</span>
                     <span className="font-medium text-foreground">
-                      {cancelled ? "—" : `$${originalPrice ?? "—"}/month starting next cycle`}
+                      {cancelled ? "-" : `$${originalPrice ?? "-"}/month starting next cycle`}
                     </span>
                   </div>
                   <div className="flex justify-between">

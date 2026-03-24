@@ -42,7 +42,6 @@ const LandingContactStep = ({
   onChangePlan,
 }: LandingContactStepProps) => {
   const [errors, setErrors] = useState<Partial<Record<keyof LandingFormData, string>>>({});
-  const [errors, setErrors] = useState<Partial<Record<keyof LandingFormData, string>>>({});
   const [touched, setTouched] = useState(false);
 
   const validate = (): boolean => {

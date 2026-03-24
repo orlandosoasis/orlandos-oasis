@@ -21,9 +21,33 @@ type PaymentMethod = "card" | "paypal" | "gpay" | null;
 const LandingPaymentStep = ({ selectedPlan, timeLeft, email, onChangePlan, onContinue }: LandingPaymentStepProps) => {
   const [editOpen, setEditOpen] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>(null);
+  const [cardData, setCardData] = useState({ number: "", expiry: "", cvc: "" });
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [touched, setTouched] = useState(false);
 
-  const serviceName = selectedPlan.label.replace("Most Popular – ", "");
-  const pctOff = Math.round(((selectedPlan.originalPrice - selectedPlan.discountPrice) / selectedPlan.originalPrice) * 100);
+  const validate = (): boolean => {
+    const errs: Record<string, string> = {};
+    if (!paymentMethod) errs.method = "Please select a payment method";
+    if (paymentMethod === "card") {
+      if (!cardData.number.trim()) errs.number = "Card number is required";
+      if (!cardData.expiry.trim()) errs.expiry = "Expiration is required";
+      if (!cardData.cvc.trim()) errs.cvc = "CVC is required";
+    }
+    setErrors(errs);
+    return Object.keys(errs).length === 0;
+  };
+
+  const handleSubmit = () => {
+    setTouched(true);
+    if (validate()) {
+      onContinue();
+    }
+  };
+
+  const handleCardChange = (field: string, value: string) => {
+    setCardData((prev) => ({ ...prev, [field]: value }));
+    if (touched) setErrors((prev) => ({ ...prev, [field]: undefined as any }));
+  };
 
   return (
     <div className="space-y-4 animate-fade-in">

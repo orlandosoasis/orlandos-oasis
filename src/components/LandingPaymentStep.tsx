@@ -44,7 +44,9 @@ const LandingPaymentStep = ({ selectedPlan, timeLeft, email, onChangePlan, onCon
     }
   };
 
-  const handleCardChange = (field: string, value: string) => {
+  const serviceName = selectedPlan.label.replace("Most Popular – ", "");
+  const pctOff = Math.round(((selectedPlan.originalPrice - selectedPlan.discountPrice) / selectedPlan.originalPrice) * 100);
+
     setCardData((prev) => ({ ...prev, [field]: value }));
     if (touched) setErrors((prev) => ({ ...prev, [field]: undefined as any }));
   };

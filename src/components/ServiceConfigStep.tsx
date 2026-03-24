@@ -1,0 +1,192 @@
+import { Check } from "lucide-react";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Badge } from "@/components/ui/badge";
+
+export type PoolSize = "small" | "medium" | "large";
+export type ServiceFrequency = "weekly" | "twice-weekly" | "three-weekly";
+
+export interface ServiceConfig {
+  poolSize: PoolSize;
+  frequency: ServiceFrequency;
+}
+
+const POOL_SIZES: { value: PoolSize; label: string; sublabel: string; price: number }[] = [
+  { value: "small", label: "Small Pool", sublabel: "Standard residential", price: 120 },
+  { value: "medium", label: "Medium Pool", sublabel: "Mid-size residential", price: 140 },
+  { value: "large", label: "Large Pool", sublabel: "Large or custom", price: 170 },
+];
+
+const FREQUENCIES: { value: ServiceFrequency; label: string; description: string; multiplier: number; isMostPopular: boolean }[] = [
+  { value: "weekly", label: "Weekly Service", description: "Ideal for most residential pools", multiplier: 1, isMostPopular: true },
+  { value: "twice-weekly", label: "Twice Per Week", description: "For high-use or problem pools", multiplier: 2, isMostPopular: false },
+  { value: "three-weekly", label: "Three Times Per Week", description: "Premium care & maximum clarity", multiplier: 3, isMostPopular: false },
+];
+
+const INCLUDED_SERVICES = [
+  "Skimming surface debris (leaves, bugs, etc.)",
+  "Brushing walls, steps, and tile line",
+  "Vacuuming pool as needed",
+  "Emptying skimmer and pump baskets",
+  "Water chemistry testing and balancing",
+  "Adding necessary chemicals (chlorine, acid, etc.)",
+  "Filter system check (backwash/clean as needed)",
+  "Equipment inspection (pump, timer, system)",
+  "Water level monitoring",
+];
+
+export function getMonthlyPrice(config: ServiceConfig): number {
+  const sizeOption = POOL_SIZES.find((s) => s.value === config.poolSize)!;
+  const freqOption = FREQUENCIES.find((f) => f.value === config.frequency)!;
+  return sizeOption.price * freqOption.multiplier;
+}
+
+export function getDiscountPrice(config: ServiceConfig): number {
+  return getMonthlyPrice(config) - 25;
+}
+
+export function getFrequencyLabel(frequency: ServiceFrequency): string {
+  return FREQUENCIES.find((f) => f.value === frequency)?.label ?? "";
+}
+
+interface ServiceConfigStepProps {
+  config: ServiceConfig;
+  onConfigChange: (config: ServiceConfig) => void;
+}
+
+const ServiceConfigStep = ({ config, onConfigChange }: ServiceConfigStepProps) => {
+  const monthlyPrice = getMonthlyPrice(config);
+
+  return (
+    <div className="space-y-6 animate-fade-in">
+      {/* Top Banner */}
+      <div className="bg-primary rounded-2xl p-5 text-center">
+        <p className="text-primary-foreground font-semibold text-[15px] leading-snug">
+          Configure your pool service plan and lock in your savings.
+        </p>
+        <p className="text-primary-foreground font-semibold text-[15px] mt-1">
+          Save $25 on your first month — 100% refundable if not used!
+        </p>
+      </div>
+
+      {/* Section A: Pool Size */}
+      <div>
+        <h3 className="text-lg font-bold text-foreground mb-1">Pool Size</h3>
+        <p className="text-sm text-muted-foreground mb-3">
+          Final pricing depends on pool size, condition, and service requirements.
+        </p>
+        <RadioGroup
+          value={config.poolSize}
+          onValueChange={(val) => onConfigChange({ ...config, poolSize: val as PoolSize })}
+          className="space-y-2.5"
+        >
+          {POOL_SIZES.map((size) => {
+            const isSelected = config.poolSize === size.value;
+            return (
+              <label
+                key={size.value}
+                className={`relative flex items-center gap-4 p-4 rounded-xl border-2 cursor-pointer transition-all duration-200 ${
+                  isSelected
+                    ? "border-primary bg-primary/5 shadow-md"
+                    : "border-border bg-card hover:border-primary/50"
+                }`}
+              >
+                <RadioGroupItem value={size.value} className="shrink-0" />
+                <div className="flex-1 min-w-0">
+                  <p className={`font-semibold text-sm ${isSelected ? "text-primary" : "text-foreground"}`}>
+                    {size.label}
+                  </p>
+                  <p className="text-xs text-muted-foreground">{size.sublabel}</p>
+                </div>
+                <p className={`text-lg font-bold shrink-0 ${isSelected ? "text-primary" : "text-foreground"}`}>
+                  ${size.price}<span className="text-xs font-medium text-muted-foreground">/mo</span>
+                </p>
+              </label>
+            );
+          })}
+        </RadioGroup>
+      </div>
+
+      {/* Section B: Service Frequency */}
+      <div>
+        <h3 className="text-lg font-bold text-foreground mb-1">Service Frequency</h3>
+        <p className="text-sm text-muted-foreground mb-3">
+          Higher frequency is recommended for heavy usage, algae issues, or faster maintenance needs.
+        </p>
+        <RadioGroup
+          value={config.frequency}
+          onValueChange={(val) => onConfigChange({ ...config, frequency: val as ServiceFrequency })}
+          className="space-y-2.5"
+        >
+          {FREQUENCIES.map((freq) => {
+            const isSelected = config.frequency === freq.value;
+            const sizePrice = POOL_SIZES.find((s) => s.value === config.poolSize)!.price;
+            const totalPrice = sizePrice * freq.multiplier;
+            return (
+              <label
+                key={freq.value}
+                className={`relative flex items-center gap-4 p-4 rounded-xl border-2 cursor-pointer transition-all duration-200 ${
+                  isSelected
+                    ? "border-primary bg-primary/5 shadow-md"
+                    : "border-border bg-card hover:border-primary/50"
+                }`}
+              >
+                {freq.isMostPopular && (
+                  <Badge className="absolute -top-2.5 left-4 bg-primary text-primary-foreground text-xs">
+                    Most Popular
+                  </Badge>
+                )}
+                <RadioGroupItem value={freq.value} className="shrink-0" />
+                <div className="flex-1 min-w-0">
+                  <p className={`font-semibold text-sm ${isSelected ? "text-primary" : "text-foreground"}`}>
+                    {freq.label}
+                  </p>
+                  <p className="text-xs text-muted-foreground">{freq.description}</p>
+                </div>
+                <p className={`text-lg font-bold shrink-0 ${isSelected ? "text-primary" : "text-foreground"}`}>
+                  ${totalPrice}<span className="text-xs font-medium text-muted-foreground">/mo</span>
+                </p>
+              </label>
+            );
+          })}
+        </RadioGroup>
+      </div>
+
+      {/* Section C: What's Included */}
+      <div>
+        <h3 className="text-lg font-bold text-foreground mb-3">What's Included</h3>
+        <div className="bg-card border border-border rounded-2xl p-5 space-y-3">
+          {INCLUDED_SERVICES.map((item, i) => (
+            <div key={i} className="flex items-start gap-3">
+              <Check className="h-5 w-5 text-primary shrink-0 mt-0.5" />
+              <p className="text-sm text-foreground">{item}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Section D: Dynamic Pricing Summary */}
+      <div className="bg-card border border-border rounded-2xl p-5">
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-[11px] text-muted-foreground uppercase tracking-widest mb-0.5 font-semibold">
+              Your Plan
+            </p>
+            <p className="text-base font-bold text-foreground">
+              {getFrequencyLabel(config.frequency)}
+            </p>
+          </div>
+          <div className="text-right">
+            <p className="text-sm text-muted-foreground line-through">${monthlyPrice}/mo</p>
+            <p className="text-2xl font-extrabold text-foreground">${monthlyPrice - 25}<span className="text-sm font-medium text-muted-foreground">/mo</span></p>
+            <p className="text-xs font-semibold text-primary">Save $25 first month</p>
+          </div>
+        </div>
+        <p className="text-xs text-muted-foreground mt-3">
+          Final price may vary based on pool size and condition. If service exceeds standard time, additional charges may apply and will be billed monthly.
+        </p>
+      </div>
+    </div>
+  );
+};
+
+export default ServiceConfigStep;

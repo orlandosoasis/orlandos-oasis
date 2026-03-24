@@ -25,7 +25,7 @@ const VOUCHER_PLANS: VoucherPlan[] = [
 },
 {
   id: "twice-weekly",
-  label: "Twice-Per-Week Pool Service",
+  label: "Twice Per Week Pool Service",
   description: "Best for larger pools or heavy usage",
   originalPrice: 240,
   discountPrice: 215,
@@ -34,7 +34,7 @@ const VOUCHER_PLANS: VoucherPlan[] = [
 },
 {
   id: "three-weekly",
-  label: "Three-Times-Per-Week Pool Service",
+  label: "Three Times Per Week Pool Service",
   description: "Ideal for luxury pools or high-traffic pools",
   originalPrice: 360,
   discountPrice: 335,

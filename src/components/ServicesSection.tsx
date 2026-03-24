@@ -17,7 +17,7 @@ import LandingPaymentStep from "@/components/LandingPaymentStep";
 import type { VoucherPlan } from "@/components/dashboard/VoucherSelectionStep";
 
 const STEPS = [
-  { label: "Configure" },
+  { label: "Select Service" },
   { label: "Your Details" },
   { label: "Confirm" },
   { label: "Payment" },

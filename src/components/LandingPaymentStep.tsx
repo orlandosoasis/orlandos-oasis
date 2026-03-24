@@ -126,21 +126,36 @@ const LandingPaymentStep = ({ selectedPlan, timeLeft, email, onChangePlan, onCon
           </button>
           {paymentMethod === "card" && (
             <div className="px-5 pb-4 space-y-3 animate-fade-in">
-              <Input
-                placeholder="Credit Card Number"
-                className="h-12 rounded-lg border-border bg-background text-sm"
-              />
-              <div className="flex gap-3">
+              <div className="space-y-1">
                 <Input
-                  placeholder="Expiration"
-                  className="h-12 rounded-lg border-border bg-background text-sm flex-1"
+                  placeholder="Credit Card Number"
+                  value={cardData.number}
+                  onChange={(e) => handleCardChange("number", e.target.value)}
+                  className={`h-12 rounded-lg border-border bg-background text-sm ${errors.number ? "border-destructive focus-visible:ring-destructive" : ""}`}
                 />
-                <div className="relative flex-1">
+                {errors.number && <p className="text-xs text-destructive">{errors.number}</p>}
+              </div>
+              <div className="flex gap-3">
+                <div className="flex-1 space-y-1">
                   <Input
-                    placeholder="CVC"
-                    className="h-12 rounded-lg border-border bg-background text-sm pr-10"
+                    placeholder="Expiration"
+                    value={cardData.expiry}
+                    onChange={(e) => handleCardChange("expiry", e.target.value)}
+                    className={`h-12 rounded-lg border-border bg-background text-sm ${errors.expiry ? "border-destructive focus-visible:ring-destructive" : ""}`}
                   />
-                  <Lock className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  {errors.expiry && <p className="text-xs text-destructive">{errors.expiry}</p>}
+                </div>
+                <div className="flex-1 space-y-1">
+                  <div className="relative">
+                    <Input
+                      placeholder="CVC"
+                      value={cardData.cvc}
+                      onChange={(e) => handleCardChange("cvc", e.target.value)}
+                      className={`h-12 rounded-lg border-border bg-background text-sm pr-10 ${errors.cvc ? "border-destructive focus-visible:ring-destructive" : ""}`}
+                    />
+                    <Lock className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  </div>
+                  {errors.cvc && <p className="text-xs text-destructive">{errors.cvc}</p>}
                 </div>
               </div>
             </div>

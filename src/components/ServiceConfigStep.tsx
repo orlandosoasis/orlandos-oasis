@@ -77,7 +77,7 @@ const ServiceConfigStep = ({ config, onConfigChange }: ServiceConfigStepProps) =
         <RadioGroup
           value={config.poolSize}
           onValueChange={(val) => onConfigChange({ ...config, poolSize: val as PoolSize })}
-          className="space-y-2"
+          className="space-y-3"
         >
           {POOL_SIZES.map((size) => {
             const isSelected = config.poolSize === size.value;

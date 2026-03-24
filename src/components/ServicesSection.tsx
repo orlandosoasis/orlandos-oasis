@@ -169,6 +169,7 @@ const ServicesSection = () => {
         <LandingContactStep
           selectedPlan={selectedPlan}
           serviceConfig={serviceConfig}
+          timeLeft={timeLeft}
           formData={formData}
           onFormDataChange={setFormData}
           onSubmit={() => goToStep(3)}

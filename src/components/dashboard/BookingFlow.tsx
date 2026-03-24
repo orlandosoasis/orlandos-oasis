@@ -63,7 +63,7 @@ const BookingFlow = ({ onClose, onComplete, selectedService: selectedServiceProp
   const [calMonth, setCalMonth] = useState(today.getMonth());
   const [timeWindow, setTimeWindow] = useState<TimeWindow>("morning");
 
-  // Step 1 — Pool / Property
+  // Step 1 - Pool / Property
   const [address, setAddress] = useState(user?.streetAddress || "");
   const [city, setCity] = useState(user?.city || "");
   const [state, setState] = useState(user?.state || "");

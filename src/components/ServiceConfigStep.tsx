@@ -219,7 +219,10 @@ const ServiceConfigStep = ({ config, onConfigChange }: ServiceConfigStepProps) =
 
         {/* Due today — primary focus */}
         <div className="flex justify-between items-center bg-primary/5 rounded-xl px-4 py-4 -mx-1">
-          <p className="text-base font-bold text-foreground">Your first month</p>
+          <div>
+            <p className="text-base font-bold text-foreground">Today you pay</p>
+            <p className="text-xs text-primary font-medium">$25 off applied</p>
+          </div>
           <div className="flex items-baseline gap-2">
             <span className="text-sm text-muted-foreground line-through tabular-nums">${monthlyPrice}</span>
             <span className="text-3xl font-extrabold text-primary tabular-nums">${firstMonthPrice}</span>

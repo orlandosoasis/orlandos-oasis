@@ -99,7 +99,7 @@ const CompletedServiceDetails = () => {
         </div>
       </header>
 
-      {/* Hero — Completed State */}
+      {/* Hero - Completed State */}
       <div className="relative h-[200px] overflow-hidden">
         <PoolSceneHero />
         <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />

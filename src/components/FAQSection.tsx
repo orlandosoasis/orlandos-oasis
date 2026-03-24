@@ -7,7 +7,7 @@ const FAQS = [
   { q: "What chemicals do you add to the pool?", a: "Common chemicals include chlorine, acid (for pH balance), alkalinity adjusters, and stabilizer depending on the pool's needs." },
   { q: "What happens if my pool turns green?", a: "Green pools usually indicate algae growth. We can perform a green pool cleanup or algae treatment to restore the water back to clear and balanced condition." },
   { q: "Do you check pool equipment during service?", a: "Yes. Pumps, filters, timers, and heaters are visually inspected during service to ensure everything is operating properly." },
-  { q: "How long does a pool service visit take?", a: "Most routine pool service visits take 15–30 minutes, depending on pool size, debris level, and required maintenance." },
+  { q: "How long does a pool service visit take?", a: "Most routine pool service visits take 15-30 minutes, depending on pool size, debris level, and required maintenance." },
   { q: "What if my pool has a problem between service visits?", a: "You can contact us anytime and we can schedule a service call or equipment inspection to resolve the issue." },
   { q: "Do you service saltwater pools?", a: "Yes. Saltwater pools still require regular maintenance, including monitoring salt levels, cleaning cells, and balancing water chemistry." },
   { q: "Do you offer one-time cleanings?", a: "Yes. One-time services such as green pool cleanups, filter cleans, or pool startups are available even if you are not on a weekly service plan." },

@@ -68,7 +68,7 @@ const VoucherSelectionStep = ({ selectedPlanId, onSelectPlan }: VoucherSelection
       {/* Top Banner */}
       <div className="bg-primary rounded-2xl p-5 text-center">
         <p className="text-primary-foreground font-semibold text-[15px] leading-snug">
-          Limited quantities—lock in your savings now.
+          Limited quantities - lock in your savings now.
         </p>
         <p className="text-primary-foreground font-semibold text-[15px] mt-1">
           100% refundable if not used!
@@ -152,7 +152,7 @@ const VoucherSelectionStep = ({ selectedPlanId, onSelectPlan }: VoucherSelection
       <p className="text-sm text-muted-foreground text-center px-4">
         *Voucher applies $25 off your first month of weekly pool service.
         <br />
-        Don't worry—your technician will still be paid in full!
+        Don't worry, your technician will still be paid in full!
       </p>
     </div>);
 

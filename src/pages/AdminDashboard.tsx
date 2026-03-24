@@ -326,7 +326,7 @@ const AdminDashboard = () => {
         </button>
         <Card><CardHeader><CardTitle className="text-sm">Technician Information</CardTitle></CardHeader>
           <CardContent>
-            <InfoRow label="Name" value={tech.name} /><InfoRow label="Rating" value={tech.rating > 0 ? <Stars rating={tech.rating} /> : "New — No ratings yet"} />
+            <InfoRow label="Name" value={tech.name} /><InfoRow label="Rating" value={tech.rating > 0 ? <Stars rating={tech.rating} /> : "New - No ratings yet"} />
             <InfoRow label="Email" value={tech.email} /><InfoRow label="Phone" value={tech.phone} /><InfoRow label="Status" value={tech.status} badge />
           </CardContent></Card>
         {tech.pools.length > 0 && (
@@ -818,7 +818,7 @@ const AdminDashboard = () => {
       <Dialog open={!!certModalData} onOpenChange={(open) => !open && setCertModalData(null)}>
         <DialogContent className="max-w-[520px] pt-10">
           <DialogHeader>
-            <DialogTitle>Certificates — {certModalData?.name}</DialogTitle>
+            <DialogTitle>Certificates - {certModalData?.name}</DialogTitle>
             <DialogDescription>
               {certModalData?.certs.length} certificate{(certModalData?.certs.length || 0) > 1 ? "s" : ""} uploaded. Click a file to open it.
             </DialogDescription>

@@ -55,7 +55,7 @@ const BookingFlow = ({ onClose, onComplete, selectedService: selectedServiceProp
     isMostPopular: selectedVoucherPlan.isMostPopular
   }), [selectedVoucherPlan, selectedService]);
 
-  // Step 0 — Schedule
+  // Step 0 - Schedule
   const [frequency] = useState<CleaningFrequency>("monthly");
   const today = useMemo(() => {const d = new Date();d.setHours(0, 0, 0, 0);return d;}, []);
   const [selectedDate, setSelectedDate] = useState<Date>(today);
@@ -63,7 +63,7 @@ const BookingFlow = ({ onClose, onComplete, selectedService: selectedServiceProp
   const [calMonth, setCalMonth] = useState(today.getMonth());
   const [timeWindow, setTimeWindow] = useState<TimeWindow>("morning");
 
-  // Step 1 — Pool / Property
+  // Step 1 - Pool / Property
   const [address, setAddress] = useState(user?.streetAddress || "");
   const [city, setCity] = useState(user?.city || "");
   const [state, setState] = useState(user?.state || "");
@@ -284,7 +284,7 @@ const BookingFlow = ({ onClose, onComplete, selectedService: selectedServiceProp
                 })}
                 </div>
                 <p className="flex items-center gap-1.5 text-secondary-foreground text-sm mt-4">
-                  Selected: <strong>{MONTHS[selectedDate.getMonth()].slice(0, 3)} {selectedDate.getDate()}, {selectedDate.getFullYear()} — {FULL_DAYS[selectedDate.getDay()]}</strong>
+                  Selected: <strong>{MONTHS[selectedDate.getMonth()].slice(0, 3)} {selectedDate.getDate()}, {selectedDate.getFullYear()}, {FULL_DAYS[selectedDate.getDay()]}</strong>
                 </p>
               </div>
             </div>

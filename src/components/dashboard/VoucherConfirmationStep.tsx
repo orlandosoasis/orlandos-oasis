@@ -33,7 +33,7 @@ const VoucherConfirmationStep = ({ plan }: VoucherConfirmationStepProps) => {
           <p className="text-lg font-bold text-foreground">
             for <span className="text-primary">only ${plan.discountPrice}!</span>{" "}
             <span className="text-muted-foreground font-normal">
-              — regularly <span className="line-through">${plan.originalPrice}</span>
+              , regularly <span className="line-through">${plan.originalPrice}</span>
             </span>
           </p>
         </div>
@@ -45,7 +45,7 @@ const VoucherConfirmationStep = ({ plan }: VoucherConfirmationStepProps) => {
             <div className="flex items-start gap-3">
               <Check className="h-5 w-5 text-primary shrink-0 mt-0.5" />
               <p className="text-sm text-foreground">
-                This discount voucher is valid for 4 weekly pool cleanings over your first month—for only <strong>${plan.discountPrice} total</strong>.
+                This discount voucher is valid for 4 weekly pool cleanings over your first month, for only <strong>${plan.discountPrice} total</strong>.
               </p>
             </div>
 
@@ -66,7 +66,7 @@ const VoucherConfirmationStep = ({ plan }: VoucherConfirmationStepProps) => {
             <div className="flex items-start gap-3">
               <Check className="h-5 w-5 text-primary shrink-0 mt-0.5" />
               <p className="text-sm text-foreground">
-                Cancel future pool service anytime—no commitment required.
+                Cancel future pool service anytime. No commitment required.
               </p>
             </div>
           </div>

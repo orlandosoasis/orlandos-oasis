@@ -79,7 +79,7 @@ const TechnicianApplication = () => {
   const [submitted, setSubmitted] = useState(false);
   const [appId] = useState(() => "OO-" + Math.random().toString(36).substr(2, 8).toUpperCase());
 
-  // Step 1 — Personal Info
+  // Step 1 - Personal Info
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
@@ -89,7 +89,7 @@ const TechnicianApplication = () => {
   const [zip, setZip] = useState("");
   const [yearsExp, setYearsExp] = useState("");
 
-  // Step 2 — Resume & Certifications
+  // Step 2 - Resume & Certifications
   const [resume, setResume] = useState<File | null>(null);
   const [certifications, setCertifications] = useState<Certification[]>([emptyCert()]);
   const [agreed, setAgreed] = useState(false);
@@ -168,7 +168,7 @@ const TechnicianApplication = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Sticky Header — matches BookingFlow */}
+      {/* Sticky Header - matches BookingFlow */}
       <div className="sticky top-0 z-10 bg-card border-b border-border">
         <div className="max-w-[760px] mx-auto px-5 h-[56px] flex items-center gap-3">
           <button
@@ -266,7 +266,7 @@ const TechnicianApplication = () => {
           <div className="space-y-5 animate-fade-in">
             <div>
               <h2 className="text-lg font-semibold text-foreground mb-1">Resume & Certifications</h2>
-              <p className="text-sm text-muted-foreground">Upload your resume. Certifications are optional — add any you have.</p>
+              <p className="text-sm text-muted-foreground">Upload your resume. Certifications are optional, add any you have.</p>
             </div>
 
             {/* Resume */}
@@ -359,7 +359,7 @@ const TechnicianApplication = () => {
         )}
       </div>
 
-      {/* Bottom CTA — matches BookingFlow */}
+      {/* Bottom CTA - matches BookingFlow */}
       <div className="fixed bottom-0 left-0 right-0 bg-card border-t border-border z-10">
         <div className="max-w-[760px] mx-auto px-5 py-4 flex gap-3">
           {step > 1 && (

@@ -32,7 +32,7 @@ const UrgencyCard = () => {
       {/* Alert Banner */}
       <div className="bg-primary/10 border border-primary rounded-lg p-4 mb-6 text-center">
         <p className="text-sm font-semibold text-navy">
-          Limited spots—lock in your savings now.
+          Limited spots - lock in your savings now.
         </p>
         <p className="text-sm text-navy">
           100% refundable if not used!

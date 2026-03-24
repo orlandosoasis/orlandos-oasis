@@ -175,7 +175,7 @@ const PaymentMethods = () => {
                   )}
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">{hasVoucher ? "Regular Price" : "Price"}</span>
-                    <span className="font-medium text-foreground">${originalPrice ?? "—"}/month</span>
+                    <span className="font-medium text-foreground">${originalPrice ?? "-"}/month</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">Status</span>
@@ -211,18 +211,18 @@ const PaymentMethods = () => {
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">First Payment</span>
                     <span className="font-medium text-foreground">
-                      {cancelled ? "—" : `$${hasVoucher ? discountPrice : originalPrice ?? "—"} on ${serviceDateStr}`}
+                      {cancelled ? "-" : `$${hasVoucher ? discountPrice : originalPrice ?? "-"} on ${serviceDateStr}`}
                     </span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">Recurring Payment</span>
                     <span className="font-medium text-foreground">
-                      {cancelled ? "—" : `$${originalPrice ?? "—"}/month starting next cycle`}
+                      {cancelled ? "-" : `$${originalPrice ?? "-"}/month starting next cycle`}
                     </span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">Next Billing Date</span>
-                    <span className="font-medium text-foreground">{cancelled ? "—" : nextDateStr}</span>
+                    <span className="font-medium text-foreground">{cancelled ? "-" : nextDateStr}</span>
                   </div>
                 </div>
               </div>

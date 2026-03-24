@@ -109,7 +109,7 @@ const ServicePass = () => {
           {/* Top Assurance Banner */}
           <div className="bg-primary/10 border-2 border-primary rounded-xl p-6 text-center">
             <p className="text-lg font-bold text-navy leading-tight">
-              Limited passes available—lock in your first pool service.
+              Limited passes available - lock in your first pool service.
             </p>
             <p className="text-base font-semibold text-navy mt-1">
               100% refundable if not used.

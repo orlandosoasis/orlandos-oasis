@@ -178,7 +178,7 @@ const Step2Form = ({ selectedPass, timeLeft, vouchersRemaining, onBack, onChange
       {/* Consent */}
       <p className="text-xs text-muted-foreground text-center leading-relaxed px-1">
         <span className="font-semibold text-muted-foreground/80">Get exclusive deals and updates by signing up!</span>{" "}
-        By submitting your details, you agree to <span className="font-semibold text-muted-foreground/80">receive our best discounts</span> — via emails, phone calls, and automated SMS and you agree to our{" "}
+        By submitting your details, you agree to <span className="font-semibold text-muted-foreground/80">receive our best discounts</span> via emails, phone calls, and automated SMS and you agree to our{" "}
         <a href="#" className="text-primary hover:underline">Terms</a> and{" "}
         <a href="#" className="text-primary hover:underline">Privacy Policy</a>.{" "}
         <span className="font-semibold text-muted-foreground/80">Opt-out anytime.</span>
@@ -303,7 +303,7 @@ const Step3Membership = ({ selectedPass, onChangePass, onContinue }: Step3Props)
           Get unlimited follow-up pool services at your{" "}
            <span className="text-primary">discounted rate of ${hourlyRate}/hr *</span>
           <br />
-          <span className="text-primary">— a {selectedPass.percentOff}% savings!</span>
+          <span className="text-primary">- a {selectedPass.percentOff}% savings!</span>
         </h2>
 
         <p className="text-base font-bold text-foreground tracking-wide mb-4">

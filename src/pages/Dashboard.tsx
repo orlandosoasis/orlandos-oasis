@@ -136,7 +136,7 @@ function generateDemoServices(checkoutData?: import("@/contexts/BookingContext")
     },
   });
 
-  // Future services — generate a generous batch; UI controls how many are shown
+  // Future services - generate a generous batch; UI controls how many are shown
   const unassignedTech = { name: "Pool Technician to be assigned", initials: "?", rating: 0, isAssigned: false };
   const futureDates = generateFutureDates(today, frequency, 52); // up to ~1 year
   futureDates.forEach((date, i) => {

@@ -68,7 +68,7 @@ function buildMessages(techName: string, serviceDate: Date, hours: number): Chat
     { id: "3", type: "text", sender: "tech", text: "Just make sure the gate is accessible and any pool covers are removed. I'll take care of the rest!", time: "4:48 PM", date: twoDaysBeforeStr },
     { id: "4", type: "text", sender: "user", text: "Sounds good, thank you!", time: "4:57 PM", date: twoDaysBeforeStr },
     { id: "5", type: "text", sender: "automated", text: `Reminder: Your ${hours}-hour pool service with ${techName} is confirmed for ${svcDate}. View details in your dashboard.`, time: "8:33 AM", date: dayBeforeStr },
-    { id: "6", type: "text", sender: "tech", text: "Hi! Just a heads up — I'll be arriving around the scheduled window tomorrow. See you then!", time: "10:15 AM", date: dayBeforeStr },
+    { id: "6", type: "text", sender: "tech", text: "Hi! Just a heads up, I'll be arriving around the scheduled window tomorrow. See you then!", time: "10:15 AM", date: dayBeforeStr },
     { id: "7", type: "text", sender: "user", text: "Perfect, we'll be ready!", time: "10:22 AM", date: dayBeforeStr },
     { id: "8", type: "text", sender: "automated", text: `${techName} is on the way to begin your pool service.`, time: "9:55 AM", date: svcDate },
 

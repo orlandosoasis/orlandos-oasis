@@ -35,19 +35,22 @@ const VoucherConfirmationStep = ({ plan, serviceConfig }: VoucherConfirmationSte
 
       {/* Summary */}
       <div className="bg-card rounded-2xl p-5 px-6 border border-border shadow-sm">
-        <div className="flex items-center justify-between">
-          <div>
-            <p className="text-xs font-semibold tracking-widest uppercase text-muted-foreground">
-              YOU'RE GETTING
+        <p className="text-[11px] font-semibold tracking-widest uppercase text-muted-foreground mb-3">
+          YOU'RE GETTING
+        </p>
+        <div className="flex items-end justify-between">
+          <div className="space-y-1">
+            <p className="text-base font-bold text-foreground">
+              First Month of {freqLabel} Pool Service
             </p>
-            <p className="text-base font-bold text-foreground mt-1">
-              {summaryLine}
-            </p>
+            <p className="text-sm text-muted-foreground">{poolLabel}</p>
           </div>
           <div className="text-right">
-            <p className="text-sm text-muted-foreground line-through">${plan.originalPrice}</p>
-            <p className="text-2xl font-bold text-foreground">${plan.discountPrice}</p>
-            <p className="text-sm font-semibold text-primary">SAVE ${plan.savings}</p>
+            <div className="flex items-baseline gap-1.5 justify-end">
+              <span className="text-sm text-muted-foreground line-through">${plan.originalPrice}</span>
+              <span className="text-[28px] font-extrabold text-foreground leading-none">${plan.discountPrice}</span>
+            </div>
+            <p className="text-[11px] font-bold text-primary tracking-wide mt-1">SAVE ${plan.savings}</p>
           </div>
         </div>
       </div>

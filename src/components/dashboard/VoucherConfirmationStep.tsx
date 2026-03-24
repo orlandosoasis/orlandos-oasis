@@ -1,11 +1,29 @@
 import { Check } from "lucide-react";
 import type { VoucherPlan } from "./VoucherSelectionStep";
+import type { ServiceConfig } from "@/components/ServiceConfigStep";
+
+const POOL_SIZE_LABELS: Record<string, string> = {
+  small: "Small Pool",
+  medium: "Medium Pool",
+  large: "Large Pool",
+};
+
+const FREQUENCY_LABELS: Record<string, string> = {
+  weekly: "Weekly",
+  "twice-weekly": "Twice per week",
+  "three-weekly": "Three times per week",
+};
 
 interface VoucherConfirmationStepProps {
   plan: VoucherPlan;
+  serviceConfig: ServiceConfig;
 }
 
-const VoucherConfirmationStep = ({ plan }: VoucherConfirmationStepProps) => {
+const VoucherConfirmationStep = ({ plan, serviceConfig }: VoucherConfirmationStepProps) => {
+  const poolLabel = POOL_SIZE_LABELS[serviceConfig.poolSize] || serviceConfig.poolSize;
+  const freqLabel = FREQUENCY_LABELS[serviceConfig.frequency] || serviceConfig.frequency;
+  const summaryLine = `First Month of ${freqLabel} Pool Service · ${poolLabel}`;
+
   return (
     <div className="space-y-6 animate-fade-in">
       {/* Top Banner */}
@@ -23,7 +41,7 @@ const VoucherConfirmationStep = ({ plan }: VoucherConfirmationStepProps) => {
               YOU'RE GETTING
             </p>
             <p className="text-base font-bold text-foreground mt-1">
-              First Month of Weekly Pool Service
+              {summaryLine}
             </p>
           </div>
           <div className="text-right">
@@ -41,13 +59,13 @@ const VoucherConfirmationStep = ({ plan }: VoucherConfirmationStepProps) => {
             Save ${plan.savings} with your voucher on
           </p>
           <p className="text-base text-foreground">
-            your <span className="font-semibold">first month</span> of weekly pool service.
+            your <span className="font-semibold">first month</span> of {freqLabel.toLowerCase()} pool service.
           </p>
         </div>
 
         <div className="text-center mb-6">
           <p className="text-lg font-bold text-foreground">
-            Get your first month of pool cleaning
+            Get your first month of {freqLabel.toLowerCase()} pool cleaning
           </p>
           <p className="text-lg font-bold text-foreground">
             for <span className="text-primary">only ${plan.discountPrice}!</span>{" "}
@@ -64,7 +82,7 @@ const VoucherConfirmationStep = ({ plan }: VoucherConfirmationStepProps) => {
             <div className="flex items-start gap-3">
               <Check className="h-5 w-5 text-primary shrink-0 mt-0.5" />
               <p className="text-sm text-foreground">
-                This discount voucher is valid for 4 weekly pool cleanings over your first month, for only <strong>${plan.discountPrice} total</strong>.
+                This discount voucher is valid for your first month of {freqLabel.toLowerCase()} pool cleanings ({poolLabel}), for only <strong>${plan.discountPrice} total</strong>.
               </p>
             </div>
 

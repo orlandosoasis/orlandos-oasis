@@ -83,6 +83,17 @@ const LandingContactStep = ({
   return (
     <div className="space-y-5 animate-fade-in">
 
+      {/* Hold Notice */}
+      <div className="flex items-center justify-center gap-2">
+        <Clock className="h-4 w-4 text-muted-foreground shrink-0" strokeWidth={1.8} />
+        <p className="text-sm text-muted-foreground">
+          We'll hold it for you for the next
+        </p>
+        <span className="text-sm font-bold text-foreground tabular-nums ml-0.5">
+          {String(timeLeft.minutes).padStart(2, "0")}:{String(timeLeft.seconds).padStart(2, "0")}
+        </span>
+      </div>
+
       {/* Order Summary with pool size & frequency details */}
       <div className="bg-card rounded-2xl p-5 px-6 border border-border">
         <div className="flex items-start justify-between">
@@ -117,17 +128,6 @@ const LandingContactStep = ({
             Edit
           </button>
         </div>
-      </div>
-
-      {/* Hold Notice */}
-      <div className="flex items-center justify-center gap-2">
-        <Clock className="h-4 w-4 text-muted-foreground shrink-0" strokeWidth={1.8} />
-        <p className="text-sm text-muted-foreground">
-          We'll hold it for you for the next
-        </p>
-        <span className="text-sm font-bold text-foreground tabular-nums ml-0.5">
-          {String(timeLeft.minutes).padStart(2, "0")}:{String(timeLeft.seconds).padStart(2, "0")}
-        </span>
       </div>
 
       {/* Heading */}

@@ -238,7 +238,7 @@ const LandingPaymentStep = ({ selectedPlan, timeLeft, email, onChangePlan, onCon
           <div className="flex items-center gap-2.5">
             <p className="text-[15px] font-bold text-foreground">{serviceName}</p>
             <button
-              onClick={() => setEditOpen(true)}
+              onClick={() => onChangePlan()}
               className="inline-flex items-center gap-1 text-xs font-medium text-muted-foreground border border-border rounded-full px-3 py-1 hover:border-primary hover:text-primary transition-colors"
             >
               <Pencil className="h-3 w-3" />

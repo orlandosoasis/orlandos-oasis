@@ -42,10 +42,37 @@ const LandingContactStep = ({
   onChangePlan,
 }: LandingContactStepProps) => {
   const [editOpen, setEditOpen] = useState(false);
+  const [errors, setErrors] = useState<Partial<Record<keyof LandingFormData, string>>>({});
+  const [touched, setTouched] = useState(false);
+
+  const validate = (): boolean => {
+    const errs: Partial<Record<keyof LandingFormData, string>> = {};
+    if (!formData.firstName.trim()) errs.firstName = "First name is required";
+    if (!formData.lastName.trim()) errs.lastName = "Last name is required";
+    if (!formData.email.trim()) errs.email = "Email is required";
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) errs.email = "Please enter a valid email";
+    if (!formData.phone.trim()) errs.phone = "Phone number is required";
+    setErrors(errs);
+    return Object.keys(errs).length === 0;
+  };
+
+  const handleSubmit = () => {
+    setTouched(true);
+    if (validate()) {
+      onSubmit();
+    }
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     onFormDataChange({ ...formData, [e.target.name]: e.target.value });
+    if (touched) {
+      // Clear error for this field on change
+      setErrors((prev) => ({ ...prev, [e.target.name]: undefined }));
+    }
   };
+
+  const inputErrorClass = (field: keyof LandingFormData) =>
+    errors[field] ? "border-destructive focus-visible:ring-destructive focus-visible:border-destructive" : "";
 
   const serviceName = selectedPlan.label.replace("Most Popular – ", "");
 
@@ -84,37 +111,49 @@ const LandingContactStep = ({
       {/* Form Fields */}
       <div className="space-y-2.5">
         <div className="flex gap-2.5">
-          <Input
-            name="firstName"
-            placeholder="First Name"
-            value={formData.firstName}
-            onChange={handleChange}
-            className="h-12 rounded-xl border-[1.5px] border-border bg-background shadow-sm text-[15px] placeholder:text-muted-foreground/60 focus-visible:ring-primary focus-visible:border-primary"
-          />
-          <Input
-            name="lastName"
-            placeholder="Last Name"
-            value={formData.lastName}
-            onChange={handleChange}
-            className="h-12 rounded-xl border-[1.5px] border-border bg-background shadow-sm text-[15px] placeholder:text-muted-foreground/60 focus-visible:ring-primary focus-visible:border-primary"
-          />
+          <div className="flex-1 space-y-1">
+            <Input
+              name="firstName"
+              placeholder="First Name"
+              value={formData.firstName}
+              onChange={handleChange}
+              className={`h-12 rounded-xl border-[1.5px] border-border bg-background shadow-sm text-[15px] placeholder:text-muted-foreground/60 focus-visible:ring-primary focus-visible:border-primary ${inputErrorClass("firstName")}`}
+            />
+            {errors.firstName && <p className="text-xs text-destructive">{errors.firstName}</p>}
+          </div>
+          <div className="flex-1 space-y-1">
+            <Input
+              name="lastName"
+              placeholder="Last Name"
+              value={formData.lastName}
+              onChange={handleChange}
+              className={`h-12 rounded-xl border-[1.5px] border-border bg-background shadow-sm text-[15px] placeholder:text-muted-foreground/60 focus-visible:ring-primary focus-visible:border-primary ${inputErrorClass("lastName")}`}
+            />
+            {errors.lastName && <p className="text-xs text-destructive">{errors.lastName}</p>}
+          </div>
         </div>
-        <Input
-          name="email"
-          type="email"
-          placeholder="Email Address"
-          value={formData.email}
-          onChange={handleChange}
-          className="h-12 rounded-xl border-[1.5px] border-border bg-background shadow-sm text-[15px] placeholder:text-muted-foreground/60 focus-visible:ring-primary focus-visible:border-primary"
-        />
-        <Input
-          name="phone"
-          type="tel"
-          placeholder="Phone Number"
-          value={formData.phone}
-          onChange={handleChange}
-          className="h-12 rounded-xl border-[1.5px] border-border bg-background shadow-sm text-[15px] placeholder:text-muted-foreground/60 focus-visible:ring-primary focus-visible:border-primary"
-        />
+        <div className="space-y-1">
+          <Input
+            name="email"
+            type="email"
+            placeholder="Email Address"
+            value={formData.email}
+            onChange={handleChange}
+            className={`h-12 rounded-xl border-[1.5px] border-border bg-background shadow-sm text-[15px] placeholder:text-muted-foreground/60 focus-visible:ring-primary focus-visible:border-primary ${inputErrorClass("email")}`}
+          />
+          {errors.email && <p className="text-xs text-destructive">{errors.email}</p>}
+        </div>
+        <div className="space-y-1">
+          <Input
+            name="phone"
+            type="tel"
+            placeholder="Phone Number"
+            value={formData.phone}
+            onChange={handleChange}
+            className={`h-12 rounded-xl border-[1.5px] border-border bg-background shadow-sm text-[15px] placeholder:text-muted-foreground/60 focus-visible:ring-primary focus-visible:border-primary ${inputErrorClass("phone")}`}
+          />
+          {errors.phone && <p className="text-xs text-destructive">{errors.phone}</p>}
+        </div>
       </div>
 
 
@@ -155,7 +194,7 @@ const LandingContactStep = ({
 
       {/* CTA */}
       <Button
-        onClick={onSubmit}
+        onClick={handleSubmit}
         className="w-full h-14 text-[17px] font-bold rounded-full shadow-md hover:shadow-lg"
       >
         Lock in your discount!

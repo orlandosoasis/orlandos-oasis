@@ -14,12 +14,14 @@ import ServiceConfigStep, {
 import VoucherConfirmationStep from "@/components/dashboard/VoucherConfirmationStep";
 import LandingContactStep, { type LandingFormData } from "@/components/LandingContactStep";
 import LandingPaymentStep from "@/components/LandingPaymentStep";
+import AddonsStep from "@/components/AddonsStep";
 import type { VoucherPlan } from "@/components/dashboard/VoucherSelectionStep";
 
 const STEPS = [
   { label: "Select Service" },
   { label: "Your Details" },
-  { label: "Confirm" },
+  { label: "Add-ons" },
+  { label: "Confirmation" },
   { label: "Payment" },
 ];
 
@@ -51,6 +53,7 @@ const ServicesSection = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const [bookingComplete, setBookingComplete] = useState(false);
   const [autoLoginFailed, setAutoLoginFailed] = useState(false);
+  const [selectedAddons, setSelectedAddons] = useState<string[]>([]);
   const [formData, setFormData] = useState<LandingFormData>({
     firstName: "",
     lastName: "",
@@ -84,6 +87,12 @@ const ServicesSection = () => {
   const goToStep = (step: number) => {
     setCurrentStep(step);
     setTimeout(scrollToTop, 50);
+  };
+
+  const handleToggleAddon = (id: string) => {
+    setSelectedAddons((prev) =>
+      prev.includes(id) ? prev.filter((a) => a !== id) : [...prev, id]
+    );
   };
 
   const handlePaymentSubmit = async () => {
@@ -177,12 +186,27 @@ const ServicesSection = () => {
         />
       )}
 
-      {/* Step 3: Voucher Confirmation */}
+      {/* Step 3: Add-ons */}
       {currentStep === 3 && (
+        <>
+          <AddonsStep selectedAddons={selectedAddons} onToggleAddon={handleToggleAddon} />
+          <Button
+            onClick={() => goToStep(4)}
+            className="w-full h-14 text-[17px] font-bold rounded-full shadow-md hover:shadow-lg mt-6"
+          >
+            {selectedAddons.length > 0
+              ? `Continue with ${selectedAddons.length} add-on${selectedAddons.length > 1 ? "s" : ""}`
+              : "Skip & Continue"}
+          </Button>
+        </>
+      )}
+
+      {/* Step 4: Confirmation */}
+      {currentStep === 4 && (
         <>
           <VoucherConfirmationStep plan={selectedPlan} />
           <Button
-            onClick={() => goToStep(4)}
+            onClick={() => goToStep(5)}
             className="w-full h-14 text-[17px] font-bold rounded-full shadow-md hover:shadow-lg mt-6"
           >
             Continue
@@ -190,8 +214,8 @@ const ServicesSection = () => {
         </>
       )}
 
-      {/* Step 4: Payment */}
-      {currentStep === 4 && (
+      {/* Step 5: Payment */}
+      {currentStep === 5 && (
         <LandingPaymentStep
           selectedPlan={selectedPlan}
           timeLeft={timeLeft}

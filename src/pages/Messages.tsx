@@ -185,7 +185,7 @@ const Messages = () => {
             <h2 className="text-lg font-bold text-foreground">Messages</h2>
           </div>
 
-          {/* Contact Item — Carlos M. (active) */}
+          {/* Contact Item - Carlos M. (active) */}
           <button className="w-full flex items-center gap-3 px-4 py-3 text-left bg-primary/8 border-b border-border transition-colors hover:bg-primary/12 cursor-pointer">
             <div className="w-11 h-11 rounded-full bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center text-primary-foreground text-sm font-bold shrink-0">
               {techInitials}

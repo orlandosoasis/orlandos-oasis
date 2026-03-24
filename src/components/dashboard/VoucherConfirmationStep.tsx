@@ -16,7 +16,7 @@ const VoucherConfirmationStep = ({ plan }: VoucherConfirmationStepProps) => {
       </div>
 
       {/* Summary */}
-      <div className="border-b border-border pb-5">
+      <div className="border-t border-border pt-5">
         <div className="flex items-start justify-between">
           <div>
             <p className="text-xs font-semibold tracking-widest uppercase text-muted-foreground">

@@ -115,7 +115,7 @@ const ServiceConfigStep = ({ config, onConfigChange }: ServiceConfigStepProps) =
         <RadioGroup
           value={config.frequency}
           onValueChange={(val) => onConfigChange({ ...config, frequency: val as ServiceFrequency })}
-          className="space-y-2.5"
+          className="space-y-2"
         >
           {FREQUENCIES.map((freq) => {
             const isSelected = config.frequency === freq.value;

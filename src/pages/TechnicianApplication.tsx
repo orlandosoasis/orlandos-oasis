@@ -79,7 +79,7 @@ const TechnicianApplication = () => {
   const [submitted, setSubmitted] = useState(false);
   const [appId] = useState(() => "OO-" + Math.random().toString(36).substr(2, 8).toUpperCase());
 
-  // Step 1 — Personal Info
+  // Step 1 - Personal Info
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");

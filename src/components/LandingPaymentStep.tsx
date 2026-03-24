@@ -1,12 +1,8 @@
 import { useState } from "react";
 import { Clock, Pencil, Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import type { VoucherPlan } from "@/components/dashboard/VoucherSelectionStep";
-import { VOUCHER_PLANS } from "@/components/dashboard/VoucherSelectionStep";
 
 interface LandingPaymentStepProps {
   selectedPlan: VoucherPlan;

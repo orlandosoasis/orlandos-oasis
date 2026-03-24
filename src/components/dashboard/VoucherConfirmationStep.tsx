@@ -15,6 +15,25 @@ const VoucherConfirmationStep = ({ plan }: VoucherConfirmationStepProps) => {
         </p>
       </div>
 
+      {/* Summary */}
+      <div className="border-b border-border pb-5">
+        <div className="flex items-start justify-between">
+          <div>
+            <p className="text-xs font-semibold tracking-widest uppercase text-muted-foreground">
+              YOU'RE GETTING
+            </p>
+            <p className="text-base font-bold text-foreground mt-1">
+              First Month of Weekly Pool Service
+            </p>
+          </div>
+          <div className="text-right">
+            <p className="text-sm text-muted-foreground line-through">${plan.originalPrice}</p>
+            <p className="text-2xl font-bold text-foreground">${plan.discountPrice}</p>
+            <p className="text-sm font-semibold text-primary">SAVE ${plan.savings}</p>
+          </div>
+        </div>
+      </div>
+
       {/* Voucher Details Card */}
       <div className="bg-card border border-border rounded-2xl p-6 shadow-sm">
         <div className="text-center mb-5">
@@ -74,25 +93,6 @@ const VoucherConfirmationStep = ({ plan }: VoucherConfirmationStepProps) => {
           <p className="text-sm italic text-muted-foreground mt-4">
             *Last 30-day average price based on your zip code
           </p>
-        </div>
-      </div>
-
-      {/* Summary */}
-      <div className="border-t border-border pt-5">
-        <div className="flex items-start justify-between">
-          <div>
-            <p className="text-xs font-semibold tracking-widest uppercase text-muted-foreground">
-              YOU'RE GETTING
-            </p>
-            <p className="text-base font-bold text-foreground mt-1">
-              First Month of Weekly Pool Service
-            </p>
-          </div>
-          <div className="text-right">
-            <p className="text-sm text-muted-foreground line-through">${plan.originalPrice}</p>
-            <p className="text-2xl font-bold text-foreground">${plan.discountPrice}</p>
-            <p className="text-sm font-semibold text-primary">SAVE ${plan.savings}</p>
-          </div>
         </div>
       </div>
     </div>

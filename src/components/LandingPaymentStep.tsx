@@ -222,8 +222,7 @@ const LandingPaymentStep = ({ selectedPlan, timeLeft, email, onChangePlan, onCon
 
       {/* CTA */}
       <Button
-        disabled={!paymentMethod}
-        onClick={onContinue}
+        onClick={handleSubmit}
         className="w-full h-14 text-[17px] font-bold rounded-full shadow-md hover:shadow-lg"
       >
         Purchase &amp; schedule

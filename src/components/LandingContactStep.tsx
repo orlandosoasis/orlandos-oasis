@@ -88,7 +88,7 @@ const LandingContactStep = ({
       {/* Order Summary */}
       <div className="bg-card rounded-2xl p-5 px-6 flex items-center justify-between border border-border">
         <div>
-          <p className="text-[11px] text-muted-foreground font-medium uppercase tracking-widest mb-0.5">You're Getting</p>
+          <p className="text-[11px] text-muted-foreground uppercase tracking-widest mb-0.5 font-semibold">You're Getting</p>
           <div className="flex items-center gap-2.5">
             <p className="text-[15px] font-bold text-foreground">{serviceName}</p>
             <button

@@ -23,13 +23,13 @@ const Index = () => {
         <section className="py-12 px-4 bg-background">
           <div className="container max-w-6xl mx-auto">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
-              {/* Left: Reviews */}
-              <div>
+              {/* Reviews - second on mobile, left on desktop */}
+              <div className="order-2 lg:order-1">
                 <ReviewsSection />
               </div>
               
-              {/* Right: Service Pass Pricing */}
-              <div className="lg:sticky lg:top-8">
+              {/* Voucher/Services - first on mobile, right on desktop */}
+              <div className="order-1 lg:order-2 lg:sticky lg:top-8">
                 <ServicesSection />
               </div>
             </div>

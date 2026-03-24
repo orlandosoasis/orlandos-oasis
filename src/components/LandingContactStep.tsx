@@ -194,7 +194,7 @@ const LandingContactStep = ({
 
       {/* CTA */}
       <Button
-        onClick={onSubmit}
+        onClick={handleSubmit}
         className="w-full h-14 text-[17px] font-bold rounded-full shadow-md hover:shadow-lg"
       >
         Lock in your discount!

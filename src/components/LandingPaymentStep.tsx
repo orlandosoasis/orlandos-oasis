@@ -44,12 +44,13 @@ const LandingPaymentStep = ({ selectedPlan, timeLeft, email, onChangePlan, onCon
     }
   };
 
-  const serviceName = selectedPlan.label.replace("Most Popular – ", "");
-  const pctOff = Math.round(((selectedPlan.originalPrice - selectedPlan.discountPrice) / selectedPlan.originalPrice) * 100);
-
+  const handleCardChange = (field: string, value: string) => {
     setCardData((prev) => ({ ...prev, [field]: value }));
     if (touched) setErrors((prev) => ({ ...prev, [field]: undefined as any }));
   };
+
+  const serviceName = selectedPlan.label.replace("Most Popular – ", "");
+  const pctOff = Math.round(((selectedPlan.originalPrice - selectedPlan.discountPrice) / selectedPlan.originalPrice) * 100);
 
   return (
     <div className="space-y-4 animate-fade-in">

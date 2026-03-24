@@ -111,37 +111,49 @@ const LandingContactStep = ({
       {/* Form Fields */}
       <div className="space-y-2.5">
         <div className="flex gap-2.5">
-          <Input
-            name="firstName"
-            placeholder="First Name"
-            value={formData.firstName}
-            onChange={handleChange}
-            className="h-12 rounded-xl border-[1.5px] border-border bg-background shadow-sm text-[15px] placeholder:text-muted-foreground/60 focus-visible:ring-primary focus-visible:border-primary"
-          />
-          <Input
-            name="lastName"
-            placeholder="Last Name"
-            value={formData.lastName}
-            onChange={handleChange}
-            className="h-12 rounded-xl border-[1.5px] border-border bg-background shadow-sm text-[15px] placeholder:text-muted-foreground/60 focus-visible:ring-primary focus-visible:border-primary"
-          />
+          <div className="flex-1 space-y-1">
+            <Input
+              name="firstName"
+              placeholder="First Name"
+              value={formData.firstName}
+              onChange={handleChange}
+              className={`h-12 rounded-xl border-[1.5px] border-border bg-background shadow-sm text-[15px] placeholder:text-muted-foreground/60 focus-visible:ring-primary focus-visible:border-primary ${inputErrorClass("firstName")}`}
+            />
+            {errors.firstName && <p className="text-xs text-destructive">{errors.firstName}</p>}
+          </div>
+          <div className="flex-1 space-y-1">
+            <Input
+              name="lastName"
+              placeholder="Last Name"
+              value={formData.lastName}
+              onChange={handleChange}
+              className={`h-12 rounded-xl border-[1.5px] border-border bg-background shadow-sm text-[15px] placeholder:text-muted-foreground/60 focus-visible:ring-primary focus-visible:border-primary ${inputErrorClass("lastName")}`}
+            />
+            {errors.lastName && <p className="text-xs text-destructive">{errors.lastName}</p>}
+          </div>
         </div>
-        <Input
-          name="email"
-          type="email"
-          placeholder="Email Address"
-          value={formData.email}
-          onChange={handleChange}
-          className="h-12 rounded-xl border-[1.5px] border-border bg-background shadow-sm text-[15px] placeholder:text-muted-foreground/60 focus-visible:ring-primary focus-visible:border-primary"
-        />
-        <Input
-          name="phone"
-          type="tel"
-          placeholder="Phone Number"
-          value={formData.phone}
-          onChange={handleChange}
-          className="h-12 rounded-xl border-[1.5px] border-border bg-background shadow-sm text-[15px] placeholder:text-muted-foreground/60 focus-visible:ring-primary focus-visible:border-primary"
-        />
+        <div className="space-y-1">
+          <Input
+            name="email"
+            type="email"
+            placeholder="Email Address"
+            value={formData.email}
+            onChange={handleChange}
+            className={`h-12 rounded-xl border-[1.5px] border-border bg-background shadow-sm text-[15px] placeholder:text-muted-foreground/60 focus-visible:ring-primary focus-visible:border-primary ${inputErrorClass("email")}`}
+          />
+          {errors.email && <p className="text-xs text-destructive">{errors.email}</p>}
+        </div>
+        <div className="space-y-1">
+          <Input
+            name="phone"
+            type="tel"
+            placeholder="Phone Number"
+            value={formData.phone}
+            onChange={handleChange}
+            className={`h-12 rounded-xl border-[1.5px] border-border bg-background shadow-sm text-[15px] placeholder:text-muted-foreground/60 focus-visible:ring-primary focus-visible:border-primary ${inputErrorClass("phone")}`}
+          />
+          {errors.phone && <p className="text-xs text-destructive">{errors.phone}</p>}
+        </div>
       </div>
 
 

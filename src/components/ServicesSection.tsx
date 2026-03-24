@@ -149,7 +149,7 @@ const ServicesSection = () => {
 
   return (
     <div id="discount-voucher" className="scroll-mt-8" ref={sectionRef}>
-      {currentStep >= 3 && <BookingStepper currentStep={currentStep} steps={STEPS} onStepClick={goToStep} />}
+      {currentStep >= 2 && <BookingStepper currentStep={currentStep} steps={STEPS} onStepClick={goToStep} />}
 
       {/* Step 1: Configure Pool Size + Frequency */}
       {currentStep === 1 && (

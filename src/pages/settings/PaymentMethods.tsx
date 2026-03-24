@@ -175,7 +175,7 @@ const PaymentMethods = () => {
                   )}
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">{hasVoucher ? "Regular Price" : "Price"}</span>
-                    <span className="font-medium text-foreground">${originalPrice ?? "—"}/month</span>
+                    <span className="font-medium text-foreground">${originalPrice ?? "-"}/month</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">Status</span>

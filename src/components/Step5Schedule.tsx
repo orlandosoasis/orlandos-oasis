@@ -325,7 +325,7 @@ const Step5Schedule = ({ selectedPass, onChangePass, passOptions, onConfirm }: S
           </div>
         </div>
 
-        {/* B — Pool Access */}
+        {/* B - Pool Access */}
         <div className="mt-5 pt-[18px] border-t border-border">
           <p className="text-[11px] font-semibold tracking-[0.8px] uppercase text-muted-foreground mb-2.5">POOL ACCESS</p>
           <p className="text-[13px] text-muted-foreground mb-3">How will we access your pool?</p>

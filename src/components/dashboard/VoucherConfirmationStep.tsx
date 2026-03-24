@@ -17,7 +17,7 @@ const VoucherConfirmationStep = ({ plan }: VoucherConfirmationStepProps) => {
 
       {/* Summary */}
       <div className="bg-card rounded-2xl p-5 px-6 border border-border shadow-sm">
-        <div className="flex items-start justify-between">
+        <div className="flex items-center justify-between">
           <div>
             <p className="text-xs font-semibold tracking-widest uppercase text-muted-foreground">
               YOU'RE GETTING

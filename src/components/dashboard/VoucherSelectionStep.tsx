@@ -34,7 +34,7 @@ const VOUCHER_PLANS: VoucherPlan[] = [
 },
 {
   id: "three-weekly",
-  label: "Three-Times-Per-Week Pool Service",
+  label: "Three Times Per Week Pool Service",
   description: "Ideal for luxury pools or high-traffic pools",
   originalPrice: 360,
   discountPrice: 335,

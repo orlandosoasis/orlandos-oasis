@@ -19,9 +19,10 @@ interface VoucherConfirmationStepProps {
   plan: VoucherPlan;
   serviceConfig: ServiceConfig;
   selectedAddons?: string[];
+  timeLeft: { minutes: number; seconds: number };
 }
 
-const VoucherConfirmationStep = ({ plan, serviceConfig, selectedAddons = [] }: VoucherConfirmationStepProps) => {
+const VoucherConfirmationStep = ({ plan, serviceConfig, selectedAddons = [], timeLeft }: VoucherConfirmationStepProps) => {
   const poolLabel = POOL_SIZE_LABELS[serviceConfig.poolSize] || serviceConfig.poolSize;
   const freqLabel = FREQUENCY_LABELS[serviceConfig.frequency] || serviceConfig.frequency;
   const addonsTotal = getAddonsTotal(selectedAddons);

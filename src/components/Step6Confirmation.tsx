@@ -66,7 +66,7 @@ const Step6Confirmation = ({ selectedPass, scheduleData }: Step6Props) => {
 
   const handleDashboardClick = () => {
     const technician = matchTechnician();
-    setBooking({ frequency: "once", selectedPass, scheduleData, technician, pool: { address: "", city: "", state: "", zip: "", poolType: "", poolSize: "", accessMethod: scheduleData.accessMethod, accessDetail: scheduleData.accessDetail } });
+    setBooking({ frequency: "once", selectedPass, scheduleData, technician, pool: { address: "", city: "", state: "", zip: "", poolType: "", poolSize: "", accessMethod: scheduleData.accessMethod, accessDetail: scheduleData.accessDetail, hasPets: false } });
     navigate("/dashboard");
   };
 

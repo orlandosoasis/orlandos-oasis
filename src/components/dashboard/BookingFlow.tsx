@@ -3,6 +3,7 @@ import { ChevronLeft, ChevronRight, Check, ArrowLeft, CheckCircle2, Loader2, Inf
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { Switch } from "@/components/ui/switch";
 import { useBooking, matchTechnician } from "@/contexts/BookingContext";
 import { useAuth } from "@/contexts/AuthContext";
 import type { PassOption, CleaningFrequency, TimeWindow, AccessMethod, ScheduleData } from "@/contexts/BookingContext";
@@ -77,10 +78,15 @@ const BookingFlow = ({ onClose, onComplete, selectedService: selectedServiceProp
   const [keyLocation, setKeyLocation] = useState("");
   const [otherInstructions, setOtherInstructions] = useState("");
   const [specialNotes, setSpecialNotes] = useState("");
+  const [hasPets, setHasPets] = useState(false);
+  const [touched, setTouched] = useState<Record<string, boolean>>({});
 
   const [isProcessing, setIsProcessing] = useState(false);
   const [bookingSuccess, setBookingSuccess] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+
+  const markTouched = (field: string) => setTouched((p) => ({ ...p, [field]: true }));
+  const fieldError = (field: string, value: string) => touched[field] && !value.trim();
 
   // Scroll to top when step changes
   useEffect(() => {
@@ -98,7 +104,7 @@ const BookingFlow = ({ onClose, onComplete, selectedService: selectedServiceProp
   const canProceed = () => {
     if (step === 0) return true;
     if (step === 1) {
-      if (!address.trim()) return false;
+      if (!address.trim() || !city.trim() || !state.trim() || !zip.trim()) return false;
       if (accessMethod === "gate" && !gateCode.trim()) return false;
       if (accessMethod === "key" && !keyLocation.trim()) return false;
       if (accessMethod === "other" && !otherInstructions.trim()) return false;
@@ -142,7 +148,7 @@ const BookingFlow = ({ onClose, onComplete, selectedService: selectedServiceProp
       specialNotes: specialNotes || undefined,
       pool: {
         address, city, state, zip, poolType, poolSize, accessMethod,
-        accessDetail: getAccessDetail()
+        accessDetail: getAccessDetail(), hasPets
       }
     });
 
@@ -204,6 +210,10 @@ const BookingFlow = ({ onClose, onComplete, selectedService: selectedServiceProp
               <span className="font-medium text-foreground">
                 {accessMethod === "home" ? "Owner will be home" : accessMethod === "gate" ? "Gate code" : accessMethod === "key" ? "Key on property" : "Custom instructions"}
               </span>
+            </div>
+            <div className="flex justify-between text-sm">
+              <span className="text-muted-foreground">Pets on Property</span>
+              <span className="font-medium text-foreground">{hasPets ? "Yes" : "No"}</span>
             </div>
           </div>
 
@@ -323,22 +333,26 @@ const BookingFlow = ({ onClose, onComplete, selectedService: selectedServiceProp
               <div className="bg-card rounded-2xl border border-border p-6 shadow-sm">
                 <p className="text-[11px] font-semibold tracking-[0.8px] uppercase text-muted-foreground mb-2.5">ADDRESS</p>
                 <div className="flex flex-col gap-3">
-                  <div className="flex flex-col gap-1.5">
-                    <label className="text-xs font-medium text-muted-foreground">Street Address</label>
-                    <Input placeholder="Street address" value={address} onChange={(e) => setAddress(e.target.value)} className="h-10 rounded-[10px] border-2 border-border bg-muted/30 text-sm" />
+                  <div className="flex flex-col gap-1">
+                    <label className="text-xs font-medium text-muted-foreground">Street Address <span className="text-destructive">*</span></label>
+                    <Input placeholder="Street address" value={address} onChange={(e) => setAddress(e.target.value)} onBlur={() => markTouched("address")} className={`h-10 rounded-[10px] border-2 bg-muted/30 text-sm ${fieldError("address", address) ? "border-destructive" : "border-border"}`} />
+                    {fieldError("address", address) && <p className="text-[11px] text-destructive">This field is required</p>}
                   </div>
                   <div className="grid grid-cols-3 gap-3">
-                    <div className="flex flex-col gap-1.5">
-                      <label className="text-xs font-medium text-muted-foreground">City</label>
-                      <Input placeholder="City" value={city} onChange={(e) => setCity(e.target.value)} className="h-10 rounded-[10px] border-2 border-border bg-muted/30 text-sm" />
+                    <div className="flex flex-col gap-1">
+                      <label className="text-xs font-medium text-muted-foreground">City <span className="text-destructive">*</span></label>
+                      <Input placeholder="City" value={city} onChange={(e) => setCity(e.target.value)} onBlur={() => markTouched("city")} className={`h-10 rounded-[10px] border-2 bg-muted/30 text-sm ${fieldError("city", city) ? "border-destructive" : "border-border"}`} />
+                      {fieldError("city", city) && <p className="text-[11px] text-destructive">This field is required</p>}
                     </div>
-                    <div className="flex flex-col gap-1.5">
-                      <label className="text-xs font-medium text-muted-foreground">State</label>
-                      <Input placeholder="State" value={state} onChange={(e) => setState(e.target.value)} className="h-10 rounded-[10px] border-2 border-border bg-muted/30 text-sm" />
+                    <div className="flex flex-col gap-1">
+                      <label className="text-xs font-medium text-muted-foreground">State <span className="text-destructive">*</span></label>
+                      <Input placeholder="State" value={state} onChange={(e) => setState(e.target.value)} onBlur={() => markTouched("state")} className={`h-10 rounded-[10px] border-2 bg-muted/30 text-sm ${fieldError("state", state) ? "border-destructive" : "border-border"}`} />
+                      {fieldError("state", state) && <p className="text-[11px] text-destructive">This field is required</p>}
                     </div>
-                    <div className="flex flex-col gap-1.5">
-                      <label className="text-xs font-medium text-muted-foreground">ZIP</label>
-                      <Input placeholder="ZIP" value={zip} onChange={(e) => setZip(e.target.value)} className="h-10 rounded-[10px] border-2 border-border bg-muted/30 text-sm" />
+                    <div className="flex flex-col gap-1">
+                      <label className="text-xs font-medium text-muted-foreground">ZIP <span className="text-destructive">*</span></label>
+                      <Input placeholder="ZIP" value={zip} onChange={(e) => setZip(e.target.value)} onBlur={() => markTouched("zip")} className={`h-10 rounded-[10px] border-2 bg-muted/30 text-sm ${fieldError("zip", zip) ? "border-destructive" : "border-border"}`} />
+                      {fieldError("zip", zip) && <p className="text-[11px] text-destructive">This field is required</p>}
                     </div>
                   </div>
                 </div>
@@ -386,9 +400,10 @@ const BookingFlow = ({ onClose, onComplete, selectedService: selectedServiceProp
 
                   {accessMethod === "gate" &&
                 <div className="mt-3.5 flex flex-col gap-2.5 animate-fade-in">
-                      <div className="flex flex-col gap-1.5">
+                      <div className="flex flex-col gap-1">
                         <label className="text-xs font-medium text-muted-foreground">Gate Code <span className="text-destructive">*</span></label>
-                        <Input placeholder="e.g. 4821" value={gateCode} onChange={(e) => setGateCode(e.target.value)} maxLength={12} className="h-10 rounded-[10px] border-2 border-border bg-muted/30 text-sm" />
+                        <Input placeholder="e.g. 4821" value={gateCode} onChange={(e) => setGateCode(e.target.value)} onBlur={() => markTouched("gateCode")} maxLength={12} className={`h-10 rounded-[10px] border-2 bg-muted/30 text-sm ${fieldError("gateCode", gateCode) ? "border-destructive" : "border-border"}`} />
+                        {fieldError("gateCode", gateCode) && <p className="text-[11px] text-destructive">This field is required</p>}
                       </div>
                       <div className="flex flex-col gap-1.5">
                         <label className="text-xs font-medium text-muted-foreground">Additional gate notes (optional)</label>
@@ -398,24 +413,37 @@ const BookingFlow = ({ onClose, onComplete, selectedService: selectedServiceProp
                 }
                   {accessMethod === "key" &&
                 <div className="mt-3.5 animate-fade-in">
-                      <div className="flex flex-col gap-1.5">
+                      <div className="flex flex-col gap-1">
                         <label className="text-xs font-medium text-muted-foreground">Where is the key? <span className="text-destructive">*</span></label>
-                        <Input placeholder="e.g. Under the welcome mat" value={keyLocation} onChange={(e) => setKeyLocation(e.target.value)} className="h-10 rounded-[10px] border-2 border-border bg-muted/30 text-sm" />
+                        <Input placeholder="e.g. Under the welcome mat" value={keyLocation} onChange={(e) => setKeyLocation(e.target.value)} onBlur={() => markTouched("keyLocation")} className={`h-10 rounded-[10px] border-2 bg-muted/30 text-sm ${fieldError("keyLocation", keyLocation) ? "border-destructive" : "border-border"}`} />
+                        {fieldError("keyLocation", keyLocation) && <p className="text-[11px] text-destructive">This field is required</p>}
                       </div>
                     </div>
                 }
                   {accessMethod === "other" &&
                 <div className="mt-3.5 animate-fade-in">
-                      <div className="flex flex-col gap-1.5">
+                      <div className="flex flex-col gap-1">
                         <label className="text-xs font-medium text-muted-foreground">Access Instructions <span className="text-destructive">*</span></label>
-                        <Textarea placeholder="Describe how to access the pool…" value={otherInstructions} onChange={(e) => setOtherInstructions(e.target.value)} rows={3} className="rounded-[10px] border-2 border-border bg-muted/30 text-sm resize-y min-h-[72px]" />
+                        <Textarea placeholder="Describe how to access the pool…" value={otherInstructions} onChange={(e) => setOtherInstructions(e.target.value)} onBlur={() => markTouched("otherInstructions")} rows={3} className={`rounded-[10px] border-2 bg-muted/30 text-sm resize-y min-h-[72px] ${fieldError("otherInstructions", otherInstructions) ? "border-destructive" : "border-border"}`} />
+                        {fieldError("otherInstructions", otherInstructions) && <p className="text-[11px] text-destructive">This field is required</p>}
                       </div>
                     </div>
                 }
                 </div>
 
+                {/* Pets on Property */}
+                <div className="mt-5 pt-4 border-t border-border">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-medium text-foreground">Pets on Property</p>
+                      <p className="text-xs text-muted-foreground">Let the technician know if you have pets</p>
+                    </div>
+                    <Switch checked={hasPets} onCheckedChange={setHasPets} />
+                  </div>
+                </div>
+
                 {/* Cleaning Notes */}
-                <div className="mt-5">
+                <div className="mt-5 pt-4 border-t border-border">
                   <p className="text-[11px] font-semibold tracking-[0.8px] uppercase text-muted-foreground mb-2.5">CLEANING NOTES (OPTIONAL)</p>
                   <Textarea
                   placeholder="Anything the technician should know about your pool?"

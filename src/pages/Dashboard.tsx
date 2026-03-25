@@ -114,7 +114,7 @@ function generateDemoServices(checkoutData?: import("@/contexts/BookingContext")
   const sharedPool = {
     address: "123 Main Street", city: "Miami", state: "FL", zip: checkoutData?.customerZipcode || "33101",
     poolType: "In-ground", poolSize: "Medium (15k–25k gallons)",
-    accessMethod: "gate" as const, accessDetail: "Code: 4521",
+    accessMethod: "gate" as const, accessDetail: "Code: 4521", hasPets: false,
   };
   const tech = { name: "Carlos M.", initials: "CM", rating: 4.9, isAssigned: true };
   const baseSchedule = {

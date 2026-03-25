@@ -63,6 +63,7 @@ export interface PoolData {
   poolSize: string;
   accessMethod: AccessMethod;
   accessDetail: string;
+  hasPets: boolean;
 }
 
 export interface BookingData {

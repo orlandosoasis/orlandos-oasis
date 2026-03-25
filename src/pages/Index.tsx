@@ -40,6 +40,27 @@ const Index = () => {
         <HowItWorks />
         <ServiceDetailsSection />
         <FAQSection />
+
+        {/* The Fine Print */}
+        <section className="py-8 px-4 bg-background">
+          <div className="max-w-4xl mx-auto border-t border-border pt-8">
+            <h4 className="text-lg font-semibold text-foreground mb-4 text-center">
+              The Fine Print
+            </h4>
+            <ul className="space-y-1 text-sm text-muted-foreground max-w-2xl mx-auto">
+              {[
+                "Offer valid for new customers.",
+                "Online booking required.",
+                "Reschedule/cancel policy: 6-hour notice.",
+                "Service Pass expires after 12 months if unused.",
+                "Executive Plan discounts apply while membership is active.",
+                "Cancel any time. If cancelled before 6 paid months, the initial discounted month may be adjusted to standard pricing.",
+              ].map((item, index) => (
+                <li key={index}>• {item}</li>
+              ))}
+            </ul>
+          </div>
+        </section>
         <NewsletterSection />
       </main>
       <Footer />

@@ -98,10 +98,7 @@ const VoucherConfirmationStep = ({ plan, serviceConfig, selectedAddons = [] }: V
       {/* Voucher Details Card */}
       <div className="bg-card border border-border rounded-2xl p-6 shadow-sm">
         <div className="text-center mb-5">
-          <p className="text-base font-bold text-foreground">
-            $25 voucher applied to your first month of service.
-          </p>
-          <p className="text-sm text-muted-foreground mt-1">
+          <p className="text-sm text-muted-foreground">
             Add-ons are billed separately.
           </p>
         </div>

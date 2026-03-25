@@ -200,18 +200,6 @@ const ServiceDetailsSection = () => {
             ))}
           </div>
         </div>
-
-        {/* The Fine Print */}
-        <div className="border-t border-border pt-8">
-          <h4 className="text-lg font-semibold text-navy mb-4 text-center">
-            The Fine Print
-          </h4>
-          <ul className="space-y-1 text-sm text-muted-foreground max-w-2xl mx-auto">
-            {FINE_PRINT.map((item, index) => (
-              <li key={index}>• {item}</li>
-            ))}
-          </ul>
-        </div>
       </div>
     </section>
   );

@@ -1,4 +1,4 @@
-import { Check } from "lucide-react";
+import { Check, Clock } from "lucide-react";
 import type { VoucherPlan } from "./VoucherSelectionStep";
 import type { ServiceConfig } from "@/components/ServiceConfigStep";
 import { ADDONS, getAddonsTotal, getSelectedAddons } from "@/components/AddonsStep";
@@ -19,9 +19,10 @@ interface VoucherConfirmationStepProps {
   plan: VoucherPlan;
   serviceConfig: ServiceConfig;
   selectedAddons?: string[];
+  timeLeft: { minutes: number; seconds: number };
 }
 
-const VoucherConfirmationStep = ({ plan, serviceConfig, selectedAddons = [] }: VoucherConfirmationStepProps) => {
+const VoucherConfirmationStep = ({ plan, serviceConfig, selectedAddons = [], timeLeft }: VoucherConfirmationStepProps) => {
   const poolLabel = POOL_SIZE_LABELS[serviceConfig.poolSize] || serviceConfig.poolSize;
   const freqLabel = FREQUENCY_LABELS[serviceConfig.frequency] || serviceConfig.frequency;
   const addonsTotal = getAddonsTotal(selectedAddons);
@@ -30,6 +31,17 @@ const VoucherConfirmationStep = ({ plan, serviceConfig, selectedAddons = [] }: V
 
   return (
     <div className="space-y-2 animate-fade-in">
+      {/* Hold Notice */}
+      <div className="flex items-center justify-center gap-2">
+        <Clock className="h-4 w-4 text-muted-foreground shrink-0" strokeWidth={1.8} />
+        <p className="text-sm text-muted-foreground">
+          We'll hold it for you for the next
+        </p>
+        <span className="text-sm font-bold text-foreground tabular-nums ml-0.5">
+          {String(timeLeft.minutes).padStart(2, "0")}:{String(timeLeft.seconds).padStart(2, "0")}
+        </span>
+      </div>
+
       {/* Top Banner */}
       <div className="bg-primary rounded-2xl p-5 text-center">
         <p className="text-primary-foreground font-semibold text-[15px] leading-snug">

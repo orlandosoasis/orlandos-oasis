@@ -151,9 +151,6 @@ const VoucherConfirmationStep = ({ plan, serviceConfig, selectedAddons = [] }: V
             </div>
           </div>
 
-          <p className="text-sm italic text-muted-foreground mt-4">
-            *Last 30-day average price based on your zip code
-          </p>
         </div>
       </div>
     </div>

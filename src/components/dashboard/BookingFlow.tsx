@@ -360,14 +360,7 @@ const BookingFlow = ({ onClose, onComplete, selectedService: selectedServiceProp
 
               <div className="bg-card rounded-2xl border border-border p-6 shadow-sm">
                 <p className="text-[11px] font-semibold tracking-[0.8px] uppercase text-muted-foreground mb-2.5">POOL DETAILS</p>
-                <div className="grid grid-cols-2 gap-3 mb-5">
-                  <div className="flex flex-col gap-1.5">
-                    <label className="text-xs font-medium text-muted-foreground">Pool Type</label>
-                    <select value={poolType} onChange={(e) => setPoolType(e.target.value)}
-                  className="h-10 rounded-[10px] border-2 border-border bg-muted/30 px-3 text-sm text-foreground outline-none focus:border-primary/40 focus:bg-background transition-colors appearance-none">
-                      <option>Inground</option><option>Above Ground</option><option>Lap Pool</option><option>Spa / Hot Tub</option>
-                    </select>
-                  </div>
+                <div className="grid grid-cols-1 gap-3 mb-5">
                   <div className="flex flex-col gap-1.5">
                     <label className="text-xs font-medium text-muted-foreground">Pool Size</label>
                     <select value={poolSize} onChange={(e) => setPoolSize(e.target.value)}

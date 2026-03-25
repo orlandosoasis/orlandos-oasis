@@ -9,12 +9,15 @@ const SERVICE_GUIDE = [
 ];
 
 const EVERY_VISIT_ITEMS = [
-  "Skim surface debris",
-  "Empty skimmer and pump baskets",
-  "Brush walls, steps, and tile line",
-  "Vacuum as needed (time-dependent)",
-  "Test and balance water chemistry (chlorine, pH, alkalinity)",
-  "Quick equipment check (visual inspection)",
+  "Skimming surface debris (leaves, bugs, etc.)",
+  "Brushing walls, steps, and tile line",
+  "Vacuuming pool as needed",
+  "Emptying skimmer and pump baskets",
+  "Water chemistry testing and balancing",
+  "Adding necessary chemicals (chlorine, acid, etc.)",
+  "Filter system check (backwash/clean as needed)",
+  "Equipment inspection (pump, timer, system)",
+  "Water level monitoring",
 ];
 
 const MEMBER_BENEFITS = [

@@ -148,7 +148,7 @@ const BookingFlow = ({ onClose, onComplete, selectedService: selectedServiceProp
       specialNotes: specialNotes || undefined,
       pool: {
         address, city, state, zip, poolType, poolSize, accessMethod,
-        accessDetail: getAccessDetail()
+        accessDetail: getAccessDetail(), hasPets
       }
     });
 

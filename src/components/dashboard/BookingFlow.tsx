@@ -27,6 +27,7 @@ interface BookingFlowProps {
   onClose: () => void;
   onComplete: () => void;
   selectedService?: SelectedServiceInfo | null;
+  standalone?: boolean;
 }
 
 const TOTAL_STEPS = 2;

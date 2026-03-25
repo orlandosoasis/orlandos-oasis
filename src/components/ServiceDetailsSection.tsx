@@ -15,7 +15,7 @@ const EVERY_VISIT_ITEMS = [
   "Emptying skimmer and pump baskets",
   "Water chemistry testing and balancing",
   "Adding necessary chemicals (chlorine, acid, etc.)",
-  "Filter system check (backwash/clean as needed)",
+  "Filter system check",
   "Equipment inspection (pump, timer, system)",
   "Water level monitoring",
 ];

@@ -3,6 +3,7 @@ import { ChevronLeft, ChevronRight, Check, ArrowLeft, CheckCircle2, Loader2, Inf
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { Switch } from "@/components/ui/switch";
 import { useBooking, matchTechnician } from "@/contexts/BookingContext";
 import { useAuth } from "@/contexts/AuthContext";
 import type { PassOption, CleaningFrequency, TimeWindow, AccessMethod, ScheduleData } from "@/contexts/BookingContext";
@@ -77,10 +78,15 @@ const BookingFlow = ({ onClose, onComplete, selectedService: selectedServiceProp
   const [keyLocation, setKeyLocation] = useState("");
   const [otherInstructions, setOtherInstructions] = useState("");
   const [specialNotes, setSpecialNotes] = useState("");
+  const [hasPets, setHasPets] = useState(false);
+  const [touched, setTouched] = useState<Record<string, boolean>>({});
 
   const [isProcessing, setIsProcessing] = useState(false);
   const [bookingSuccess, setBookingSuccess] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+
+  const markTouched = (field: string) => setTouched((p) => ({ ...p, [field]: true }));
+  const fieldError = (field: string, value: string) => touched[field] && !value.trim();
 
   // Scroll to top when step changes
   useEffect(() => {
@@ -98,7 +104,7 @@ const BookingFlow = ({ onClose, onComplete, selectedService: selectedServiceProp
   const canProceed = () => {
     if (step === 0) return true;
     if (step === 1) {
-      if (!address.trim()) return false;
+      if (!address.trim() || !city.trim() || !state.trim() || !zip.trim()) return false;
       if (accessMethod === "gate" && !gateCode.trim()) return false;
       if (accessMethod === "key" && !keyLocation.trim()) return false;
       if (accessMethod === "other" && !otherInstructions.trim()) return false;

@@ -234,9 +234,6 @@ const BookingFlow = ({ onClose, onComplete, selectedService: selectedServiceProp
                 <h2 className="text-lg font-semibold text-foreground">{selectedService.title}</h2>
                 <p className="text-xs text-muted-foreground">${selectedVoucherPlan.discountPrice}/first month · Save ${selectedVoucherPlan.savings}</p>
               </div>
-              <div className="w-6 h-6 rounded-full bg-primary/15 flex items-center justify-center shrink-0">
-                <Check className="h-3 w-3 text-primary" />
-              </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-[1fr_240px] gap-4">

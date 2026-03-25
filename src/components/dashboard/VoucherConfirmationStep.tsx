@@ -83,7 +83,7 @@ const VoucherConfirmationStep = ({ plan, serviceConfig, selectedAddons = [] }: V
       )}
 
       {/* Total Due Today */}
-      <div className="bg-card rounded-2xl p-5 px-6 border-2 border-primary shadow-sm">
+      <div className="bg-card rounded-2xl p-5 px-6 border border-border shadow-sm">
         <div className="flex items-center justify-between">
           <p className="text-base font-bold text-foreground">Total due today</p>
           <span className="text-[28px] font-extrabold text-foreground leading-none">${totalDueToday}</span>

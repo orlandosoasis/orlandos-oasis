@@ -9,7 +9,7 @@ const SERVICE_GUIDE = [
 ];
 
 const EVERY_VISIT_ITEMS = [
-  "Skimming surface debris (leaves, bugs, etc.)",
+  "Skimming surface debris",
   "Brushing walls, steps, and tile line",
   "Vacuuming pool as needed",
   "Emptying skimmer and pump baskets",

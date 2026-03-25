@@ -15,7 +15,7 @@
     --popover: 0 0% 100%;
     --popover-foreground: 220 30% 15%;
 
-    --primary: 196 100% 21%;
+    --primary: 203 87% 41%;
     --primary-foreground: 0 0% 100%;
 
     --secondary: 220 20% 96%;
@@ -32,13 +32,13 @@
 
     --border: 220 13% 91%;
     --input: 220 13% 91%;
-    --ring: 196 100% 21%;
+    --ring: 203 87% 41%;
 
     --radius: 0.5rem;
 
     /* Custom tokens - Orlando's Oasis Pool Service */
-    --oasis-blue: 196 100% 21%;
-    --oasis-blue-dark: 196 100% 16%;
+    --oasis-blue: 203 87% 41%;
+    --oasis-blue-dark: 203 87% 33%;
     --oasis-teal: 175 65% 40%;
     --oasis-navy: 210 45% 20%;
     --oasis-navy-light: 210 35% 30%;

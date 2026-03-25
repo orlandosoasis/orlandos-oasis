@@ -82,18 +82,18 @@ const VoucherConfirmationStep = ({ plan, serviceConfig, selectedAddons = [] }: V
         </div>
       )}
 
-      {/* Total Due Today */}
-      <div className="bg-card rounded-2xl p-5 px-6 border border-border shadow-sm">
-        <div className="flex items-center justify-between">
-          <p className="text-base font-bold text-foreground">Total due today</p>
-          <span className="text-[28px] font-extrabold text-foreground leading-none">${totalDueToday}</span>
-        </div>
-        {selectedAddonObjects.length > 0 && (
+      {/* Total Due Today — only shown when add-ons are selected */}
+      {selectedAddonObjects.length > 0 && (
+        <div className="bg-card rounded-2xl p-5 px-6 border border-border shadow-sm">
+          <div className="flex items-center justify-between">
+            <p className="text-base font-bold text-foreground">Total due today</p>
+            <span className="font-extrabold text-foreground leading-none text-lg">${totalDueToday}</span>
+          </div>
           <p className="text-xs text-muted-foreground mt-1">
             Base service ${plan.discountPrice} + Add-ons ${addonsTotal}
           </p>
-        )}
-      </div>
+        </div>
+      )}
 
       {/* Voucher Details Card */}
       <div className="bg-card border border-border rounded-2xl p-6 shadow-sm">

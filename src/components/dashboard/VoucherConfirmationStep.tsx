@@ -97,11 +97,6 @@ const VoucherConfirmationStep = ({ plan, serviceConfig, selectedAddons = [] }: V
 
       {/* Voucher Details Card */}
       <div className="bg-card border border-border rounded-2xl p-6 shadow-sm">
-        <div className="text-center mb-6">
-          <p className="text-lg font-bold text-foreground">
-            Get your first month of {freqLabel.toLowerCase()} pool cleaning
-          </p>
-        </div>
 
         <div>
           <p className="font-bold text-foreground mb-4">Discount Voucher and Membership Details</p>

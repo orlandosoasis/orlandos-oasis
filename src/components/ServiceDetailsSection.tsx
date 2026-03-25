@@ -16,7 +16,7 @@ const EVERY_VISIT_ITEMS = [
   "Water chemistry testing and balancing",
   "Adding necessary chemicals",
   "Filter system check",
-  "Equipment inspection (pump, timer, system)",
+  "Equipment inspection",
   "Water level monitoring",
 ];
 

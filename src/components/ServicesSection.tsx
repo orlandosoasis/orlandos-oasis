@@ -1,8 +1,6 @@
 import { useState, useRef, useCallback, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { AlertCircle } from "lucide-react";
-import { useAuth } from "@/contexts/AuthContext";
 import { useBooking } from "@/contexts/BookingContext";
 import BookingStepper from "@/components/BookingStepper";
 import ServiceConfigStep, {
@@ -43,7 +41,6 @@ function configToPlan(config: ServiceConfig): VoucherPlan {
 
 const ServicesSection = () => {
   const navigate = useNavigate();
-  const { signup, login, isAuthenticated } = useAuth();
   const { setCheckoutData } = useBooking();
 
   const [serviceConfig, setServiceConfig] = useState<ServiceConfig>({
@@ -51,8 +48,6 @@ const ServicesSection = () => {
     frequency: "weekly",
   });
   const [currentStep, setCurrentStep] = useState(1);
-  const [bookingComplete, setBookingComplete] = useState(false);
-  const [autoLoginFailed, setAutoLoginFailed] = useState(false);
   const [selectedAddons, setSelectedAddons] = useState<string[]>([]);
   const [formData, setFormData] = useState<LandingFormData>({
     firstName: "",
@@ -108,24 +103,6 @@ const ServicesSection = () => {
       customerPhone: formData.phone,
       customerZipcode: formData.zipcode,
     });
-
-    if (!isAuthenticated && formData.email) {
-      const tempPassword = `Oasis${Date.now()}!`;
-      const fullName = `${formData.firstName} ${formData.lastName}`.trim();
-
-      const signupResult = await signup(formData.email, tempPassword, fullName, "homeowner", {
-        phone: formData.phone,
-        firstName: formData.firstName,
-        lastName: formData.lastName,
-      });
-
-      if (!signupResult.success) {
-        const loginResult = await login(formData.email, tempPassword);
-        if (!loginResult.success) {
-          setAutoLoginFailed(true);
-        }
-      }
-    }
 
     navigate(
       `/purchase-success?service=${encodeURIComponent(serviceName)}&description=${encodeURIComponent(selectedPlan.description)}`

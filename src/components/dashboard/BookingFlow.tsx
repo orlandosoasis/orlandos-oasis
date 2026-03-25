@@ -27,11 +27,12 @@ interface BookingFlowProps {
   onClose: () => void;
   onComplete: () => void;
   selectedService?: SelectedServiceInfo | null;
+  standalone?: boolean;
 }
 
 const TOTAL_STEPS = 2;
 
-const BookingFlow = ({ onClose, onComplete, selectedService: selectedServiceProp }: BookingFlowProps) => {
+const BookingFlow = ({ onClose, onComplete, selectedService: selectedServiceProp, standalone }: BookingFlowProps) => {
   const { setBooking } = useBooking();
   const { user, updateUser } = useAuth();
   const [step, setStep] = useState(0);
@@ -118,8 +119,10 @@ const BookingFlow = ({ onClose, onComplete, selectedService: selectedServiceProp
     await new Promise((r) => setTimeout(r, 1200));
     setIsProcessing(false);
 
-    // Persist address to user profile
-    updateUser({ streetAddress: address, city, state, zipCode: zip });
+    // Persist address to user profile (only if logged in)
+    if (user) {
+      updateUser({ streetAddress: address, city, state, zipCode: zip });
+    }
 
     const scheduleData: ScheduleData = {
       selectedDate,
@@ -143,7 +146,12 @@ const BookingFlow = ({ onClose, onComplete, selectedService: selectedServiceProp
       }
     });
 
-    setBookingSuccess(true);
+    if (standalone) {
+      // In standalone mode, skip the success screen and call onComplete directly
+      onComplete();
+    } else {
+      setBookingSuccess(true);
+    }
   };
 
   const displayStep = step + 1;

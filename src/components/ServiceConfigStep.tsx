@@ -19,8 +19,8 @@ const POOL_SIZES: { value: PoolSize; label: string; sublabel: string; price: num
 
 const FREQUENCIES: { value: ServiceFrequency; label: string; description: string; priceCopy: string; multiplier: number; isMostPopular: boolean }[] = [
   { value: "weekly", label: "Weekly Service", description: "Ideal for most residential pools", priceCopy: "Included in base price", multiplier: 1, isMostPopular: true },
-  { value: "twice-weekly", label: "Twice Per Week", description: "Add an extra weekly visit for high-use or problem pools", priceCopy: "", multiplier: 2, isMostPopular: false },
-  { value: "three-weekly", label: "Three Times Per Week", description: "Add two extra weekly visits for premium care & maximum clarity", priceCopy: "", multiplier: 3, isMostPopular: false },
+  { value: "twice-weekly", label: "Twice Per Week Pool Service", description: "Add an extra weekly visit for high-use or problem pools", priceCopy: "", multiplier: 2, isMostPopular: false },
+  { value: "three-weekly", label: "Three Times Per Week Pool Service", description: "Add two extra weekly visits for premium care & maximum clarity", priceCopy: "", multiplier: 3, isMostPopular: false },
 ];
 
 const KEY_SERVICES = [

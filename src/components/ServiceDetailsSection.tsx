@@ -185,32 +185,6 @@ const ServiceDetailsSection = () => {
 
 
 
-        {/* About Orlando's Oasis */}
-        <div className="mb-16">
-          <h3 className="text-2xl font-bold text-navy mb-4 text-center">
-            About Orlando's Oasis
-          </h3>
-          <p className="text-muted-foreground text-center max-w-2xl mx-auto mb-8">
-            Orlando's Oasis provides reliable pool care built for consistency. We focus on clear communication, predictable service, and water that stays balanced week to week.
-          </p>
-          
-          <div className="bg-muted/50 rounded-xl p-6">
-            <div className="flex items-center gap-2 mb-4">
-              <AlertCircle className="h-5 w-5 text-muted-foreground" />
-              <h4 className="font-semibold text-navy">What we don't do</h4>
-            </div>
-            <ul className="grid md:grid-cols-2 gap-2">
-              {WHAT_WE_DONT_DO.map((item, index) => (
-                <li key={index} className="text-sm text-muted-foreground">
-                  • {item}
-                </li>
-              ))}
-            </ul>
-            <p className="text-xs text-muted-foreground mt-3 italic">
-              (These can be routed to partner referrals.)
-            </p>
-          </div>
-        </div>
 
         {/* Why Orlando's Oasis */}
         <div className="mb-16">

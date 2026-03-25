@@ -250,18 +250,6 @@ const LandingPaymentStep = ({ selectedPlan, timeLeft, email, onChangePlan, onCon
         </div>
       )}
 
-      {/* Total Due Today */}
-      <div className="bg-card rounded-xl p-4 px-5 border-2 border-primary">
-        <div className="flex items-center justify-between">
-          <p className="text-base font-bold text-foreground">Total due today</p>
-          <span className="text-[22px] font-extrabold text-foreground">${totalDueToday}</span>
-        </div>
-        {selectedAddonObjects.length > 0 && (
-          <p className="text-xs text-muted-foreground mt-0.5">
-            Base service ${selectedPlan.discountPrice} + Add-ons ${addonsTotal}
-          </p>
-        )}
-      </div>
 
     </div>
   );

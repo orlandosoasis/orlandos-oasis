@@ -149,22 +149,6 @@ const ServiceDetailsSection = () => {
               </ul>
             </div>
 
-            {/* Executive Plan Member Benefits */}
-            <div className="bg-card rounded-xl border border-border p-6">
-              <div className="flex items-center gap-2 mb-4">
-                <Shield className="h-5 w-5 text-primary" />
-                <h4 className="font-semibold text-navy">Executive Plan Benefits</h4>
-              </div>
-              <ul className="space-y-2">
-                {MEMBER_BENEFITS.map((item, index) => (
-                  <li key={index} className="flex items-start gap-2 text-sm text-muted-foreground">
-                    <Check className="h-4 w-4 text-oasis shrink-0 mt-0.5" />
-                    {item}
-                  </li>
-                ))}
-              </ul>
-            </div>
-
             {/* Premium Add-ons */}
             <div className="bg-card rounded-xl border border-border p-6">
               <div className="flex items-center gap-2 mb-4">

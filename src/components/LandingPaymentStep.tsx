@@ -210,7 +210,7 @@ const LandingPaymentStep = ({ selectedPlan, timeLeft, email, onChangePlan, onCon
       <div className="flex flex-col gap-3 px-1">
         {[
           <>By continuing, you agree to our <a href="/privacy" className="text-primary hover:underline">Privacy Policy</a> and <a href="/terms" className="text-primary hover:underline">Terms &amp; Conditions</a>, which includes an arbitration agreement.</>,
-          <>By redeeming your voucher, you agree to enroll in Orlando's Oasis membership, and be charged $59/mo (taxes may apply) until you cancel.</>,
+          <>Your voucher covers your first month of {serviceName}. After that, your membership renews at ${selectedPlan.originalPrice}/month until you cancel.</>,
           <>Cancel anytime online in your "Account Settings" or by <a href="/contact" className="text-primary hover:underline">submitting a help ticket</a>.</>,
           <>Canceling within the first 6-months will result in an <a href="/terms" className="text-primary hover:underline">early termination fee</a> calculated based on the <a href="/terms" className="text-primary hover:underline">full price of your first pool service</a>.</>,
           <>More information about autorenewal and cancelation terms, click <a href="/terms" className="text-primary hover:underline">here</a>.</>,

@@ -1,4 +1,4 @@
-import { Check } from "lucide-react";
+import { Check, Clock } from "lucide-react";
 import type { VoucherPlan } from "./VoucherSelectionStep";
 import type { ServiceConfig } from "@/components/ServiceConfigStep";
 import { ADDONS, getAddonsTotal, getSelectedAddons } from "@/components/AddonsStep";

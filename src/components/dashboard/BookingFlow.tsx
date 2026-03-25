@@ -119,8 +119,10 @@ const BookingFlow = ({ onClose, onComplete, selectedService: selectedServiceProp
     await new Promise((r) => setTimeout(r, 1200));
     setIsProcessing(false);
 
-    // Persist address to user profile
-    updateUser({ streetAddress: address, city, state, zipCode: zip });
+    // Persist address to user profile (only if logged in)
+    if (user) {
+      updateUser({ streetAddress: address, city, state, zipCode: zip });
+    }
 
     const scheduleData: ScheduleData = {
       selectedDate,
@@ -144,7 +146,12 @@ const BookingFlow = ({ onClose, onComplete, selectedService: selectedServiceProp
       }
     });
 
-    setBookingSuccess(true);
+    if (standalone) {
+      // In standalone mode, skip the success screen and call onComplete directly
+      onComplete();
+    } else {
+      setBookingSuccess(true);
+    }
   };
 
   const displayStep = step + 1;

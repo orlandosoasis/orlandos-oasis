@@ -48,6 +48,9 @@ const LandingPaymentStep = ({ selectedPlan, timeLeft, email, onChangePlan, onCon
 
   const serviceName = selectedPlan.label.replace("Most Popular – ", "");
   const pctOff = Math.round(((selectedPlan.originalPrice - selectedPlan.discountPrice) / selectedPlan.originalPrice) * 100);
+  const addonsTotal = getAddonsTotal(selectedAddons);
+  const selectedAddonObjects = getSelectedAddons(selectedAddons);
+  const totalDueToday = selectedPlan.discountPrice + addonsTotal;
 
   return (
     <div className="space-y-4 animate-fade-in">

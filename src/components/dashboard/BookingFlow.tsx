@@ -71,7 +71,8 @@ const BookingFlow = ({ onClose, onComplete, selectedService: selectedServiceProp
   const [state, setState] = useState(user?.state || "");
   const [zip, setZip] = useState(user?.zipCode || "");
   const [poolType, setPoolType] = useState("Inground");
-  const [poolSize, setPoolSize] = useState("Small (<10k gal)");
+  const POOL_SIZE_DISPLAY: Record<string, string> = { small: "Small (<10k gal)", medium: "Medium (10–20k)", large: "Large (20k+)" };
+  const poolSize = POOL_SIZE_DISPLAY[checkoutData?.poolSize || "small"] || "Small (<10k gal)";
   const [accessMethod, setAccessMethod] = useState<AccessMethod>("home");
   const [gateCode, setGateCode] = useState("");
   const [gateNotes, setGateNotes] = useState("");
@@ -363,10 +364,9 @@ const BookingFlow = ({ onClose, onComplete, selectedService: selectedServiceProp
                 <div className="grid grid-cols-1 gap-3 mb-5">
                   <div className="flex flex-col gap-1.5">
                     <label className="text-xs font-medium text-muted-foreground">Pool Size</label>
-                    <select value={poolSize} onChange={(e) => setPoolSize(e.target.value)}
-                  className="h-10 rounded-[10px] border-2 border-border bg-muted/30 px-3 text-sm text-foreground outline-none focus:border-primary/40 focus:bg-background transition-colors appearance-none">
-                      <option>Small (&lt;10k gal)</option><option>Medium (10–20k)</option><option>Large (20k+)</option>
-                    </select>
+                    <div className="h-10 rounded-[10px] border-2 border-border bg-muted/40 px-3 text-sm text-foreground flex items-center">
+                      {poolSize}
+                    </div>
                   </div>
                 </div>
 

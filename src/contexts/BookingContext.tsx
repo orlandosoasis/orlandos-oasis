@@ -83,6 +83,7 @@ export interface CheckoutData {
   serviceName: string;
   serviceDescription: string;
   frequency: string; // weekly, biweekly, monthly, once
+  poolSize: string; // small, medium, large
   originalPrice: number;
   discountPrice: number;
   customerEmail: string;

@@ -127,34 +127,10 @@ const ServicesSection = () => {
       }
     }
 
-    setBookingComplete(true);
-    setTimeout(scrollToTop, 50);
-  };
-
-  if (bookingComplete) {
-    return (
-      <div className="fixed inset-0 z-50 bg-background flex items-center justify-center">
-        <div className="text-center space-y-5 px-6 max-w-md">
-          {autoLoginFailed}
-          <div className="mx-auto h-20 w-20 rounded-full bg-green-100 flex items-center justify-center">
-            <Check className="h-10 w-10 text-green-600" />
-          </div>
-          <h2 className="text-2xl font-bold text-foreground">Payment Successful</h2>
-          <p className="text-muted-foreground">Your {serviceName} is confirmed. Schedule your first service.</p>
-          <Button
-            onClick={() =>
-              navigate(
-                `/dashboard?openBooking=true&serviceTitle=${encodeURIComponent(serviceName)}&serviceDescription=${encodeURIComponent(selectedPlan.description)}`
-              )
-            }
-            className="mt-2 w-full h-14 text-[17px] font-bold rounded-full shadow-md hover:shadow-lg"
-          >
-            Schedule a Service
-          </Button>
-        </div>
-      </div>
+    navigate(
+      `/purchase-success?service=${encodeURIComponent(serviceName)}&description=${encodeURIComponent(selectedPlan.description)}`
     );
-  }
+  };
 
   return (
     <div id="discount-voucher" className="scroll-mt-8" ref={sectionRef}>

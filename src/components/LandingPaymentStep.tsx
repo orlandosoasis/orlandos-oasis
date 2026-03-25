@@ -228,8 +228,6 @@ const LandingPaymentStep = ({ selectedPlan, timeLeft, email, onChangePlan, onCon
         Purchase &amp; schedule
       </Button>
 
-      {/* Divider */}
-      <div className="h-px bg-border" />
 
       {/* Summary Bar */}
       <div className="flex items-center justify-between px-1">

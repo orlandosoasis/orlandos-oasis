@@ -29,7 +29,7 @@ const VoucherConfirmationStep = ({ plan, serviceConfig, selectedAddons = [] }: V
   const totalDueToday = plan.discountPrice + addonsTotal;
 
   return (
-    <div className="space-y-6 animate-fade-in">
+    <div className="space-y-2 animate-fade-in">
       {/* Top Banner */}
       <div className="bg-primary rounded-2xl p-5 text-center">
         <p className="text-primary-foreground font-semibold text-[15px] leading-snug">
@@ -83,7 +83,7 @@ const VoucherConfirmationStep = ({ plan, serviceConfig, selectedAddons = [] }: V
       )}
 
       {/* Total Due Today */}
-      <div className="bg-card rounded-2xl p-5 px-6 border-2 border-primary shadow-sm">
+      <div className="bg-card rounded-2xl p-5 px-6 border border-border shadow-sm">
         <div className="flex items-center justify-between">
           <p className="text-base font-bold text-foreground">Total due today</p>
           <span className="text-[28px] font-extrabold text-foreground leading-none">${totalDueToday}</span>

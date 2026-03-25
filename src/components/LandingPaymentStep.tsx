@@ -3,6 +3,7 @@ import { Clock, Pencil, Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import type { VoucherPlan } from "@/components/dashboard/VoucherSelectionStep";
+import { getAddonsTotal, getSelectedAddons } from "@/components/AddonsStep";
 
 interface LandingPaymentStepProps {
   selectedPlan: VoucherPlan;
@@ -10,6 +11,7 @@ interface LandingPaymentStepProps {
   email: string;
   onChangePlan: () => void;
   onContinue: () => void;
+  selectedAddons?: string[];
 }
 
 type PaymentMethod = "card" | "paypal" | "gpay" | null;

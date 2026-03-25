@@ -105,6 +105,7 @@ const ManageMembershipModal = ({
       serviceName: selectedPlan.name,
       serviceDescription: `${selectedPlan.frequencyLabel} pool cleaning service`,
       frequency: selectedPlan.frequency,
+      poolSize: checkoutData?.poolSize || "small",
       originalPrice: selectedPlan.originalPrice,
       discountPrice: voucherApplies ? selectedPlan.discountPrice : selectedPlan.originalPrice,
       customerEmail: checkoutData?.customerEmail || "",

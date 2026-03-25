@@ -81,11 +81,6 @@ const ServiceDetailsSection = () => {
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-6">
             Keep your pool crystal clear with Orlando's Oasis. Choose a discounted Service Pass for your first month, schedule online, and manage everything in one place.
           </p>
-          <div className="bg-oasis/10 border border-oasis/30 rounded-lg p-4 max-w-xl mx-auto">
-            <p className="font-semibold text-navy">
-              🎉 Get up to <span className="text-oasis">85% off</span> on your first month when you sign up today to our Executive Plan.
-            </p>
-          </div>
         </div>
 
         {/* How to Choose the Right Service Pass */}

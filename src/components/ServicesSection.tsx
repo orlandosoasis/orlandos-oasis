@@ -228,6 +228,7 @@ const ServicesSection = () => {
           email={formData.email}
           onChangePlan={() => goToStep(1)}
           onContinue={handlePaymentSubmit}
+          selectedAddons={selectedAddons}
         />
       )}
     </div>

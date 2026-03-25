@@ -109,24 +109,6 @@ const ServicesSection = () => {
       customerZipcode: formData.zipcode,
     });
 
-    if (!isAuthenticated && formData.email) {
-      const tempPassword = `Oasis${Date.now()}!`;
-      const fullName = `${formData.firstName} ${formData.lastName}`.trim();
-
-      const signupResult = await signup(formData.email, tempPassword, fullName, "homeowner", {
-        phone: formData.phone,
-        firstName: formData.firstName,
-        lastName: formData.lastName,
-      });
-
-      if (!signupResult.success) {
-        const loginResult = await login(formData.email, tempPassword);
-        if (!loginResult.success) {
-          setAutoLoginFailed(true);
-        }
-      }
-    }
-
     navigate(
       `/purchase-success?service=${encodeURIComponent(serviceName)}&description=${encodeURIComponent(selectedPlan.description)}`
     );

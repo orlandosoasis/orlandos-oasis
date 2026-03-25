@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { Check } from "lucide-react";
+import { Check, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useBooking } from "@/contexts/BookingContext";
 import { useAuth } from "@/contexts/AuthContext";
@@ -16,6 +16,7 @@ const PurchaseSuccess = () => {
   const serviceDescription = searchParams.get("description") || checkoutData?.serviceDescription || "";
 
   const [showBooking, setShowBooking] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
 
   const handleBookingComplete = async () => {
     // Auto-create account and login using checkout data
@@ -41,8 +42,33 @@ const PurchaseSuccess = () => {
       }
     }
 
-    navigate("/dashboard");
+    // Show success animation before redirecting
+    setShowBooking(false);
+    setShowSuccess(true);
+    setTimeout(() => navigate("/dashboard"), 2200);
   };
+
+  // Brief success screen after booking
+  if (showSuccess) {
+    return (
+      <div className="fixed inset-0 z-50 bg-background flex items-center justify-center">
+        <div className="text-center space-y-4 px-6 max-w-sm animate-scale-in">
+          <div className="mx-auto h-20 w-20 rounded-full bg-green-500/15 flex items-center justify-center animate-[pulse_1.5s_ease-in-out_1]">
+            <CheckCircle2 className="h-10 w-10 text-green-600" />
+          </div>
+          <h2 className="text-xl font-bold text-foreground animate-fade-in">You're All Set! 🎉</h2>
+          <p className="text-sm text-muted-foreground animate-fade-in" style={{ animationDelay: "0.15s", animationFillMode: "both" }}>
+            Your first service is booked. Taking you to your dashboard…
+          </p>
+          <div className="pt-2 animate-fade-in" style={{ animationDelay: "0.3s", animationFillMode: "both" }}>
+            <div className="mx-auto h-1 w-32 rounded-full bg-muted overflow-hidden">
+              <div className="h-full bg-primary rounded-full animate-[slide-progress_2s_ease-in-out_forwards]" />
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   if (showBooking) {
     return (

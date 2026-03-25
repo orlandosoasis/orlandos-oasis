@@ -102,6 +102,14 @@ export default {
           from: { transform: "scale(1.1)" },
           to: { transform: "scale(1)" },
         },
+        "scale-in": {
+          from: { transform: "scale(0.9)", opacity: "0" },
+          to: { transform: "scale(1)", opacity: "1" },
+        },
+        "slide-progress": {
+          from: { width: "0%" },
+          to: { width: "100%" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -109,6 +117,7 @@ export default {
         "fade-in": "fade-in 0.5s ease-out forwards",
         "pulse-soft": "pulse-soft 2s ease-in-out infinite",
         "countdown": "countdown 1s ease-out",
+        "scale-in": "scale-in 0.4s ease-out forwards",
       },
     },
   },

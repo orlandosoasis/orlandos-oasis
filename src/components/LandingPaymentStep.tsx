@@ -229,26 +229,6 @@ const LandingPaymentStep = ({ selectedPlan, timeLeft, email, onChangePlan, onCon
       </Button>
 
 
-      {/* Add-ons in payment summary */}
-      {selectedAddonObjects.length > 0 && (
-        <div className="bg-card rounded-xl p-4 px-5 border border-border">
-          <p className="text-[11px] font-semibold tracking-widest uppercase text-muted-foreground mb-2">ADD-ONS</p>
-          <div className="space-y-1.5">
-            {selectedAddonObjects.map((addon) => (
-              <div key={addon.id} className="flex items-center justify-between">
-                <p className="text-sm text-foreground">{addon.title}</p>
-                <span className="text-sm font-semibold text-foreground">${addon.price}</span>
-              </div>
-            ))}
-            <div className="border-t border-border pt-1.5 mt-1.5">
-              <div className="flex items-center justify-between">
-                <p className="text-sm font-bold text-foreground">Add-ons total</p>
-                <span className="text-sm font-bold text-foreground">${addonsTotal}</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
 
 
     </div>

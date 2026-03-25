@@ -27,12 +27,16 @@ const MEMBER_BENEFITS = [
 ];
 
 const PREMIUM_ADDONS = [
-  "Filter clean/backwash",
-  "Salt cell inspection/clean",
-  "Algae treatment",
-  "Shock treatment",
-  "Tile line scrub",
-  "Green-to-clean recovery",
+  "Weekly Pool/Spa Cleaning",
+  "Chemical Testing & Balancing",
+  "Filter Cleaning / Salt Cell Cleaning & Backwashing",
+  "Pool Equipment Inspection",
+  "Pool Equipment Repair",
+  "Green-to-Clean / Algae Treatment",
+  "Tile & Surface Cleaning",
+  "Acid Washing",
+  "Pool Inspections",
+  "Pool Startups",
 ];
 
 const SERVICE_AREAS = [

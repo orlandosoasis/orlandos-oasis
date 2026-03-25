@@ -46,6 +46,7 @@ import TechMessages from "./pages/TechMessages";
 import AdminDashboard from "./pages/AdminDashboard";
 import Contact from "./pages/Contact";
 import NotFound from "./pages/NotFound";
+import PurchaseSuccess from "./pages/PurchaseSuccess";
 import CustomerLayout from "./components/CustomerLayout";
 
 const queryClient = new QueryClient();

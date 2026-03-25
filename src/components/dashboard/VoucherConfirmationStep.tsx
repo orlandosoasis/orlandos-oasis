@@ -44,7 +44,7 @@ const VoucherConfirmationStep = ({ plan, serviceConfig, selectedAddons = [] }: V
         </p>
         <div className="flex items-end justify-between">
           <div className="space-y-1">
-            <p className="text-base font-bold text-foreground">
+            <p className="font-bold text-foreground text-sm">
               First Month of {freqLabel} Pool Service
             </p>
             <p className="text-sm text-muted-foreground">{poolLabel}</p>

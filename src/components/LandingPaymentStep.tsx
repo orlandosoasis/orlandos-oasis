@@ -54,6 +54,17 @@ const LandingPaymentStep = ({ selectedPlan, timeLeft, email, onChangePlan, onCon
 
   return (
     <div className="space-y-4 animate-fade-in">
+      {/* Timer */}
+      <div className="flex items-center justify-center gap-2">
+        <Clock className="h-4 w-4 text-muted-foreground shrink-0" strokeWidth={1.8} />
+        <p className="text-sm text-muted-foreground">
+          We'll hold it for you for the next
+        </p>
+        <span className="text-sm font-bold text-foreground tabular-nums ml-0.5">
+          {String(timeLeft.minutes).padStart(2, "0")}:{String(timeLeft.seconds).padStart(2, "0")}
+        </span>
+      </div>
+
       {/* Congrats Banner */}
       <div className="bg-primary rounded-2xl py-5 px-6 text-center">
         <p className="text-[15px] font-bold text-primary-foreground leading-relaxed">
@@ -66,17 +77,6 @@ const LandingPaymentStep = ({ selectedPlan, timeLeft, email, onChangePlan, onCon
         <p className="text-base font-bold text-foreground">
           {serviceName} for ${selectedPlan.discountPrice} – {pctOff}% off!
         </p>
-      </div>
-
-      {/* Timer */}
-      <div className="flex items-center justify-center gap-2">
-        <Clock className="h-4 w-4 text-muted-foreground shrink-0" strokeWidth={1.8} />
-        <p className="text-sm text-muted-foreground">
-          We'll hold it for you for the next
-        </p>
-        <span className="text-sm font-bold text-foreground tabular-nums ml-0.5">
-          {String(timeLeft.minutes).padStart(2, "0")}:{String(timeLeft.seconds).padStart(2, "0")}
-        </span>
       </div>
 
       {/* Payment Method */}

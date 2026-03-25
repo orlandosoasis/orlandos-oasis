@@ -95,6 +95,7 @@ const ServicesSection = () => {
       serviceName,
       serviceDescription: selectedPlan.description,
       frequency: serviceConfig.frequency,
+      poolSize: serviceConfig.poolSize,
       originalPrice: selectedPlan.originalPrice,
       discountPrice: selectedPlan.discountPrice,
       customerEmail: formData.email,

@@ -52,7 +52,7 @@ const VoucherConfirmationStep = ({ plan, serviceConfig, selectedAddons = [] }: V
           <div className="text-right">
             <div className="flex items-baseline gap-1.5 justify-end">
               <span className="text-sm text-muted-foreground line-through">${plan.originalPrice}</span>
-              <span className="text-[28px] font-extrabold text-foreground leading-none">${plan.discountPrice}</span>
+              <span className="font-extrabold text-foreground leading-none text-lg">${plan.discountPrice}</span>
             </div>
             <p className="text-[11px] font-bold text-primary tracking-wide mt-1">SAVE ${plan.savings}</p>
           </div>

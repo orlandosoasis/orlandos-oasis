@@ -232,7 +232,7 @@ const BookingFlow = ({ onClose, onComplete, selectedService: selectedServiceProp
             <div className="flex items-center justify-between">
               <div>
                 <h2 className="text-lg font-semibold text-foreground">{selectedService.title}</h2>
-                <p className="text-xs text-muted-foreground">${selectedVoucherPlan.discountPrice}/first month · Save ${selectedVoucherPlan.savings}</p>
+                <p className="text-xs text-muted-foreground">${selectedVoucherPlan.discountPrice}/first month</p>
               </div>
             </div>
 

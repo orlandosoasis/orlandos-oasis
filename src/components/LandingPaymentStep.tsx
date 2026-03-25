@@ -3,6 +3,7 @@ import { Clock, Pencil, Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import type { VoucherPlan } from "@/components/dashboard/VoucherSelectionStep";
+import { getAddonsTotal, getSelectedAddons } from "@/components/AddonsStep";
 
 interface LandingPaymentStepProps {
   selectedPlan: VoucherPlan;
@@ -10,11 +11,12 @@ interface LandingPaymentStepProps {
   email: string;
   onChangePlan: () => void;
   onContinue: () => void;
+  selectedAddons?: string[];
 }
 
 type PaymentMethod = "card" | "paypal" | "gpay" | null;
 
-const LandingPaymentStep = ({ selectedPlan, timeLeft, email, onChangePlan, onContinue }: LandingPaymentStepProps) => {
+const LandingPaymentStep = ({ selectedPlan, timeLeft, email, onChangePlan, onContinue, selectedAddons = [] }: LandingPaymentStepProps) => {
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>(null);
   const [cardData, setCardData] = useState({ number: "", expiry: "", cvc: "" });
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -46,6 +48,9 @@ const LandingPaymentStep = ({ selectedPlan, timeLeft, email, onChangePlan, onCon
 
   const serviceName = selectedPlan.label.replace("Most Popular – ", "");
   const pctOff = Math.round(((selectedPlan.originalPrice - selectedPlan.discountPrice) / selectedPlan.originalPrice) * 100);
+  const addonsTotal = getAddonsTotal(selectedAddons);
+  const selectedAddonObjects = getSelectedAddons(selectedAddons);
+  const totalDueToday = selectedPlan.discountPrice + addonsTotal;
 
   return (
     <div className="space-y-4 animate-fade-in">
@@ -248,6 +253,40 @@ const LandingPaymentStep = ({ selectedPlan, timeLeft, email, onChangePlan, onCon
           </div>
           <p className="text-[11px] font-bold text-primary tracking-wide">{pctOff}% OFF</p>
         </div>
+      </div>
+
+      {/* Add-ons in payment summary */}
+      {selectedAddonObjects.length > 0 && (
+        <div className="bg-card rounded-xl p-4 px-5 border border-border">
+          <p className="text-[11px] font-semibold tracking-widest uppercase text-muted-foreground mb-2">ADD-ONS</p>
+          <div className="space-y-1.5">
+            {selectedAddonObjects.map((addon) => (
+              <div key={addon.id} className="flex items-center justify-between">
+                <p className="text-sm text-foreground">{addon.title}</p>
+                <span className="text-sm font-semibold text-foreground">${addon.price}</span>
+              </div>
+            ))}
+            <div className="border-t border-border pt-1.5 mt-1.5">
+              <div className="flex items-center justify-between">
+                <p className="text-sm font-bold text-foreground">Add-ons total</p>
+                <span className="text-sm font-bold text-foreground">${addonsTotal}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Total Due Today */}
+      <div className="bg-card rounded-xl p-4 px-5 border-2 border-primary">
+        <div className="flex items-center justify-between">
+          <p className="text-base font-bold text-foreground">Total due today</p>
+          <span className="text-[22px] font-extrabold text-foreground">${totalDueToday}</span>
+        </div>
+        {selectedAddonObjects.length > 0 && (
+          <p className="text-xs text-muted-foreground mt-0.5">
+            Base service ${selectedPlan.discountPrice} + Add-ons ${addonsTotal}
+          </p>
+        )}
       </div>
 
     </div>

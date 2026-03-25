@@ -196,21 +196,21 @@ const ServicesSection = () => {
             timeLeft={timeLeft}
             onChangePlan={() => goToStep(1)}
           />
-          <Button
-            onClick={() => goToStep(4)}
-            className="w-full h-14 text-[17px] font-bold rounded-full shadow-md hover:shadow-lg mt-6"
-          >
-            {selectedAddons.length > 0
-              ? `Continue with ${selectedAddons.length} add-on${selectedAddons.length > 1 ? "s" : ""}`
-              : "Skip & Continue"}
-          </Button>
+           <Button
+             onClick={() => goToStep(4)}
+             className="w-full h-14 text-[17px] font-bold rounded-full shadow-md hover:shadow-lg mt-6"
+           >
+             {selectedAddons.length > 0
+               ? `Continue with ${selectedAddons.length} add-on${selectedAddons.length > 1 ? "s" : ""}`
+               : "Continue"}
+           </Button>
         </>
       )}
 
       {/* Step 4: Confirmation */}
       {currentStep === 4 && (
         <>
-          <VoucherConfirmationStep plan={selectedPlan} serviceConfig={serviceConfig} />
+          <VoucherConfirmationStep plan={selectedPlan} serviceConfig={serviceConfig} selectedAddons={selectedAddons} />
           <Button
             onClick={() => goToStep(5)}
             className="w-full h-14 text-[17px] font-bold rounded-full shadow-md hover:shadow-lg mt-6"
@@ -228,6 +228,7 @@ const ServicesSection = () => {
           email={formData.email}
           onChangePlan={() => goToStep(1)}
           onContinue={handlePaymentSubmit}
+          selectedAddons={selectedAddons}
         />
       )}
     </div>

@@ -33,7 +33,8 @@ const VoucherConfirmationStep = ({ plan, serviceConfig, selectedAddons = [] }: V
       {/* Top Banner */}
       <div className="bg-primary rounded-2xl p-5 text-center">
         <p className="text-primary-foreground font-semibold text-[15px] leading-snug">
-          Congratulations, your first pool cleaning will be covered by your ${plan.discountPrice} voucher! If you like your cleaner...
+          Save ${plan.savings} on your first month! Pay only ${plan.discountPrice} for {freqLabel.toLowerCase()} pool service
+          {selectedAddonObjects.length > 0 ? ` — plus ${selectedAddonObjects.length} add-on${selectedAddonObjects.length > 1 ? "s" : ""} selected.` : "."}
         </p>
       </div>
 

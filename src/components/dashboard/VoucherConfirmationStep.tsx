@@ -101,9 +101,6 @@ const VoucherConfirmationStep = ({ plan, serviceConfig, selectedAddons = [] }: V
           <p className="text-lg font-bold text-foreground">
             Get your first month of {freqLabel.toLowerCase()} pool cleaning
           </p>
-          <p className="text-lg font-bold text-foreground">
-            for <span className="text-primary">only ${plan.discountPrice}!</span>
-          </p>
         </div>
 
         <div>

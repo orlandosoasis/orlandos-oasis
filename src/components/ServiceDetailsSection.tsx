@@ -125,35 +125,6 @@ const ServiceDetailsSection = () => {
           </div>
         </div>
 
-        {/* How Orlando's Oasis Works */}
-        <div className="mb-16">
-          <h3 className="text-2xl font-bold text-navy mb-8 text-center">
-            How Orlando's Oasis Works
-          </h3>
-          <div className="grid md:grid-cols-3 gap-6">
-            <div className="text-center p-6 bg-card rounded-xl border border-border">
-              <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-xl font-bold text-primary">1</span>
-              </div>
-              <h4 className="font-semibold text-navy mb-2">Purchase a Service Pass</h4>
-              <p className="text-sm text-muted-foreground">Lock in your first-month savings.</p>
-            </div>
-            <div className="text-center p-6 bg-card rounded-xl border border-border">
-              <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-xl font-bold text-primary">2</span>
-              </div>
-              <h4 className="font-semibold text-navy mb-2">Schedule Your First Visit Online</h4>
-              <p className="text-sm text-muted-foreground">Pick a time window that works for you.</p>
-            </div>
-            <div className="text-center p-6 bg-card rounded-xl border border-border">
-              <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-xl font-bold text-primary">3</span>
-              </div>
-              <h4 className="font-semibold text-navy mb-2">Enjoy a Clear, Balanced Pool</h4>
-              <p className="text-sm text-muted-foreground">We handle the routine so you don't have to.</p>
-            </div>
-          </div>
-        </div>
 
         {/* What's Included */}
         <div className="mb-16">

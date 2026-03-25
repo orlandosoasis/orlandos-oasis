@@ -72,11 +72,17 @@ const LandingPaymentStep = ({ selectedPlan, timeLeft, email, onChangePlan, onCon
         </p>
       </div>
 
-      {/* Deal Row */}
-      <div className="bg-muted rounded-xl py-3.5 px-5 text-center">
-        <p className="text-base font-bold text-foreground">
-          {serviceName} for ${selectedPlan.discountPrice} – {pctOff}% off!
-        </p>
+      {/* Total Due Today */}
+      <div className="bg-card rounded-2xl p-5 px-6 border border-border shadow-sm">
+        <div className="flex items-center justify-between">
+          <p className="text-base font-bold text-foreground">Total due today</p>
+          <span className="font-extrabold text-foreground leading-none text-lg">${totalDueToday}</span>
+        </div>
+        {selectedAddonObjects.length > 0 && (
+          <p className="text-xs text-muted-foreground mt-1">
+            Base service ${selectedPlan.discountPrice} + Add-ons ${addonsTotal}
+          </p>
+        )}
       </div>
 
       {/* Payment Method */}

@@ -184,12 +184,6 @@ const ServiceDetailsSection = () => {
         </div>
 
 
-        {/* CTA */}
-        <div className="text-center mb-16">
-          <Button onClick={scrollToVoucher} size="lg" className="h-14 px-8 text-lg font-semibold">
-            Get a Discount Voucher
-          </Button>
-        </div>
 
         {/* About Orlando's Oasis */}
         <div className="mb-16">

@@ -181,8 +181,11 @@ const AddonsStep = ({ selectedAddons, onToggleAddon, serviceConfig, timeLeft, on
                 >
                   {isSelected && <Check className="h-3.5 w-3.5" />}
                 </div>
-                <div className="space-y-0.5">
-                  <p className="text-sm font-semibold text-foreground leading-snug">{addon.title}</p>
+                <div className="space-y-0.5 flex-1">
+                  <div className="flex items-start justify-between gap-2">
+                    <p className="text-sm font-semibold text-foreground leading-snug">{addon.title}</p>
+                    <span className="text-sm font-bold text-foreground shrink-0">${addon.price}</span>
+                  </div>
                   <p className="text-xs text-muted-foreground leading-relaxed">{addon.description}</p>
                 </div>
               </div>

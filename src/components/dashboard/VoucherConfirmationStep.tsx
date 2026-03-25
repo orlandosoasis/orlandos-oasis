@@ -1,6 +1,7 @@
 import { Check } from "lucide-react";
 import type { VoucherPlan } from "./VoucherSelectionStep";
 import type { ServiceConfig } from "@/components/ServiceConfigStep";
+import { ADDONS, getAddonsTotal, getSelectedAddons } from "@/components/AddonsStep";
 
 const POOL_SIZE_LABELS: Record<string, string> = {
   small: "Small Pool",
@@ -17,12 +18,15 @@ const FREQUENCY_LABELS: Record<string, string> = {
 interface VoucherConfirmationStepProps {
   plan: VoucherPlan;
   serviceConfig: ServiceConfig;
+  selectedAddons?: string[];
 }
 
-const VoucherConfirmationStep = ({ plan, serviceConfig }: VoucherConfirmationStepProps) => {
+const VoucherConfirmationStep = ({ plan, serviceConfig, selectedAddons = [] }: VoucherConfirmationStepProps) => {
   const poolLabel = POOL_SIZE_LABELS[serviceConfig.poolSize] || serviceConfig.poolSize;
   const freqLabel = FREQUENCY_LABELS[serviceConfig.frequency] || serviceConfig.frequency;
-  const summaryLine = `First Month of ${freqLabel} Pool Service · ${poolLabel}`;
+  const addonsTotal = getAddonsTotal(selectedAddons);
+  const selectedAddonObjects = getSelectedAddons(selectedAddons);
+  const totalDueToday = plan.discountPrice + addonsTotal;
 
   return (
     <div className="space-y-6 animate-fade-in">
@@ -55,14 +59,50 @@ const VoucherConfirmationStep = ({ plan, serviceConfig }: VoucherConfirmationSte
         </div>
       </div>
 
+      {/* Add-ons Summary */}
+      {selectedAddonObjects.length > 0 && (
+        <div className="bg-card rounded-2xl p-5 px-6 border border-border shadow-sm">
+          <p className="text-[11px] font-semibold tracking-widest uppercase text-muted-foreground mb-3">
+            ADD-ONS
+          </p>
+          <div className="space-y-2.5">
+            {selectedAddonObjects.map((addon) => (
+              <div key={addon.id} className="flex items-center justify-between">
+                <p className="text-sm text-foreground">{addon.title}</p>
+                <span className="text-sm font-semibold text-foreground">${addon.price}</span>
+              </div>
+            ))}
+            <div className="border-t border-border pt-2.5 mt-2.5">
+              <div className="flex items-center justify-between">
+                <p className="text-sm font-bold text-foreground">Add-ons total</p>
+                <span className="text-sm font-bold text-foreground">${addonsTotal}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Total Due Today */}
+      <div className="bg-card rounded-2xl p-5 px-6 border-2 border-primary shadow-sm">
+        <div className="flex items-center justify-between">
+          <p className="text-base font-bold text-foreground">Total due today</p>
+          <span className="text-[28px] font-extrabold text-foreground leading-none">${totalDueToday}</span>
+        </div>
+        {selectedAddonObjects.length > 0 && (
+          <p className="text-xs text-muted-foreground mt-1">
+            Base service ${plan.discountPrice} + Add-ons ${addonsTotal}
+          </p>
+        )}
+      </div>
+
       {/* Voucher Details Card */}
       <div className="bg-card border border-border rounded-2xl p-6 shadow-sm">
         <div className="text-center mb-5">
           <p className="text-base font-bold text-foreground">
-            Save ${plan.savings} with your voucher on
+            $25 voucher applied to your first month of service.
           </p>
-          <p className="text-base text-foreground">
-            your <span className="font-semibold">first month</span> of {freqLabel.toLowerCase()} pool service.
+          <p className="text-sm text-muted-foreground mt-1">
+            Add-ons are billed separately.
           </p>
         </div>
 

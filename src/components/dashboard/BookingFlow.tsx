@@ -34,7 +34,7 @@ interface BookingFlowProps {
 const TOTAL_STEPS = 2;
 
 const BookingFlow = ({ onClose, onComplete, selectedService: selectedServiceProp, standalone }: BookingFlowProps) => {
-  const { setBooking } = useBooking();
+  const { setBooking, checkoutData } = useBooking();
   const { user, updateUser } = useAuth();
   const [step, setStep] = useState(0);
 

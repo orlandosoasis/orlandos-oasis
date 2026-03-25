@@ -41,7 +41,6 @@ function configToPlan(config: ServiceConfig): VoucherPlan {
 
 const ServicesSection = () => {
   const navigate = useNavigate();
-  const { signup, login, isAuthenticated } = useAuth();
   const { setCheckoutData } = useBooking();
 
   const [serviceConfig, setServiceConfig] = useState<ServiceConfig>({
@@ -49,8 +48,6 @@ const ServicesSection = () => {
     frequency: "weekly",
   });
   const [currentStep, setCurrentStep] = useState(1);
-  const [bookingComplete, setBookingComplete] = useState(false);
-  const [autoLoginFailed, setAutoLoginFailed] = useState(false);
   const [selectedAddons, setSelectedAddons] = useState<string[]>([]);
   const [formData, setFormData] = useState<LandingFormData>({
     firstName: "",

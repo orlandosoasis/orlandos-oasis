@@ -303,7 +303,7 @@ const BookingFlow = ({ onClose, onComplete, selectedService: selectedServiceProp
                 <div className="flex items-start gap-1.5 mt-2.5 bg-primary/10 rounded-lg px-3 py-2">
                   <Info className="h-3 w-3 text-primary shrink-0 mt-0.5" />
                   <p className="text-[10px] text-primary leading-tight">
-                    Arrival time cannot be guaranteed.
+                    Arrival time cannot be guaranteed. Our team will do their best to arrive as close to the selected time window as possible.
                   </p>
                 </div>
               </div>

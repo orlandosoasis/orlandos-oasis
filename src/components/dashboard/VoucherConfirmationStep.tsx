@@ -29,7 +29,7 @@ const VoucherConfirmationStep = ({ plan, serviceConfig, selectedAddons = [] }: V
   const totalDueToday = plan.discountPrice + addonsTotal;
 
   return (
-    <div className="space-y-6 animate-fade-in">
+    <div className="space-y-2 animate-fade-in">
       {/* Top Banner */}
       <div className="bg-primary rounded-2xl p-5 text-center">
         <p className="text-primary-foreground font-semibold text-[15px] leading-snug">

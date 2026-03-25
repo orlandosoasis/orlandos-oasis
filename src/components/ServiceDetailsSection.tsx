@@ -183,28 +183,6 @@ const ServiceDetailsSection = () => {
           </div>
         </div>
 
-        {/* Service Areas */}
-        <div className="mb-16 text-center">
-          <h3 className="text-2xl font-bold text-navy mb-4">
-            Service Areas
-          </h3>
-          <p className="text-muted-foreground mb-6">Currently serving:</p>
-          <div className="flex flex-wrap justify-center gap-3 mb-4">
-            {SERVICE_AREAS.map((area) => (
-              <span
-                key={area.city}
-                className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 text-primary rounded-full font-medium"
-              >
-                <MapPin className="h-4 w-4" />
-                {area.city}, {area.state}
-              </span>
-            ))}
-          </div>
-          <p className="text-muted-foreground mb-4">Expanding across Florida next.</p>
-          <button className="text-sm text-primary underline hover:text-primary/80 transition-colors">
-            Want us in your city? Join the waitlist.
-          </button>
-        </div>
 
         {/* CTA */}
         <div className="text-center mb-16">

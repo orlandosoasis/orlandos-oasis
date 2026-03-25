@@ -14,7 +14,7 @@ const EVERY_VISIT_ITEMS = [
   "Vacuuming pool as needed",
   "Emptying skimmer and pump baskets",
   "Water chemistry testing and balancing",
-  "Adding necessary chemicals (chlorine, acid, etc.)",
+  "Adding necessary chemicals",
   "Filter system check",
   "Equipment inspection (pump, timer, system)",
   "Water level monitoring",

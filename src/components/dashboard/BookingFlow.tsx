@@ -211,6 +211,10 @@ const BookingFlow = ({ onClose, onComplete, selectedService: selectedServiceProp
                 {accessMethod === "home" ? "Owner will be home" : accessMethod === "gate" ? "Gate code" : accessMethod === "key" ? "Key on property" : "Custom instructions"}
               </span>
             </div>
+            <div className="flex justify-between text-sm">
+              <span className="text-muted-foreground">Pets on Property</span>
+              <span className="font-medium text-foreground">{hasPets ? "Yes" : "No"}</span>
+            </div>
           </div>
 
           <Button onClick={() => onComplete()} className="w-full h-14 text-[17px] font-bold rounded-2xl shadow-lg">

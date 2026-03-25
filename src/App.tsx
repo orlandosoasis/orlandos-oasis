@@ -46,6 +46,7 @@ import TechMessages from "./pages/TechMessages";
 import AdminDashboard from "./pages/AdminDashboard";
 import Contact from "./pages/Contact";
 import NotFound from "./pages/NotFound";
+import PurchaseSuccess from "./pages/PurchaseSuccess";
 import CustomerLayout from "./components/CustomerLayout";
 
 const queryClient = new QueryClient();
@@ -95,6 +96,7 @@ const App = () => (
             <Route path="/tech/messages" element={<TechMessages />} />
             <Route path="/admin-dashboard" element={<AdminDashboard />} />
             <Route path="/contact" element={<Contact />} />
+            <Route path="/purchase-success" element={<PurchaseSuccess />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

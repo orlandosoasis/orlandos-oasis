@@ -65,12 +65,6 @@ const LandingPaymentStep = ({ selectedPlan, timeLeft, email, onChangePlan, onCon
         </span>
       </div>
 
-      {/* Congrats Banner */}
-      <div className="bg-primary rounded-2xl py-5 px-6 text-center">
-        <p className="text-[15px] font-bold text-primary-foreground leading-relaxed">
-          Congratulations, you reserved one of our last<br />remaining discount pool services for…
-        </p>
-      </div>
 
       {/* Total Due Today */}
       <div className="bg-card rounded-2xl p-5 px-6 border border-border shadow-sm">

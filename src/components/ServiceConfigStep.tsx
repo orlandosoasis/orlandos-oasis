@@ -224,7 +224,7 @@ const ServiceConfigStep = ({ config, onConfigChange }: ServiceConfigStepProps) =
             <p className="text-xs text-primary font-medium">$25 off applied</p>
           </div>
           <div className="text-right">
-            <span className="text-3xl font-extrabold text-primary tabular-nums">${firstMonthPrice}</span>
+            <span className="font-extrabold text-primary tabular-nums text-lg">${firstMonthPrice}</span>
           </div>
         </div>
 

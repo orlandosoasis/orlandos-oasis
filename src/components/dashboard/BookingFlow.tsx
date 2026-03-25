@@ -247,73 +247,76 @@ const BookingFlow = ({ onClose, onComplete, selectedService: selectedServiceProp
               </div>
             </div>
 
-            {/* Date picker */}
-            <div>
-              <p className="text-[11px] font-semibold tracking-[0.8px] uppercase text-muted-foreground mb-2.5">SELECT DATE</p>
-              <div className="bg-card rounded-2xl border border-border p-5 shadow-sm">
-                <div className="flex items-center justify-between mb-3.5">
-                  <button onClick={prevMonth} disabled={isPrevDisabled} className="w-[30px] h-[30px] rounded-lg bg-primary/10 flex items-center justify-center text-primary hover:bg-primary/20 transition-colors disabled:opacity-30 disabled:cursor-not-allowed">
-                    <ChevronLeft className="h-3.5 w-3.5" />
-                  </button>
-                  <span className="text-[15px] font-semibold text-foreground">{MONTHS[calMonth]} {calYear}</span>
-                  <button onClick={nextMonth} className="w-[30px] h-[30px] rounded-lg bg-primary/10 flex items-center justify-center text-primary hover:bg-primary/20 transition-colors">
-                    <ChevronRight className="h-3.5 w-3.5" />
-                  </button>
-                </div>
-                <div className="grid grid-cols-7 gap-1">
-                  {DAYS.map((d) =>
-                <div key={d} className="text-center text-[10px] font-medium tracking-[0.6px] text-muted-foreground py-1 pb-2">{d}</div>
-                )}
-                  {Array.from({ length: firstDayOfWeek }).map((_, i) => <div key={`e-${i}`} className="aspect-square" />)}
-                  {Array.from({ length: daysInMonth }).map((_, i) => {
-                  const day = i + 1;
-                  const thisDate = new Date(calYear, calMonth, day);
-                  const isPast = thisDate < today;
-                  const isSelected = isSameDay(thisDate, selectedDate);
-                  return (
-                    <button key={day} disabled={isPast} onClick={() => !isPast && setSelectedDate(thisDate)}
-                    className={`aspect-square flex items-center justify-center rounded-[10px] text-[13px] transition-all border-2 ${
-                    isPast ? "text-muted-foreground/25 cursor-not-allowed border-transparent" :
-                    isSelected ? "bg-primary text-primary-foreground font-semibold border-primary shadow-md" :
-                    "text-foreground border-transparent hover:bg-primary/10 hover:text-primary cursor-pointer"}`
-                    }>
-                      
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+              {/* Date picker */}
+              <div>
+                <p className="text-[11px] font-semibold tracking-[0.8px] uppercase text-muted-foreground mb-2.5">SELECT DATE</p>
+                <div className="bg-card rounded-2xl border border-border p-5 shadow-sm h-full">
+                  <div className="flex items-center justify-between mb-3.5">
+                    <button onClick={prevMonth} disabled={isPrevDisabled} className="w-[30px] h-[30px] rounded-lg bg-primary/10 flex items-center justify-center text-primary hover:bg-primary/20 transition-colors disabled:opacity-30 disabled:cursor-not-allowed">
+                      <ChevronLeft className="h-3.5 w-3.5" />
+                    </button>
+                    <span className="text-[15px] font-semibold text-foreground">{MONTHS[calMonth]} {calYear}</span>
+                    <button onClick={nextMonth} className="w-[30px] h-[30px] rounded-lg bg-primary/10 flex items-center justify-center text-primary hover:bg-primary/20 transition-colors">
+                      <ChevronRight className="h-3.5 w-3.5" />
+                    </button>
+                  </div>
+                  <div className="grid grid-cols-7 gap-1">
+                    {DAYS.map((d) =>
+                  <div key={d} className="text-center text-[10px] font-medium tracking-[0.6px] text-muted-foreground py-1 pb-2">{d}</div>
+                  )}
+                    {Array.from({ length: firstDayOfWeek }).map((_, i) => <div key={`e-${i}`} className="aspect-square" />)}
+                    {Array.from({ length: daysInMonth }).map((_, i) => {
+                    const day = i + 1;
+                    const thisDate = new Date(calYear, calMonth, day);
+                    const isPast = thisDate < today;
+                    const isSelected = isSameDay(thisDate, selectedDate);
+                    return (
+                      <button key={day} disabled={isPast} onClick={() => !isPast && setSelectedDate(thisDate)}
+                      className={`aspect-square flex items-center justify-center rounded-[10px] text-[13px] transition-all border-2 ${
+                      isPast ? "text-muted-foreground/25 cursor-not-allowed border-transparent" :
+                      isSelected ? "bg-primary text-primary-foreground font-semibold border-primary shadow-md" :
+                      "text-foreground border-transparent hover:bg-primary/10 hover:text-primary cursor-pointer"}`
+                      }>
                         {day}
                       </button>);
-
-                })}
+                  })}
+                  </div>
+                  <p className="flex items-center gap-1.5 text-secondary-foreground text-sm mt-4">
+                    Selected: <strong>{MONTHS[selectedDate.getMonth()].slice(0, 3)} {selectedDate.getDate()}, {selectedDate.getFullYear()}, {FULL_DAYS[selectedDate.getDay()]}</strong>
+                  </p>
                 </div>
-                <p className="flex items-center gap-1.5 text-secondary-foreground text-sm mt-4">
-                  Selected: <strong>{MONTHS[selectedDate.getMonth()].slice(0, 3)} {selectedDate.getDate()}, {selectedDate.getFullYear()}, {FULL_DAYS[selectedDate.getDay()]}</strong>
-                </p>
               </div>
-            </div>
 
-            {/* Arrival window */}
-            <div>
-              <p className="text-[11px] font-semibold tracking-[0.8px] uppercase text-muted-foreground mb-2.5">PREFERRED ARRIVAL WINDOW</p>
-              <div className="flex items-center gap-2 mb-3">
-                <Info className="h-4 w-4 text-muted-foreground shrink-0" />
-                <p className="text-xs text-muted-foreground">
-                  Arrival time cannot be guaranteed, but we will do our best to arrive as close to the scheduled time as possible.
-                </p>
-              </div>
-              <div className="grid grid-cols-3 gap-2.5">
-                {[
-              { value: "morning" as const, icon: "🌅", title: "Morning", label: "8am–12pm" },
-              { value: "afternoon" as const, icon: "☀️", title: "Afternoon", label: "12pm–4pm" },
-              { value: "evening" as const, icon: "🌤️", title: "Evening", label: "4pm–6pm" }].
-              map((opt) =>
-              <button key={opt.value} type="button" onClick={() => setTimeWindow(opt.value)}
-              className={`flex flex-col items-center justify-center rounded-xl border-2 py-5 px-2 transition-all text-center ${
-              timeWindow === opt.value ? "border-primary bg-primary/[0.07] text-primary" : "border-border hover:border-primary/40 hover:bg-primary/5"}`
-              }>
-                
-                    <span className="text-2xl mb-1.5">{opt.icon}</span>
-                    <span className="font-semibold mb-0.5 text-sm">{opt.title}</span>
-                    <span className="text-xs font-medium">{opt.label}</span>
-                  </button>
-              )}
+              {/* Arrival window */}
+              <div>
+                <p className="text-[11px] font-semibold tracking-[0.8px] uppercase text-muted-foreground mb-2.5">PREFERRED ARRIVAL WINDOW</p>
+                <div className="bg-card rounded-2xl border border-border p-5 shadow-sm h-full flex flex-col">
+                  <div className="flex items-center gap-2 mb-4">
+                    <Info className="h-4 w-4 text-muted-foreground shrink-0" />
+                    <p className="text-xs text-muted-foreground">
+                      Arrival time cannot be guaranteed, but we will do our best to arrive as close to the scheduled time as possible.
+                    </p>
+                  </div>
+                  <div className="flex flex-col gap-2.5 flex-1">
+                    {[
+                  { value: "morning" as const, icon: "🌅", title: "Morning", label: "8am–12pm" },
+                  { value: "afternoon" as const, icon: "☀️", title: "Afternoon", label: "12pm–4pm" },
+                  { value: "evening" as const, icon: "🌤️", title: "Evening", label: "4pm–6pm" }].
+                  map((opt) =>
+                  <button key={opt.value} type="button" onClick={() => setTimeWindow(opt.value)}
+                  className={`flex items-center gap-3 rounded-xl border-2 py-4 px-4 transition-all text-left flex-1 ${
+                  timeWindow === opt.value ? "border-primary bg-primary/[0.07] text-primary" : "border-border hover:border-primary/40 hover:bg-primary/5"}`
+                  }>
+                      <span className="text-2xl">{opt.icon}</span>
+                      <div>
+                        <span className="font-semibold text-sm block">{opt.title}</span>
+                        <span className="text-xs font-medium">{opt.label}</span>
+                      </div>
+                    </button>
+                  )}
+                  </div>
+                </div>
               </div>
             </div>
           </div>

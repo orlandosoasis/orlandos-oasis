@@ -113,7 +113,7 @@ const LandingContactStep = ({
           <div className="text-right">
             <div className="flex items-baseline gap-1.5 justify-end">
               <span className="text-sm text-muted-foreground line-through">${monthlyPrice}</span>
-              <span className="text-[22px] font-extrabold text-foreground">${discountPrice}</span>
+              <span className="font-extrabold text-foreground text-lg">${discountPrice}</span>
             </div>
             <p className="text-[11px] font-bold text-primary tracking-wide mt-0.5">$25 OFF</p>
           </div>

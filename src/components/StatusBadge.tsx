@@ -1,7 +1,7 @@
 import { Clock, CheckCircle2, Loader2, XCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-export type ServiceStatus = "scheduled" | "in_progress" | "completed" | "cancelled" | "reschedule_requested";
+export type ServiceStatus = "scheduled" | "in_progress" | "completed" | "cancelled" | "reschedule_requested" | "technician_to_be_assigned";
 
 const STATUS_CONFIG: Record<
   ServiceStatus,
@@ -41,6 +41,13 @@ const STATUS_CONFIG: Record<
     bgClass: "bg-[#FFF4DB]",
     textClass: "text-[#4a3505]",
     borderClass: "border border-[#FAE5C5]",
+  },
+  technician_to_be_assigned: {
+    label: "Pool Technician to Be Assigned",
+    icon: Clock,
+    bgClass: "bg-[#DBECFF]",
+    textClass: "text-[#05204a]",
+    borderClass: "border border-[#C5DFFA]",
   },
 };
 

@@ -92,7 +92,7 @@ export default function RescheduleModal({ open, onOpenChange, booking, onResched
               <div>
                 <p className="text-xs text-muted-foreground">Assigned Pool Technician</p>
                 <p className="text-sm font-bold text-foreground mt-0.5">
-                  {technician.isAssigned ? technician.name : "Pool Technician to be assigned"}
+                  Pool Technician to Be Assigned
                 </p>
               </div>
             </div>

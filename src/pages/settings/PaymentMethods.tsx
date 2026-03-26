@@ -229,17 +229,6 @@ const PaymentMethods = () => {
 
 
 
-              {/* Savings Indicator */}
-              {hasVoucher && !cancelled && (
-                <>
-                  <Separator />
-                  <div className="p-6">
-                    <div className="bg-primary/5 border border-primary/15 rounded-xl px-4 py-3 text-center text-sm font-medium text-primary">
-                      You saved ${savings} on your first month 🎉
-                    </div>
-                  </div>
-                </>
-              )}
 
               <Separator />
 

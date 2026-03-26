@@ -227,26 +227,7 @@ const PaymentMethods = () => {
                 </div>
               </div>
 
-              <Separator />
 
-              {/* Recurring Schedule */}
-              <div className="p-6 space-y-3">
-                <h3 className="text-[15px] font-semibold text-foreground">Recurring Schedule</h3>
-                <div className="space-y-2.5 text-sm">
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Frequency</span>
-                    <span className="font-medium text-foreground">{frequencyLabel}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Next Service Date</span>
-                    <span className="font-medium text-foreground">{cancelled ? "None scheduled" : serviceDateStr}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Auto-renew</span>
-                    <span className="font-medium text-foreground">{cancelled ? "No" : "Yes"}</span>
-                  </div>
-                </div>
-              </div>
 
               {/* Savings Indicator */}
               {hasVoucher && !cancelled && (

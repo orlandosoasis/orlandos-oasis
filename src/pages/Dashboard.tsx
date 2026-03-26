@@ -400,19 +400,13 @@ const UpcomingRow = ({ service, canReschedule, onReschedule }: { service: Servic
       <div className="flex-1 min-w-0">
         <p className="text-sm font-semibold text-foreground">{booking.selectedPass.label}</p>
         <p className="text-xs text-muted-foreground truncate">
-          Pool Technician to be assigned · {TIME_LABELS[booking.scheduleData.timeWindow]}
+          {isPendingReschedule ? "Pool Technician to Be Assigned" : "Pool Technician to be assigned"} · {TIME_LABELS[booking.scheduleData.timeWindow]}
         </p>
       </div>
       {isPendingReschedule ? (
-        <Button
-          variant="outline"
-          size="sm"
-          disabled
-          className="shrink-0 gap-1.5 text-xs opacity-60 cursor-not-allowed"
-        >
-          <CalendarClock className="h-3.5 w-3.5" />
-          Pending Approval
-        </Button>
+        <div className="flex flex-col items-end gap-1 shrink-0">
+          <StatusBadge status="technician_to_be_assigned" className="text-[10px] px-2 py-1" />
+        </div>
       ) : (
         <Button
           variant="outline"

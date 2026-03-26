@@ -89,7 +89,7 @@ const PurchaseSuccess = () => {
         </div>
         <h2 className="text-2xl font-bold text-foreground">Payment Successful</h2>
         <p className="text-muted-foreground">
-          Your {serviceName} Pool Service is confirmed. Schedule your first service.
+          Your {serviceName} is confirmed. Schedule your first service.
         </p>
         <Button
           onClick={() => setShowBooking(true)}

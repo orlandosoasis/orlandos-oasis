@@ -214,7 +214,7 @@ const Dashboard = () => {
 
   const handleLogout = () => { logout(); navigate("/login", { replace: true }); };
 
-  const upcomingServices = useMemo(() => services.filter(s => s.booking.status === "scheduled" || s.booking.status === "reschedule_requested"), [services]);
+  const upcomingServices = useMemo(() => services.filter(s => s.booking.status === "scheduled" || s.booking.status === "reschedule_requested" || s.booking.status === "technician_to_be_assigned"), [services]);
   const pastServices = useMemo(() => services.filter(s => s.booking.status === "completed"), [services]);
 
   const nextService = upcomingServices[0] || null;
@@ -232,7 +232,7 @@ const Dashboard = () => {
     setServices(prev =>
       prev.map(s =>
         s.id === rescheduleService.id
-          ? { ...s, booking: { ...s.booking, status: "reschedule_requested" as const, scheduleData: { ...s.booking.scheduleData, selectedDate: newDate, timeWindow: newTimeWindow } } }
+          ? { ...s, booking: { ...s.booking, status: "technician_to_be_assigned" as const, scheduleData: { ...s.booking.scheduleData, selectedDate: newDate, timeWindow: newTimeWindow } } }
           : s
       )
     );
@@ -389,7 +389,7 @@ const UpcomingRow = ({ service, canReschedule, onReschedule }: { service: Servic
   const d = booking.scheduleData.selectedDate;
   const month = SHORT_MONTHS[d.getMonth()].toUpperCase();
   const day = d.getDate();
-  const isPendingReschedule = booking.status === "reschedule_requested";
+  const isPendingReschedule = booking.status === "reschedule_requested" || booking.status === "technician_to_be_assigned";
 
   return (
     <div className="flex items-center gap-4 px-5 py-4">

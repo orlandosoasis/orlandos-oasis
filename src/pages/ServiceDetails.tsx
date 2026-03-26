@@ -86,7 +86,7 @@ const ServiceDetails = () => {
       setBooking({
         ...booking,
         scheduleData: { ...booking.scheduleData, selectedDate: newDate, timeWindow: newTimeWindow },
-        status: "reschedule_requested",
+        status: "technician_to_be_assigned",
       });
     }
   };
@@ -170,12 +170,12 @@ const ServiceDetails = () => {
 
             {!isCompleted && (
               <div className="mt-4 space-y-1.5">
-                {status === "reschedule_requested" ? (
+                {(status === "reschedule_requested" || status === "technician_to_be_assigned") ? (
                   <>
-                    <p className="text-xs text-muted-foreground text-center mb-1.5">Your reschedule request is awaiting approval.</p>
+                    <p className="text-xs text-muted-foreground text-center mb-1.5">Pool Technician to Be Assigned</p>
                     <Button variant="outline" className="w-full gap-1.5 opacity-60 cursor-not-allowed" disabled>
                       <CalendarClock className="h-4 w-4" />
-                      Pending Approval
+                      Pending Assignment
                     </Button>
                   </>
                 ) : (

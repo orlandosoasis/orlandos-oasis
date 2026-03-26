@@ -214,7 +214,7 @@ const Dashboard = () => {
 
   const handleLogout = () => { logout(); navigate("/login", { replace: true }); };
 
-  const upcomingServices = useMemo(() => services.filter(s => s.booking.status === "scheduled" || s.booking.status === "reschedule_requested"), [services]);
+  const upcomingServices = useMemo(() => services.filter(s => s.booking.status === "scheduled" || s.booking.status === "reschedule_requested" || s.booking.status === "technician_to_be_assigned"), [services]);
   const pastServices = useMemo(() => services.filter(s => s.booking.status === "completed"), [services]);
 
   const nextService = upcomingServices[0] || null;
@@ -232,7 +232,7 @@ const Dashboard = () => {
     setServices(prev =>
       prev.map(s =>
         s.id === rescheduleService.id
-          ? { ...s, booking: { ...s.booking, status: "reschedule_requested" as const, scheduleData: { ...s.booking.scheduleData, selectedDate: newDate, timeWindow: newTimeWindow } } }
+          ? { ...s, booking: { ...s.booking, status: "technician_to_be_assigned" as const, scheduleData: { ...s.booking.scheduleData, selectedDate: newDate, timeWindow: newTimeWindow } } }
           : s
       )
     );
@@ -348,7 +348,7 @@ const NextServiceCard = ({ service, onViewDetails }: { service: ServiceInstance;
       <div className="relative h-[190px] overflow-hidden">
         <PoolSceneHero />
         <div className="absolute top-3 left-3">
-          <StatusBadge status="scheduled" />
+          <StatusBadge status={booking.status === "technician_to_be_assigned" ? "technician_to_be_assigned" : "scheduled"} />
         </div>
         <div className="absolute top-3 right-3 bg-card/90 backdrop-blur-sm rounded-xl px-2.5 py-1.5 flex items-center gap-2 shadow-md border border-border">
           <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-primary to-oasis-aqua flex items-center justify-center text-primary-foreground text-sm font-bold">
@@ -389,7 +389,7 @@ const UpcomingRow = ({ service, canReschedule, onReschedule }: { service: Servic
   const d = booking.scheduleData.selectedDate;
   const month = SHORT_MONTHS[d.getMonth()].toUpperCase();
   const day = d.getDate();
-  const isPendingReschedule = booking.status === "reschedule_requested";
+  const isPendingReschedule = booking.status === "reschedule_requested" || booking.status === "technician_to_be_assigned";
 
   return (
     <div className="flex items-center gap-4 px-5 py-4">
@@ -400,19 +400,13 @@ const UpcomingRow = ({ service, canReschedule, onReschedule }: { service: Servic
       <div className="flex-1 min-w-0">
         <p className="text-sm font-semibold text-foreground">{booking.selectedPass.label}</p>
         <p className="text-xs text-muted-foreground truncate">
-          Pool Technician to be assigned · {TIME_LABELS[booking.scheduleData.timeWindow]}
+          {isPendingReschedule ? "Pool Technician to Be Assigned" : "Pool Technician to be assigned"} · {TIME_LABELS[booking.scheduleData.timeWindow]}
         </p>
       </div>
       {isPendingReschedule ? (
-        <Button
-          variant="outline"
-          size="sm"
-          disabled
-          className="shrink-0 gap-1.5 text-xs opacity-60 cursor-not-allowed"
-        >
-          <CalendarClock className="h-3.5 w-3.5" />
-          Pending Approval
-        </Button>
+        <div className="flex flex-col items-end gap-1 shrink-0">
+          <StatusBadge status="technician_to_be_assigned" className="text-[10px] px-2 py-1" />
+        </div>
       ) : (
         <Button
           variant="outline"

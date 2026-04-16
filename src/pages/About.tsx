@@ -49,7 +49,7 @@ const About = () => {
                 Tampa · Orlando · Fort Lauderdale
               </span>
               <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-white leading-tight mb-5">
-                About<br /><span className="text-oasis-aqua">Orlando's Oasis</span>
+                About<br /><span className="text-white">Orlando's Oasis</span>
               </h1>
               <p className="text-base md:text-lg text-white/70 font-light max-w-xl leading-relaxed mb-8">
                 Professional pool maintenance across Tampa, Orlando &amp; Fort Lauderdale — built on consistency, clear communication, and water that stays balanced week after week.

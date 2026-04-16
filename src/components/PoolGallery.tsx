@@ -51,9 +51,7 @@ const PoolGallery = () => {
                 loading="lazy"
                 width={1024}
                 height={768}
-                className={`w-full object-cover transition-transform duration-500 group-hover:scale-105 ${
-                  i === 0 ? "aspect-[4/3] md:aspect-[16/10]" : "aspect-[4/3]"
-                }`}
+                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
               />
               {/* Hover overlay */}
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />

@@ -21,7 +21,7 @@ const HeroSection = () => {
       <div className="absolute inset-0 bg-gradient-to-r from-navy/60 via-navy/40 to-navy/30" />
 
       {/* Content */}
-      <div className="relative z-10 container max-w-6xl mx-auto px-4 md:px-8 pt-20 pb-12">
+      <div className="relative z-10 container max-w-6xl mx-auto px-4 md:px-8 py-16">
         <div className="max-w-2xl mx-auto text-center">
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-white leading-tight mb-4 drop-shadow-lg">
             Crystal Clear Pools,

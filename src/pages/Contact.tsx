@@ -2,6 +2,7 @@ import { useState } from "react";
 import { z } from "zod";
 import { Phone, Mail, MapPin } from "lucide-react";
 import Header from "@/components/Header";
+import PageHero from "@/components/PageHero";
 import Footer from "@/components/Footer";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -118,27 +119,12 @@ const Contact = () => {
     <div className="min-h-screen flex flex-col bg-background">
       <Header />
 
-      {/* Hero */}
-      <section className="relative min-h-[320px] flex items-end overflow-hidden bg-navy">
-        <img
-          src={contactHero}
-          alt="Crystal clear pool service"
-          className="absolute inset-0 w-full h-full object-cover opacity-55"
-          width={1920}
-          height={640}
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-navy/30 to-navy/75" />
-        <div className="relative z-10 w-full max-w-[1100px] mx-auto px-5 md:px-10 pb-12">
-          <h1 className="text-4xl md:text-6xl font-extrabold text-primary-foreground uppercase tracking-wide leading-none">
-            Contact <span className="text-oasis-aqua">Orlando's Oasis</span>
-          </h1>
-        </div>
-      </section>
-
-      {/* Wave divider */}
-      <svg className="block -mt-px bg-navy" viewBox="0 0 1440 54" preserveAspectRatio="none" style={{ height: 54 }}>
-        <path d="M0,32 C240,54 480,10 720,32 C960,54 1200,10 1440,32 L1440,54 L0,54Z" fill="hsl(var(--background))" />
-      </svg>
+      <PageHero
+        imageSrc={contactHero}
+        imageAlt="Crystal clear pool service"
+        title={<>Contact<br /><span className="text-white">Orlando's Oasis</span></>}
+        description="Have a question about pool service, repairs, or want to get started? Send us a message and our team will follow up shortly."
+      />
 
       {/* Contact Section: Info + Form Grid */}
       <section className="py-16 px-5 md:px-10">

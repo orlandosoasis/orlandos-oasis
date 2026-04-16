@@ -5,6 +5,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import servicesHero from "@/assets/services-hero.jpg";
+import PageHero from "@/components/PageHero";
 import servicesWeekly from "@/assets/services-weekly.jpg";
 import servicesChemistry from "@/assets/services-chemistry.jpg";
 import servicesEquipment from "@/assets/services-equipment.jpg";
@@ -102,28 +103,13 @@ const Services = () => {
       <Header />
       <main className="flex-1">
 
-        {/* Hero */}
-        <section className="relative min-h-[400px] md:min-h-[450px] flex items-center">
-          <img
-            src={servicesHero}
-            alt="Pool technician cleaning a residential swimming pool"
-            className="absolute inset-0 w-full h-full object-cover object-center"
-            style={{ transform: 'scaleX(-1)' }}
-            width={1920}
-            height={800}
-          />
-          <div className="absolute inset-0 bg-black/45" />
-          <div className="relative z-10 container max-w-6xl mx-auto px-4 md:px-8 py-16">
-            <div className="max-w-2xl" style={{ textShadow: '0 2px 8px rgba(0,0,0,0.4)' }}>
-              <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-white leading-tight mb-5">
-                Pool Services That<br /><span className="text-white">Keep It Crystal Clear</span>
-              </h1>
-              <p className="text-base md:text-lg max-w-xl leading-relaxed font-normal text-primary-foreground">
-                From weekly maintenance to deep restoration, we handle everything so you can enjoy your pool without the hassle.
-              </p>
-            </div>
-          </div>
-        </section>
+        <PageHero
+          imageSrc={servicesHero}
+          imageAlt="Pool technician cleaning a residential swimming pool"
+          title={<>Pool Services That<br /><span className="text-white">Keep It Crystal Clear</span></>}
+          description="From weekly maintenance to deep restoration, we handle everything so you can enjoy your pool without the hassle."
+          flipImage
+        />
 
         {/* Core Services Overview */}
         <section id="services-overview" className="py-16 md:py-20 px-4 bg-background">

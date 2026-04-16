@@ -121,23 +121,9 @@ const Services = () => {
               <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-white leading-tight mb-5">
                 Pool Services That<br /><span className="text-oasis-aqua">Keep It Crystal Clear</span>
               </h1>
-              <p className="text-base md:text-lg text-white/85 font-light max-w-xl leading-relaxed mb-8">
+              <p className="text-base md:text-lg text-white/85 font-light max-w-xl leading-relaxed">
                 From weekly maintenance to deep restoration — we handle everything so you can enjoy your pool without the hassle.
               </p>
-              <div className="flex items-center gap-4 mt-8 flex-wrap text-sm">
-                <div className="flex items-center gap-1">
-                  <span className="font-semibold text-white">Excellent</span>
-                  <div className="flex">
-                    {[...Array(5)].map((_, i) => (
-                      <Star key={i} className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                    ))}
-                  </div>
-                </div>
-                <span className="w-px h-5 bg-white/20" />
-                <span className="text-white/70"><strong className="text-white">2,847</strong> verified reviews</span>
-                <span className="w-px h-5 bg-white/20" />
-                <span className="text-white/70">Available <strong className="text-white">7 days a week</strong></span>
-              </div>
             </div>
           </div>
         </section>

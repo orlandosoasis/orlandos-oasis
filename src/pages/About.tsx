@@ -4,6 +4,7 @@ import TopBanner from "@/components/TopBanner";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
+import PageHero from "@/components/PageHero";
 import aboutHero from "@/assets/about-hero.jpg";
 
 const PILLARS = [
@@ -25,27 +26,12 @@ const About = () => {
       <Header />
       <main className="flex-1">
 
-        {/* Hero */}
-        <section className="relative min-h-[400px] md:min-h-[450px] flex items-center">
-          <img
-            src={aboutHero}
-            alt="Professional pool service team working on a residential pool"
-            className="absolute inset-0 w-full h-full object-cover object-center"
-            width={1920}
-            height={800}
-          />
-          <div className="absolute inset-0 bg-black/45" />
-          <div className="relative z-10 container max-w-6xl mx-auto px-4 md:px-8 py-16">
-            <div className="max-w-2xl" style={{ textShadow: '0 2px 8px rgba(0,0,0,0.4)' }}>
-              <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-white leading-tight mb-5">
-                About<br /><span className="text-white">Orlando's Oasis</span>
-              </h1>
-              <p className="text-base md:text-lg max-w-xl leading-relaxed mb-8 font-normal text-primary-foreground">
-                Professional pool maintenance across Tampa, Orlando &amp; Fort Lauderdale, built on consistency, clear communication, and water that stays balanced week after week.
-              </p>
-            </div>
-          </div>
-        </section>
+        <PageHero
+          imageSrc={aboutHero}
+          imageAlt="Professional pool service team working on a residential pool"
+          title={<>About<br /><span className="text-white">Orlando's Oasis</span></>}
+          description="Professional pool maintenance across Tampa, Orlando & Fort Lauderdale, built on consistency, clear communication, and water that stays balanced week after week."
+        />
 
         {/* Who We Are */}
         <section className="py-16 md:py-20 px-4 bg-background">

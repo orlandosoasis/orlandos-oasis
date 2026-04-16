@@ -22,7 +22,7 @@ const HeroSection = () => {
 
       {/* Content */}
       <div className="relative z-10 container max-w-6xl mx-auto px-4 md:px-8 pt-20 pb-12">
-        <div className="max-w-2xl ml-auto text-right md:text-right">
+        <div className="max-w-2xl mx-auto text-center">
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-white leading-tight mb-4 drop-shadow-lg">
             Crystal Clear Pools,
             <br />
@@ -37,7 +37,7 @@ const HeroSection = () => {
             🎉 Up to 85% off your first month with the Executive Plan
           </p>
 
-          <div className="flex justify-end">
+          <div className="flex justify-center">
             <Button
               onClick={handleGetVoucher}
               className="h-12 px-8 text-base font-semibold shadow-lg"
@@ -47,7 +47,7 @@ const HeroSection = () => {
           </div>
 
           {/* Trust Badge */}
-          <div className="flex items-center gap-2 justify-end mt-6">
+          <div className="flex items-center gap-2 justify-center mt-6">
             <span className="font-semibold text-white drop-shadow-sm">Excellent</span>
             <div className="flex">
               {[...Array(5)].map((_, i) => (

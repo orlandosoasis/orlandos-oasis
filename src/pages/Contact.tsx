@@ -134,12 +134,6 @@ const Contact = () => {
             <h2 className="text-2xl md:text-3xl font-extrabold text-foreground uppercase tracking-wide mb-2">
               Get in Touch
             </h2>
-            {/* Wave accent */}
-            <div className="flex gap-1 mb-5">
-              <span className="block h-[3px] w-9 rounded-full bg-primary" />
-              <span className="block h-[3px] w-[18px] rounded-full bg-oasis-aqua" />
-              <span className="block h-[3px] w-[9px] rounded-full bg-oasis-aqua/40" />
-            </div>
             <p className="text-muted-foreground leading-relaxed mb-7">
               Have a question about pool service, repairs, or want to get started? Send us a message and our team will follow up shortly during business hours.
             </p>

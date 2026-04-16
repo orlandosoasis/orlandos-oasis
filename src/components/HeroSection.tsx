@@ -29,7 +29,7 @@ const HeroSection = () => {
             Zero Hassle
           </h1>
 
-          <p className="text-base md:text-lg text-white/85 mb-3 drop-shadow-sm">
+          <p className="text-base md:text-lg mb-3 drop-shadow-sm text-primary-foreground">
             Professional pool maintenance across Tampa, Orlando &amp; Fort Lauderdale.
           </p>
 

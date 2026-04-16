@@ -6,6 +6,7 @@ import TestimonialCard from "@/components/TestimonialCard";
 import ReviewsSection from "@/components/ReviewsSection";
 import HowItWorks from "@/components/HowItWorks";
 import ServiceDetailsSection from "@/components/ServiceDetailsSection";
+import PoolGallery from "@/components/PoolGallery";
 import FAQSection from "@/components/FAQSection";
 import NewsletterSection from "@/components/NewsletterSection";
 import Footer from "@/components/Footer";
@@ -38,6 +39,7 @@ const Index = () => {
         
         <TestimonialCard />
         <HowItWorks />
+        <PoolGallery />
         <ServiceDetailsSection />
         <FAQSection />
 

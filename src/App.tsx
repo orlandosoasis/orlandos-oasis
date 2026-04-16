@@ -47,6 +47,7 @@ import AdminDashboard from "./pages/AdminDashboard";
 import Contact from "./pages/Contact";
 import NotFound from "./pages/NotFound";
 import About from "./pages/About";
+import Services from "./pages/Services";
 import PurchaseSuccess from "./pages/PurchaseSuccess";
 import CustomerLayout from "./components/CustomerLayout";
 
@@ -85,6 +86,7 @@ const App = () => (
             </Route>
 
             <Route path="/about" element={<About />} />
+            <Route path="/services" element={<Services />} />
             <Route path="/terms" element={<Terms />} />
             <Route path="/privacy" element={<Privacy />} />
             <Route path="/tech-dashboard" element={<TechnicianDashboard />} />

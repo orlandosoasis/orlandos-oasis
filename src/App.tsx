@@ -46,6 +46,7 @@ import TechMessages from "./pages/TechMessages";
 import AdminDashboard from "./pages/AdminDashboard";
 import Contact from "./pages/Contact";
 import NotFound from "./pages/NotFound";
+import About from "./pages/About";
 import PurchaseSuccess from "./pages/PurchaseSuccess";
 import CustomerLayout from "./components/CustomerLayout";
 
@@ -83,6 +84,7 @@ const App = () => (
               <Route path="/account-settings/experience-level" element={<ExperienceLevel />} />
             </Route>
 
+            <Route path="/about" element={<About />} />
             <Route path="/terms" element={<Terms />} />
             <Route path="/privacy" element={<Privacy />} />
             <Route path="/tech-dashboard" element={<TechnicianDashboard />} />

@@ -117,12 +117,12 @@ const About = () => {
             <p className="text-white/65 max-w-[660px] mx-auto mb-12 leading-relaxed">
               We believe homeowners should enjoy their pools — not worry about chemistry, equipment failure, or missed service. Every visit is guided by that promise.
             </p>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-px bg-white/10 rounded-xl overflow-hidden border border-white/10">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-px bg-white/20 rounded-xl overflow-hidden border border-white/20">
               {PILLARS.map((p) => (
-                <div key={p.title} className="bg-white/[0.04] hover:bg-white/[0.08] transition-colors px-5 py-7 text-center">
-                  <p.icon className="h-7 w-7 text-oasis-aqua mx-auto mb-3" />
-                  <h3 className="text-sm font-semibold text-white mb-1">{p.title}</h3>
-                  <p className="text-[13px] text-white/50 leading-relaxed">{p.desc}</p>
+                <div key={p.title} className="bg-card transition-colors px-5 py-7 text-center">
+                  <p.icon className="h-7 w-7 text-primary mx-auto mb-3" />
+                  <h3 className="text-sm font-semibold text-foreground mb-1">{p.title}</h3>
+                  <p className="text-[13px] text-muted-foreground leading-relaxed">{p.desc}</p>
                 </div>
               ))}
             </div>

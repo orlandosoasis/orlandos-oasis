@@ -117,7 +117,7 @@ const Services = () => {
               <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-white leading-tight mb-5">
                 Pool Services That<br /><span className="text-oasis-aqua">Keep It Crystal Clear</span>
               </h1>
-              <p className="text-base md:text-lg text-white/85 font-light max-w-xl leading-relaxed">
+              <p className="text-base md:text-lg text-white/85 max-w-xl leading-relaxed font-normal">
                 From weekly maintenance to deep restoration — we handle everything so you can enjoy your pool without the hassle.
               </p>
             </div>

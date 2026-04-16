@@ -60,21 +60,6 @@ const About = () => {
                   <Link to="/#discount-voucher">View Our Services</Link>
                 </Button>
               </div>
-              <div className="flex items-center gap-4 mt-8 flex-wrap text-sm">
-                <div className="flex items-center gap-1">
-                  <span className="font-semibold text-white">Excellent</span>
-                  <div className="flex">
-                    {[...Array(5)].map((_, i) => (
-                      <Star key={i} className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                    ))}
-                  </div>
-                  <span className="text-white/70">4.8 / 5</span>
-                </div>
-                <span className="w-px h-5 bg-white/20" />
-                <span className="text-white/70"><strong className="text-white">2,847</strong> verified reviews</span>
-                <span className="w-px h-5 bg-white/20" />
-                <span className="text-white/70"><strong className="text-white">100%</strong> satisfaction guarantee</span>
-              </div>
             </div>
           </div>
         </section>

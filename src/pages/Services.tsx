@@ -289,14 +289,14 @@ const Services = () => {
               Save $25 on your first month. Book online in under 60 seconds.
             </p>
             <div className="flex gap-3 justify-center flex-wrap">
+              <Button variant="outline" size="lg" className="border-white/30 text-white hover:bg-white/10 hover:text-white hover:border-white/50" asChild>
+                <Link to="/contact">Contact Us</Link>
+              </Button>
               <Button variant="secondary" size="lg" className="bg-white text-navy hover:bg-white/90 font-semibold" asChild>
                 <Link to="/#discount-voucher">
                   Get a Discount Voucher
                   <ArrowRight className="h-4 w-4 ml-1" />
                 </Link>
-              </Button>
-              <Button variant="outline" size="lg" className="border-white/30 text-white hover:bg-white/10 hover:text-white hover:border-white/50" asChild>
-                <Link to="/contact">Contact Us</Link>
               </Button>
             </div>
           </div>

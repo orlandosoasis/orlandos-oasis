@@ -25,12 +25,12 @@ const Header = memo(function Header() {
   };
 
   return (
-    <header className="sticky top-0 left-0 right-0 z-30 bg-navy/80 backdrop-blur-md border-b border-white/10">
+    <header className="sticky top-0 left-0 right-0 z-30 bg-card shadow-sm border-b border-border">
       <div className="container max-w-6xl mx-auto px-4 md:px-8 py-3 flex items-center justify-between">
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2">
           <LogoImg />
-          <span className="text-xl font-bold text-white">Orlando's Oasis</span>
+          <span className="text-xl font-bold text-foreground">Orlando's Oasis</span>
         </Link>
 
         {/* Nav Links + Login */}
@@ -41,7 +41,7 @@ const Header = memo(function Header() {
                 <Link
                   key={item.label}
                   to={item.href}
-                  className="text-sm font-medium text-white/80 hover:text-white transition-colors"
+                  className="text-sm font-medium text-foreground/70 hover:text-primary transition-colors"
                 >
                   {item.label}
                 </Link>
@@ -50,7 +50,7 @@ const Header = memo(function Header() {
                   key={item.label}
                   href={item.href}
                   onClick={(e) => handleNavClick(e, item.href)}
-                  className="text-sm font-medium text-white/80 hover:text-white transition-colors"
+                  className="text-sm font-medium text-foreground/70 hover:text-primary transition-colors"
                 >
                   {item.label}
                 </a>
@@ -59,7 +59,7 @@ const Header = memo(function Header() {
           </nav>
 
           <Link to="/login">
-            <Button variant="outline" size="sm" className="border-white/30 text-white bg-white/10 hover:bg-white/20 hover:text-white">
+            <Button size="sm">
               Log In
             </Button>
           </Link>

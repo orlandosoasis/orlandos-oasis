@@ -115,7 +115,7 @@ const Services = () => {
           <div className="relative z-10 container max-w-6xl mx-auto px-4 md:px-8 py-16">
             <div className="max-w-2xl" style={{ textShadow: '0 2px 8px rgba(0,0,0,0.4)' }}>
               <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-white leading-tight mb-5">
-                Pool Services That<br /><span className="text-oasis-aqua">Keep It Crystal Clear</span>
+                Pool Services That<br /><span className="text-white">Keep It Crystal Clear</span>
               </h1>
               <p className="text-base md:text-lg text-white/85 max-w-xl leading-relaxed font-normal">
                 From weekly maintenance to deep restoration — we handle everything so you can enjoy your pool without the hassle.

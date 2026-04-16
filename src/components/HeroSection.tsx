@@ -48,7 +48,7 @@ const HeroSection = () => {
             <span className="font-semibold text-white drop-shadow-sm">Excellent</span>
             <div className="flex">
               {[...Array(5)].map((_, i) => (
-                <Star key={i} className="h-4 w-4 fill-oasis text-oasis" />
+                <Star key={i} className="h-4 w-4 fill-yellow-400 text-yellow-400" />
               ))}
             </div>
             <span className="text-sm text-white/70">

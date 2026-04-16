@@ -5,7 +5,7 @@ import logo from "@/assets/oo-logo.png";
 
 const NAV_ITEMS = [
   { label: "Home", href: "/" },
-  { label: "About", href: "#about" },
+  { label: "About", href: "/about" },
   { label: "Services", href: "#discount-voucher" },
   { label: "Service Area", href: "#service-area" },
   { label: "Contact", href: "/contact" },

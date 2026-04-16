@@ -114,10 +114,6 @@ const Services = () => {
           <div className="absolute inset-0 bg-black/45" />
           <div className="relative z-10 container max-w-6xl mx-auto px-4 md:px-8 py-16">
             <div className="max-w-2xl" style={{ textShadow: '0 2px 8px rgba(0,0,0,0.4)' }}>
-              <span className="inline-flex items-center gap-2 bg-primary/15 border border-primary/30 text-oasis-aqua px-3 py-1 rounded-full text-xs font-semibold tracking-wide uppercase mb-5">
-                <span className="w-1.5 h-1.5 rounded-full bg-oasis-aqua" />
-                Professional Pool Services
-              </span>
               <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-white leading-tight mb-5">
                 Pool Services That<br /><span className="text-oasis-aqua">Keep It Crystal Clear</span>
               </h1>

@@ -33,9 +33,6 @@ const HeroSection = () => {
             Professional pool maintenance across Tampa, Orlando &amp; Fort Lauderdale.
           </p>
 
-          <p className="text-sm md:text-base text-oasis font-semibold mb-6 drop-shadow-sm">
-            🎉 Up to 85% off your first month with the Executive Plan
-          </p>
 
           <div className="flex justify-center">
             <Button

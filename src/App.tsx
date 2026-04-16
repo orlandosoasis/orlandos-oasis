@@ -36,6 +36,7 @@ import CleaningNotes from "./pages/settings/CleaningNotes";
 import Preferences from "./pages/settings/Preferences";
 import ExperienceLevel from "./pages/settings/ExperienceLevel";
 import TechnicianLanding from "./pages/TechnicianLanding";
+import ServiceAreas from "./pages/ServiceAreas";
 import TechnicianApplication from "./pages/TechnicianApplication";
 import TechPoolList from "./pages/TechPoolList";
 import TechPoolDetails from "./pages/TechPoolDetails";
@@ -87,6 +88,7 @@ const App = () => (
 
             <Route path="/about" element={<About />} />
             <Route path="/services" element={<Services />} />
+            <Route path="/service-areas" element={<ServiceAreas />} />
             <Route path="/terms" element={<Terms />} />
             <Route path="/privacy" element={<Privacy />} />
             <Route path="/tech-dashboard" element={<TechnicianDashboard />} />

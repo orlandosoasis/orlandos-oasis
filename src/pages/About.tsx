@@ -100,13 +100,6 @@ const About = () => {
                 <p className="text-muted-foreground leading-relaxed mb-6">
                   No guesswork. No missed visits. Just clean, clear water you can count on.
                 </p>
-                <div className="flex flex-wrap gap-2">
-                  {SERVICE_TAGS.map((tag) => (
-                    <span key={tag} className="bg-secondary border border-border text-muted-foreground px-3 py-1.5 rounded-full text-sm font-medium">
-                      {tag}
-                    </span>
-                  ))}
-                </div>
               </div>
             </div>
           </div>

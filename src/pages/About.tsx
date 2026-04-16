@@ -50,12 +50,6 @@ const About = () => {
               <p className="text-base md:text-lg text-white/70 font-light max-w-xl leading-relaxed mb-8">
                 Professional pool maintenance across Tampa, Orlando &amp; Fort Lauderdale — built on consistency, clear communication, and water that stays balanced week after week.
               </p>
-              <div className="flex gap-3 flex-wrap">
-                <Button onClick={handleScrollToVoucher}>Get a Discount Voucher</Button>
-                <Button variant="outline" className="border-white/30 text-white hover:bg-white/10 hover:text-white hover:border-white/50" asChild>
-                  <Link to="/#discount-voucher">View Our Services</Link>
-                </Button>
-              </div>
             </div>
           </div>
         </section>

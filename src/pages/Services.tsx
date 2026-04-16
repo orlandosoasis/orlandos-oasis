@@ -108,6 +108,7 @@ const Services = () => {
             src={servicesHero}
             alt="Pool technician cleaning a residential swimming pool"
             className="absolute inset-0 w-full h-full object-cover object-center"
+            style={{ transform: 'scaleX(-1)' }}
             width={1920}
             height={800}
           />

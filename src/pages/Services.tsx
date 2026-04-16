@@ -124,14 +124,6 @@ const Services = () => {
               <p className="text-base md:text-lg text-white/85 font-light max-w-xl leading-relaxed mb-8">
                 From weekly maintenance to deep restoration — we handle everything so you can enjoy your pool without the hassle.
               </p>
-              <div className="flex gap-3 flex-wrap">
-                <Button asChild>
-                  <Link to="/#discount-voucher">Get a Discount Voucher</Link>
-                </Button>
-                <Button variant="outline" className="border-white/30 text-white hover:bg-white/10 hover:text-white hover:border-white/50" asChild>
-                  <a href="#services-overview">Explore Services</a>
-                </Button>
-              </div>
               <div className="flex items-center gap-4 mt-8 flex-wrap text-sm">
                 <div className="flex items-center gap-1">
                   <span className="font-semibold text-white">Excellent</span>

@@ -102,10 +102,10 @@ const ServiceConfigStep = ({ config, onConfigChange }: ServiceConfigStepProps) =
               >
                 <RadioGroupItem value={size.value} className="shrink-0" />
                 <div className="flex-1 min-w-0">
-                  <p className={`font-semibold text-sm ${isSelected ? "text-primary" : "text-foreground"}`}>
+                  <p className={`text-sm ${isSelected ? "text-primary" : "text-foreground"} font-bold`}>
                     {size.label}
                   </p>
-                  <p className="text-xs text-muted-foreground">{size.sublabel}</p>
+                  <p className="text-muted-foreground text-sm">{size.sublabel}</p>
                 </div>
                 <p className={`text-lg font-bold shrink-0 tabular-nums text-right ${isSelected ? "text-primary" : "text-foreground"}`}>
                   ${size.price}<span className="text-xs font-medium text-muted-foreground">/mo</span>
@@ -144,10 +144,10 @@ const ServiceConfigStep = ({ config, onConfigChange }: ServiceConfigStepProps) =
                 )}
                 <RadioGroupItem value={freq.value} className="shrink-0" />
                 <div className="flex-1 min-w-0">
-                  <p className={`font-semibold text-sm ${isSelected ? "text-primary" : "text-foreground"}`}>
+                  <p className={`text-sm ${isSelected ? "text-primary" : "text-foreground"} font-bold`}>
                     {freq.label}
                   </p>
-                  <p className="text-xs text-muted-foreground">{freq.description}</p>
+                  <p className="text-muted-foreground text-sm">{freq.description}</p>
                 </div>
                 <p className={`text-sm font-bold shrink-0 tabular-nums text-right min-w-[90px] ${
                   freq.multiplier === 1
@@ -189,7 +189,7 @@ const ServiceConfigStep = ({ config, onConfigChange }: ServiceConfigStepProps) =
 
       {/* Section D: Pricing Breakdown */}
       <div className="bg-card border border-border rounded-2xl p-5 space-y-3">
-        <p className="text-[11px] text-muted-foreground uppercase tracking-widest font-semibold">
+        <p className="text-muted-foreground uppercase tracking-widest font-semibold text-xs">
           Price Breakdown
         </p>
 
@@ -221,7 +221,7 @@ const ServiceConfigStep = ({ config, onConfigChange }: ServiceConfigStepProps) =
         <div className="flex justify-between items-center bg-primary/5 rounded-xl px-4 py-4 -mx-1">
           <div>
             <p className="text-base font-bold text-foreground">Today you pay</p>
-            <p className="text-xs text-primary font-medium">$25 off applied</p>
+            <p className="text-xs text-primary font-semibold">$25 off applied</p>
           </div>
           <div className="text-right">
             <span className="font-extrabold text-primary tabular-nums text-lg">${firstMonthPrice}</span>

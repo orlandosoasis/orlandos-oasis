@@ -79,7 +79,7 @@ const ReviewsSection = () => {
             <div className="flex-1 min-w-0">
               <div className="flex items-center justify-between gap-2 mb-1 flex-wrap">
                 <h4 className="font-semibold text-navy">{review.name}</h4>
-                <span className="text-xs text-muted-foreground">{review.time}</span>
+                <span className="text-sm text-navy-light">{review.time}</span>
               </div>
               <p className="text-sm text-muted-foreground mb-2">{review.location}</p>
               <div className="flex gap-0.5 mb-3">
@@ -87,7 +87,7 @@ const ReviewsSection = () => {
               <Star key={i} className="h-4 w-4 fill-primary text-primary" />
               )}
               </div>
-              <p className="text-navy leading-relaxed text-sm">{review.text}</p>
+              <p className="leading-relaxed text-sm text-muted-foreground">{review.text}</p>
             </div>
           </div>
         </div>

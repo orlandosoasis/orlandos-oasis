@@ -31,7 +31,7 @@ const PoolGallery = () => {
             Real Pools. Real Results.
           </h2>
           <p className="text-muted-foreground max-w-[560px] mx-auto">
-            See the difference professional weekly maintenance makes — crystal clear water, every time.
+            See the difference professional weekly maintenance makes. Crystal clear water, every time.
           </p>
         </div>
 

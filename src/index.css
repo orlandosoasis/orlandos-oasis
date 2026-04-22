@@ -220,20 +220,7 @@
   display: none;
 }
 
-/* Hero CTA → Sky Blue */
-.hp-theme main > section:first-of-type button {
-  background: hsl(var(--hp-sky)) !important;
-  color: #fff !important;
-  border-radius: 8px !important;
-  font-weight: 600;
-  box-shadow: 0 2px 8px rgba(0, 180, 216, 0.25);
-  transition: all 0.3s ease;
-}
-.hp-theme main > section:first-of-type button:hover {
-  background: hsl(var(--hp-sky-hover)) !important;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 180, 216, 0.35);
-}
+/* Hero CTA inherits default Button (primary) styling to match Log In */
 
 /* Stars → Amber */
 .hp-theme .fill-primary.text-primary,

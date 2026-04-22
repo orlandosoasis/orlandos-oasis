@@ -47,7 +47,7 @@ const NewsletterSection = () => {
         ) : (
           <>
             <Mail className="h-10 w-10 text-oasis-aqua mx-auto mb-4" />
-            <h2 className="text-2xl md:text-3xl font-bold text-white mb-2">
+            <h2 className="text-2xl md:text-3xl font-bold mb-2" style={{ color: '#ffffff' }}>
               Stay in the Loop
             </h2>
             <p className="text-card/70 mb-6 max-w-md mx-auto">

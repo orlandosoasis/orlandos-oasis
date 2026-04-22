@@ -28,7 +28,7 @@ const HowItWorks = () => {
             How It Works
           </h2>
           <p className="text-lg text-muted-foreground/90 max-w-[600px] mx-auto mb-14 md:mb-16">
-            Getting your pool serviced has never been easier. Book in under 60 seconds.
+            Getting your pool serviced has never been easier.<br />Book in under 60 seconds.
           </p>
         </div>
 

@@ -1,24 +1,49 @@
 import { Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useEffect, useState } from "react";
 import heroImage from "@/assets/hero-pool-resort.png";
+import heroVideo from "@/assets/hero-villa.mp4";
 
 const HeroSection = () => {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.matchMedia("(max-width: 767px)").matches);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
+
   const handleGetVoucher = () => {
     const el = document.getElementById("discount-voucher");
     el?.scrollIntoView({ behavior: "smooth" });
   };
 
   return (
-    <section className="relative min-h-[600px] md:min-h-[650px] flex items-center">
-      {/* Background Image */}
-      <img
-        src={heroImage}
-        alt="Beautiful residential swimming pool with tropical landscaping"
-        className="absolute inset-0 w-full h-full object-cover object-center"
-      />
+    <section className="relative min-h-[600px] md:min-h-[650px] flex items-center overflow-hidden">
+      {/* Background Video / Image Fallback */}
+      {isMobile ? (
+        <img
+          src={heroImage}
+          alt="Beautiful residential swimming pool with tropical landscaping"
+          className="absolute inset-0 w-full h-full object-cover object-center"
+        />
+      ) : (
+        <video
+          src={heroVideo}
+          poster={heroImage}
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="auto"
+          aria-hidden="true"
+          className="absolute inset-0 w-full h-full object-cover object-center"
+        />
+      )}
 
-      {/* Dark Overlay */}
-      <div className="absolute inset-0 bg-black/45" />
+      {/* Dark Overlay (30%) */}
+      <div className="absolute inset-0 bg-black/30" />
 
       {/* Content */}
       <div className="relative z-10 container max-w-6xl mx-auto px-4 md:px-8 py-16">

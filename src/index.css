@@ -207,7 +207,7 @@
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, hsl(var(--hp-ocean)) 0%, hsl(var(--hp-navy)) 100%);
+  background: #ffffff;
   z-index: 0;
 }
 .hp-theme main > section:first-of-type > .absolute.inset-0.bg-black\/45 {

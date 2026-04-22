@@ -144,7 +144,7 @@ const ServiceConfigStep = ({ config, onConfigChange }: ServiceConfigStepProps) =
                 )}
                 <RadioGroupItem value={freq.value} className="shrink-0" />
                 <div className="flex-1 min-w-0">
-                  <p className={`text-sm ${isSelected ? "text-primary" : "text-foreground"} font-bold`}>
+                  <p className={`text-sm ${isSelected ? "text-primary" : "text-foreground"} font-bold font-sans`}>
                     {freq.label}
                   </p>
                   <p className="text-muted-foreground text-sm">{freq.description}</p>
@@ -189,28 +189,28 @@ const ServiceConfigStep = ({ config, onConfigChange }: ServiceConfigStepProps) =
 
       {/* Section D: Pricing Breakdown */}
       <div className="bg-card border border-border rounded-2xl p-5 space-y-3">
-        <p className="text-muted-foreground uppercase tracking-widest font-semibold text-xs">
+        <p className="text-muted-foreground uppercase tracking-widest text-xs font-bold">
           Price Breakdown
         </p>
 
         {/* Line items */}
         <div className="space-y-1.5">
-          <div className="flex justify-between items-center">
-            <p className="text-sm text-muted-foreground">
+          <div className="flex justify-between items-center text-sm">
+            <p className="text-muted-foreground text-sm">
               {POOL_SIZES.find(s => s.value === config.poolSize)!.label}
             </p>
-            <p className="text-sm text-muted-foreground tabular-nums">${basePrice}/mo</p>
+            <p className="text-muted-foreground text-sm tabular-nums">${basePrice}/mo</p>
           </div>
-          <div className="flex justify-between items-center">
-            <p className="text-sm text-muted-foreground">
+          <div className="flex justify-between items-center text-sm">
+            <p className="text-muted-foreground text-sm">
               {freqOption.label}
             </p>
-            <p className="text-sm text-muted-foreground tabular-nums">
+            <p className="text-muted-foreground text-sm tabular-nums">
               {freqOption.multiplier === 1 ? "Included" : `+$${extraPrice}/mo`}
             </p>
           </div>
-          <div className="flex justify-between items-center">
-            <p className="text-sm text-muted-foreground">First-month voucher</p>
+          <div className="flex justify-between items-center text-sm">
+            <p className="text-muted-foreground text-sm">First-month voucher</p>
             <p className="text-sm font-semibold text-primary tabular-nums">−$25</p>
           </div>
         </div>
@@ -220,15 +220,15 @@ const ServiceConfigStep = ({ config, onConfigChange }: ServiceConfigStepProps) =
         {/* Due today — primary focus */}
         <div className="flex justify-between items-center bg-primary/5 rounded-xl px-4 py-4 -mx-1">
           <div>
-            <p className="text-base font-bold text-foreground">Today you pay</p>
-            <p className="text-xs text-primary font-semibold">$25 off applied</p>
+            <p className="font-bold text-foreground text-sm">Today you pay</p>
+            <p className="text-primary font-semibold text-sm">$25 off applied</p>
           </div>
           <div className="text-right">
             <span className="font-extrabold text-primary tabular-nums text-lg">${firstMonthPrice}</span>
           </div>
         </div>
 
-        <p className="text-[11px] text-muted-foreground leading-relaxed">
+        <p className="text-muted-foreground leading-relaxed text-xs">
           Then ${monthlyPrice}/mo. Final price may vary based on pool condition.
         </p>
       </div>

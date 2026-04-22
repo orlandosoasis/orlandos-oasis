@@ -3,7 +3,7 @@ import logo from "@/assets/oo-logo.png";
 
 const Footer = () => {
   return (
-    <footer className="bg-navy py-8">
+    <footer className="bg-navy py-8" style={{ background: 'linear-gradient(135deg, hsl(200 100% 40%), hsl(215 100% 25%))' }}>
       <div className="container max-w-6xl mx-auto px-4 md:px-8">
         <div className="flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex flex-wrap items-center gap-4 text-sm">

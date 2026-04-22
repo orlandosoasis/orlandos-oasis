@@ -78,8 +78,8 @@ const ReviewsSection = () => {
             </div>
             <div className="flex-1 min-w-0">
               <div className="flex items-center justify-between gap-2 mb-1 flex-wrap">
-                <h4 className="font-semibold text-navy">{review.name}</h4>
-                <span className="text-sm text-navy-light">{review.time}</span>
+                <h4 className="text-navy text-base font-bold">{review.name}</h4>
+                <span className="text-navy-light text-xs">{review.time}</span>
               </div>
               <p className="text-sm text-muted-foreground mb-2">{review.location}</p>
               <div className="flex gap-0.5 mb-3">

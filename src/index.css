@@ -112,9 +112,10 @@
   --hp-sky-hover: 191 100% 36%;   /* #0099B8 */
   --hp-aqua: 187 79% 75%;         /* #90E0EF */
   --hp-bg: 210 25% 98%;           /* #F8FAFB */
-  --hp-border: 213 22% 90%;       /* #E0E6ED */
-  --hp-text: 220 18% 17%;         /* #1F2937 */
-  --hp-text-muted: 220 9% 46%;    /* #6B7280 */
+  --hp-border: 216 14% 84%;       /* #D1D5DB */
+  --hp-text: 221 39% 11%;         /* #111827 */
+  --hp-text-secondary: 215 28% 17%; /* #1F2937 */
+  --hp-text-muted: 217 19% 27%;   /* #374151 */
   --hp-amber: 38 92% 50%;         /* #F59E0B */
 
   /* Override semantic tokens within homepage scope */

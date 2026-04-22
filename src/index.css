@@ -188,6 +188,12 @@
   font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif !important;
 }
 
+/* Allow white headings on dark sections */
+.hp-theme section.bg-navy h2,
+.hp-theme section .text-white {
+  color: #ffffff !important;
+}
+
 /* Mobile scale */
 @media (max-width: 640px) {
   .hp-theme h1 { font-size: 32px; }

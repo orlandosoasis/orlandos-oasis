@@ -37,7 +37,6 @@ const Index = () => {
           </div>
         </section>
         
-        <TestimonialCard />
         <PoolGallery />
         <HowItWorks />
         <ServiceDetailsSection />

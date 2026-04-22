@@ -55,7 +55,7 @@ const HeroSection = () => {
           </h1>
 
           <p className="text-base md:text-lg mb-3 drop-shadow-sm text-primary-foreground">
-            Professional pool maintenance across Tampa, Orlando &amp; Fort Lauderdale.
+            Professional pool maintenance across Tampa,<br />Orlando & Fort Lauderdale.
           </p>
 
 

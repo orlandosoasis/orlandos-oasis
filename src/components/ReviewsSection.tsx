@@ -42,7 +42,7 @@ const ReviewsSection = () => {
 
   return (
     <div className="max-w-[420px] w-full">
-      <h2 className="text-2xl md:text-3xl font-bold text-navy mb-3">
+      <h2 className="text-2xl font-bold text-navy mb-3 md:text-xl">
         Verified Customer Reviews
       </h2>
 

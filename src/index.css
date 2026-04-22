@@ -178,10 +178,21 @@
 .hp-theme button { font-size: 14px; font-weight: 600; }
 .hp-theme label { font-size: 12px; font-weight: 600; }
 
+/* Force consistent section titles across all homepage sections (override Tailwind text-* and font-* classes) */
+.hp-theme section h2 {
+  font-size: 36px !important;
+  font-weight: 600 !important;
+  line-height: 1.2 !important;
+  color: hsl(var(--hp-navy)) !important;
+  letter-spacing: normal !important;
+  font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif !important;
+}
+
 /* Mobile scale */
 @media (max-width: 640px) {
   .hp-theme h1 { font-size: 32px; }
-  .hp-theme h2 { font-size: 28px; }
+  .hp-theme h2,
+  .hp-theme section h2 { font-size: 28px !important; }
   .hp-theme h3 { font-size: 22px; }
 }
 

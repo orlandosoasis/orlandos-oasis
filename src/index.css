@@ -96,15 +96,15 @@
 
   body {
     @apply bg-background text-foreground font-sans antialiased;
-    font-family: 'Inter', sans-serif;
+    font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   }
 }
 
 /* ============================================================
-   HOMEPAGE-ONLY THEME (.hp-theme)
-   Premium pool design system — scoped to landing page only.
+   GLOBAL THEME (promoted from .hp-theme)
+   Premium pool design system — applied app-wide.
    ============================================================ */
-.hp-theme {
+:root, .hp-theme {
   /* Color palette */
   --hp-ocean: 211 100% 40%;       /* #0066CC */
   --hp-navy: 215 100% 25%;        /* #003D82 */
@@ -149,36 +149,18 @@
   font-weight: 400;
 }
 
-.hp-theme h1,
-.hp-theme h2,
-.hp-theme h3,
-.hp-theme h4,
-.hp-theme h5,
-.hp-theme h6,
-.hp-theme p,
-.hp-theme span,
-.hp-theme a,
-.hp-theme button,
-.hp-theme input,
-.hp-theme textarea,
-.hp-theme li,
-.hp-theme blockquote,
-.hp-theme cite,
-.hp-theme label {
+html, body, h1, h2, h3, h4, h5, h6, p, span, a, button, input, textarea, li, blockquote, cite, label {
   font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 }
 
-/* Type scale */
-.hp-theme h1 { font-weight: 700; font-size: 48px; line-height: 1.1; }
-.hp-theme h2 { font-weight: 600; font-size: 36px; line-height: 1.2; color: hsl(var(--hp-navy)); }
-.hp-theme h3 { font-weight: 600; font-size: 28px; line-height: 1.3; color: hsl(var(--hp-navy)); }
-.hp-theme h4 { font-weight: 600; font-size: 20px; line-height: 1.4; color: hsl(var(--hp-navy)); }
-.hp-theme p  { font-size: 16px; font-weight: 400; line-height: 1.6; }
-.hp-theme small { font-size: 14px; font-weight: 400; }
-.hp-theme button { font-size: 14px; font-weight: 600; }
-.hp-theme label { font-size: 12px; font-weight: 600; }
+/* Global type scale */
+h1 { font-weight: 700; font-size: 48px; line-height: 1.1; }
+h2 { font-weight: 600; font-size: 36px; line-height: 1.2; color: hsl(var(--hp-navy)); }
+h3 { font-weight: 600; font-size: 28px; line-height: 1.3; color: hsl(var(--hp-navy)); }
+h4 { font-weight: 600; font-size: 20px; line-height: 1.4; color: hsl(var(--hp-navy)); }
+small { font-size: 14px; font-weight: 400; }
 
-/* Force consistent section titles across all homepage sections (override Tailwind text-* and font-* classes) */
+/* Homepage section heading override (kept for landing sections) */
 .hp-theme section h2 {
   font-size: 36px !important;
   font-weight: 600 !important;
@@ -189,17 +171,16 @@
 }
 
 /* Allow white headings on dark sections */
-.hp-theme section.bg-navy h2,
-.hp-theme section .text-white {
+section.bg-navy h2,
+section .text-white {
   color: #ffffff !important;
 }
 
 /* Mobile scale */
 @media (max-width: 640px) {
-  .hp-theme h1 { font-size: 32px; }
-  .hp-theme h2,
-  .hp-theme section h2 { font-size: 28px !important; }
-  .hp-theme h3 { font-size: 22px; }
+  h1 { font-size: 32px; }
+  h2, .hp-theme section h2 { font-size: 28px !important; }
+  h3 { font-size: 22px; }
 }
 
 /* Hero gradient background — applied to first <section> in main */

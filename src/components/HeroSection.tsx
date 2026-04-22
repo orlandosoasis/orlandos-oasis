@@ -20,8 +20,8 @@ const HeroSection = () => {
   };
 
   return (
-    <section className="px-4 sm:px-6 md:px-8 pt-4 md:pt-6 pb-4 md:pb-6 bg-white">
-      <div className="relative w-full min-h-[70vh] md:min-h-[75vh] rounded-3xl md:rounded-[2rem] overflow-hidden flex flex-col shadow-xl max-w-6xl mx-auto">
+    <section className="px-3 sm:px-4 md:px-6 pt-4 md:pt-6 pb-4 md:pb-6 bg-white">
+      <div className="relative w-full min-h-[70vh] md:min-h-[75vh] rounded-3xl md:rounded-[2rem] overflow-hidden flex flex-col shadow-xl max-w-[1400px] mx-auto">
         {/* Background Video / Image Fallback */}
         {isMobile ? (
           <img

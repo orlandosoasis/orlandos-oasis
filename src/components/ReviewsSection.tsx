@@ -68,7 +68,7 @@ const ReviewsSection = () => {
             className="flex items-start gap-3 animate-fade-in"
             style={{ animationDelay: `${index * 100}ms` }}
           >
-            <div className="w-9 h-9 rounded-full bg-muted flex items-center justify-center text-navy text-xs font-semibold shrink-0">
+            <div className="w-9 h-9 rounded-full bg-muted/50 flex items-center justify-center text-navy text-xs font-semibold shrink-0">
               {review.initials}
             </div>
             <div className="flex-1 min-w-0">

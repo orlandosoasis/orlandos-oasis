@@ -94,7 +94,7 @@ const ServiceConfigStep = ({ config, onConfigChange }: ServiceConfigStepProps) =
             return (
               <label
                 key={size.value}
-                className={`relative flex items-center gap-4 p-4 rounded-xl border-2 cursor-pointer transition-all duration-200 ${
+                className={`relative flex items-center gap-4 p-4 rounded-xl border-2 cursor-pointer transition-all duration-200 hover:shadow-md ${
                   isSelected
                     ? "border-primary bg-primary/5 shadow-md"
                     : "border-border bg-card hover:border-primary/50"

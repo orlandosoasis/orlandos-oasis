@@ -80,16 +80,6 @@ const ServiceDetailsSection = () => {
   return (
     <section className="py-16 bg-background">
       <div className="container max-w-4xl mx-auto px-4">
-        {/* Quality + Convenience Header */}
-        <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold text-navy mb-4">
-            Quality + Convenience
-          </h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-6">
-            Keep your pool crystal clear with Orlando's Oasis. Choose a discounted Service Pass for your first month, schedule online, and manage everything in one place.
-          </p>
-        </div>
-
         {/* How to Choose the Right Service Pass */}
         <div className="mb-16">
           <h3 className="text-2xl font-bold text-navy mb-3 text-center">

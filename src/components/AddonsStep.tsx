@@ -165,7 +165,7 @@ const AddonsStep = ({ selectedAddons, onToggleAddon, serviceConfig, timeLeft, on
               key={addon.id}
               type="button"
               onClick={() => onToggleAddon(addon.id)}
-              className={`w-full text-left rounded-xl border-2 p-4 transition-all ${
+              className={`w-full text-left rounded-xl border p-4 transition-all ${
                 isSelected
                   ? "border-primary bg-primary/5"
                   : "border-border bg-card hover:border-primary/40"

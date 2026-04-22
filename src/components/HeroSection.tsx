@@ -50,7 +50,7 @@ const HeroSection = () => {
         {/* Centered content */}
         <div className="relative z-10 flex-1 flex items-center justify-center px-6">
           <div className="max-w-md mx-auto text-center" style={{ textShadow: '0 2px 16px rgba(0,0,0,0.35)' }}>
-            <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold text-white leading-[1.1] tracking-tight mb-10">
+            <h1 className="text-4xl sm:text-5xl font-extrabold text-white leading-[1.1] tracking-tight mb-10 md:text-8xl">
               Crystal Clear Pools,
               <br />
               Zero Hassle

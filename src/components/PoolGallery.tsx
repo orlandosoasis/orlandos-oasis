@@ -20,17 +20,17 @@ const PoolGallery = () => {
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
 
   return (
-    <section className="py-16 md:py-20 px-4 bg-[hsl(210_60%_12%)]">
+    <section className="py-16 md:py-20 px-4 bg-background">
       <div className="container max-w-6xl mx-auto">
         <div className="text-center mb-12">
-          <span className="inline-flex items-center gap-1.5 bg-white/10 text-white text-xs font-bold tracking-widest uppercase px-3 py-1 rounded-full mb-3">
+          <span className="inline-flex items-center gap-1.5 bg-primary/10 text-primary text-xs font-bold tracking-widest uppercase px-3 py-1 rounded-full mb-3">
             <Camera className="h-3.5 w-3.5" />
             Our Results
           </span>
-          <h2 className="text-2xl md:text-3xl font-bold text-white mb-3">
+          <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-3">
             Real Pools. Real Results.
           </h2>
-          <p className="text-white/70 max-w-[560px] mx-auto">
+          <p className="text-muted-foreground max-w-[560px] mx-auto">
             See the difference professional weekly maintenance makes. Crystal clear water, every time.
           </p>
         </div>

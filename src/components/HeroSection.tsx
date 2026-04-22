@@ -20,7 +20,7 @@ const HeroSection = () => {
   };
 
   return (
-    <section className="relative min-h-[80vh] md:min-h-[88vh] flex flex-col overflow-hidden">
+    <section className="relative min-h-[85vh] md:min-h-[92vh] flex flex-col overflow-hidden">
       {/* Background Video / Image Fallback */}
       {isMobile ? (
         <img
@@ -42,19 +42,20 @@ const HeroSection = () => {
         />
       )}
 
-      {/* Cinematic gradient overlay */}
-      <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/10 to-black/50" />
+      {/* Cinematic dark overlay */}
+      <div className="absolute inset-0 bg-black/45" />
+      <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black/60" />
 
       {/* Centered content */}
-      <div className="relative z-10 flex-1 flex items-center justify-center px-4 md:px-8">
-        <div className="max-w-2xl mx-auto text-center" style={{ textShadow: '0 2px 12px rgba(0,0,0,0.45)' }}>
-          <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold text-white leading-[1.1] tracking-tight mb-6">
+      <div className="relative z-10 flex-1 flex items-center justify-center px-6">
+        <div className="max-w-xl mx-auto text-center" style={{ textShadow: '0 2px 16px rgba(0,0,0,0.5)' }}>
+          <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold text-white leading-[1.1] tracking-tight mb-8">
             Crystal Clear Pools,
             <br />
             Zero Hassle
           </h1>
 
-          <p className="text-base md:text-lg mb-8 text-primary-foreground/90 font-light tracking-wide">
+          <p className="text-base md:text-lg mb-10 text-white/85 font-light tracking-wide">
             Professional pool maintenance across Tampa,<br />Orlando & Fort Lauderdale.
           </p>
 
@@ -69,9 +70,9 @@ const HeroSection = () => {
         </div>
       </div>
 
-      {/* Trust Badge anchored to bottom */}
+      {/* Trust badge anchored at bottom */}
       <div className="relative z-10 pb-8 md:pb-10 px-4">
-        <div className="flex items-center gap-2 justify-center" style={{ textShadow: '0 1px 6px rgba(0,0,0,0.45)' }}>
+        <div className="flex items-center gap-2 justify-center" style={{ textShadow: '0 1px 6px rgba(0,0,0,0.5)' }}>
           <span className="font-semibold text-white text-sm">Excellent</span>
           <div className="flex">
             {[...Array(5)].map((_, i) => (

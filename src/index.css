@@ -227,7 +227,7 @@ a, button { transition: all 0.3s ease; }
   border-bottom: 1px solid hsl(var(--hp-border));
 }
 .hp-theme [class*="rounded-xl"][class*="shadow-sm"]:hover {
-  box-shadow: 0 8px 24px rgba(0, 102, 204, 0.12);
+  box-shadow: none;
 }
 
 /* Rating "4.8" emphasis */

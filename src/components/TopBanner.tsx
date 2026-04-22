@@ -1,7 +1,7 @@
 const TopBanner = () => {
   return (
-    <div className="py-1.5 text-center border-b border-white/10">
-      <p className="font-medium text-sm my-0 text-popover-foreground bg-oasis-teal" style={{ color: 'hsl(var(--hp-navy))' }}>
+    <div className="py-1.5 text-center" style={{ backgroundColor: '#7FD6E0' }}>
+      <p className="font-medium text-sm my-0" style={{ color: '#0F172A' }}>
         Save <span className="font-bold">$25</span> on your first month
       </p>
     </div>

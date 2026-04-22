@@ -20,8 +20,8 @@ const HeroSection = () => {
   };
 
   return (
-    <section className="px-3 sm:px-5 md:px-6 pt-3 md:pt-4 pb-3 md:pb-4 bg-white">
-      <div className="relative w-full min-h-[80vh] md:min-h-[88vh] rounded-2xl md:rounded-3xl overflow-hidden flex flex-col shadow-2xl">
+    <section className="px-4 sm:px-6 md:px-8 pt-4 md:pt-6 pb-4 md:pb-6 bg-white">
+      <div className="relative w-full min-h-[78vh] md:min-h-[84vh] rounded-3xl md:rounded-[2rem] overflow-hidden flex flex-col shadow-xl">
         {/* Background Video / Image Fallback */}
         {isMobile ? (
           <img
@@ -43,20 +43,20 @@ const HeroSection = () => {
           />
         )}
 
-        {/* Stronger cinematic dark overlay */}
-        <div className="absolute inset-0 bg-black/55" />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/30 to-black/70" />
+        {/* Lighter, airier overlay */}
+        <div className="absolute inset-0 bg-black/25" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-transparent to-black/40" />
 
         {/* Centered content */}
         <div className="relative z-10 flex-1 flex items-center justify-center px-6">
-          <div className="max-w-lg mx-auto text-center" style={{ textShadow: '0 2px 16px rgba(0,0,0,0.5)' }}>
-            <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold text-white leading-[1.1] tracking-tight mb-8">
+          <div className="max-w-md mx-auto text-center" style={{ textShadow: '0 2px 16px rgba(0,0,0,0.35)' }}>
+            <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold text-white leading-[1.1] tracking-tight mb-10">
               Crystal Clear Pools,
               <br />
               Zero Hassle
             </h1>
 
-            <p className="text-base md:text-lg mb-10 text-white/85 font-light tracking-wide">
+            <p className="text-base md:text-lg mb-12 text-white/90 font-light tracking-wide">
               Professional pool maintenance across Tampa,<br />Orlando & Fort Lauderdale.
             </p>
 
@@ -72,16 +72,16 @@ const HeroSection = () => {
         </div>
 
         {/* Trust badge anchored at bottom */}
-        <div className="relative z-10 pb-8 md:pb-10 px-4">
-          <div className="flex items-center gap-2 justify-center" style={{ textShadow: '0 1px 6px rgba(0,0,0,0.5)' }}>
-            <span className="font-semibold text-white text-sm">Excellent</span>
+        <div className="relative z-10 pb-10 md:pb-12 px-4">
+          <div className="flex items-center gap-2 justify-center" style={{ textShadow: '0 1px 6px rgba(0,0,0,0.35)' }}>
+            <span className="font-semibold text-white/90 text-sm">Excellent</span>
             <div className="flex">
               {[...Array(5)].map((_, i) => (
                 <Star key={i} className="h-4 w-4 fill-yellow-400 text-yellow-400" />
               ))}
             </div>
             <span className="text-sm text-white/70">
-              <span className="font-medium text-white">2,847</span> reviews
+              <span className="font-medium text-white/90">2,847</span> reviews
             </span>
           </div>
         </div>

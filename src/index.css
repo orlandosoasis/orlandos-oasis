@@ -210,11 +210,13 @@ section .text-white {
   color: hsl(var(--hp-amber)) !important;
 }
 
-/* Card hover lift */
-.hp-theme .rounded-xl,
-.hp-theme .rounded-2xl {
+/* Card hover lift (global) */
+.rounded-xl, .rounded-2xl {
   transition: box-shadow 0.3s ease, transform 0.3s ease, border-color 0.3s ease;
 }
+
+/* Smooth transitions for links and buttons globally */
+a, button { transition: all 0.3s ease; }
 
 /* Review cards: left accent stripe */
 .hp-theme [class*="rounded-xl"][class*="shadow-sm"] {

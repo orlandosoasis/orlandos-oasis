@@ -13,7 +13,7 @@ import Footer from "@/components/Footer";
 
 const Index = () => {
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="hp-theme min-h-screen flex flex-col">
       <TopBanner />
       <Header />
       <main className="flex-1">

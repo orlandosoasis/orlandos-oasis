@@ -3,6 +3,7 @@
 @tailwind utilities;
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&display=swap');
 
 @layer base {
   :root {
@@ -97,4 +98,171 @@
     @apply bg-background text-foreground font-sans antialiased;
     font-family: 'Inter', sans-serif;
   }
+}
+
+/* ============================================================
+   HOMEPAGE-ONLY THEME (.hp-theme)
+   Premium pool design system — scoped to landing page only.
+   ============================================================ */
+.hp-theme {
+  /* Color palette */
+  --hp-ocean: 211 100% 40%;       /* #0066CC */
+  --hp-navy: 215 100% 25%;        /* #003D82 */
+  --hp-sky: 191 100% 42%;         /* #00B4D8 */
+  --hp-sky-hover: 191 100% 36%;   /* #0099B8 */
+  --hp-aqua: 187 79% 75%;         /* #90E0EF */
+  --hp-bg: 210 25% 98%;           /* #F8FAFB */
+  --hp-border: 213 22% 90%;       /* #E0E6ED */
+  --hp-text: 220 18% 17%;         /* #1F2937 */
+  --hp-text-muted: 220 9% 46%;    /* #6B7280 */
+  --hp-amber: 38 92% 50%;         /* #F59E0B */
+
+  /* Override semantic tokens within homepage scope */
+  --background: var(--hp-bg);
+  --foreground: var(--hp-text);
+  --card: 0 0% 100%;
+  --card-foreground: var(--hp-text);
+  --popover: 0 0% 100%;
+  --popover-foreground: var(--hp-text);
+  --primary: var(--hp-ocean);
+  --primary-foreground: 0 0% 100%;
+  --secondary: var(--hp-bg);
+  --secondary-foreground: var(--hp-navy);
+  --muted: var(--hp-bg);
+  --muted-foreground: var(--hp-text-muted);
+  --accent: var(--hp-sky);
+  --accent-foreground: 0 0% 100%;
+  --border: var(--hp-border);
+  --input: var(--hp-border);
+  --ring: var(--hp-ocean);
+
+  --oasis-blue: var(--hp-ocean);
+  --oasis-blue-dark: var(--hp-navy);
+  --oasis-aqua: var(--hp-sky);
+  --oasis-navy: var(--hp-navy);
+  --oasis-teal: var(--hp-sky);
+
+  font-family: 'Hanken Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  color: hsl(var(--hp-text));
+}
+
+.hp-theme h1,
+.hp-theme h2,
+.hp-theme h3,
+.hp-theme h4,
+.hp-theme h5,
+.hp-theme h6,
+.hp-theme p,
+.hp-theme span,
+.hp-theme a,
+.hp-theme button,
+.hp-theme input,
+.hp-theme textarea,
+.hp-theme li,
+.hp-theme blockquote,
+.hp-theme cite,
+.hp-theme label {
+  font-family: 'Hanken Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+/* Headings → Deep Navy */
+.hp-theme h1 { font-weight: 700; }
+.hp-theme h2 { font-weight: 600; color: hsl(var(--hp-navy)); }
+.hp-theme h3 { font-weight: 600; color: hsl(var(--hp-navy)); }
+.hp-theme h4 { font-weight: 600; color: hsl(var(--hp-navy)); }
+
+/* Hero gradient background — applied to first <section> in main */
+.hp-theme main > section:first-of-type {
+  position: relative;
+}
+.hp-theme main > section:first-of-type > img {
+  display: none; /* hide bg image, replace with brand gradient */
+}
+.hp-theme main > section:first-of-type::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, hsl(var(--hp-ocean)) 0%, hsl(var(--hp-navy)) 100%);
+  z-index: 0;
+}
+.hp-theme main > section:first-of-type > .absolute.inset-0.bg-black\/45 {
+  display: none;
+}
+
+/* Hero CTA → Sky Blue */
+.hp-theme main > section:first-of-type button {
+  background: hsl(var(--hp-sky)) !important;
+  color: #fff !important;
+  border-radius: 8px !important;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(0, 180, 216, 0.25);
+  transition: all 0.3s ease;
+}
+.hp-theme main > section:first-of-type button:hover {
+  background: hsl(var(--hp-sky-hover)) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 180, 216, 0.35);
+}
+
+/* Stars → Amber */
+.hp-theme .fill-primary.text-primary,
+.hp-theme svg.fill-primary {
+  fill: hsl(var(--hp-amber)) !important;
+  color: hsl(var(--hp-amber)) !important;
+}
+
+/* Card hover lift */
+.hp-theme .rounded-xl,
+.hp-theme .rounded-2xl {
+  transition: box-shadow 0.3s ease, transform 0.3s ease, border-color 0.3s ease;
+}
+
+/* Review cards: left accent stripe */
+.hp-theme [class*="rounded-xl"][class*="shadow-sm"] {
+  border-left: 4px solid hsl(var(--hp-sky));
+  background: #fff;
+  border-top: 1px solid hsl(var(--hp-border));
+  border-right: 1px solid hsl(var(--hp-border));
+  border-bottom: 1px solid hsl(var(--hp-border));
+}
+.hp-theme [class*="rounded-xl"][class*="shadow-sm"]:hover {
+  box-shadow: 0 8px 24px rgba(0, 102, 204, 0.12);
+}
+
+/* Rating "4.8" emphasis */
+.hp-theme .text-4xl.font-bold {
+  color: hsl(var(--hp-ocean));
+}
+
+/* How It Works step circles → gradient */
+.hp-theme .w-8.h-8.rounded-full.bg-primary {
+  background: linear-gradient(135deg, hsl(var(--hp-ocean)), hsl(var(--hp-sky))) !important;
+  width: 48px;
+  height: 48px;
+  font-size: 18px;
+}
+.hp-theme .w-16.h-16.rounded-full.bg-primary\/20 {
+  background: hsl(var(--hp-aqua) / 0.35) !important;
+}
+
+/* FAQ accordion items */
+.hp-theme [data-state] > [class*="AccordionTrigger"],
+.hp-theme [class*="bg-card"][class*="border"][class*="rounded-2xl"] {
+  border-radius: 12px;
+}
+
+/* Newsletter section (bg-navy) */
+.hp-theme .bg-navy {
+  background: linear-gradient(135deg, hsl(var(--hp-ocean)), hsl(var(--hp-navy))) !important;
+}
+
+/* Footer stays Deep Navy */
+.hp-theme footer.bg-navy {
+  background: hsl(var(--hp-navy)) !important;
+}
+
+/* Smooth transitions globally inside homepage */
+.hp-theme a,
+.hp-theme button {
+  transition: all 0.3s ease;
 }

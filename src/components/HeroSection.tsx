@@ -20,7 +20,7 @@ const HeroSection = () => {
   };
 
   return (
-    <section className="px-3 sm:px-5 md:px-6 pt-3 md:pt-4">
+    <section className="px-3 sm:px-5 md:px-6 pt-3 md:pt-4 pb-3 md:pb-4 bg-white">
       <div className="relative w-full min-h-[80vh] md:min-h-[88vh] rounded-2xl md:rounded-3xl overflow-hidden flex flex-col shadow-2xl">
         {/* Background Video / Image Fallback */}
         {isMobile ? (

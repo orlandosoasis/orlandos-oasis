@@ -55,7 +55,7 @@ const About = () => {
               </div>
 
               <div>
-                <h2 className="section-title mb-4">
+                <h2 className="section-title mb-4 text-3xl">
                   Professional pool care<br />across Florida
                 </h2>
                 <p className="body-text mb-4">
@@ -72,7 +72,7 @@ const About = () => {
         {/* Mission */}
         <section className="py-16 md:py-20 px-4 bg-muted text-center">
           <div className="container max-w-6xl mx-auto">
-            <h2 className="section-title max-w-[700px] mx-auto mb-4">
+            <h2 className="section-title max-w-[700px] mx-auto mb-4 text-3xl">
               Dependable pool care that<br />removes stress from pool ownership
             </h2>
             <p className="body-text max-w-[660px] mx-auto mb-12">
@@ -93,7 +93,7 @@ const About = () => {
         {/* Talk CTA */}
         <section className="py-16 md:py-20 px-4 bg-gradient-to-r from-primary to-oasis-dark text-center text-white">
           <div className="container max-w-6xl mx-auto">
-            <h2 className="section-title text-white mb-3">Have questions about your pool?</h2>
+            <h2 className="section-title text-white mb-3 text-3xl">Have questions about your pool?</h2>
             <p className="hero-subtitle text-white max-w-[560px] mx-auto mb-8">
               Speak with a pool professional and get clear, straightforward guidance. No pressure, no sales pitch.
             </p>

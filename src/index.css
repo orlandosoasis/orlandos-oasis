@@ -275,6 +275,12 @@ a, button { transition: all 0.3s ease; }
   border-radius: 12px;
 }
 
+.faq-section,
+.faq-section * {
+  transform: none !important;
+  direction: ltr;
+}
+
 /* Newsletter section (bg-navy) */
 .hp-theme .bg-navy {
   background: linear-gradient(135deg, hsl(var(--hp-ocean)), hsl(var(--hp-navy))) !important;

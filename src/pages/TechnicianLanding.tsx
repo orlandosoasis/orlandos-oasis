@@ -180,7 +180,7 @@ const TechnicianLanding = () => {
         </section>
 
         {/* FAQ */}
-        <section className="py-16 px-4 bg-gradient-to-br from-navy via-oasis-navy-light to-primary">
+        <section className="faq-section py-16 px-4 bg-gradient-to-br from-navy via-oasis-navy-light to-primary">
           <div className="container max-w-2xl mx-auto">
             <h2 className="text-2xl md:text-3xl font-extrabold text-card text-center mb-8">Pool Pro FAQ</h2>
             <Accordion type="single" collapsible className="space-y-3">

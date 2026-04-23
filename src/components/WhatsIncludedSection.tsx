@@ -19,7 +19,7 @@ const WhatsIncludedSection = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-stretch">
           {/* Left column */}
           <div className="flex flex-col">
-            <h2 className="text-3xl font-bold text-navy mb-3">
+            <h2 className="text-3xl font-extrabold text-navy mb-3">
               What's Included Every Visit
             </h2>
             <p className="text-muted-foreground mb-8 text-base">

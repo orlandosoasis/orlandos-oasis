@@ -24,7 +24,7 @@ const HowItWorks = () => {
       <div className="max-w-[1200px] mx-auto py-20 px-6">
         {/* Header */}
         <div className="text-center">
-          <h2 className="text-3xl font-bold text-navy tracking-tight mb-3">
+          <h2 className="text-3xl font-extrabold text-navy tracking-tight mb-3">
             How It Works
           </h2>
           <p className="text-muted-foreground/90 max-w-[600px] mx-auto mb-14 md:mb-16 text-base">

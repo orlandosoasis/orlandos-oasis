@@ -117,12 +117,29 @@ const ServiceDetailsSection = () => {
         </div>
 
 
-        {/* What's Included */}
+        {/* Why Orlando's Oasis */}
         <div className="mb-16">
+          <h3 className="text-2xl font-bold text-navy mb-6 text-center">
+            Why Orlando's Oasis
+          </h3>
+          <div className="flex flex-wrap justify-center gap-4">
+            {WHY_CHOOSE_US.map((item, index) => (
+              <div key={index} className="flex items-center gap-2 bg-card border border-border rounded-lg px-4 py-2">
+                <Check className="h-4 w-4 text-oasis" />
+                <span className="text-sm font-medium text-navy">{item}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* What's Included - own full-width section */}
+      <div className="bg-muted/40 mt-8 py-16">
+        <div className="container max-w-4xl mx-auto px-4">
           <h3 className="text-2xl font-bold text-navy mb-8 text-center">
             What's Included
           </h3>
-          
+
           <div className="grid md:grid-cols-2 gap-6 max-w-2xl mx-auto">
             {/* Every Visit */}
             <div className="bg-card rounded-xl border border-border p-6">
@@ -155,24 +172,6 @@ const ServiceDetailsSection = () => {
                 ))}
               </ul>
             </div>
-          </div>
-        </div>
-
-
-
-
-        {/* Why Orlando's Oasis */}
-        <div className="mb-16">
-          <h3 className="text-2xl font-bold text-navy mb-6 text-center">
-            Why Orlando's Oasis
-          </h3>
-          <div className="flex flex-wrap justify-center gap-4">
-            {WHY_CHOOSE_US.map((item, index) => (
-              <div key={index} className="flex items-center gap-2 bg-card border border-border rounded-lg px-4 py-2">
-                <Check className="h-4 w-4 text-oasis" />
-                <span className="text-sm font-medium text-navy">{item}</span>
-              </div>
-            ))}
           </div>
         </div>
       </div>

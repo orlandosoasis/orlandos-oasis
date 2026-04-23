@@ -109,7 +109,7 @@ const Services = () => {
         />
 
         {/* Core Services Overview */}
-        <section id="services-overview" className="py-16 md:py-20 px-4 bg-background">
+        <section id="services-overview" className="py-16 md:py-20 px-4 bg-white">
           <div className="container max-w-6xl mx-auto">
             <div className="space-y-20">
               {CORE_SERVICES.map((service, idx) => (

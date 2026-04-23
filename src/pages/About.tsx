@@ -96,9 +96,6 @@ const About = () => {
         {/* Talk CTA */}
         <section className="py-16 md:py-20 px-4 bg-gradient-to-r from-primary to-oasis-dark text-center text-white">
           <div className="container max-w-6xl mx-auto">
-            <span className="inline-block bg-white/15 text-white text-xs font-bold tracking-widest uppercase px-3 py-1 rounded-full mb-4">
-              Talk With Our Team
-            </span>
             <h2 className="section-title text-white mb-3">Have questions about your pool?</h2>
             <p className="hero-subtitle text-white max-w-[560px] mx-auto mb-8">
               Speak with a pool professional and get clear, straightforward guidance.<br />

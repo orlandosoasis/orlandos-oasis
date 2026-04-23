@@ -185,9 +185,7 @@ const TechnicianLanding = () => {
               ))}
             </div>
             <div className="text-center mt-12">
-              <p className="text-muted-foreground mb-4">
-                Join hundreds of pool pros growing with Orlando's Oasis
-              </p>
+              
               <Link to="/technician/apply">
                 <Button className="h-12 px-8 text-base font-semibold">
                   Apply as a Pool Technician

@@ -288,25 +288,25 @@ const Contact = () => {
               <circle cx="430" cy="270" r="9" fill="hsl(var(--primary))" stroke="white" strokeWidth="2.5" />
               <circle cx="430" cy="270" r="3.5" fill="white" />
               <rect x="388" y="288" width="70" height="24" rx="5" fill="white" stroke="hsl(var(--border))" strokeWidth="1" />
-              <text x="423" y="304" fontSize="12" fontWeight="700" fill="hsl(var(--foreground))" textAnchor="middle" fontFamily="Inter,sans-serif">Tampa</text>
+              <text x="423" y="304" fontSize="12" fontWeight="700" fill="hsl(var(--foreground))" textAnchor="middle" fontFamily="Manrope,sans-serif">Tampa</text>
               {/* Orlando pin */}
               <circle cx="600" cy="210" r="22" fill="hsl(var(--primary) / 0.12)" />
               <circle cx="600" cy="210" r="13" fill="hsl(var(--primary) / 0.2)" />
               <circle cx="600" cy="210" r="9" fill="hsl(var(--primary))" stroke="white" strokeWidth="2.5" />
               <circle cx="600" cy="210" r="3.5" fill="white" />
               <rect x="558" y="228" width="76" height="24" rx="5" fill="white" stroke="hsl(var(--border))" strokeWidth="1" />
-              <text x="596" y="244" fontSize="12" fontWeight="700" fill="hsl(var(--foreground))" textAnchor="middle" fontFamily="Inter,sans-serif">Orlando</text>
+              <text x="596" y="244" fontSize="12" fontWeight="700" fill="hsl(var(--foreground))" textAnchor="middle" fontFamily="Manrope,sans-serif">Orlando</text>
               {/* Fort Lauderdale pin */}
               <circle cx="730" cy="340" r="22" fill="hsl(var(--primary) / 0.12)" />
               <circle cx="730" cy="340" r="13" fill="hsl(var(--primary) / 0.2)" />
               <circle cx="730" cy="340" r="9" fill="hsl(var(--primary))" stroke="white" strokeWidth="2.5" />
               <circle cx="730" cy="340" r="3.5" fill="white" />
               <rect x="674" y="358" width="114" height="24" rx="5" fill="white" stroke="hsl(var(--border))" strokeWidth="1" />
-              <text x="731" y="374" fontSize="12" fontWeight="700" fill="hsl(var(--foreground))" textAnchor="middle" fontFamily="Inter,sans-serif">Fort Lauderdale</text>
+              <text x="731" y="374" fontSize="12" fontWeight="700" fill="hsl(var(--foreground))" textAnchor="middle" fontFamily="Manrope,sans-serif">Fort Lauderdale</text>
               {/* Connector lines */}
               <line x1="430" y1="270" x2="600" y2="210" stroke="hsl(var(--primary))" strokeWidth="1.5" strokeDasharray="5,4" opacity="0.4" />
               <line x1="600" y1="210" x2="730" y2="340" stroke="hsl(var(--primary))" strokeWidth="1.5" strokeDasharray="5,4" opacity="0.4" />
-              <text x="570" y="140" fontSize="18" fontWeight="700" fill="hsl(var(--foreground) / 0.1)" textAnchor="middle" fontFamily="Inter,sans-serif" letterSpacing="4">FLORIDA</text>
+              <text x="570" y="140" fontSize="18" fontWeight="700" fill="hsl(var(--foreground) / 0.1)" textAnchor="middle" fontFamily="Manrope,sans-serif" letterSpacing="4">FLORIDA</text>
             </svg>
           </div>
 

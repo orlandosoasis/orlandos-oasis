@@ -94,7 +94,7 @@ const ServiceAreas = () => {
             </p>
             <div className="flex gap-3 justify-center flex-wrap">
               <Button variant="outline" className="h-12 px-6 whitespace-nowrap border-white/30 text-white bg-transparent hover:bg-white hover:!text-navy hover:border-white" asChild>
-                <Link to="/contact">Contact Us</Link>
+                <Link to="/contact#get-in-touch">Contact Us</Link>
               </Button>
               <Button className="h-12 px-6 whitespace-nowrap bg-white text-navy hover:bg-white/90" asChild>
                 <Link to="/#discount-voucher">

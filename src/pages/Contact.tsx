@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import { z } from "zod";
 import { Phone, Mail, MapPin } from "lucide-react";
 import FloatingNav from "@/components/FloatingNav";
@@ -63,6 +64,20 @@ const Contact = () => {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.hash === "#get-in-touch") {
+      const t = setTimeout(() => {
+        const el = document.getElementById("get-in-touch");
+        if (!el) return;
+        const headerOffset = 96;
+        const top = el.getBoundingClientRect().top + window.scrollY - headerOffset;
+        window.scrollTo({ top, behavior: "smooth" });
+      }, 80);
+      return () => clearTimeout(t);
+    }
+  }, [location]);
 
   const update = (field: keyof FormData, value: string) =>
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -127,7 +142,7 @@ const Contact = () => {
       />
 
       {/* Contact Section: Info + Form Grid */}
-      <section className="py-16 px-5 md:px-10 bg-background">
+      <section id="get-in-touch" className="py-16 px-5 md:px-10 bg-background scroll-mt-24">
         <div className="max-w-[1100px] mx-auto grid grid-cols-1 md:grid-cols-[1fr_1.6fr] gap-12 md:gap-16 items-start">
           {/* Left: Contact Info */}
           <div>

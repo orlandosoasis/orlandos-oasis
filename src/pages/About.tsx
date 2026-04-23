@@ -99,7 +99,7 @@ const About = () => {
               Speak with a pool professional and get clear, straightforward guidance. No pressure, no sales pitch.
             </p>
             <Button className="h-12 px-6 whitespace-nowrap bg-white text-navy hover:bg-white/90 font-semibold" asChild>
-              <Link to="/contact">Contact Us Today</Link>
+              <Link to="/contact#get-in-touch">Contact Us Today</Link>
             </Button>
           </div>
         </section>

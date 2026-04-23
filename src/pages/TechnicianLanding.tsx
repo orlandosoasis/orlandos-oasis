@@ -184,14 +184,6 @@ const TechnicianLanding = () => {
                 </div>
               ))}
             </div>
-            <div className="text-center mt-12">
-              
-              <Link to="/technician/apply">
-                <Button className="h-12 px-8 text-base font-semibold">
-                  Apply as a Pool Technician
-                </Button>
-              </Link>
-            </div>
           </div>
         </section>
 

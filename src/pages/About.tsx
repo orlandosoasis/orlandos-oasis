@@ -62,7 +62,7 @@ const About = () => {
                   Professional pool care across Florida
                 </h2>
                 <p className="text-muted-foreground leading-relaxed mb-4">
-                  Orlando's Oasis provides reliable, consistent pool maintenance for homeowners across Tampa, Orlando, and Fort Lauderdale. We show up on schedule, communicate clearly, and keep your water balanced — every single week.
+                  Orlando's Oasis provides reliable, consistent pool maintenance for homeowners across Tampa, Orlando, and Fort Lauderdale. We show up on schedule, communicate clearly, and keep your water balanced every single week.
                 </p>
                 <p className="text-muted-foreground leading-relaxed mb-6">
                   No guesswork. No missed visits. Just clean, clear water you can count on.
@@ -82,7 +82,7 @@ const About = () => {
               Dependable pool care that removes stress from pool ownership
             </h2>
             <p className="text-muted-foreground max-w-[660px] mx-auto mb-12 leading-relaxed">
-              We believe homeowners should enjoy their pools — not worry about chemistry, equipment failure, or missed service. Every visit is guided by that promise.
+              We believe homeowners should enjoy their pools, not worry about chemistry, equipment failure, or missed service. Every visit is guided by that promise.
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-px bg-border rounded-xl overflow-hidden border border-border">
               {PILLARS.map((p) => (
@@ -104,7 +104,8 @@ const About = () => {
             </span>
             <h2 className="text-2xl md:text-3xl font-extrabold mb-3 text-white">Have questions about your pool?</h2>
             <p className="text-white max-w-[560px] mx-auto mb-8 font-light">
-              Speak with a pool professional and get clear, straightforward guidance — no pressure, no sales pitch.
+              Speak with a pool professional and get clear, straightforward guidance.<br />
+              No pressure, no sales pitch.
             </p>
             <Button className="h-12 px-6 whitespace-nowrap bg-white text-navy hover:bg-white/90 font-semibold" asChild>
               <Link to="/contact">Contact Us Today</Link>

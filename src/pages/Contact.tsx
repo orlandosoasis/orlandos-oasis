@@ -2,13 +2,12 @@ import { useState } from "react";
 import { z } from "zod";
 import { Phone, Mail, MapPin } from "lucide-react";
 import Header from "@/components/Header";
-import PageHero from "@/components/PageHero";
+import BlogStyleHero from "@/components/BlogStyleHero";
 import Footer from "@/components/Footer";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
-import contactHero from "@/assets/contact-hero.jpg";
 
 const contactSchema = z.object({
   firstName: z.string().trim().min(1, "First name is required").max(100),
@@ -119,10 +118,9 @@ const Contact = () => {
     <div className="min-h-screen flex flex-col bg-background">
       <Header />
 
-      <PageHero
-        imageSrc={contactHero}
-        imageAlt="Crystal clear pool service"
-        title={<>Contact<br /><span className="text-white">Orlando's Oasis</span></>}
+      <BlogStyleHero
+        eyebrow="Contact"
+        title={<>Contact<br />Orlando's Oasis.</>}
         description="Have a question about pool service, repairs, or want to get started? Send us a message and our team will follow up shortly."
       />
 

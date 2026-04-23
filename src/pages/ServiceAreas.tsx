@@ -3,9 +3,8 @@ import { MapPin, CheckCircle2, ArrowRight, Shield, Clock, Sparkles, Wrench, Flas
 import TopBanner from "@/components/TopBanner";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import PageHero from "@/components/PageHero";
+import BlogStyleHero from "@/components/BlogStyleHero";
 import { Button } from "@/components/ui/button";
-import serviceAreasHero from "@/assets/service-areas-hero.jpg";
 
 const AREAS = [
   {
@@ -42,10 +41,9 @@ const ServiceAreas = () => {
       <Header />
       <main className="flex-1">
 
-        <PageHero
-          imageSrc={serviceAreasHero}
-          imageAlt="Aerial view of Florida neighborhood with residential pools"
-          title={<>Service Areas Across<br /><span className="text-white">Florida</span></>}
+        <BlogStyleHero
+          eyebrow="Service Areas"
+          title={<>Service Areas Across<br />Florida.</>}
           description="Orlando's Oasis provides professional pool maintenance in Tampa, Orlando, and Fort Lauderdale — with plans to expand across the state."
         />
 

@@ -14,7 +14,7 @@ const ITEMS = [
 
 const WhatsIncludedSection = () => {
   return (
-    <section className="py-16 bg-background">
+    <section className="py-16 bg-white">
       <div className="container max-w-6xl mx-auto px-4">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-stretch">
           {/* Left column */}

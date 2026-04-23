@@ -39,7 +39,7 @@ const WhatsIncludedSection = () => {
             </div>
 
             {/* Highlight card */}
-            <div className="bg-primary/5 border-l-4 border-primary rounded-lg p-4 flex items-start gap-3 mt-auto">
+            <div className="bg-primary/5 border border-border/50 rounded-lg p-4 flex items-start gap-3 mt-auto">
               <Gauge className="h-5 w-5 text-primary shrink-0 mt-0.5" strokeWidth={1.5} />
               <div>
                 <p className="font-semibold text-navy text-sm mb-1">Water Level Monitoring</p>

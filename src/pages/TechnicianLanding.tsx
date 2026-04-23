@@ -152,7 +152,7 @@ const TechnicianLanding = () => {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {EARNINGS.map((e) => (
                 <div key={e.label} className={`rounded-xl p-6 border ${e.popular ? 'border-primary ring-2 ring-primary/20' : 'border-border'} bg-background relative`}>
-                  {e.popular && <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground text-xs font-semibold px-3 py-1 rounded-full">Most Popular Service Length</span>}
+                  {e.popular && <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground text-xs font-semibold px-3 py-1 rounded-full">Most Popular</span>}
                   <h3 className="font-bold text-navy mb-2">{e.label}</h3>
                   <p className="text-2xl font-extrabold text-primary mb-1">{e.range}</p>
                   <p className="text-xs text-muted-foreground">{e.sub}</p>

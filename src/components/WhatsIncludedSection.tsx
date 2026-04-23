@@ -20,7 +20,7 @@ const WhatsIncludedSection = () => {
           {/* Left column */}
           <div className="flex flex-col">
             <h2 className="text-3xl font-bold text-navy mb-3">
-              What's Included – Every Visit
+              What's Included Every Visit
             </h2>
             <p className="text-muted-foreground mb-8 text-base">
               Our weekly service keeps your pool clean, balanced, and ready to use. We take care of the maintenance so you don't have to.

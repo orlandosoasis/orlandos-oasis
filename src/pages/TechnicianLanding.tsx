@@ -126,7 +126,7 @@ const TechnicianLanding = () => {
         </section>
 
         {/* Testimonial */}
-        <section className="py-16 px-4 bg-card border-y border-border">
+        <section className="py-16 px-4 bg-card">
           <div className="container max-w-4xl mx-auto text-center">
             <h2 className="text-2xl font-bold text-navy mb-8">What Pool Pros Are Saying</h2>
             <div className="flex flex-col md:flex-row items-center gap-6">

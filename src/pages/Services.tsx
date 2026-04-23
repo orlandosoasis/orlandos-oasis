@@ -264,7 +264,7 @@ const Services = () => {
               <Button variant="outline" size="lg" className="border-white/30 text-white bg-transparent hover:bg-white hover:text-navy hover:border-white" asChild>
                 <Link to="/contact">Contact Us</Link>
               </Button>
-              <Button variant="secondary" size="lg" className="bg-white text-navy hover:bg-white/90 font-semibold" asChild>
+              <Button className="h-12 px-6 whitespace-nowrap bg-white text-navy hover:bg-white/90" asChild>
                 <Link to="/#discount-voucher">
                   Get a Discount Voucher
                   <ArrowRight className="h-4 w-4 ml-1" />

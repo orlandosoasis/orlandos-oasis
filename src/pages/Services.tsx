@@ -179,11 +179,8 @@ const Services = () => {
 
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {ADDONS.map((addon) => (
-                <div key={addon.title} className="bg-card border border-border rounded-xl p-5 hover:border-primary/40 hover:shadow-md transition-all">
-                  <div className="flex items-start justify-between mb-2">
-                    <h4 className="text-sm font-semibold text-navy leading-snug pr-2">{addon.title}</h4>
-                    <span className="text-sm font-bold text-primary whitespace-nowrap">{addon.price}</span>
-                  </div>
+                <div key={addon.title} className="bg-card border border-border rounded-xl p-5">
+                  <h4 className="text-sm font-semibold text-navy leading-snug mb-2">{addon.title}</h4>
                   <p className="text-xs text-muted-foreground leading-relaxed">{addon.desc}</p>
                 </div>
               ))}

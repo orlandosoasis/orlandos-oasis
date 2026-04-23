@@ -16,10 +16,10 @@ import Footer from "@/components/Footer";
 const Index = () => {
   return (
     <div className="hp-theme min-h-screen flex flex-col">
-      <TopBanner />
-      <Header />
       <main className="flex-1">
         <HeroSection />
+        <TopBanner />
+        <Header />
         <div id="step-indicator-portal" className="container max-w-6xl mx-auto px-4" />
         
         {/* Two-column layout: Reviews left, Pricing right */}

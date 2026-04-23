@@ -1,8 +1,16 @@
-import { Star } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
+import logo from "@/assets/oo-logo.png";
 import heroImage from "@/assets/hero-pool-resort.png";
 import heroVideo from "@/assets/hero-villa.mp4";
+
+const NAV_ITEMS = [
+  { label: "Services", href: "/services" },
+  { label: "Why Us", href: "/about" },
+  { label: "Service Area", href: "/service-areas" },
+  { label: "Contact", href: "/contact" },
+];
 
 const HeroSection = () => {
   const [isMobile, setIsMobile] = useState(false);
@@ -20,71 +28,98 @@ const HeroSection = () => {
   };
 
   return (
-    <section className="px-3 sm:px-4 md:px-6 pt-4 md:pt-6 pb-4 md:pb-6 bg-white">
-      <div className="relative w-full min-h-[70vh] md:min-h-[75vh] rounded-3xl md:rounded-[2rem] overflow-hidden flex flex-col shadow-xl max-w-[1400px] mx-auto">
-        {/* Background Video / Image Fallback */}
-        {isMobile ? (
-          <img
-            src={heroImage}
-            alt="Beautiful residential swimming pool with tropical landscaping"
-            className="absolute inset-0 w-full h-full object-cover object-center"
-          />
-        ) : (
-          <video
-            src={heroVideo}
-            poster={heroImage}
-            autoPlay
-            muted
-            loop
-            playsInline
-            preload="auto"
-            aria-hidden="true"
-            className="absolute inset-0 w-full h-full object-cover object-center"
-          />
-        )}
+    <section className="relative w-full h-screen min-h-[640px] overflow-hidden bg-background">
+      {/* Background Video / Image Fallback — full bleed */}
+      {isMobile ? (
+        <img
+          src={heroImage}
+          alt="Beautiful residential swimming pool with tropical landscaping"
+          className="absolute inset-0 w-full h-full object-cover object-center"
+        />
+      ) : (
+        <video
+          src={heroVideo}
+          poster={heroImage}
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="auto"
+          aria-hidden="true"
+          className="absolute inset-0 w-full h-full object-cover object-center"
+        />
+      )}
 
-        {/* Lighter, airier overlay */}
-        <div className="absolute inset-0 bg-black/25" />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-transparent to-black/40" />
+      {/* Subtle overlay for legibility */}
+      <div className="absolute inset-0 bg-black/20" />
+      <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-transparent to-black/35" />
 
-        {/* Centered content */}
-        <div className="relative z-10 flex-1 flex items-center justify-center px-6">
-          <div className="max-w-5xl mx-auto text-center" style={{ textShadow: '0 2px 16px rgba(0,0,0,0.35)' }}>
-            <h1 className="text-5xl sm:text-7xl font-extrabold text-white leading-[1.1] tracking-tight mb-2 whitespace-nowrap md:text-[76px]">
-              Crystal Clear Pools,
-              <br />
-              Zero Hassle
-            </h1>
+      {/* Floating pill header */}
+      <div className="absolute top-4 md:top-6 left-0 right-0 z-20 px-3 sm:px-4 md:px-6">
+        <div className="max-w-[1280px] mx-auto bg-card/95 backdrop-blur-md rounded-full shadow-lg flex items-center justify-between pl-5 pr-2 py-2">
+          <Link to="/" className="flex items-center gap-2 shrink-0">
+            <img src={logo} alt="Orlando's Oasis" className="h-7 w-7 object-contain" />
+            <span className="text-base md:text-lg font-bold text-foreground">Orlando's Oasis</span>
+          </Link>
 
-            <p className="text-base md:text-lg mb-12 text-white/90 font-light tracking-wide">
-              Professional pool maintenance across Tampa,<br />Orlando & Fort Lauderdale.
-            </p>
-
-            <div className="flex justify-center">
-              <Button
-                onClick={handleGetVoucher}
-                className="h-12 px-10 text-base font-semibold rounded-full shadow-xl"
+          <nav className="hidden md:flex items-center gap-7">
+            {NAV_ITEMS.map((item) => (
+              <Link
+                key={item.label}
+                to={item.href}
+                className="text-sm font-medium text-foreground hover:text-primary transition-colors"
               >
-                Get a Discount Voucher
-              </Button>
-            </div>
-          </div>
-        </div>
+                {item.label}
+              </Link>
+            ))}
+          </nav>
 
-        {/* Trust badge anchored at bottom */}
-        <div className="relative z-10 pb-10 md:pb-12 px-4">
-          <div className="flex items-center gap-2 justify-center" style={{ textShadow: '0 1px 6px rgba(0,0,0,0.35)' }}>
-            <span className="font-semibold text-white/90 text-sm">Excellent</span>
-            <div className="flex">
-              {[...Array(5)].map((_, i) => (
-                <Star key={i} className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-              ))}
-            </div>
-            <span className="text-sm text-white/70">
-              <span className="font-medium text-white/90">2,847</span> reviews
+          <Link to="/login" className="shrink-0">
+            <Button className="rounded-full h-10 px-5 bg-foreground text-background hover:bg-foreground/90">
+              Log In
+            </Button>
+          </Link>
+        </div>
+      </div>
+
+      {/* Centered headline with strikethrough accent */}
+      <div className="relative z-10 h-full flex items-center justify-center px-4">
+        <div className="max-w-6xl mx-auto text-center" style={{ textShadow: '0 2px 24px rgba(0,0,0,0.4)' }}>
+          <h1 className="font-extrabold text-white leading-[0.95] tracking-tight text-5xl sm:text-6xl md:text-7xl lg:text-8xl">
+            <span className="relative inline-block">
+              <span>Crystal Clear Pools.</span>
+              {/* Accent strikethrough line */}
+              <span
+                aria-hidden="true"
+                className="pointer-events-none absolute left-[-2%] right-[-2%] top-1/2 h-[6px] md:h-[10px] -translate-y-1/2 rounded-full"
+                style={{ backgroundColor: 'hsl(var(--primary))' }}
+              />
             </span>
+            <br />
+            <span>Zero Hassle.</span>
+          </h1>
+
+          <div className="mt-10 flex justify-center">
+            <Button
+              onClick={handleGetVoucher}
+              className="h-12 px-8 rounded-full text-base font-semibold shadow-xl"
+              style={{ backgroundColor: 'hsl(var(--primary))', color: 'hsl(var(--primary-foreground))' }}
+            >
+              Get a Discount Voucher
+            </Button>
           </div>
         </div>
+      </div>
+
+      {/* Bottom-left supporting copy */}
+      <div className="absolute left-0 right-0 bottom-8 md:bottom-12 z-10 px-6 md:px-12">
+        <p
+          className="max-w-md text-sm md:text-base text-white/95 leading-relaxed"
+          style={{ textShadow: '0 1px 8px rgba(0,0,0,0.5)' }}
+        >
+          Professional pool maintenance across Tampa, Orlando &amp; Fort Lauderdale.
+          Weekly service, transparent reports, and pros you can trust.
+        </p>
       </div>
     </section>
   );

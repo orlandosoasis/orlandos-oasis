@@ -102,7 +102,7 @@ const Services = () => {
 
         <BlogStyleHero
           
-          title={<>Pool Services That<br />Keep It Crystal Clear.</>}
+          title={<>Our Services</>}
           description="From weekly maintenance to deep restoration, we handle everything so you can enjoy your pool without the hassle."
         />
 

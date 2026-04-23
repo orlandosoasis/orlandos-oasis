@@ -48,7 +48,7 @@ const Index = () => {
 
         {/* The Fine Print */}
         <section className="py-8 px-4 bg-background">
-          <div className="max-w-4xl mx-auto pt-8">
+          <div className="max-w-4xl mx-auto">
             <h4 className="text-lg font-semibold text-foreground mb-4 text-center">
               The Fine Print
             </h4>

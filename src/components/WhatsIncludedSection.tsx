@@ -1,5 +1,5 @@
 import { Waves, Brush, Droplet, Trash2, FlaskConical, FlaskRound, Filter, Wrench, Gauge } from "lucide-react";
-import poolImage from "@/assets/gallery-resort.jpg";
+import poolImage from "@/assets/kids-playing-pool.webp";
 
 const ITEMS = [
   { icon: Waves, label: "Skimming surface debris" },
@@ -55,7 +55,7 @@ const WhatsIncludedSection = () => {
             <div className="relative h-full min-h-[320px] lg:min-h-full rounded-2xl overflow-hidden shadow-lg">
               <img
                 src={poolImage}
-                alt="Sparkling clean residential pool maintained by Orlando's Oasis"
+                alt="Kids enjoying a clean, safe pool maintained by Orlando's Oasis"
                 className="absolute inset-0 w-full h-full object-cover"
                 loading="lazy"
               />

@@ -24,7 +24,7 @@ const About = () => {
       <main className="flex-1">
 
         <BlogStyleHero
-          eyebrow="About Us"
+          
           title={<>About<br />Orlando's Oasis.</>}
           description="Professional pool maintenance across Tampa, Orlando & Fort Lauderdale, built on consistency, clear communication, and water that stays balanced week after week."
         />

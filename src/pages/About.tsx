@@ -48,7 +48,7 @@ const About = () => {
                     <CheckCircle2 className="h-5 w-5 text-trust" />
                   </div>
                   <div>
-                    <p className="text-sm font-semibold text-foreground">Background-checked techs</p>
+                    <p className="text-sm font-semibold text-navy">Background-checked techs</p>
                     <p className="text-xs font-semibold text-trust">Verified &amp; insured</p>
                   </div>
                 </div>
@@ -88,7 +88,7 @@ const About = () => {
               {PILLARS.map((p) => (
                 <div key={p.title} className="bg-card transition-colors px-5 py-7 text-center">
                   <p.icon className="h-7 w-7 text-primary mx-auto mb-3" />
-                  <h3 className="text-sm font-semibold text-foreground mb-1">{p.title}</h3>
+                  <h3 className="text-sm font-semibold text-navy mb-1">{p.title}</h3>
                   <p className="text-[13px] text-muted-foreground leading-relaxed">{p.desc}</p>
                 </div>
               ))}

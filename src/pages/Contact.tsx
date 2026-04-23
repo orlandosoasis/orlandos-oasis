@@ -103,7 +103,7 @@ const Contact = () => {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
               </svg>
             </div>
-            <h2 className="text-2xl font-bold text-foreground">Thank You!</h2>
+            <h2 className="text-2xl font-bold text-navy">Thank You!</h2>
             <p className="text-muted-foreground">Your message has been sent. We'll get back to you shortly.</p>
             <Button onClick={() => { setIsSubmitted(false); setFormData({ firstName: "", lastName: "", email: "", phone: "", service: "", message: "" }); }}>
               Send Another Message
@@ -147,7 +147,7 @@ const Contact = () => {
                   </div>
                   <div>
                     <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">{label}</p>
-                    <p className="text-sm font-semibold text-foreground">{value}</p>
+                    <p className="text-sm font-semibold text-navy">{value}</p>
                   </div>
                 </div>
               ))}
@@ -160,7 +160,7 @@ const Contact = () => {
                 <tbody>
                   {HOURS.map(({ day, time }) => (
                     <tr key={day} className="border-b border-border last:border-b-0">
-                      <td className="py-2 font-semibold text-foreground w-1/2">{day}</td>
+                      <td className="py-2 font-semibold text-navy w-1/2">{day}</td>
                       <td className="py-2 text-muted-foreground">{time}</td>
                     </tr>
                   ))}
@@ -175,7 +175,7 @@ const Contact = () => {
               {/* Name row */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-foreground mb-1.5">First Name</label>
+                  <label className="block text-xs font-bold uppercase tracking-wider text-navy mb-1.5">First Name</label>
                   <Input
                     placeholder="First Name"
                     value={formData.firstName}
@@ -185,7 +185,7 @@ const Contact = () => {
                   {errors.firstName && <p className="text-sm text-destructive mt-1">{errors.firstName}</p>}
                 </div>
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-foreground mb-1.5">Last Name</label>
+                  <label className="block text-xs font-bold uppercase tracking-wider text-navy mb-1.5">Last Name</label>
                   <Input
                     placeholder="Last Name"
                     value={formData.lastName}
@@ -197,7 +197,7 @@ const Contact = () => {
               {/* Email + Phone row */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-foreground mb-1.5">
+                  <label className="block text-xs font-bold uppercase tracking-wider text-navy mb-1.5">
                     Email <span className="text-destructive">*</span>
                   </label>
                   <Input
@@ -210,7 +210,7 @@ const Contact = () => {
                   {errors.email && <p className="text-sm text-destructive mt-1">{errors.email}</p>}
                 </div>
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-foreground mb-1.5">Mobile Phone</label>
+                  <label className="block text-xs font-bold uppercase tracking-wider text-navy mb-1.5">Mobile Phone</label>
                   <Input
                     type="tel"
                     placeholder="(561) 000-0000"
@@ -222,7 +222,7 @@ const Contact = () => {
 
               {/* Service select */}
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-foreground mb-1.5">Service Interested In</label>
+                <label className="block text-xs font-bold uppercase tracking-wider text-navy mb-1.5">Service Interested In</label>
                 <select
                   value={formData.service}
                   onChange={(e) => update("service", e.target.value)}
@@ -237,7 +237,7 @@ const Contact = () => {
 
               {/* Message */}
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-foreground mb-1.5">Message</label>
+                <label className="block text-xs font-bold uppercase tracking-wider text-navy mb-1.5">Message</label>
                 <Textarea
                   placeholder="Tell us about your pool and how we can help..."
                   rows={5}
@@ -317,7 +317,7 @@ const Contact = () => {
             {CITIES.map(({ name, area }) => (
               <div key={name} className="flex items-center gap-2 bg-muted border border-border px-4 py-2.5 rounded-full">
                 <span className="w-2.5 h-2.5 rounded-full bg-trust" />
-                <span className="text-sm font-semibold text-foreground">{name}</span>
+                <span className="text-sm font-semibold text-navy">{name}</span>
                 <span className="text-xs text-muted-foreground">{area}</span>
               </div>
             ))}

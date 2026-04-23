@@ -5,6 +5,7 @@ import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import BlogStyleHero from "@/components/BlogStyleHero";
 import poolWaterBg from "@/assets/pool-water-bg.webp";
+import aboutPoolCleaning from "@/assets/about-pool-cleaning.webp";
 
 const PILLARS = [
   { icon: Calendar, title: "Consistency", desc: "Same standard, same schedule, every week." },

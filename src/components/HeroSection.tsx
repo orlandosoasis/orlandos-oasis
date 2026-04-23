@@ -14,15 +14,7 @@ const NAV_ITEMS = [
 ];
 
 const HeroSection = () => {
-  const [isMobile, setIsMobile] = useState(false);
   const [videoReady, setVideoReady] = useState(false);
-
-  useEffect(() => {
-    const check = () => setIsMobile(window.matchMedia("(max-width: 767px)").matches);
-    check();
-    window.addEventListener("resize", check);
-    return () => window.removeEventListener("resize", check);
-  }, []);
 
   const handleGetVoucher = () => {
     const el = document.getElementById("discount-voucher");
@@ -31,27 +23,20 @@ const HeroSection = () => {
 
   return (
     <section className="relative w-full h-screen min-h-[640px] overflow-hidden bg-background">
-      {/* Background Video / Image Fallback — full bleed */}
-      {isMobile ? (
-        <img
-          src={heroImage}
-          alt="Beautiful residential swimming pool with tropical landscaping"
-          className="absolute inset-0 w-full h-full object-cover object-center"
-        />
-      ) : (
-        <video
-          src={heroVideo}
-          autoPlay
-          muted
-          loop
-          playsInline
-          preload="auto"
-          aria-hidden="true"
-          onCanPlay={() => setVideoReady(true)}
-          onPlaying={() => setVideoReady(true)}
-          className={`absolute inset-0 w-full h-full object-cover object-center transition-opacity duration-500 ${videoReady ? "opacity-100" : "opacity-0"}`}
-        />
-      )}
+      {/* Background Video — full bleed, on all viewports */}
+      <video
+        src={heroVideo}
+        autoPlay
+        muted
+        loop
+        playsInline
+        preload="auto"
+        aria-hidden="true"
+        onCanPlay={() => setVideoReady(true)}
+        onPlaying={() => setVideoReady(true)}
+        className={`absolute inset-0 w-full h-full object-cover object-center transition-opacity duration-500 ${videoReady ? "opacity-100" : "opacity-0"}`}
+      />
+
 
       {/* Subtle overlay for legibility */}
       <div className="absolute inset-0 bg-black/20" />

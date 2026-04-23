@@ -43,13 +43,6 @@ const TechnicianLanding = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
-      {/* Top Banner */}
-      <div className="bg-primary py-3 text-center">
-        <p className="text-sm font-medium text-primary-foreground">
-          Special Offer: Fast-track onboarding for new pool pros. Apply today →
-        </p>
-      </div>
-
       {/* Header */}
       <header className="bg-card py-4 px-4 md:px-8 flex items-center justify-between">
         <div className="container max-w-6xl mx-auto flex items-center justify-between">

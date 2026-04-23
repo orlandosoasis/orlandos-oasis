@@ -91,7 +91,7 @@ const TechnicianLanding = () => {
                   Apply to become an Orlando's Oasis Pool Technician
                 </h1>
                 <p className="text-muted-foreground mb-6">
-                  Submit your application to join the Orlando's Oasis technician network. Provide your experience, certifications, and resume so our team can review your qualifications and approve you to service homeowners in your area.
+                  Provide your experience, certifications, and resume so our team can review your qualifications and approve you to service homeowners in your area.
                 </p>
                 <ul className="space-y-2 mb-6">
                   {["Submit your professional and contact information", "Upload your certifications, licenses, or training credentials", "Provide your resume and relevant work experience", "Our team reviews your application before approval"].map((item) => (

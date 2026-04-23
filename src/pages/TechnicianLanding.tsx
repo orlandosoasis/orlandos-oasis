@@ -90,9 +90,6 @@ const TechnicianLanding = () => {
                 <h1 className="text-5xl font-extrabold text-navy leading-tight mb-4 md:text-4xl">
                   Apply to become an Orlando's Oasis Pool Technician
                 </h1>
-                <p className="text-muted-foreground mb-6">
-                  Provide your experience, certifications, and resume so our team can review your qualifications and approve you to service homeowners in your area.
-                </p>
                 <ul className="space-y-2 mb-6">
                   {["Submit your professional and contact information", "Upload your certifications, licenses, or training credentials", "Provide your resume and relevant work experience", "Our team reviews your application before approval"].map((item) => (
                     <li key={item} className="flex items-start gap-2 text-sm text-foreground">

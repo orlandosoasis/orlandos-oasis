@@ -44,14 +44,14 @@ const TechnicianLanding = () => {
   return (
     <div className="min-h-screen flex flex-col bg-background">
       {/* Header */}
-      <header className="bg-card py-4 px-4 md:px-8 flex items-center justify-between">
-        <div className="container max-w-6xl mx-auto flex items-center justify-between">
+      <header className="bg-card py-4 px-4 md:px-8">
+        <div className="flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2">
             <img src={logo} alt="Orlando's Oasis" className="h-8 w-8 object-contain" />
             <span className="text-xl font-bold text-navy">Orlando's Oasis</span>
           </Link>
-          <Link to="/login">
-            <Button size="sm" className="rounded-full">Sign In</Button>
+          <Link to="/login" className="text-sm font-semibold text-navy hover:text-primary transition-colors">
+            Sign In
           </Link>
         </div>
       </header>

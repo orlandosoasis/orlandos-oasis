@@ -104,9 +104,9 @@ const ServiceDetailsSection = () => {
       <div className="container max-w-4xl mx-auto px-4">
         {/* How to Choose the Right Service Pass */}
         <div className="mb-16">
-          <h3 className="font-bold text-navy mb-3 text-center text-3xl">
+          <h2 className="font-bold text-navy mb-3 text-center text-3xl">
             How to Choose the Right Service Pass
-          </h3>
+          </h2>
           <p className="text-muted-foreground text-center mb-6">
             Use this guide to estimate the right service length for your pool.
           </p>

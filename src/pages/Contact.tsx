@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import { z } from "zod";
 import { Phone, Mail, MapPin } from "lucide-react";
 import FloatingNav from "@/components/FloatingNav";

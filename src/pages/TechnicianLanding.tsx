@@ -239,7 +239,7 @@ const TechnicianLanding = () => {
       </main>
 
       {/* Footer */}
-      <footer className="bg-navy py-8">
+      <footer className="py-8" style={{ backgroundColor: "hsl(215 100% 12%)" }}>
         <div className="container max-w-6xl mx-auto px-4 flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex flex-wrap items-center gap-4 text-sm text-card/70">
             <Link to="/" className="hover:text-card transition-colors">Orlando's Oasis</Link>

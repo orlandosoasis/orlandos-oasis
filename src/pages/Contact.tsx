@@ -134,9 +134,6 @@ const Contact = () => {
             <h2 className="section-title mb-3">
               Get in Touch
             </h2>
-            <p className="body-text mb-7">
-              Have a question about pool service, repairs, or want to get started? Send us a message and our team will follow up shortly during business hours.
-            </p>
 
             {/* Info items */}
             <div className="flex flex-col gap-4 mb-7">

@@ -134,7 +134,7 @@ const Services = () => {
                       </div>
                       <h3 className="text-xl font-bold text-navy">{service.title}</h3>
                     </div>
-                    <p className="text-muted-foreground leading-relaxed mb-5">{service.description}</p>
+                    <p className="body-text mb-5">{service.description}</p>
                     <ul className="space-y-2">
                       {service.includes.map((item) => (
                         <li key={item} className="flex items-start gap-2 text-sm text-muted-foreground">
@@ -156,10 +156,10 @@ const Services = () => {
             <span className="inline-block bg-oasis-aqua/15 text-oasis-aqua text-xs font-bold tracking-widest uppercase px-3 py-1 rounded-full mb-4">
               Every Visit
             </span>
-            <h2 className="text-3xl font-extrabold text-white mb-3">
+            <h2 className="section-title text-white mb-3">
               What's Included in Every Service
             </h2>
-            <p className="text-white/65 max-w-[560px] mx-auto mb-10">
+            <p className="hero-subtitle text-white/65 max-w-[560px] mx-auto mb-10">
               Regardless of your service length, every visit covers a comprehensive checklist to keep your pool in top condition.
             </p>
             <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-3 text-left">
@@ -180,10 +180,10 @@ const Services = () => {
               <span className="inline-block bg-primary/10 text-primary text-xs font-bold tracking-widest uppercase px-3 py-1 rounded-full mb-3">
                 Service Guide
               </span>
-              <h2 className="text-3xl font-extrabold text-navy mb-3">
+              <h2 className="section-title mb-3">
                 Choose the Right Service Length
               </h2>
-              <p className="text-muted-foreground max-w-xl mx-auto">
+              <p className="body-text max-w-xl mx-auto">
                 Use this guide to estimate the right service duration for your pool.
               </p>
             </div>
@@ -227,10 +227,10 @@ const Services = () => {
               <span className="inline-block bg-primary/10 text-primary text-xs font-bold tracking-widest uppercase px-3 py-1 rounded-full mb-3">
                 Premium Add-ons
               </span>
-              <h2 className="text-3xl font-extrabold text-navy mb-3">
+              <h2 className="section-title mb-3">
                 Customize Your Service
               </h2>
-              <p className="text-muted-foreground max-w-xl mx-auto">
+              <p className="body-text max-w-xl mx-auto">
                 Add specialized treatments to any service visit. Available during booking.
               </p>
             </div>
@@ -256,8 +256,8 @@ const Services = () => {
               <Shield className="h-5 w-5 text-white" />
               <span className="text-xs font-bold tracking-widest uppercase text-white">100% Satisfaction Guarantee</span>
             </div>
-            <h2 className="text-3xl font-extrabold mb-3 text-white">Ready for Crystal Clear Water?</h2>
-            <p className="text-white max-w-[560px] mx-auto mb-8 font-light">
+            <h2 className="section-title text-white mb-3">Ready for Crystal Clear Water?</h2>
+            <p className="hero-subtitle text-white max-w-[560px] mx-auto mb-8">
               Save $25 on your first month. Book online in under 60 seconds.
             </p>
             <div className="flex gap-3 justify-center flex-wrap">

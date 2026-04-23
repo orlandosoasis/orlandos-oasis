@@ -88,8 +88,8 @@ const ServiceAreas = () => {
               <Shield className="h-5 w-5 text-white" />
               <span className="text-xs font-bold tracking-widest uppercase text-white">100% Satisfaction Guarantee</span>
             </div>
-            <h2 className="text-3xl font-extrabold mb-3 text-white">Ready for Crystal Clear Water?</h2>
-            <p className="text-white max-w-[560px] mx-auto mb-8 font-light">
+            <h2 className="section-title text-white mb-3">Ready for Crystal Clear Water?</h2>
+            <p className="hero-subtitle text-white max-w-[560px] mx-auto mb-8">
               Save $25 on your first month. Book online in under 60 seconds.
             </p>
             <div className="flex gap-3 justify-center flex-wrap">

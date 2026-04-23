@@ -2,6 +2,7 @@ interface BlogStyleHeroProps {
   title: React.ReactNode;
   description: string;
   eyebrow?: string;
+  backgroundImage?: string;
 }
 
 /**
@@ -9,9 +10,23 @@ interface BlogStyleHeroProps {
  * display title, small right-side supporting copy. Sits below the fixed
  * floating pill nav, so we add generous top padding.
  */
-const BlogStyleHero = ({ title, description, eyebrow }: BlogStyleHeroProps) => (
-  <section className="bg-secondary">
-    <div className="container max-w-6xl mx-auto px-4 md:px-8 pt-32 md:pt-40 pb-16 md:pb-24">
+const BlogStyleHero = ({ title, description, eyebrow, backgroundImage }: BlogStyleHeroProps) => (
+  <section
+    className={`relative ${backgroundImage ? "" : "bg-secondary"}`}
+    style={
+      backgroundImage
+        ? {
+            backgroundImage: `url(${backgroundImage})`,
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+          }
+        : undefined
+    }
+  >
+    {backgroundImage && (
+      <div className="absolute inset-0 bg-white/55 backdrop-blur-[2px]" aria-hidden="true" />
+    )}
+    <div className="relative container max-w-6xl mx-auto px-4 md:px-8 pt-32 md:pt-40 pb-16 md:pb-24">
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-end">
         <div className="lg:col-span-8">
           {eyebrow && (

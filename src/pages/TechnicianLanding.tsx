@@ -32,6 +32,30 @@ const REQUIREMENTS = [
   "Professional communication",
 ];
 
+const TESTIMONIALS = [
+  {
+    name: "Daniel R.",
+    meta: "Verified Pool Pro",
+    image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop",
+    quote: "What I value most is the consistency. I've built a reliable weekly route, and I can clearly see my upcoming jobs and earnings.",
+    badge: "Verified Pool Pro · 112 Services Completed",
+  },
+  {
+    name: "Marcus T.",
+    meta: "Verified Pool Pro",
+    image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&h=200&fit=crop",
+    quote: "The platform makes it easy to manage my schedule and grow my client base. Weekly payouts are always on time.",
+    badge: "Verified Pool Pro · 87 Services Completed",
+  },
+  {
+    name: "James L.",
+    meta: "Verified Pool Pro",
+    image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&h=200&fit=crop",
+    quote: "I started part-time and now have a full route. The recurring accounts give me predictable income every week.",
+    badge: "Verified Pool Pro · 156 Services Completed",
+  },
+];
+
 const FAQS = [
   { q: "How do payouts work?", a: "Payouts are processed weekly via direct deposit. You can track your earnings in real-time through your technician dashboard." },
   { q: "Do I need to provide my own chemicals and tools?", a: "Yes, technicians are expected to have access to basic pool service equipment and chemicals. We provide guidance on recommended supplies." },

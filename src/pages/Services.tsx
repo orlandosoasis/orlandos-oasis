@@ -54,7 +54,7 @@ const CORE_SERVICES = [
     icon: Droplets,
     title: "Deep Cleaning & Restoration",
     description: "Intensive treatments for neglected, green, or storm-damaged pools that need a full recovery.",
-    image: servicesWeekly,
+    image: servicesDeepClean,
     includes: [
       "Green-to-clean algae treatment",
       "Acid washing",

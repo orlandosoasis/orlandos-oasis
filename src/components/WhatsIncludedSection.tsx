@@ -30,10 +30,10 @@ const WhatsIncludedSection = () => {
               {ITEMS.map(({ icon: Icon, label }) => (
                 <div
                   key={label}
-                  className="flex items-center gap-3 bg-card border border-border rounded-xl px-4 py-3 shadow-sm"
+                  className="flex items-center gap-3 bg-card border border-border/50 rounded-xl px-4 py-3"
                 >
-                  <Icon className="h-5 w-5 text-primary shrink-0" strokeWidth={1.5} />
-                  <span className="text-sm text-navy font-medium">{label}</span>
+                  <Icon className="h-4 w-4 text-muted-foreground shrink-0" strokeWidth={1.5} />
+                  <span className="text-sm text-foreground/80 font-normal">{label}</span>
                 </div>
               ))}
             </div>

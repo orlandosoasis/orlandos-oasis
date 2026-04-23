@@ -52,16 +52,6 @@ const About = () => {
                     <p className="text-xs font-semibold text-trust">Verified &amp; insured</p>
                   </div>
                 </div>
-                {/* Floating badge top-right */}
-                <div className="absolute -top-4 right-6 bg-navy rounded-xl px-4 py-2.5 shadow-lg">
-                  <div className="flex">
-                    {[...Array(5)].map((_, i) => (
-                      <Star key={i} className="h-3.5 w-3.5 fill-yellow-400 text-yellow-400" />
-                    ))}
-                  </div>
-                  <p className="text-xs font-semibold text-white">4.8 Rating</p>
-                  <p className="text-[11px] text-white/50">2,847 reviews</p>
-                </div>
               </div>
 
               <div>

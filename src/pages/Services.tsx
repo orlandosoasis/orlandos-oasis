@@ -128,12 +128,7 @@ const Services = () => {
                     />
                   </div>
                   <div className={idx % 2 === 1 ? "lg:order-1" : ""}>
-                    <div className="flex items-center gap-3 mb-4">
-                      <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-                        <service.icon className="h-5 w-5 text-primary" />
-                      </div>
-                      <h3 className="text-xl font-bold text-navy">{service.title}</h3>
-                    </div>
+                    <h3 className="text-xl font-bold text-navy mb-4">{service.title}</h3>
                     <p className="body-text mb-5">{service.description}</p>
                     <ul className="space-y-2">
                       {service.includes.map((item) => (

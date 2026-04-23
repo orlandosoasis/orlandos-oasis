@@ -4,7 +4,7 @@ import FloatingNav from "@/components/FloatingNav";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import BlogStyleHero from "@/components/BlogStyleHero";
-import servicesWeekly from "@/assets/services-weekly.jpg";
+import servicesWeekly from "@/assets/services-weekly.webp";
 import servicesChemistry from "@/assets/services-chemistry.jpg";
 import servicesEquipment from "@/assets/services-equipment.jpg";
 import servicesHeroBg from "@/assets/services-pool-evening.webp";

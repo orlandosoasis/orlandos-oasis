@@ -109,7 +109,7 @@ const TechnicianLanding = () => {
         </section>
 
         {/* Why Join */}
-        <section className="py-16 px-4 bg-background">
+        <section className="py-16 px-4 bg-white">
           <div className="container max-w-6xl mx-auto text-center">
             <h2 className="text-2xl md:text-3xl font-extrabold text-navy mb-2">Why Pool Technicians Join Orlando's Oasis</h2>
             <p className="text-muted-foreground mb-10 max-w-xl mx-auto">We help pool professionals grow predictable income with steady demand and recurring service opportunities.</p>

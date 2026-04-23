@@ -93,7 +93,7 @@ const TechnicianLanding = () => {
         </section>
 
         {/* Trust Bar */}
-        <section className="border-y border-border py-4">
+        <section className="py-4 bg-primary/10">
           <div className="container max-w-6xl mx-auto px-4 flex flex-wrap items-center justify-between gap-4">
             <div className="flex items-center gap-2">
               <span className="text-2xl font-bold text-navy">4.8</span>

@@ -7,6 +7,7 @@ import BlogStyleHero from "@/components/BlogStyleHero";
 import servicesWeekly from "@/assets/services-weekly.webp";
 import servicesChemistry from "@/assets/services-chemistry.webp";
 import servicesEquipment from "@/assets/services-equipment.webp";
+import servicesDeepClean from "@/assets/services-deep-clean.webp";
 import servicesHeroBg from "@/assets/services-pool-evening.webp";
 
 const CORE_SERVICES = [
@@ -53,7 +54,7 @@ const CORE_SERVICES = [
     icon: Droplets,
     title: "Deep Cleaning & Restoration",
     description: "Intensive treatments for neglected, green, or storm-damaged pools that need a full recovery.",
-    image: servicesWeekly,
+    image: servicesDeepClean,
     includes: [
       "Green-to-clean algae treatment",
       "Acid washing",

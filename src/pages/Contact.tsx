@@ -144,7 +144,7 @@ const Contact = () => {
                   </div>
                   <div>
                     <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">{label}</p>
-                    <p className="text-sm font-semibold text-navy">{value}</p>
+                    <p className="text-base font-normal text-muted-foreground">{value}</p>
                   </div>
                 </div>
               ))}
@@ -157,7 +157,7 @@ const Contact = () => {
                 <tbody>
                   {HOURS.map(({ day, time }) => (
                     <tr key={day} className="border-b border-border last:border-b-0">
-                      <td className="py-2 font-semibold text-navy w-1/2">{day}</td>
+                      <td className="py-2 w-1/2 font-normal text-base text-slate-800">{day}</td>
                       <td className="py-2 text-muted-foreground">{time}</td>
                     </tr>
                   ))}

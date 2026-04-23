@@ -92,15 +92,15 @@ const ServiceDetailsSection = () => {
             <table className="w-full border-collapse">
               <thead>
                 <tr className="bg-muted">
-                  <th className="text-left p-3 font-semibold text-navy border-b">Service Frequency</th>
-                  <th className="text-left p-3 font-semibold text-navy border-b">Best for</th>
-                  <th className="text-left p-3 font-semibold text-navy border-b">Typical pool condition</th>
+                  <th className="text-left p-3 text-navy border-b font-bold">Service Frequency</th>
+                  <th className="text-left p-3 text-navy border-b font-bold">Best for</th>
+                  <th className="text-left p-3 text-navy border-b font-bold">Typical pool condition</th>
                 </tr>
               </thead>
               <tbody>
                 {SERVICE_GUIDE.map((row, index) => (
                   <tr key={index} className="border-b border-border hover:bg-muted/50 transition-colors">
-                    <td className="p-3 font-medium text-navy">{row.duration}</td>
+                    <td className="p-3 font-normal text-muted-foreground">{row.duration}</td>
                     <td className="p-3 text-muted-foreground">{row.bestFor}</td>
                     <td className="p-3 text-muted-foreground">{row.poolType}</td>
                   </tr>

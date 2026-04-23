@@ -143,25 +143,6 @@ const TechnicianLanding = () => {
           </div>
         </section>
 
-        {/* How It Works */}
-        <section className="py-16 px-4 bg-background">
-          <div className="container max-w-6xl mx-auto text-center">
-            <h2 className="text-2xl md:text-3xl font-extrabold text-navy mb-2">How It Works</h2>
-            <p className="text-muted-foreground mb-10">Start accepting pool service jobs in just a few steps.</p>
-            <div className="grid grid-cols-2 md:grid-cols-5 gap-6">
-              {STEPS.map((s) => (
-                <div key={s.num} className="flex flex-col items-center text-center">
-                  <div className="h-14 w-14 rounded-full bg-primary flex items-center justify-center mb-3">
-                    <s.icon className="h-7 w-7 text-primary-foreground" />
-                  </div>
-                  <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1">Step {s.num}</span>
-                  <h4 className="font-semibold text-navy text-sm mb-1">{s.title}</h4>
-                  <p className="text-xs text-muted-foreground">{s.desc}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
 
         {/* Earnings */}
         <section className="py-16 px-4 bg-card border-y border-border">

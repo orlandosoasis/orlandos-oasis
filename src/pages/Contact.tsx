@@ -143,7 +143,7 @@ const Contact = () => {
                     <Icon className="w-4 h-4 text-primary" />
                   </div>
                   <div>
-                    <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">{label}</p>
+                    <p className="text-xs font-semibold uppercase tracking-widest text-slate-500">{label}</p>
                     <p className="text-base font-normal text-muted-foreground">{value}</p>
                   </div>
                 </div>

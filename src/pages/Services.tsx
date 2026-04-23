@@ -113,7 +113,7 @@ const Services = () => {
               <span className="inline-block bg-primary/10 text-primary text-xs font-bold tracking-widest uppercase px-3 py-1 rounded-full mb-3">
                 Our Services
               </span>
-              <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-3">
+              <h2 className="text-2xl md:text-3xl font-extrabold text-foreground mb-3">
                 Four Categories, One Standard of Care
               </h2>
               <p className="text-muted-foreground max-w-2xl mx-auto">
@@ -166,7 +166,7 @@ const Services = () => {
             <span className="inline-block bg-oasis-aqua/15 text-oasis-aqua text-xs font-bold tracking-widest uppercase px-3 py-1 rounded-full mb-4">
               Every Visit
             </span>
-            <h2 className="text-2xl md:text-3xl font-bold text-white mb-3">
+            <h2 className="text-2xl md:text-3xl font-extrabold text-white mb-3">
               What's Included in Every Service
             </h2>
             <p className="text-white/65 max-w-[560px] mx-auto mb-10">
@@ -190,7 +190,7 @@ const Services = () => {
               <span className="inline-block bg-primary/10 text-primary text-xs font-bold tracking-widest uppercase px-3 py-1 rounded-full mb-3">
                 Service Guide
               </span>
-              <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-3">
+              <h2 className="text-2xl md:text-3xl font-extrabold text-foreground mb-3">
                 Choose the Right Service Length
               </h2>
               <p className="text-muted-foreground max-w-xl mx-auto">
@@ -237,7 +237,7 @@ const Services = () => {
               <span className="inline-block bg-primary/10 text-primary text-xs font-bold tracking-widest uppercase px-3 py-1 rounded-full mb-3">
                 Premium Add-ons
               </span>
-              <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-3">
+              <h2 className="text-2xl md:text-3xl font-extrabold text-foreground mb-3">
                 Customize Your Service
               </h2>
               <p className="text-muted-foreground max-w-xl mx-auto">
@@ -265,7 +265,7 @@ const Services = () => {
             <span className="inline-block bg-primary/10 text-primary text-xs font-bold tracking-widest uppercase px-3 py-1 rounded-full mb-3">
               Where We Serve
             </span>
-            <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-2">Pool Service Areas</h2>
+            <h2 className="text-2xl md:text-3xl font-extrabold text-foreground mb-2">Pool Service Areas</h2>
             <p className="text-muted-foreground mb-10 max-w-[580px]">
               Professional pool maintenance across three major Florida markets.
             </p>
@@ -338,7 +338,7 @@ const Services = () => {
               <Shield className="h-5 w-5 text-white/80" />
               <span className="text-xs font-bold tracking-widest uppercase text-white/80">100% Satisfaction Guarantee</span>
             </div>
-            <h2 className="text-2xl md:text-3xl font-bold mb-3">Ready for Crystal Clear Water?</h2>
+            <h2 className="text-2xl md:text-3xl font-extrabold mb-3">Ready for Crystal Clear Water?</h2>
             <p className="text-white/80 max-w-[560px] mx-auto mb-8 font-light">
               Save $25 on your first month. Book online in under 60 seconds.
             </p>

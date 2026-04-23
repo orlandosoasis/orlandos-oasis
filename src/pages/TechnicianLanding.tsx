@@ -118,7 +118,7 @@ const TechnicianLanding = () => {
         {/* Why Join */}
         <section className="py-16 px-4 bg-background">
           <div className="container max-w-6xl mx-auto text-center">
-            <h2 className="text-2xl md:text-3xl font-bold text-navy mb-2">Why Pool Technicians Join Orlando's Oasis</h2>
+            <h2 className="text-2xl md:text-3xl font-extrabold text-navy mb-2">Why Pool Technicians Join Orlando's Oasis</h2>
             <p className="text-muted-foreground mb-10 max-w-xl mx-auto">We help pool professionals grow predictable income with steady demand and recurring service opportunities.</p>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {BENEFITS.map((b) => (
@@ -153,7 +153,7 @@ const TechnicianLanding = () => {
         {/* How It Works */}
         <section className="py-16 px-4 bg-background">
           <div className="container max-w-6xl mx-auto text-center">
-            <h2 className="text-2xl md:text-3xl font-bold text-navy mb-2">How It Works</h2>
+            <h2 className="text-2xl md:text-3xl font-extrabold text-navy mb-2">How It Works</h2>
             <p className="text-muted-foreground mb-10">Start accepting pool service jobs in just a few steps.</p>
             <div className="grid grid-cols-2 md:grid-cols-5 gap-6">
               {STEPS.map((s) => (
@@ -173,7 +173,7 @@ const TechnicianLanding = () => {
         {/* Earnings */}
         <section className="py-16 px-4 bg-card border-y border-border">
           <div className="container max-w-4xl mx-auto text-center">
-            <h2 className="text-2xl md:text-3xl font-bold text-navy mb-2">How Much Can You Earn?</h2>
+            <h2 className="text-2xl md:text-3xl font-extrabold text-navy mb-2">How Much Can You Earn?</h2>
             <p className="text-muted-foreground mb-8 max-w-xl mx-auto">Earnings depend on availability, service type, and recurring accounts. Many pool pros build steady weekly income through consistent routes.</p>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {EARNINGS.map((e) => (
@@ -192,7 +192,7 @@ const TechnicianLanding = () => {
         {/* Requirements */}
         <section className="py-16 px-4 bg-background">
           <div className="container max-w-2xl mx-auto text-center">
-            <h2 className="text-2xl md:text-3xl font-bold text-navy mb-8">Requirements to Join</h2>
+            <h2 className="text-2xl md:text-3xl font-extrabold text-navy mb-8">Requirements to Join</h2>
             <ul className="space-y-4 text-left">
               {REQUIREMENTS.map((r) => (
                 <li key={r} className="flex items-center gap-3 pb-4 border-b border-border last:border-0">
@@ -208,7 +208,7 @@ const TechnicianLanding = () => {
         {/* FAQ */}
         <section className="py-16 px-4 bg-navy">
           <div className="container max-w-2xl mx-auto">
-            <h2 className="text-2xl md:text-3xl font-bold text-card text-center mb-8">Pool Pro FAQ</h2>
+            <h2 className="text-2xl md:text-3xl font-extrabold text-card text-center mb-8">Pool Pro FAQ</h2>
             <Accordion type="single" collapsible className="space-y-3">
               {FAQS.map((faq, i) => (
                 <AccordionItem key={i} value={`faq-${i}`} className="bg-navy-light/50 border border-card/10 rounded-lg px-4">

@@ -213,9 +213,6 @@ const Services = () => {
         <section className="py-16 md:py-20 px-4 bg-secondary">
           <div className="container max-w-6xl mx-auto">
             <div className="text-center mb-10">
-              <span className="inline-block bg-primary/10 text-primary text-xs font-bold tracking-widest uppercase px-3 py-1 rounded-full mb-3">
-                Premium Add-ons
-              </span>
               <h2 className="section-title mb-3">
                 Customize Your Service
               </h2>

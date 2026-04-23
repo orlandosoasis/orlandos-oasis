@@ -56,7 +56,7 @@ const About = () => {
 
               <div>
                 <h2 className="section-title mb-4">
-                  Professional pool care across Florida
+                  Professional pool care<br />across Florida
                 </h2>
                 <p className="body-text mb-4">
                   Orlando's Oasis provides reliable, consistent pool maintenance for homeowners across Tampa, Orlando, and Fort Lauderdale. We show up on schedule, communicate clearly, and keep your water balanced every single week.
@@ -73,7 +73,7 @@ const About = () => {
         <section className="py-16 md:py-20 px-4 bg-muted text-center">
           <div className="container max-w-6xl mx-auto">
             <h2 className="section-title max-w-[700px] mx-auto mb-4">
-              Dependable pool care that removes stress from pool ownership
+              Dependable pool care that<br />removes stress from pool ownership
             </h2>
             <p className="body-text max-w-[660px] mx-auto mb-12">
               We believe homeowners should enjoy their pools, not worry about chemistry, equipment failure, or missed service. Every visit is guided by that promise.

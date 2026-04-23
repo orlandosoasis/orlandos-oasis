@@ -7,7 +7,7 @@ import BlogStyleHero from "@/components/BlogStyleHero";
 import servicesWeekly from "@/assets/services-weekly.jpg";
 import servicesChemistry from "@/assets/services-chemistry.jpg";
 import servicesEquipment from "@/assets/services-equipment.jpg";
-import servicesHeroBg from "@/assets/services-hero-bg.webp";
+import servicesHeroBg from "@/assets/services-pool-evening.webp";
 
 const CORE_SERVICES = [
   {

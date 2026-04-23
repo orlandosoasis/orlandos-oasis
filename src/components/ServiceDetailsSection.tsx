@@ -104,7 +104,7 @@ const ServiceDetailsSection = () => {
       <div className="container max-w-4xl mx-auto px-4">
         {/* How to Choose the Right Service Pass */}
         <div className="mb-16">
-          <h2 className="font-bold text-navy mb-3 text-center text-3xl">
+          <h2 className="text-3xl font-extrabold text-navy tracking-tight mb-3 text-center">
             How to Choose the Right Service
           </h2>
           <p className="text-muted-foreground text-center mb-6">
@@ -143,7 +143,7 @@ const ServiceDetailsSection = () => {
       {/* Why Orlando's Oasis - value proposition cards */}
       <div className="py-16">
         <div className="container max-w-6xl mx-auto px-4">
-          <h2 className="font-bold text-navy mb-10 text-center text-3xl">
+          <h2 className="text-3xl font-extrabold text-navy tracking-tight mb-10 text-center">
             Why Orlando's Oasis
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">

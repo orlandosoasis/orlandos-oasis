@@ -131,7 +131,7 @@ const Contact = () => {
         <div className="max-w-[1100px] mx-auto grid grid-cols-1 md:grid-cols-[1fr_1.6fr] gap-12 md:gap-16 items-start">
           {/* Left: Contact Info */}
           <div>
-            <h2 className="text-2xl md:text-3xl font-extrabold text-foreground uppercase tracking-wide mb-2">
+            <h2 className="text-3xl font-extrabold text-navy mb-2">
               Get in Touch
             </h2>
             <p className="text-muted-foreground leading-relaxed mb-7">
@@ -259,7 +259,7 @@ const Contact = () => {
       {/* Service Areas Section */}
       <section className="py-16 px-5 md:px-10 bg-card text-center">
         <div className="max-w-[1100px] mx-auto">
-          <h2 className="text-2xl md:text-4xl font-extrabold uppercase tracking-wide text-foreground mb-4">
+          <h2 className="text-3xl font-extrabold text-navy mb-4">
             Serving Pools Across Tampa, Orlando & Fort Lauderdale
           </h2>
           <p className="text-muted-foreground max-w-[700px] mx-auto mb-12 leading-relaxed">

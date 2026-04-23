@@ -58,7 +58,7 @@ const About = () => {
                 <span className="inline-block bg-primary/10 text-primary text-xs font-bold tracking-widest uppercase px-3 py-1 rounded-full mb-3">
                   Who We Are
                 </span>
-                <h2 className="text-2xl md:text-3xl font-extrabold text-foreground mb-4">
+                <h2 className="text-3xl font-extrabold text-navy mb-4">
                   Professional pool care across Florida
                 </h2>
                 <p className="text-muted-foreground leading-relaxed mb-4">
@@ -78,7 +78,7 @@ const About = () => {
             <span className="inline-block bg-primary/10 text-primary text-xs font-bold tracking-widest uppercase px-3 py-1 rounded-full mb-4">
               Our Mission
             </span>
-            <h2 className="text-2xl md:text-3xl font-extrabold text-foreground max-w-[700px] mx-auto mb-4">
+            <h2 className="text-3xl font-extrabold text-navy max-w-[700px] mx-auto mb-4">
               Dependable pool care that removes stress from pool ownership
             </h2>
             <p className="text-muted-foreground max-w-[660px] mx-auto mb-12 leading-relaxed">
@@ -102,7 +102,7 @@ const About = () => {
             <span className="inline-block bg-white/15 text-white text-xs font-bold tracking-widest uppercase px-3 py-1 rounded-full mb-4">
               Talk With Our Team
             </span>
-            <h2 className="text-2xl md:text-3xl font-extrabold mb-3 text-white">Have questions about your pool?</h2>
+            <h2 className="text-3xl font-extrabold mb-3 text-white">Have questions about your pool?</h2>
             <p className="text-white max-w-[560px] mx-auto mb-8 font-light">
               Speak with a pool professional and get clear, straightforward guidance.<br />
               No pressure, no sales pitch.

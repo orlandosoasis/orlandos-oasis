@@ -175,12 +175,9 @@ const TechnicianLanding = () => {
                       <Star key={i} className="h-4 w-4 fill-primary text-primary" />
                     ))}
                   </div>
-                  <blockquote className="text-[15px] leading-relaxed text-foreground/80 mb-4">
+                  <blockquote className="text-[15px] leading-relaxed text-foreground/80">
                     "{t.quote}"
                   </blockquote>
-                  <p className="text-sm text-trust flex items-center gap-1">
-                    <CheckCircle className="h-3.5 w-3.5" /> {t.badge}
-                  </p>
                 </div>
               ))}
             </div>

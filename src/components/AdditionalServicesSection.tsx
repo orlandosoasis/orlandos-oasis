@@ -56,7 +56,7 @@ const AdditionalServicesSection = () => {
           {SERVICES.map(({ icon: Icon, title, description }) => (
             <div
               key={title}
-              className="bg-card border border-border/50 rounded-xl p-5 flex flex-col gap-5"
+              className="bg-white border border-border/50 rounded-xl p-5 flex flex-col gap-5"
             >
               <div className="h-14 w-14 rounded-2xl bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center">
                 <Icon className="h-6 w-6 text-primary-foreground" strokeWidth={1.75} />

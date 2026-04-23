@@ -83,18 +83,18 @@ const About = () => {
         </section>
 
         {/* Mission */}
-        <section className="py-16 md:py-20 px-4 bg-gradient-to-br from-navy to-oasis-navy-light text-center">
+        <section className="py-16 md:py-20 px-4 bg-muted text-center">
           <div className="container max-w-6xl mx-auto">
-            <span className="inline-block bg-oasis-aqua/15 text-oasis-aqua text-xs font-bold tracking-widest uppercase px-3 py-1 rounded-full mb-4">
+            <span className="inline-block bg-primary/10 text-primary text-xs font-bold tracking-widest uppercase px-3 py-1 rounded-full mb-4">
               Our Mission
             </span>
-            <h2 className="text-2xl md:text-3xl font-extrabold text-white max-w-[700px] mx-auto mb-4">
+            <h2 className="text-2xl md:text-3xl font-extrabold text-foreground max-w-[700px] mx-auto mb-4">
               Dependable pool care that removes stress from pool ownership
             </h2>
-            <p className="text-white/65 max-w-[660px] mx-auto mb-12 leading-relaxed">
+            <p className="text-muted-foreground max-w-[660px] mx-auto mb-12 leading-relaxed">
               We believe homeowners should enjoy their pools — not worry about chemistry, equipment failure, or missed service. Every visit is guided by that promise.
             </p>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-px bg-white/20 rounded-xl overflow-hidden border border-white/20">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-px bg-border rounded-xl overflow-hidden border border-border">
               {PILLARS.map((p) => (
                 <div key={p.title} className="bg-card transition-colors px-5 py-7 text-center">
                   <p.icon className="h-7 w-7 text-primary mx-auto mb-3" />

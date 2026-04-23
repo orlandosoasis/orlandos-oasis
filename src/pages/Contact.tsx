@@ -120,7 +120,7 @@ const Contact = () => {
 
       <BlogStyleHero
         
-        title={<>Contact<br />Orlando's Oasis.</>}
+        title={<>Contact Us.</>}
         description="Have a question about pool service, repairs, or want to get started? Send us a message and our team will follow up shortly."
       />
 

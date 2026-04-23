@@ -86,7 +86,7 @@ const TechnicianLanding = () => {
           <div className="container max-w-6xl mx-auto px-4 md:px-8 py-12 md:py-16">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
               <div>
-                <p className="text-sm font-semibold text-primary uppercase tracking-wide mb-2">Orlando's Oasis Technician Application</p>
+                
                 <h1 className="text-5xl font-extrabold text-navy leading-tight mb-4 md:text-4xl">
                   Apply to become an Orlando's Oasis Pool Technician
                 </h1>

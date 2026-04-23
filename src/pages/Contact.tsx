@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { z } from "zod";
 import { Phone, Mail, MapPin } from "lucide-react";
-import Header from "@/components/Header";
+import FloatingNav from "@/components/FloatingNav";
 import BlogStyleHero from "@/components/BlogStyleHero";
 import Footer from "@/components/Footer";
 import { Input } from "@/components/ui/input";

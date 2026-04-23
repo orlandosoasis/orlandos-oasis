@@ -1,7 +1,6 @@
 import { Link } from "react-router-dom";
 import { MapPin, CheckCircle2, ArrowRight, Shield, Clock, Sparkles, Wrench, FlaskConical } from "lucide-react";
-import TopBanner from "@/components/TopBanner";
-import Header from "@/components/Header";
+import FloatingNav from "@/components/FloatingNav";
 import Footer from "@/components/Footer";
 import BlogStyleHero from "@/components/BlogStyleHero";
 import { Button } from "@/components/ui/button";
@@ -37,8 +36,7 @@ const SERVICES_INCLUDED = [
 const ServiceAreas = () => {
   return (
     <div className="min-h-screen flex flex-col">
-      <TopBanner />
-      <Header />
+      <FloatingNav />
       <main className="flex-1">
 
         <BlogStyleHero

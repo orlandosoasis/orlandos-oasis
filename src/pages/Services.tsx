@@ -1,7 +1,6 @@
 import { Star, Check, Clock, Sparkles, Wrench, Droplets, FlaskConical, Shield, ArrowRight, MapPin } from "lucide-react";
 import { Link } from "react-router-dom";
-import TopBanner from "@/components/TopBanner";
-import Header from "@/components/Header";
+import FloatingNav from "@/components/FloatingNav";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import BlogStyleHero from "@/components/BlogStyleHero";
@@ -98,8 +97,7 @@ const EVERY_VISIT = [
 const Services = () => {
   return (
     <div className="min-h-screen flex flex-col">
-      <TopBanner />
-      <Header />
+      <FloatingNav />
       <main className="flex-1">
 
         <BlogStyleHero

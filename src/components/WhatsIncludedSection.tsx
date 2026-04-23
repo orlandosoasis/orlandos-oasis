@@ -55,7 +55,7 @@ const WhatsIncludedSection = () => {
             <div className="relative h-full min-h-[320px] lg:min-h-full rounded-2xl overflow-hidden shadow-lg">
               <img
                 src={poolImage}
-                alt="Sparkling clean residential pool maintained by Orlando's Oasis"
+                alt="Kids enjoying a clean, safe pool maintained by Orlando's Oasis"
                 className="absolute inset-0 w-full h-full object-cover"
                 loading="lazy"
               />

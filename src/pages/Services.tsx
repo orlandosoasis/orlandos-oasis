@@ -143,26 +143,6 @@ const Services = () => {
           </div>
         </section>
 
-        {/* Every Visit Checklist */}
-        <section className="py-16 md:py-20 px-4 bg-gradient-to-br from-navy to-oasis-navy-light bg-secondary-foreground">
-          <div className="container max-w-4xl mx-auto text-center">
-            <h2 className="section-title text-white mb-3">
-              What's Included in Every Service
-            </h2>
-            <p className="hero-subtitle text-white/65 max-w-[560px] mx-auto mb-10">
-              Regardless of your service length, every visit covers a comprehensive checklist to keep your pool in top condition.
-            </p>
-            <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-3 text-left">
-              {EVERY_VISIT.map((item) => (
-                <div key={item} className="flex items-start gap-2.5 bg-white/[0.06] rounded-lg px-4 py-3">
-                  <Check className="h-4 w-4 text-oasis-aqua shrink-0 mt-0.5" />
-                  <span className="text-sm text-white/80">{item}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
         {/* Premium Add-ons */}
         <section className="py-16 md:py-20 px-4 bg-secondary">
           <div className="container max-w-6xl mx-auto">

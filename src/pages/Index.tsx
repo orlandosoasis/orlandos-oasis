@@ -22,7 +22,7 @@ const Index = () => {
         <div id="step-indicator-portal" className="container max-w-6xl mx-auto px-4" />
         
         {/* Two-column layout: Reviews left, Pricing right */}
-        <section className="py-12 px-4 bg-background">
+        <section className="py-12 px-4 bg-white">
           <div className="container max-w-6xl mx-auto">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
               {/* Reviews - second on mobile, left on desktop */}

@@ -101,7 +101,7 @@ const Services = () => {
       <main className="flex-1">
 
         <BlogStyleHero
-          eyebrow="Our Services"
+          
           title={<>Pool Services That<br />Keep It Crystal Clear.</>}
           description="From weekly maintenance to deep restoration, we handle everything so you can enjoy your pool without the hassle."
         />

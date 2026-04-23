@@ -165,50 +165,6 @@ const Services = () => {
           </div>
         </section>
 
-        {/* Service Guide */}
-        <section className="py-16 md:py-20 px-4 bg-background">
-          <div className="container max-w-4xl mx-auto">
-            <div className="text-center mb-8">
-              <h2 className="section-title mb-3">
-                Choose the Right Service Length
-              </h2>
-              <p className="body-text max-w-xl mx-auto">
-                Use this guide to estimate the right service duration for your pool.
-              </p>
-            </div>
-
-            <div className="overflow-x-auto rounded-xl border border-border">
-              <table className="w-full border-collapse">
-                <thead>
-                  <tr className="bg-muted">
-                    <th className="text-left p-4 font-semibold text-navy border-b border-border">Duration</th>
-                    <th className="text-left p-4 font-semibold text-navy border-b border-border">Best for</th>
-                    <th className="text-left p-4 font-semibold text-navy border-b border-border">Typical pool type</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {SERVICE_GUIDE.map((row, i) => (
-                    <tr key={i} className="border-b border-border last:border-b-0 hover:bg-muted/50 transition-colors">
-                      <td className="p-4 font-semibold text-navy flex items-center gap-2">
-                        <Clock className="h-4 w-4 text-primary" />
-                        {row.duration}
-                      </td>
-                      <td className="p-4 text-muted-foreground">{row.bestFor}</td>
-                      <td className="p-4 text-muted-foreground">{row.poolType}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-
-            <div className="mt-4 p-4 bg-muted/50 rounded-lg">
-              <p className="text-sm text-muted-foreground">
-                <span className="font-semibold text-navy">Extra time:</span> If your pool needs extra time during the first visit, we'll confirm it before continuing. Additional time is billed at a discounted rate for Executive Plan members.
-              </p>
-            </div>
-          </div>
-        </section>
-
         {/* Premium Add-ons */}
         <section className="py-16 md:py-20 px-4 bg-secondary">
           <div className="container max-w-6xl mx-auto">

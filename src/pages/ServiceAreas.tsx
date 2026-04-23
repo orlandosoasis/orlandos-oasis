@@ -63,7 +63,7 @@ const ServiceAreas = () => {
                           <h3 className="text-lg font-bold text-navy">{area.city}</h3>
                           <p className="text-xs font-semibold text-primary">{area.region}</p>
                         </div>
-                        <span className="text-xs font-bold text-trust bg-trust/10 px-2.5 py-1 rounded-full whitespace-nowrap ml-auto md:ml-4">Live now</span>
+                        
                       </div>
                       <p className="text-sm text-muted-foreground leading-relaxed mb-4">{area.desc}</p>
                       <div className="flex flex-wrap gap-2">

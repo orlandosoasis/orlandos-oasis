@@ -67,7 +67,7 @@ const NewsletterSection = () => {
                 />
                 {error && <p className="text-destructive text-sm mt-1 text-left">{error}</p>}
               </div>
-              <Button type="submit" className="h-12 px-6 whitespace-nowrap">
+              <Button type="submit" className="h-12 px-6 whitespace-nowrap bg-white text-navy hover:bg-white/90">
                 Subscribe
               </Button>
             </form>

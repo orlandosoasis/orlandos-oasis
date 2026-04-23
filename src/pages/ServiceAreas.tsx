@@ -4,6 +4,7 @@ import FloatingNav from "@/components/FloatingNav";
 import Footer from "@/components/Footer";
 import BlogStyleHero from "@/components/BlogStyleHero";
 import { Button } from "@/components/ui/button";
+import serviceAreasHeroBg from "@/assets/service-areas-hero-bg.webp";
 
 const AREAS = [
   {
@@ -40,7 +41,8 @@ const ServiceAreas = () => {
       <main className="flex-1">
 
         <BlogStyleHero
-          
+          backgroundImage={serviceAreasHeroBg}
+          overlay="dark"
           title={<>Service Areas Across<br />Florida.</>}
           description="Orlando's Oasis provides professional pool maintenance in Tampa, Orlando, and Fort Lauderdale — with plans to expand across the state."
         />

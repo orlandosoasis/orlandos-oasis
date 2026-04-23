@@ -51,7 +51,7 @@ const TechnicianLanding = () => {
             <span className="text-xl font-bold text-navy">Orlando's Oasis</span>
           </Link>
           <Link to="/login">
-            <Button size="sm">Sign In</Button>
+            <Button size="sm" className="rounded-full">Sign In</Button>
           </Link>
         </div>
       </header>

@@ -44,7 +44,7 @@ const ServiceAreas = () => {
           backgroundImage={serviceAreasHeroBg}
           overlay="dark"
           title={<>Service Areas</>}
-          description="Orlando's Oasis provides professional pool maintenance in Tampa, Orlando, and Fort Lauderdale — with plans to expand across the state."
+          description="Orlando's Oasis provides professional pool maintenance in Tampa, Orlando, and Fort Lauderdale, with plans to expand across the state."
         />
 
         {/* Areas Detail */}

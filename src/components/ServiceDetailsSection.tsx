@@ -117,49 +117,6 @@ const ServiceDetailsSection = () => {
         </div>
       </div>
 
-      {/* What's Included - own full-width section */}
-      <div className="bg-muted/40 mt-8 py-16">
-        <div className="container max-w-4xl mx-auto px-4">
-          <h3 className="text-2xl font-bold text-navy mb-8 text-center">
-            What's Included
-          </h3>
-
-          <div className="grid md:grid-cols-2 gap-6 max-w-2xl mx-auto">
-            {/* Every Visit */}
-            <div className="bg-card rounded-xl border border-border p-6">
-              <div className="flex items-center gap-2 mb-4">
-                <Sparkles className="h-5 w-5 text-primary" />
-                <h4 className="font-semibold text-navy">Every Visit</h4>
-              </div>
-              <ul className="space-y-2">
-                {EVERY_VISIT_ITEMS.map((item, index) => (
-                  <li key={index} className="flex items-start gap-2 text-sm text-muted-foreground">
-                    <Check className="h-4 w-4 text-oasis shrink-0 mt-0.5" />
-                    {item}
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            {/* Premium Add-ons */}
-            <div className="bg-card rounded-xl border border-border p-6">
-              <div className="flex items-center gap-2 mb-4">
-                <Calendar className="h-5 w-5 text-primary" />
-                <h4 className="font-semibold text-navy">Premium Add-ons</h4>
-              </div>
-              <ul className="space-y-2">
-                {PREMIUM_ADDONS.map((item, index) => (
-                  <li key={index} className="flex items-start gap-2 text-sm text-muted-foreground">
-                    <Check className="h-4 w-4 text-oasis shrink-0 mt-0.5" />
-                    {item}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
-        </div>
-      </div>
-
       {/* Why Orlando's Oasis - own full-width section */}
       <div className="py-16">
         <div className="container max-w-4xl mx-auto px-4">

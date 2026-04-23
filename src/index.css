@@ -100,6 +100,27 @@
 }
 
 /* ============================================================
+   REUSABLE TYPOGRAPHY (source of truth = homepage)
+   ============================================================ */
+@layer components {
+  .hero-title {
+    @apply text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-extrabold leading-[0.95] tracking-tight;
+  }
+  .hero-subtitle {
+    @apply text-base md:text-lg leading-relaxed;
+  }
+  .section-title {
+    @apply text-3xl font-extrabold text-navy tracking-tight;
+  }
+  .section-subtitle {
+    @apply text-base text-muted-foreground/90 leading-relaxed;
+  }
+  .body-text {
+    @apply text-base text-muted-foreground leading-relaxed;
+  }
+}
+
+/* ============================================================
    GLOBAL THEME (promoted from .hp-theme)
    Premium pool design system — applied app-wide.
    ============================================================ */

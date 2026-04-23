@@ -5,6 +5,7 @@ import ServicesSection from "@/components/ServicesSection";
 import TestimonialCard from "@/components/TestimonialCard";
 import ReviewsSection from "@/components/ReviewsSection";
 import HowItWorks from "@/components/HowItWorks";
+import WhatsIncludedSection from "@/components/WhatsIncludedSection";
 import ServiceDetailsSection from "@/components/ServiceDetailsSection";
 import PoolGallery from "@/components/PoolGallery";
 import FAQSection from "@/components/FAQSection";
@@ -39,6 +40,7 @@ const Index = () => {
         
         <PoolGallery />
         <HowItWorks />
+        <WhatsIncludedSection />
         <ServiceDetailsSection />
         <FAQSection />
 

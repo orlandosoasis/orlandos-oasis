@@ -50,18 +50,6 @@ const ServiceAreas = () => {
         {/* Areas Detail */}
         <section className="py-16 md:py-20 px-4 bg-background">
           <div className="container max-w-6xl mx-auto">
-            <div className="text-center mb-12">
-              <span className="inline-block bg-primary/10 text-primary text-xs font-bold tracking-widest uppercase px-3 py-1 rounded-full mb-3">
-                Where We Serve
-              </span>
-              <h2 className="text-2xl md:text-3xl font-extrabold text-foreground mb-3">
-                Three Markets. One Standard.
-              </h2>
-              <p className="text-muted-foreground max-w-[600px] mx-auto">
-                Every location receives the same level of care — consistent scheduling, thorough service, and clear communication after every visit.
-              </p>
-            </div>
-
             <div className="space-y-6">
               {AREAS.map((area) => (
                 <div key={area.city} className="bg-card border border-border rounded-2xl p-6 md:p-8 hover:border-primary/40 hover:shadow-md transition-all">

@@ -132,7 +132,7 @@ const Services = () => {
                       <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
                         <service.icon className="h-5 w-5 text-primary" />
                       </div>
-                      <h3 className="text-xl font-bold text-foreground">{service.title}</h3>
+                      <h3 className="text-xl font-bold text-navy">{service.title}</h3>
                     </div>
                     <p className="text-muted-foreground leading-relaxed mb-5">{service.description}</p>
                     <ul className="space-y-2">
@@ -192,15 +192,15 @@ const Services = () => {
               <table className="w-full border-collapse">
                 <thead>
                   <tr className="bg-muted">
-                    <th className="text-left p-4 font-semibold text-foreground border-b border-border">Duration</th>
-                    <th className="text-left p-4 font-semibold text-foreground border-b border-border">Best for</th>
-                    <th className="text-left p-4 font-semibold text-foreground border-b border-border">Typical pool type</th>
+                    <th className="text-left p-4 font-semibold text-navy border-b border-border">Duration</th>
+                    <th className="text-left p-4 font-semibold text-navy border-b border-border">Best for</th>
+                    <th className="text-left p-4 font-semibold text-navy border-b border-border">Typical pool type</th>
                   </tr>
                 </thead>
                 <tbody>
                   {SERVICE_GUIDE.map((row, i) => (
                     <tr key={i} className="border-b border-border last:border-b-0 hover:bg-muted/50 transition-colors">
-                      <td className="p-4 font-semibold text-foreground flex items-center gap-2">
+                      <td className="p-4 font-semibold text-navy flex items-center gap-2">
                         <Clock className="h-4 w-4 text-primary" />
                         {row.duration}
                       </td>
@@ -214,7 +214,7 @@ const Services = () => {
 
             <div className="mt-4 p-4 bg-muted/50 rounded-lg">
               <p className="text-sm text-muted-foreground">
-                <span className="font-semibold text-foreground">Extra time:</span> If your pool needs extra time during the first visit, we'll confirm it before continuing. Additional time is billed at a discounted rate for Executive Plan members.
+                <span className="font-semibold text-navy">Extra time:</span> If your pool needs extra time during the first visit, we'll confirm it before continuing. Additional time is billed at a discounted rate for Executive Plan members.
               </p>
             </div>
           </div>
@@ -239,7 +239,7 @@ const Services = () => {
               {ADDONS.map((addon) => (
                 <div key={addon.title} className="bg-card border border-border rounded-xl p-5 hover:border-primary/40 hover:shadow-md transition-all">
                   <div className="flex items-start justify-between mb-2">
-                    <h4 className="text-sm font-semibold text-foreground leading-snug pr-2">{addon.title}</h4>
+                    <h4 className="text-sm font-semibold text-navy leading-snug pr-2">{addon.title}</h4>
                     <span className="text-sm font-bold text-primary whitespace-nowrap">{addon.price}</span>
                   </div>
                   <p className="text-xs text-muted-foreground leading-relaxed">{addon.desc}</p>

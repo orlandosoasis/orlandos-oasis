@@ -253,11 +253,11 @@ const Services = () => {
         <section className="py-16 md:py-20 px-4 bg-gradient-to-r from-primary to-oasis-dark text-center text-white">
           <div className="container max-w-6xl mx-auto" style={{ textShadow: '0 2px 8px rgba(0,0,0,0.3)' }}>
             <div className="flex items-center justify-center gap-2 mb-4">
-              <Shield className="h-5 w-5 text-white/80" />
-              <span className="text-xs font-bold tracking-widest uppercase text-white/80">100% Satisfaction Guarantee</span>
+              <Shield className="h-5 w-5 text-white" />
+              <span className="text-xs font-bold tracking-widest uppercase text-white">100% Satisfaction Guarantee</span>
             </div>
             <h2 className="text-2xl md:text-3xl font-extrabold mb-3 text-white">Ready for Crystal Clear Water?</h2>
-            <p className="text-white/80 max-w-[560px] mx-auto mb-8 font-light">
+            <p className="text-white max-w-[560px] mx-auto mb-8 font-light">
               Save $25 on your first month. Book online in under 60 seconds.
             </p>
             <div className="flex gap-3 justify-center flex-wrap">

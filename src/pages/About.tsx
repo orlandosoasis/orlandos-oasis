@@ -112,8 +112,8 @@ const About = () => {
             <span className="inline-block bg-white/15 text-white text-xs font-bold tracking-widest uppercase px-3 py-1 rounded-full mb-4">
               Talk With Our Team
             </span>
-            <h2 className="text-2xl md:text-3xl font-extrabold mb-3">Have questions about your pool?</h2>
-            <p className="text-white/80 max-w-[560px] mx-auto mb-8 font-light">
+            <h2 className="text-2xl md:text-3xl font-extrabold mb-3 text-white">Have questions about your pool?</h2>
+            <p className="text-white max-w-[560px] mx-auto mb-8 font-light">
               Speak with a pool professional and get clear, straightforward guidance — no pressure, no sales pitch.
             </p>
             <Button variant="secondary" size="lg" className="bg-white text-navy hover:bg-white/90 font-semibold" asChild>

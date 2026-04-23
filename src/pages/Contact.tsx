@@ -256,7 +256,7 @@ const Contact = () => {
       {/* Service Areas Section */}
       <section className="py-16 px-5 md:px-10 bg-card text-center">
         <div className="max-w-[1100px] mx-auto">
-          <h2 className="section-title mb-3">
+          <h2 className="text-3xl font-extrabold text-navy mb-3">
             Serving Pools Across Tampa, Orlando & Fort Lauderdale
           </h2>
           <p className="body-text max-w-[700px] mx-auto mb-12">

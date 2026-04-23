@@ -131,7 +131,7 @@ const Contact = () => {
         <div className="max-w-[1100px] mx-auto grid grid-cols-1 md:grid-cols-[1fr_1.6fr] gap-12 md:gap-16 items-start">
           {/* Left: Contact Info */}
           <div>
-            <h2 className="section-title mb-3">
+            <h2 className="section-title mb-8">
               Get in Touch
             </h2>
 

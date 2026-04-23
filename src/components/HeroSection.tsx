@@ -15,6 +15,7 @@ const NAV_ITEMS = [
 
 const HeroSection = () => {
   const [isMobile, setIsMobile] = useState(false);
+  const [videoReady, setVideoReady] = useState(false);
 
   useEffect(() => {
     const check = () => setIsMobile(window.matchMedia("(max-width: 767px)").matches);
@@ -40,14 +41,15 @@ const HeroSection = () => {
       ) : (
         <video
           src={heroVideo}
-          poster={heroImage}
           autoPlay
           muted
           loop
           playsInline
           preload="auto"
           aria-hidden="true"
-          className="absolute inset-0 w-full h-full object-cover object-center"
+          onCanPlay={() => setVideoReady(true)}
+          onPlaying={() => setVideoReady(true)}
+          className={`absolute inset-0 w-full h-full object-cover object-center transition-opacity duration-500 ${videoReady ? "opacity-100" : "opacity-0"}`}
         />
       )}
 

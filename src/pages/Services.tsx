@@ -84,15 +84,12 @@ const ADDONS = [
 ];
 
 const EVERY_VISIT = [
-  "Skimming surface debris",
-  "Brushing walls, steps, and tile line",
-  "Vacuuming pool as needed",
-  "Emptying skimmer and pump baskets",
-  "Water chemistry testing and balancing",
-  "Adding necessary chemicals",
-  "Filter system check",
-  "Equipment inspection",
-  "Water level monitoring",
+  "Skimming debris",
+  "Brushing walls and tile",
+  "Vacuuming if needed",
+  "Emptying baskets",
+  "Checking equipment",
+  "Balancing water chemistry",
 ];
 
 const Services = () => {

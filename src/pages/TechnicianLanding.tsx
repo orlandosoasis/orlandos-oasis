@@ -145,7 +145,7 @@ const TechnicianLanding = () => {
 
 
         {/* Earnings */}
-        <section className="py-16 px-4 bg-card border-y border-border">
+        <section className="py-16 px-4 bg-card">
           <div className="container max-w-4xl mx-auto text-center">
             <h2 className="text-2xl md:text-3xl font-extrabold text-navy mb-2">How Much Can You Earn?</h2>
             <p className="text-muted-foreground mb-8 max-w-xl mx-auto">Earnings depend on availability, service type, and recurring accounts. Many pool pros build steady weekly income through consistent routes.</p>

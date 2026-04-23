@@ -139,7 +139,7 @@ const TechnicianLanding = () => {
             <p className="text-muted-foreground mb-10 max-w-xl mx-auto">We help pool professionals grow predictable income with steady demand and recurring service opportunities.</p>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
               {BENEFITS.map((b) => (
-                <div key={b.title} className="bg-card rounded-xl p-6 border border-border text-left">
+                <div key={b.title} className="p-6 text-center flex flex-col items-center">
                   <div className="inline-flex items-center justify-center h-12 w-12 rounded-xl bg-gradient-to-br from-primary to-primary/70 shadow-md mb-4">
                     <b.icon className="h-6 w-6 text-white" strokeWidth={2} />
                   </div>

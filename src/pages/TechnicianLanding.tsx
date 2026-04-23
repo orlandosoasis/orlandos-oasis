@@ -161,7 +161,7 @@ const TechnicianLanding = () => {
               {TESTIMONIALS.map((t) => (
                 <div
                   key={t.name}
-                  className="bg-white rounded-2xl p-6 border border-border shadow-[0_4px_12px_rgba(0,0,0,0.04)] hover:-translate-y-1 hover:shadow-[0_10px_24px_rgba(0,0,0,0.08)] transition-all duration-200"
+                  className="bg-white rounded-2xl p-6 border border-border shadow-[0_4px_12px_rgba(0,0,0,0.04)]"
                 >
                   <div className="flex items-center gap-3 mb-4">
                     <img src={t.image} alt={t.name} className="h-14 w-14 rounded-xl object-cover shrink-0" />

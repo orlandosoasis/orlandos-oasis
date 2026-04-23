@@ -32,6 +32,30 @@ const REQUIREMENTS = [
   "Professional communication",
 ];
 
+const TESTIMONIALS = [
+  {
+    name: "Daniel R.",
+    meta: "Verified Pool Pro",
+    image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop",
+    quote: "What I value most is the consistency. I've built a reliable weekly route, and I can clearly see my upcoming jobs and earnings.",
+    badge: "Verified Pool Pro · 112 Services Completed",
+  },
+  {
+    name: "Marcus T.",
+    meta: "Verified Pool Pro",
+    image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&h=200&fit=crop",
+    quote: "The platform makes it easy to manage my schedule and grow my client base. Weekly payouts are always on time.",
+    badge: "Verified Pool Pro · 87 Services Completed",
+  },
+  {
+    name: "James L.",
+    meta: "Verified Pool Pro",
+    image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&h=200&fit=crop",
+    quote: "I started part-time and now have a full route. The recurring accounts give me predictable income every week.",
+    badge: "Verified Pool Pro · 156 Services Completed",
+  },
+];
+
 const FAQS = [
   { q: "How do payouts work?", a: "Payouts are processed weekly via direct deposit. You can track your earnings in real-time through your technician dashboard." },
   { q: "Do I need to provide my own chemicals and tools?", a: "Yes, technicians are expected to have access to basic pool service equipment and chemicals. We provide guidance on recommended supplies." },
@@ -125,20 +149,48 @@ const TechnicianLanding = () => {
           </div>
         </section>
 
-        {/* Testimonial */}
-        <section className="py-16 px-4 bg-card">
-          <div className="container max-w-4xl mx-auto text-center">
-            <h2 className="text-2xl font-bold text-navy mb-8">What Pool Pros Are Saying</h2>
-            <div className="flex flex-col md:flex-row items-center gap-6">
-              <img src={techHero} alt="Pool Pro" className="h-32 w-32 rounded-xl object-cover shadow" />
-              <div className="text-left">
-                <div className="flex mb-2">{[...Array(5)].map((_, i) => <Star key={i} className="h-4 w-4 fill-oasis text-oasis" />)}</div>
-                <blockquote className="text-foreground italic mb-3">
-                  "What I value most is the consistency. I've built a reliable weekly route, and I can clearly see my upcoming jobs and earnings."
-                </blockquote>
-                <p className="text-sm font-semibold text-navy">- Daniel R.</p>
-                <p className="text-xs text-trust flex items-center gap-1"><CheckCircle className="h-3 w-3" /> Verified Pool Pro · 112 Services Completed</p>
-              </div>
+        {/* Testimonials */}
+        <section className="py-20 px-6 bg-muted/30">
+          <div className="container max-w-[1200px] mx-auto">
+            <h2 className="text-4xl md:text-5xl font-bold text-navy text-center mb-12 leading-tight">
+              What Pool Pros Are Saying
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {TESTIMONIALS.map((t) => (
+                <div
+                  key={t.name}
+                  className="bg-white rounded-2xl p-6 border border-border shadow-[0_4px_12px_rgba(0,0,0,0.04)] hover:-translate-y-1 hover:shadow-[0_10px_24px_rgba(0,0,0,0.08)] transition-all duration-200"
+                >
+                  <div className="flex items-center gap-3 mb-4">
+                    <img src={t.image} alt={t.name} className="h-14 w-14 rounded-xl object-cover shrink-0" />
+                    <div>
+                      <p className="font-semibold text-navy text-base">{t.name}</p>
+                      <p className="text-sm text-muted-foreground">{t.meta}</p>
+                    </div>
+                  </div>
+                  <div className="flex mb-3">
+                    {[...Array(5)].map((_, i) => (
+                      <Star key={i} className="h-4 w-4 fill-primary text-primary" />
+                    ))}
+                  </div>
+                  <blockquote className="text-[15px] leading-relaxed text-foreground/80 mb-4">
+                    "{t.quote}"
+                  </blockquote>
+                  <p className="text-sm text-trust flex items-center gap-1">
+                    <CheckCircle className="h-3.5 w-3.5" /> {t.badge}
+                  </p>
+                </div>
+              ))}
+            </div>
+            <div className="text-center mt-12">
+              <p className="text-muted-foreground mb-4">
+                Join hundreds of pool pros growing with Orlando's Oasis
+              </p>
+              <Link to="/technician/apply">
+                <Button className="h-12 px-8 text-base font-semibold">
+                  Apply as a Pool Technician
+                </Button>
+              </Link>
             </div>
           </div>
         </section>

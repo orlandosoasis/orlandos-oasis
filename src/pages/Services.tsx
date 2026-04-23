@@ -148,9 +148,6 @@ const Services = () => {
         {/* Every Visit Checklist */}
         <section className="py-16 md:py-20 px-4 bg-gradient-to-br from-navy to-oasis-navy-light bg-secondary-foreground">
           <div className="container max-w-4xl mx-auto text-center">
-            <span className="inline-block bg-oasis-aqua/15 text-oasis-aqua text-xs font-bold tracking-widest uppercase px-3 py-1 rounded-full mb-4">
-              Every Visit
-            </span>
             <h2 className="section-title text-white mb-3">
               What's Included in Every Service
             </h2>

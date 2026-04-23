@@ -16,7 +16,7 @@ const FAQS = [
 
 const FAQSection = () => {
   return (
-    <section className="py-16 px-4 bg-card">
+    <section className="pt-16 px-4 bg-card">
       <div className="container max-w-3xl mx-auto">
         <h2 className="text-3xl font-bold text-foreground text-center mb-2">
           Frequently Asked Questions

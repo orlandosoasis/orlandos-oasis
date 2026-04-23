@@ -1,5 +1,5 @@
 import { Waves, Brush, Droplet, Trash2, FlaskConical, FlaskRound, Filter, Wrench, Gauge } from "lucide-react";
-import poolImage from "@/assets/gallery-resort.jpg";
+import poolImage from "@/assets/kids-playing-pool.webp";
 
 const ITEMS = [
   { icon: Waves, label: "Skimming surface debris" },

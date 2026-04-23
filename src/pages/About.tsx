@@ -5,6 +5,7 @@ import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import BlogStyleHero from "@/components/BlogStyleHero";
 import poolWaterBg from "@/assets/pool-water-bg.webp";
+import aboutPoolCleaning from "@/assets/about-pool-cleaning.webp";
 
 const PILLARS = [
   { icon: Calendar, title: "Consistency", desc: "Same standard, same schedule, every week." },
@@ -37,8 +38,8 @@ const About = () => {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-14 items-center">
               <div className="relative">
                 <img
-                  src="https://images.unsplash.com/photo-1575429198097-0414ec08e8cd?w=800&q=80"
-                  alt="Crystal clear residential pool"
+                  src={aboutPoolCleaning}
+                  alt="Pool technician cleaning a residential pool with a robotic cleaner"
                   className="w-full aspect-[4/3] object-cover rounded-2xl"
                   loading="lazy"
                 />

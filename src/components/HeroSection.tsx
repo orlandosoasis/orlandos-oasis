@@ -6,8 +6,9 @@ import heroImage from "@/assets/hero-pool-resort.png";
 import heroVideo from "@/assets/hero-villa.mp4";
 
 const NAV_ITEMS = [
+  { label: "Home", href: "/" },
+  { label: "About", href: "/about" },
   { label: "Services", href: "/services" },
-  { label: "Why Us", href: "/about" },
   { label: "Service Area", href: "/service-areas" },
   { label: "Contact", href: "/contact" },
 ];

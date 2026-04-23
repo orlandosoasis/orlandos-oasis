@@ -34,11 +34,18 @@ const BlogStyleHero = ({
           : undefined
       }
     >
-      {backgroundImage && (
+      {backgroundImage && isDark && (
+        <>
+          <div className="absolute inset-0 bg-black/20" aria-hidden="true" />
+          <div
+            className="absolute inset-0 bg-gradient-to-b from-black/10 via-transparent to-black/35"
+            aria-hidden="true"
+          />
+        </>
+      )}
+      {backgroundImage && !isDark && (
         <div
-          className={`absolute inset-0 ${
-            isDark ? "bg-navy/65" : "bg-white/55"
-          } backdrop-blur-[2px]`}
+          className="absolute inset-0 bg-white/55 backdrop-blur-[2px]"
           aria-hidden="true"
         />
       )}

@@ -1,8 +1,7 @@
 import { Link } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import logo from "@/assets/oo-logo.png";
-import heroImage from "@/assets/hero-pool-resort.png";
 import heroVideo from "@/assets/hero-villa.mp4";
 
 const NAV_ITEMS = [

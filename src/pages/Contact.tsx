@@ -152,7 +152,7 @@ const Contact = () => {
 
             {/* Business Hours */}
             <div>
-              <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-3">Business Hours</p>
+              <h2 className="section-title mb-8">Business Hours</h2>
               <table className="w-full text-sm">
                 <tbody>
                   {HOURS.map(({ day, time }) => (

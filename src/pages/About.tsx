@@ -26,6 +26,7 @@ const About = () => {
 
         <BlogStyleHero
           backgroundImage={poolWaterBg}
+          overlay="dark"
           title={<>About<br />Orlando's Oasis.</>}
           description="Professional pool maintenance across Tampa, Orlando & Fort Lauderdale, built on consistency, clear communication, and water that stays balanced week after week."
         />

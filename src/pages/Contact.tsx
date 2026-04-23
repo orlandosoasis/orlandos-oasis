@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
+import contactHeroBg from "@/assets/contact-hero-bg.webp";
 
 const contactSchema = z.object({
   firstName: z.string().trim().min(1, "First name is required").max(100),
@@ -119,7 +120,8 @@ const Contact = () => {
       <FloatingNav />
 
       <BlogStyleHero
-        
+        backgroundImage={contactHeroBg}
+        overlay="dark"
         title={<>Contact Us.</>}
         description="Have a question about pool service, repairs, or want to get started? Send us a message and our team will follow up shortly."
       />

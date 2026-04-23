@@ -2,10 +2,9 @@ import { Check, Clock, MapPin, Shield, Calendar, Sparkles, AlertCircle } from "l
 import { Button } from "@/components/ui/button";
 
 const SERVICE_GUIDE = [
-  { duration: "30 min", bestFor: "Chemical check + quick skim", poolType: "Low-debris / already maintained" },
-  { duration: "60 min", bestFor: "Standard weekly service", poolType: "Most residential pools" },
-  { duration: "90 min", bestFor: "Deep clean + extra vacuum", poolType: "First-time service or heavy debris" },
-  { duration: "120 min", bestFor: "Recovery + reset", poolType: "Neglected, green, or storm aftermath" },
+  { duration: "Weekly Service", bestFor: "Regular maintenance", poolType: "Most residential pools with normal use" },
+  { duration: "Twice per Week", bestFor: "Extra care + stability", poolType: "Pools with higher usage or recurring issues" },
+  { duration: "Three Times per Week", bestFor: "Maximum cleanliness + clarity", poolType: "High-demand pools or those needing premium care" },
 ];
 
 const EVERY_VISIT_ITEMS = [
@@ -93,9 +92,9 @@ const ServiceDetailsSection = () => {
             <table className="w-full border-collapse">
               <thead>
                 <tr className="bg-muted">
-                  <th className="text-left p-3 font-semibold text-navy border-b">Service Length</th>
+                  <th className="text-left p-3 font-semibold text-navy border-b">Service Frequency</th>
                   <th className="text-left p-3 font-semibold text-navy border-b">Best for</th>
-                  <th className="text-left p-3 font-semibold text-navy border-b">Typical pool type</th>
+                  <th className="text-left p-3 font-semibold text-navy border-b">Typical pool condition</th>
                 </tr>
               </thead>
               <tbody>

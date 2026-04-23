@@ -27,7 +27,7 @@ const PoolGallery = () => {
             <Camera className="h-3.5 w-3.5" />
             Our Results
           </span>
-          <h2 className="text-2xl md:text-3xl font-bold text-card mb-3">
+          <h2 className="text-3xl font-bold text-card mb-3">
             Real Pools. Real Results.
           </h2>
           <p className="text-card/70 max-w-[560px] mx-auto">

@@ -115,10 +115,11 @@ const ServiceDetailsSection = () => {
             </p>
           </div>
         </div>
+      </div>
 
-
-        {/* Why Orlando's Oasis */}
-        <div className="mb-16">
+      {/* Why Orlando's Oasis - own full-width section */}
+      <div className="py-16">
+        <div className="container max-w-4xl mx-auto px-4">
           <h3 className="text-2xl font-bold text-navy mb-6 text-center">
             Why Orlando's Oasis
           </h3>

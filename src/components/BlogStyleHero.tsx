@@ -11,7 +11,7 @@ interface BlogStyleHeroProps {
  */
 const BlogStyleHero = ({ title, description, eyebrow }: BlogStyleHeroProps) => (
   <section className="bg-secondary">
-    <div className="container max-w-6xl mx-auto px-4 md:px-8 pt-32 md:pt-40 pb-16 md:pb-24">
+    <div className="container max-w-6xl mx-auto px-4 md:px-8 pt-16 md:pt-24 pb-16 md:pb-24">
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-end">
         <div className="lg:col-span-8">
           {eyebrow && (

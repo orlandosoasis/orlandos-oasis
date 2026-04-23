@@ -64,6 +64,20 @@ const Contact = () => {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.hash === "#get-in-touch") {
+      const t = setTimeout(() => {
+        const el = document.getElementById("get-in-touch");
+        if (!el) return;
+        const headerOffset = 96;
+        const top = el.getBoundingClientRect().top + window.scrollY - headerOffset;
+        window.scrollTo({ top, behavior: "smooth" });
+      }, 80);
+      return () => clearTimeout(t);
+    }
+  }, [location]);
 
   const update = (field: keyof FormData, value: string) =>
     setFormData((prev) => ({ ...prev, [field]: value }));

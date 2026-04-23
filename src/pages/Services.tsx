@@ -169,9 +169,6 @@ const Services = () => {
         <section className="py-16 md:py-20 px-4 bg-background">
           <div className="container max-w-4xl mx-auto">
             <div className="text-center mb-8">
-              <span className="inline-block bg-primary/10 text-primary text-xs font-bold tracking-widest uppercase px-3 py-1 rounded-full mb-3">
-                Service Guide
-              </span>
               <h2 className="section-title mb-3">
                 Choose the Right Service Length
               </h2>

@@ -7,6 +7,7 @@ import BlogStyleHero from "@/components/BlogStyleHero";
 import servicesWeekly from "@/assets/services-weekly.jpg";
 import servicesChemistry from "@/assets/services-chemistry.jpg";
 import servicesEquipment from "@/assets/services-equipment.jpg";
+import servicesHeroBg from "@/assets/services-hero-bg.webp";
 
 const CORE_SERVICES = [
   {
@@ -101,7 +102,7 @@ const Services = () => {
       <main className="flex-1">
 
         <BlogStyleHero
-          
+          backgroundImage={servicesHeroBg}
           title={<>Our Services</>}
           description="From weekly maintenance to deep restoration, we handle everything so you can enjoy your pool without the hassle."
         />

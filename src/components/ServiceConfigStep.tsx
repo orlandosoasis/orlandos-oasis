@@ -83,7 +83,7 @@ const ServiceConfigStep = ({ config, onConfigChange }: ServiceConfigStepProps) =
       {/* Section A: Pool Size */}
       <div>
         <h3 className="text-lg font-bold text-foreground mb-0.5">Pool Size</h3>
-        <p className="text-xs text-muted-foreground mb-6">Sets your base monthly price</p>
+        <p className="text-muted-foreground mb-6 text-sm">Sets your base monthly price</p>
         <RadioGroup
           value={config.poolSize}
           onValueChange={(val) => onConfigChange({ ...config, poolSize: val as PoolSize })}

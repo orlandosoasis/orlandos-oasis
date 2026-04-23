@@ -24,10 +24,10 @@ const HowItWorks = () => {
       <div className="max-w-[1200px] mx-auto py-20 px-6">
         {/* Header */}
         <div className="text-center">
-          <h2 className="text-4xl md:text-5xl font-bold text-navy tracking-tight mb-3">
+          <h2 className="text-4xl font-bold text-navy tracking-tight mb-3 md:text-3xl">
             How It Works
           </h2>
-          <p className="text-lg text-muted-foreground/90 max-w-[600px] mx-auto mb-14 md:mb-16">
+          <p className="text-muted-foreground/90 max-w-[600px] mx-auto mb-14 md:mb-16 text-base">
             Getting your pool serviced has never been easier.<br />Book in under 60 seconds.
           </p>
         </div>
@@ -64,7 +64,7 @@ const HowItWorks = () => {
                 </div>
 
                 {/* Title */}
-                <h3 className="text-lg md:text-xl font-semibold text-navy mt-4 mb-2">
+                <h3 className="text-lg font-semibold text-navy mt-4 mb-2 md:text-lg">
                   {step.title}
                 </h3>
 

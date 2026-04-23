@@ -1,5 +1,28 @@
-import { Check, Clock, MapPin, Shield, Calendar, Sparkles, AlertCircle } from "lucide-react";
+import { Check, Clock, MapPin, Shield, Calendar, Sparkles, AlertCircle, Award, CalendarCheck, Tag, PlusCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
+
+const VALUE_PROPS = [
+  {
+    icon: Award,
+    title: "Trusted Local Experts",
+    description: "Experienced technicians who know how to maintain pools in your area.",
+  },
+  {
+    icon: CalendarCheck,
+    title: "Reliable Weekly Service",
+    description: "Consistent visits that keep your pool clean, balanced, and ready to use.",
+  },
+  {
+    icon: Tag,
+    title: "Transparent Pricing",
+    description: "No hidden fees. Clear pricing before any service is performed.",
+  },
+  {
+    icon: PlusCircle,
+    title: "Flexible Add-ons",
+    description: "Upgrade your service anytime with deep cleaning and repair options.",
+  },
+];
 
 const SERVICE_GUIDE = [
   { duration: "Weekly Service", bestFor: "Regular maintenance", poolType: "Most residential pools with normal use" },
@@ -117,17 +140,22 @@ const ServiceDetailsSection = () => {
         </div>
       </div>
 
-      {/* Why Orlando's Oasis - own full-width section */}
+      {/* Why Orlando's Oasis - value proposition cards */}
       <div className="py-16">
-        <div className="container max-w-4xl mx-auto px-4">
-          <h3 className="text-2xl font-bold text-navy mb-6 text-center">
+        <div className="container max-w-6xl mx-auto px-4">
+          <h3 className="text-2xl font-bold text-navy mb-10 text-center">
             Why Orlando's Oasis
           </h3>
-          <div className="flex flex-wrap justify-center gap-4">
-            {WHY_CHOOSE_US.map((item, index) => (
-              <div key={index} className="flex items-center gap-2 bg-card border border-border rounded-lg px-4 py-2">
-                <Check className="h-4 w-4 text-oasis" />
-                <span className="text-sm font-medium text-navy">{item}</span>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {VALUE_PROPS.map(({ icon: Icon, title, description }) => (
+              <div key={title} className="bg-white border border-border/50 rounded-xl p-6 flex flex-col gap-4">
+                <div className="w-14 h-14 rounded-2xl bg-oasis flex items-center justify-center">
+                  <Icon className="h-6 w-6 text-white" strokeWidth={1.75} />
+                </div>
+                <div className="flex flex-col gap-2">
+                  <h4 className="text-lg font-bold text-navy">{title}</h4>
+                  <p className="text-sm text-muted-foreground leading-relaxed">{description}</p>
+                </div>
               </div>
             ))}
           </div>

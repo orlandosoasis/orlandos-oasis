@@ -116,7 +116,7 @@ const About = () => {
             <p className="text-white max-w-[560px] mx-auto mb-8 font-light">
               Speak with a pool professional and get clear, straightforward guidance — no pressure, no sales pitch.
             </p>
-            <Button variant="secondary" size="lg" className="bg-white text-navy hover:bg-white/90 font-semibold" asChild>
+            <Button className="h-12 px-6 whitespace-nowrap bg-white text-navy hover:bg-white/90 font-semibold" asChild>
               <Link to="/contact">Contact Us Today</Link>
             </Button>
           </div>

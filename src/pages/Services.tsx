@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import BlogStyleHero from "@/components/BlogStyleHero";
 import servicesWeekly from "@/assets/services-weekly.webp";
 import servicesChemistry from "@/assets/services-chemistry.webp";
-import servicesEquipment from "@/assets/services-equipment.jpg";
+import servicesEquipment from "@/assets/services-equipment.webp";
 import servicesHeroBg from "@/assets/services-pool-evening.webp";
 
 const CORE_SERVICES = [

@@ -55,9 +55,6 @@ const About = () => {
               </div>
 
               <div>
-                <span className="inline-block bg-primary/10 text-primary text-xs font-bold tracking-widest uppercase px-3 py-1 rounded-full mb-3">
-                  Who We Are
-                </span>
                 <h2 className="section-title mb-4">
                   Professional pool care across Florida
                 </h2>

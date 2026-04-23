@@ -146,7 +146,7 @@ const ServiceDetailsSection = () => {
           <h3 className="font-bold text-navy mb-10 text-center text-3xl">
             Why Orlando's Oasis
           </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
             {VALUE_PROPS.map(({ title, description }) => (
               <div key={title} className="bg-white border border-border/50 rounded-xl p-6 flex flex-col gap-2">
                 <h4 className="text-lg font-bold text-navy">{title}</h4>

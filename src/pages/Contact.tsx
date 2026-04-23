@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
-import contactHeroBg from "@/assets/contact-pool-underwater.webp";
+import contactHeroBg from "@/assets/contact-pool-lanes.webp";
 
 const contactSchema = z.object({
   firstName: z.string().trim().min(1, "First name is required").max(100),

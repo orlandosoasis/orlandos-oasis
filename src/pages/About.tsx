@@ -4,6 +4,7 @@ import FloatingNav from "@/components/FloatingNav";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import BlogStyleHero from "@/components/BlogStyleHero";
+import poolWaterBg from "@/assets/pool-water-bg.webp";
 
 const PILLARS = [
   { icon: Calendar, title: "Consistency", desc: "Same standard, same schedule, every week." },
@@ -24,7 +25,7 @@ const About = () => {
       <main className="flex-1">
 
         <BlogStyleHero
-          
+          backgroundImage={poolWaterBg}
           title={<>About<br />Orlando's Oasis.</>}
           description="Professional pool maintenance across Tampa, Orlando & Fort Lauderdale, built on consistency, clear communication, and water that stays balanced week after week."
         />

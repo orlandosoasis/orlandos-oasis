@@ -128,11 +128,11 @@ const Services = () => {
                     />
                   </div>
                   <div className={idx % 2 === 1 ? "lg:order-1" : ""}>
-                    <h3 className="text-xl font-bold text-navy mb-4">{service.title}</h3>
-                    <p className="body-text mb-5">{service.description}</p>
+                    <h3 className="font-bold text-3xl text-secondary-foreground mb-4">{service.title}</h3>
+                    <p className="body-text mb-5 text-muted-foreground">{service.description}</p>
                     <ul className="space-y-2">
                       {service.includes.map((item) => (
-                        <li key={item} className="flex items-start gap-2 text-sm text-muted-foreground">
+                        <li key={item} className="flex items-start gap-2 text-muted-foreground text-base">
                           <Check className="h-4 w-4 text-trust shrink-0 mt-0.5" />
                           {item}
                         </li>

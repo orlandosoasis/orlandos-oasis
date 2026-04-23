@@ -94,7 +94,7 @@ const Contact = () => {
   if (isSubmitted) {
     return (
       <div className="min-h-screen flex flex-col bg-background">
-        <Header />
+        <FloatingNav />
         <main className="flex-1 flex items-center justify-center px-4 py-20">
           <div className="text-center max-w-md space-y-4">
             <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto">
@@ -116,7 +116,7 @@ const Contact = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
-      <Header />
+      <FloatingNav />
 
       <BlogStyleHero
         eyebrow="Contact"

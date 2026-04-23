@@ -152,7 +152,7 @@ const TechnicianLanding = () => {
         </section>
 
         {/* Testimonials */}
-        <section className="py-20 px-6 bg-muted/30">
+        <section className="py-20 px-6 bg-white">
           <div className="container max-w-[1200px] mx-auto">
             <h2 className="text-4xl md:text-5xl font-bold text-navy text-center mb-12 leading-tight">
               What Pool Pros Are Saying

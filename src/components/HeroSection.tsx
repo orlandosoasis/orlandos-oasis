@@ -56,7 +56,7 @@ const HeroSection = () => {
       <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-transparent to-black/35" />
 
       {/* Floating pill header */}
-      <div className="absolute top-4 md:top-6 left-0 right-0 z-20 px-3 sm:px-4 md:px-6">
+      <div className="fixed top-4 md:top-6 left-0 right-0 z-50 px-3 sm:px-4 md:px-6">
         <div className="max-w-[1280px] mx-auto bg-card/95 backdrop-blur-md rounded-full shadow-lg flex items-center justify-between pl-5 pr-2 py-2">
           <Link to="/" className="flex items-center gap-2 shrink-0">
             <img src={logo} alt="Orlando's Oasis" className="h-7 w-7 object-contain" />

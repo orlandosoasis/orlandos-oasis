@@ -32,7 +32,7 @@ const About = () => {
         />
 
         {/* Who We Are */}
-        <section className="py-16 md:py-20 px-4 bg-background">
+        <section className="py-16 md:py-20 px-4 bg-white">
           <div className="container max-w-6xl mx-auto">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-14 items-center">
               <div className="relative">

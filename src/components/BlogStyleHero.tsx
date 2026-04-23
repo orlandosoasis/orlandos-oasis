@@ -3,6 +3,8 @@ interface BlogStyleHeroProps {
   description: string;
   eyebrow?: string;
   backgroundImage?: string;
+  /** Visual variant for image overlays. Defaults to "light". */
+  overlay?: "light" | "dark";
 }
 
 /**
@@ -10,42 +12,71 @@ interface BlogStyleHeroProps {
  * display title, small right-side supporting copy. Sits below the fixed
  * floating pill nav, so we add generous top padding.
  */
-const BlogStyleHero = ({ title, description, eyebrow, backgroundImage }: BlogStyleHeroProps) => (
-  <section
-    className={`relative ${backgroundImage ? "" : "bg-secondary"}`}
-    style={
-      backgroundImage
-        ? {
-            backgroundImage: `url(${backgroundImage})`,
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-          }
-        : undefined
-    }
-  >
-    {backgroundImage && (
-      <div className="absolute inset-0 bg-white/55 backdrop-blur-[2px]" aria-hidden="true" />
-    )}
-    <div className="relative container max-w-6xl mx-auto px-4 md:px-8 pt-32 md:pt-40 pb-16 md:pb-24">
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-end">
-        <div className="lg:col-span-8">
-          {eyebrow && (
-            <p className="text-xs md:text-sm font-semibold uppercase tracking-[0.18em] text-muted-foreground mb-4">
-              {eyebrow}
+const BlogStyleHero = ({
+  title,
+  description,
+  eyebrow,
+  backgroundImage,
+  overlay = "light",
+}: BlogStyleHeroProps) => {
+  const isDark = overlay === "dark";
+
+  return (
+    <section
+      className={`relative ${backgroundImage ? "" : "bg-secondary"}`}
+      style={
+        backgroundImage
+          ? {
+              backgroundImage: `url(${backgroundImage})`,
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+            }
+          : undefined
+      }
+    >
+      {backgroundImage && (
+        <div
+          className={`absolute inset-0 ${
+            isDark ? "bg-navy/65" : "bg-white/55"
+          } backdrop-blur-[2px]`}
+          aria-hidden="true"
+        />
+      )}
+      <div className="relative container max-w-6xl mx-auto px-4 md:px-8 pt-32 md:pt-40 pb-16 md:pb-24">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-end">
+          <div className="lg:col-span-8">
+            {eyebrow && (
+              <p
+                className={`text-xs md:text-sm font-semibold uppercase tracking-[0.18em] mb-4 ${
+                  isDark ? "text-white/80" : "text-muted-foreground"
+                }`}
+              >
+                {eyebrow}
+              </p>
+            )}
+            <h1
+              className={`text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-extrabold leading-[0.95] tracking-tight ${
+                isDark ? "text-white [text-shadow:0_2px_12px_rgba(0,0,0,0.35)]" : "text-foreground"
+              }`}
+            >
+              {title}
+            </h1>
+          </div>
+          <div className="lg:col-span-4">
+            <p
+              className={`text-base md:text-lg leading-relaxed max-w-sm ${
+                isDark
+                  ? "text-white/90 [text-shadow:0_1px_8px_rgba(0,0,0,0.35)]"
+                  : "text-foreground/70"
+              }`}
+            >
+              {description}
             </p>
-          )}
-          <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-extrabold leading-[0.95] tracking-tight text-foreground">
-            {title}
-          </h1>
-        </div>
-        <div className="lg:col-span-4">
-          <p className="text-base md:text-lg text-foreground/70 leading-relaxed max-w-sm">
-            {description}
-          </p>
+          </div>
         </div>
       </div>
-    </div>
-  </section>
-);
+    </section>
+  );
+};
 
 export default BlogStyleHero;

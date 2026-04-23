@@ -103,6 +103,7 @@ const Services = () => {
 
         <BlogStyleHero
           backgroundImage={servicesHeroBg}
+          overlay="dark"
           title={<>Our Services</>}
           description="From weekly maintenance to deep restoration, we handle everything so you can enjoy your pool without the hassle."
         />

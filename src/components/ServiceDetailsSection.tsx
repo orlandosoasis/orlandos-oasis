@@ -147,15 +147,10 @@ const ServiceDetailsSection = () => {
             Why Orlando's Oasis
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {VALUE_PROPS.map(({ icon: Icon, title, description }) => (
-              <div key={title} className="bg-white border border-border/50 rounded-xl p-6 flex flex-col gap-4">
-                <div className="w-14 h-14 rounded-2xl bg-oasis flex items-center justify-center">
-                  <Icon className="h-6 w-6 text-white" strokeWidth={1.75} />
-                </div>
-                <div className="flex flex-col gap-2">
-                  <h4 className="text-lg font-bold text-navy">{title}</h4>
-                  <p className="text-sm text-muted-foreground leading-relaxed">{description}</p>
-                </div>
+            {VALUE_PROPS.map(({ title, description }) => (
+              <div key={title} className="bg-white border border-border/50 rounded-xl p-6 flex flex-col gap-2">
+                <h4 className="text-lg font-bold text-navy">{title}</h4>
+                <p className="text-sm text-muted-foreground leading-relaxed">{description}</p>
               </div>
             ))}
           </div>

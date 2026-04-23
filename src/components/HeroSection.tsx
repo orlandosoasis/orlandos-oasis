@@ -87,15 +87,7 @@ const HeroSection = () => {
       <div className="relative z-10 h-full flex items-center justify-center px-4">
         <div className="max-w-6xl mx-auto text-center" style={{ textShadow: '0 2px 24px rgba(0,0,0,0.4)' }}>
           <h1 className="font-extrabold text-white leading-[0.95] tracking-tight text-5xl sm:text-6xl md:text-7xl lg:text-8xl">
-            <span className="relative inline-block">
-              <span>Crystal Clear Pools.</span>
-              {/* Accent strikethrough line */}
-              <span
-                aria-hidden="true"
-                className="pointer-events-none absolute left-[-2%] right-[-2%] top-1/2 h-[6px] md:h-[10px] -translate-y-1/2 rounded-full"
-                style={{ backgroundColor: 'hsl(var(--primary))' }}
-              />
-            </span>
+            <span>Crystal Clear Pools.</span>
             <br />
             <span>Zero Hassle.</span>
           </h1>

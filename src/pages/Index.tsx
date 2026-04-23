@@ -47,7 +47,7 @@ const Index = () => {
         <FAQSection />
 
         {/* The Fine Print */}
-        <section className="py-8 px-4 bg-background">
+        <section className="py-8 px-4 bg-white">
           <div className="max-w-4xl mx-auto">
             <h4 className="text-lg font-semibold text-foreground mb-4 text-center">
               The Fine Print

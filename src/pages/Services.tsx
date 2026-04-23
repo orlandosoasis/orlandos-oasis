@@ -5,7 +5,7 @@ import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import BlogStyleHero from "@/components/BlogStyleHero";
 import servicesWeekly from "@/assets/services-weekly.webp";
-import servicesChemistry from "@/assets/services-chemistry.jpg";
+import servicesChemistry from "@/assets/services-chemistry.webp";
 import servicesEquipment from "@/assets/services-equipment.jpg";
 import servicesHeroBg from "@/assets/services-pool-evening.webp";
 

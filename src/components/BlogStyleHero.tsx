@@ -62,9 +62,7 @@ const BlogStyleHero = ({
               </p>
             )}
             <h1
-              className={`text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-extrabold leading-[0.95] tracking-tight ${
-                isDark ? "text-white" : "text-foreground"
-              }`}
+              className={`hero-title ${isDark ? "text-white" : "text-foreground"}`}
               style={isDark ? { textShadow: "0 2px 24px rgba(0,0,0,0.4)" } : undefined}
             >
               {title}
@@ -72,7 +70,7 @@ const BlogStyleHero = ({
           </div>
           <div className="lg:col-span-4">
             <p
-              className={`text-base md:text-lg leading-relaxed max-w-sm ${
+              className={`hero-subtitle max-w-sm ${
                 isDark ? "text-white/95" : "text-foreground/70"
               }`}
               style={isDark ? { textShadow: "0 1px 8px rgba(0,0,0,0.5)" } : undefined}

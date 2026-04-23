@@ -3,11 +3,11 @@ import poolImage from "@/assets/gallery-resort.jpg";
 
 const ITEMS = [
   { icon: Waves, label: "Skimming surface debris" },
-  { icon: Brush, label: "Brushing walls, steps, and tile line" },
-  { icon: Droplet, label: "Vacuuming pool as needed" },
-  { icon: Trash2, label: "Emptying skimmer and pump baskets" },
-  { icon: FlaskConical, label: "Water chemistry testing and balancing" },
-  { icon: FlaskRound, label: "Adding necessary chemicals" },
+  { icon: Brush, label: "Brushing walls & tile" },
+  { icon: Droplet, label: "Vacuuming pool" },
+  { icon: Trash2, label: "Emptying baskets" },
+  { icon: FlaskConical, label: "Water chemistry testing" },
+  { icon: FlaskRound, label: "Adding chemicals" },
   { icon: Filter, label: "Filter system check" },
   { icon: Wrench, label: "Equipment inspection" },
 ];

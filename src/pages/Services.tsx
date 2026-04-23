@@ -111,18 +111,6 @@ const Services = () => {
         {/* Core Services Overview */}
         <section id="services-overview" className="py-16 md:py-20 px-4 bg-background">
           <div className="container max-w-6xl mx-auto">
-            <div className="text-center mb-12">
-              <span className="inline-block bg-primary/10 text-primary text-xs font-bold tracking-widest uppercase px-3 py-1 rounded-full mb-3">
-                Our Services
-              </span>
-              <h2 className="text-2xl md:text-3xl font-extrabold text-foreground mb-3">
-                Four Categories, One Standard of Care
-              </h2>
-              <p className="text-muted-foreground max-w-2xl mx-auto">
-                Every service we offer is built around consistency, clear communication, and properly balanced water.
-              </p>
-            </div>
-
             <div className="space-y-20">
               {CORE_SERVICES.map((service, idx) => (
                 <div

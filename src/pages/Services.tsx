@@ -4,8 +4,7 @@ import TopBanner from "@/components/TopBanner";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
-import servicesHero from "@/assets/services-hero.jpg";
-import PageHero from "@/components/PageHero";
+import BlogStyleHero from "@/components/BlogStyleHero";
 import servicesWeekly from "@/assets/services-weekly.jpg";
 import servicesChemistry from "@/assets/services-chemistry.jpg";
 import servicesEquipment from "@/assets/services-equipment.jpg";
@@ -103,12 +102,10 @@ const Services = () => {
       <Header />
       <main className="flex-1">
 
-        <PageHero
-          imageSrc={servicesHero}
-          imageAlt="Pool technician cleaning a residential swimming pool"
-          title={<>Pool Services That<br /><span className="text-white">Keep It Crystal Clear</span></>}
+        <BlogStyleHero
+          eyebrow="Our Services"
+          title={<>Pool Services That<br />Keep It Crystal Clear.</>}
           description="From weekly maintenance to deep restoration, we handle everything so you can enjoy your pool without the hassle."
-          flipImage
         />
 
         {/* Core Services Overview */}

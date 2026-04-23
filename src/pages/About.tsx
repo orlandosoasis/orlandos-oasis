@@ -4,8 +4,7 @@ import TopBanner from "@/components/TopBanner";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
-import PageHero from "@/components/PageHero";
-import aboutHero from "@/assets/about-hero.jpg";
+import BlogStyleHero from "@/components/BlogStyleHero";
 
 const PILLARS = [
   { icon: Calendar, title: "Consistency", desc: "Same standard, same schedule, every week." },
@@ -26,10 +25,9 @@ const About = () => {
       <Header />
       <main className="flex-1">
 
-        <PageHero
-          imageSrc={aboutHero}
-          imageAlt="Professional pool service team working on a residential pool"
-          title={<>About<br /><span className="text-white">Orlando's Oasis</span></>}
+        <BlogStyleHero
+          eyebrow="About Us"
+          title={<>About<br />Orlando's Oasis.</>}
           description="Professional pool maintenance across Tampa, Orlando & Fort Lauderdale, built on consistency, clear communication, and water that stays balanced week after week."
         />
 

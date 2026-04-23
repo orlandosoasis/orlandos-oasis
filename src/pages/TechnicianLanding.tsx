@@ -3,7 +3,7 @@ import { Star, CheckCircle, Calendar, DollarSign, Briefcase, ClipboardList, Cred
 import { Button } from "@/components/ui/button";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import logo from "@/assets/oo-logo.png";
-import techHero from "@/assets/tech-hero.jpg";
+import techHero from "@/assets/tech-hero.webp";
 
 const BENEFITS = [
   { icon: Calendar, title: "Control Your Schedule", desc: "Work full-time or part-time. Accept jobs only when you're available and build a routine that fits your life." },

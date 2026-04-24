@@ -368,58 +368,228 @@ const AdminDashboard = () => {
   };
 
   // ═══════════ HOMEOWNERS ═══════════
+  const handleHomeownerCreated = (h: AdminHomeowner) => {
+    setHomeowners(prev => [h, ...prev]);
+    setAddHomeownerOpen(false);
+    setHomeownerSuccess(true);
+    setTimeout(() => setHomeownerSuccess(false), 4000);
+    nav("homeDetail", h.id);
+  };
+
   const HomeownersPage = () => (
-    <Card>
-      <CardContent className="p-0">
-        <Table>
-          <TableHeader><TableRow>
-            <TableHead>Name</TableHead><TableHead>Email</TableHead><TableHead>Phone</TableHead><TableHead>Pools</TableHead><TableHead>Plan</TableHead><TableHead>Actions</TableHead>
-          </TableRow></TableHeader>
-          <TableBody>
-            {ADMIN_HOMEOWNERS.map(h => (
-              <TableRow key={h.id}>
-                <TableCell className="font-semibold">{h.name}</TableCell><TableCell>{h.email}</TableCell><TableCell>{h.phone}</TableCell>
-                <TableCell>{h.pools.length}</TableCell><TableCell><StatusBadge status="Active" /></TableCell>
-                <TableCell><Button size="sm" onClick={() => nav("homeDetail", h.id)}>View Details</Button></TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </CardContent>
-    </Card>
+    <div className="space-y-4">
+      <div className="flex items-center justify-between">
+        <p className="text-sm text-muted-foreground">{homeowners.length} total homeowners</p>
+        <Button onClick={() => setAddHomeownerOpen(true)} className="gap-1.5">
+          <Plus className="h-4 w-4" /> Add Homeowner
+        </Button>
+      </div>
+      {homeownerSuccess && (
+        <div className="flex items-center gap-2 p-3 rounded-md bg-emerald-50 border border-emerald-200 text-emerald-700 text-sm">
+          <Check className="h-4 w-4" /> Homeowner added successfully
+        </div>
+      )}
+      <Card>
+        <CardContent className="p-0">
+          <Table>
+            <TableHeader><TableRow>
+              <TableHead>Name</TableHead><TableHead>Email</TableHead><TableHead>Phone</TableHead><TableHead>Pools</TableHead><TableHead>Plan</TableHead><TableHead>Actions</TableHead>
+            </TableRow></TableHeader>
+            <TableBody>
+              {homeowners.map(h => (
+                <TableRow key={h.id}>
+                  <TableCell className="font-semibold">
+                    <div className="flex items-center gap-2">
+                      {h.name}
+                      {h.manuallyAdded && (
+                        <span className="text-[10px] font-medium px-1.5 py-0.5 rounded bg-muted text-muted-foreground border border-border">Manually Added</span>
+                      )}
+                    </div>
+                  </TableCell>
+                  <TableCell>{h.email}</TableCell><TableCell>{h.phone}</TableCell>
+                  <TableCell>{h.pools.length}</TableCell><TableCell><StatusBadge status={h.status || "Active"} /></TableCell>
+                  <TableCell><Button size="sm" onClick={() => nav("homeDetail", h.id)}>View Details</Button></TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </CardContent>
+      </Card>
+    </div>
   );
 
   const HomeDetailPage = () => {
-    const ho = ADMIN_HOMEOWNERS.find(h => h.id === detailId);
+    const ho = homeowners.find(h => h.id === detailId);
     if (!ho) return null;
+    const upcoming = ho.services.filter(s => s.status === "Scheduled");
+    const past = ho.services.filter(s => s.status === "Completed");
+    const visibleServices = scheduleTab === "upcoming" ? upcoming : past;
+
+    const TabBtn = ({ id, label }: { id: typeof detailTab; label: string }) => (
+      <button
+        onClick={() => setDetailTab(id)}
+        className={`px-3 py-2 text-sm font-medium border-b-2 transition-colors ${
+          detailTab === id
+            ? "border-primary text-foreground"
+            : "border-transparent text-muted-foreground hover:text-foreground"
+        }`}
+      >
+        {label}
+      </button>
+    );
+
     return (
       <div className="space-y-5">
         <button onClick={() => nav("homeowners")} className="inline-flex items-center gap-1.5 text-primary text-sm font-semibold hover:underline">
           <ChevronLeft className="h-4 w-4" /> Back to Homeowners
         </button>
-        <Card><CardHeader><CardTitle className="text-sm">Homeowner Information</CardTitle></CardHeader>
-          <CardContent>
-            <InfoRow label="Name" value={ho.name} /><InfoRow label="Email" value={ho.email} /><InfoRow label="Phone" value={ho.phone} />
-            <InfoRow label="Address" value={ho.address} /><InfoRow label="Plan" value={ho.plan} /><InfoRow label="Start Date" value={ho.startDate} />
-          </CardContent></Card>
-        <Card><CardHeader><CardTitle className="text-sm">Pools</CardTitle></CardHeader>
-          <CardContent className="p-0">
-            <Table><TableHeader><TableRow>
-              <TableHead>Address</TableHead><TableHead>Size</TableHead><TableHead>Technician</TableHead><TableHead>Next Service</TableHead>
-            </TableRow></TableHeader>
-            <TableBody>{ho.pools.map((p, i) => (
-              <TableRow key={i}><TableCell className="font-semibold">{p.address}</TableCell><TableCell>{p.size}</TableCell><TableCell>{p.technician}</TableCell><TableCell>{p.nextService}</TableCell></TableRow>
-            ))}</TableBody></Table>
-          </CardContent></Card>
-        <Card><CardHeader><CardTitle className="text-sm">Booked Services</CardTitle></CardHeader>
-          <CardContent className="p-0">
-            <Table><TableHeader><TableRow>
-              <TableHead>Date</TableHead><TableHead>Type</TableHead><TableHead>Technician</TableHead><TableHead>Status</TableHead>
-            </TableRow></TableHeader>
-            <TableBody>{ho.services.map((s, i) => (
-              <TableRow key={i}><TableCell className="font-semibold">{s.date}</TableCell><TableCell>{s.type}</TableCell><TableCell>{s.technician}</TableCell><TableCell><StatusBadge status={s.status} /></TableCell></TableRow>
-            ))}</TableBody></Table>
-          </CardContent></Card>
+
+        {/* Header */}
+        <Card>
+          <CardContent className="p-5">
+            <div className="flex items-start justify-between gap-4 flex-wrap">
+              <div className="flex items-start gap-4">
+                <div className="h-12 w-12 rounded-full bg-primary/10 text-primary flex items-center justify-center font-semibold">
+                  {ho.name.split(" ").map(n => n[0]).join("").slice(0, 2)}
+                </div>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <h2 className="text-lg font-semibold">{ho.name}</h2>
+                    <StatusBadge status={ho.status || "Active"} />
+                    {ho.manuallyAdded && (
+                      <span className="text-[10px] font-medium px-1.5 py-0.5 rounded bg-muted text-muted-foreground border border-border">Manually Added</span>
+                    )}
+                  </div>
+                  <div className="text-sm text-muted-foreground mt-1 space-x-3">
+                    <span>{ho.email}</span><span>•</span><span>{ho.phone}</span>
+                  </div>
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                <Button variant="outline" size="sm" className="gap-1.5"><Pencil className="h-3.5 w-3.5" /> Edit Homeowner</Button>
+                <Button variant="outline" size="icon" className="h-9 w-9"><MoreHorizontal className="h-4 w-4" /></Button>
+              </div>
+            </div>
+
+            {/* Service Summary Row */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-5">
+              <div className="p-3 rounded-md border border-border bg-muted/30">
+                <div className="flex items-center gap-1.5 text-xs text-muted-foreground"><Waves className="h-3.5 w-3.5" /> Pools</div>
+                <div className="text-sm font-semibold mt-1">{ho.pools.length} {ho.pools.length === 1 ? "Pool" : "Pools"}</div>
+              </div>
+              <div className="p-3 rounded-md border border-border bg-muted/30">
+                <div className="flex items-center gap-1.5 text-xs text-muted-foreground"><CalendarClock className="h-3.5 w-3.5" /> Frequency</div>
+                <div className="text-sm font-semibold mt-1">{ho.frequency || "Weekly"}</div>
+              </div>
+              <div className="p-3 rounded-md border border-border bg-muted/30">
+                <div className="flex items-center gap-1.5 text-xs text-muted-foreground"><BadgeCheck className="h-3.5 w-3.5" /> Plan</div>
+                <div className="text-sm font-semibold mt-1">{ho.plan}</div>
+              </div>
+              <div className="p-3 rounded-md border border-border bg-muted/30">
+                <div className="flex items-center gap-1.5 text-xs text-muted-foreground"><CreditCard className="h-3.5 w-3.5" /> Payment</div>
+                <div className="text-sm font-semibold mt-1">{ho.paymentMethod || "Card on File"}</div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Tabs */}
+        <div className="border-b border-border flex gap-1">
+          <TabBtn id="overview" label="Overview" />
+          <TabBtn id="pools" label="Pools" />
+          <TabBtn id="schedule" label="Schedule" />
+          <TabBtn id="payments" label="Payments" />
+          <TabBtn id="notes" label="Notes" />
+        </div>
+
+        {detailTab === "overview" && (
+          <Card>
+            <CardHeader><CardTitle className="text-sm">Homeowner Information</CardTitle></CardHeader>
+            <CardContent>
+              <InfoRow label="Name" value={ho.name} /><InfoRow label="Email" value={ho.email} /><InfoRow label="Phone" value={ho.phone} />
+              <InfoRow label="Address" value={ho.address} /><InfoRow label="Plan" value={ho.plan} /><InfoRow label="Start Date" value={ho.startDate} />
+            </CardContent>
+          </Card>
+        )}
+
+        {detailTab === "pools" && (
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between">
+              <CardTitle className="text-sm">Pools</CardTitle>
+              <Button size="sm" variant="outline" className="gap-1.5"><Plus className="h-3.5 w-3.5" /> Add Pool</Button>
+            </CardHeader>
+            <CardContent className="p-0">
+              <Table>
+                <TableHeader><TableRow>
+                  <TableHead>Address</TableHead><TableHead>Size</TableHead><TableHead>Technician</TableHead><TableHead>Next Service</TableHead>
+                </TableRow></TableHeader>
+                <TableBody>{ho.pools.map((p, i) => (
+                  <TableRow key={i} className="cursor-pointer hover:bg-muted/50">
+                    <TableCell className="font-semibold">{p.address}</TableCell>
+                    <TableCell>{p.size}</TableCell>
+                    <TableCell>{p.technician}</TableCell>
+                    <TableCell>{p.nextService}</TableCell>
+                  </TableRow>
+                ))}</TableBody>
+              </Table>
+            </CardContent>
+          </Card>
+        )}
+
+        {detailTab === "schedule" && (
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between">
+              <CardTitle className="text-sm">Schedule</CardTitle>
+              <div className="flex gap-1 p-1 rounded-md bg-muted">
+                <button onClick={() => setScheduleTab("upcoming")} className={`px-3 py-1 text-xs font-medium rounded ${scheduleTab === "upcoming" ? "bg-background shadow-sm" : "text-muted-foreground"}`}>Upcoming</button>
+                <button onClick={() => setScheduleTab("past")} className={`px-3 py-1 text-xs font-medium rounded ${scheduleTab === "past" ? "bg-background shadow-sm" : "text-muted-foreground"}`}>Past</button>
+              </div>
+            </CardHeader>
+            <CardContent className="p-0">
+              <Table>
+                <TableHeader><TableRow>
+                  <TableHead>Date</TableHead><TableHead>Type</TableHead><TableHead>Technician</TableHead><TableHead>Status</TableHead><TableHead>Actions</TableHead>
+                </TableRow></TableHeader>
+                <TableBody>
+                  {visibleServices.length === 0 ? (
+                    <TableRow><TableCell colSpan={5} className="text-center text-sm text-muted-foreground py-6">No {scheduleTab} services.</TableCell></TableRow>
+                  ) : visibleServices.map((s, i) => (
+                    <TableRow key={i}>
+                      <TableCell className="font-semibold">{s.date}</TableCell>
+                      <TableCell>{s.type}</TableCell>
+                      <TableCell>{s.technician}</TableCell>
+                      <TableCell><StatusBadge status={s.status} /></TableCell>
+                      <TableCell>
+                        {scheduleTab === "upcoming" && (
+                          <Button size="sm" variant="outline">Reschedule</Button>
+                        )}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
+        )}
+
+        {detailTab === "payments" && (
+          <Card>
+            <CardHeader><CardTitle className="text-sm">Payments</CardTitle></CardHeader>
+            <CardContent>
+              <p className="text-sm text-muted-foreground">Payment method: <span className="font-medium text-foreground">{ho.paymentMethod || "Card on File"}</span></p>
+              <p className="text-xs text-muted-foreground mt-2">Manual payment logging available for offline customers.</p>
+            </CardContent>
+          </Card>
+        )}
+
+        {detailTab === "notes" && (
+          <Card>
+            <CardHeader><CardTitle className="text-sm">Notes</CardTitle></CardHeader>
+            <CardContent>
+              <p className="text-sm text-foreground whitespace-pre-wrap">{ho.notes || "No notes for this homeowner."}</p>
+            </CardContent>
+          </Card>
+        )}
       </div>
     );
   };

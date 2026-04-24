@@ -1080,6 +1080,12 @@ const AdminDashboard = () => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      <AddHomeownerModal
+        open={addHomeownerOpen}
+        onClose={() => setAddHomeownerOpen(false)}
+        onCreate={handleHomeownerCreated}
+      />
     </div>
   );
 };

@@ -96,6 +96,13 @@ const AdminDashboard = () => {
   const [rejectionEmailSubject, setRejectionEmailSubject] = useState("");
   const [rejectionEmailBody, setRejectionEmailBody] = useState("");
 
+  // Homeowners
+  const [homeowners, setHomeowners] = useState<AdminHomeowner[]>(ADMIN_HOMEOWNERS);
+  const [addHomeownerOpen, setAddHomeownerOpen] = useState(false);
+  const [homeownerSuccess, setHomeownerSuccess] = useState(false);
+  const [scheduleTab, setScheduleTab] = useState<"upcoming" | "past">("upcoming");
+  const [detailTab, setDetailTab] = useState<"overview" | "pools" | "schedule" | "payments" | "notes">("overview");
+
   const nav = (p: AdminPage, id: number | null = null) => { setPage(p); setDetailId(id); setSidebarOpen(false); };
 
   const handleApprove = (applicant: AdminApplicant) => {

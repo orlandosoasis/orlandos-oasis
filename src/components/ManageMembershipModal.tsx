@@ -272,7 +272,6 @@ const ManageMembershipModal = ({
               </div>
             </section>
 
-            <Separator />
 
             {/* Section 4A: Active Add-ons */}
             <section className="space-y-3">

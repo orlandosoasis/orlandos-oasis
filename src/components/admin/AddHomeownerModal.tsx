@@ -393,7 +393,7 @@ const AddHomeownerModal = ({ open, onClose, onCreate }: AddHomeownerModalProps) 
                       <h4 className="text-sm font-semibold">Schedule</h4>
                     </div>
                     <div className="text-sm space-y-1 text-muted-foreground">
-                      <div>{serviceDay || "—"} • {TIME_WINDOW_SHORT[timeWindow]}</div>
+                      <div>Arrival: {TIME_WINDOW_SHORT[timeWindow]}</div>
                       <div>Starts: <span className="text-foreground font-medium">{startDate || "—"}</span></div>
                       <div className="text-xs">Auto-recurring: {autoRecurring ? "On" : "Off"}</div>
                     </div>

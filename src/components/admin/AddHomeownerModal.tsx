@@ -246,7 +246,7 @@ const AddHomeownerModal = ({ open, onClose, onCreate }: AddHomeownerModalProps) 
                 <SectionTitle>Pool Info</SectionTitle>
                 <div className="space-y-3">
                   <div>
-                    <Label className="mb-1.5 block">Pool Size</Label>
+                    <Label className="mb-1.5 block text-xs">Pool Size</Label>
                     <Select value={poolSize} onValueChange={setPoolSize}>
                       <SelectTrigger><SelectValue placeholder="Select pool size" /></SelectTrigger>
                       <SelectContent>

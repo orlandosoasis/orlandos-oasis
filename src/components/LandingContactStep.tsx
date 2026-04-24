@@ -78,7 +78,7 @@ const LandingContactStep = ({
   };
 
   const inputErrorClass = (field: keyof LandingFormData) =>
-    errors[field] ? "border-destructive focus-visible:ring-destructive focus-visible:border-destructive" : "";
+    errors[field] ? "border-destructive focus-visible:border-destructive" : "";
 
   return (
     <div className="space-y-5 animate-fade-in">

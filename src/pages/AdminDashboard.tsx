@@ -1114,6 +1114,13 @@ const AdminDashboard = () => {
         onClose={() => setAddHomeownerOpen(false)}
         onCreate={handleHomeownerCreated}
       />
+
+      <EditHomeownerModal
+        open={editHomeownerOpen}
+        onClose={() => { setEditHomeownerOpen(false); setEditingHomeowner(null); }}
+        homeowner={editingHomeowner}
+        onSave={handleHomeownerUpdated}
+      />
     </div>
   );
 };

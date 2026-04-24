@@ -178,6 +178,21 @@ const TechnicianDashboard = () => {
           onConfirm={handleReschedule}
         />
       )}
+
+      {/* Report Route Issue Modal */}
+      <ReportRouteIssueModal
+        open={reportIssueOpen}
+        onOpenChange={setReportIssueOpen}
+        role="technician"
+        services={
+          upcoming.slice(0, 6).map((s) => ({
+            id: s.id,
+            homeowner: getHomeowner(s.homeownerId)?.name || "Homeowner",
+            type: s.serviceType,
+            time: TIME_LABELS[s.timeWindow],
+          })) as RouteService[]
+        }
+      />
     </TechLayout>
   );
 };

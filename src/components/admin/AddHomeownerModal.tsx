@@ -71,18 +71,14 @@ const AddHomeownerModal = ({ open, onClose, onCreate }: AddHomeownerModalProps) 
   const [city, setCity] = useState("");
   const [state, setState] = useState("");
   const [zip, setZip] = useState("");
-  const [notes, setNotes] = useState("");
 
   // Step 2
   const [poolSize, setPoolSize] = useState("");
-  const [poolLength, setPoolLength] = useState("");
-  const [poolWidth, setPoolWidth] = useState("");
   const [poolNotes, setPoolNotes] = useState("");
   const [frequency, setFrequency] = useState("weekly");
   const [selectedAddons, setSelectedAddons] = useState<string[]>([]);
 
   // Step 3
-  const [serviceDay, setServiceDay] = useState("");
   const [timeWindow, setTimeWindow] = useState("morning");
   const [startDate, setStartDate] = useState("");
   const [autoRecurring, setAutoRecurring] = useState(true);
@@ -93,8 +89,8 @@ const AddHomeownerModal = ({ open, onClose, onCreate }: AddHomeownerModalProps) 
 
   const reset = () => {
     setStep(1); setFullName(""); setPhone(""); setEmail(""); setStreet(""); setCity("");
-    setState(""); setZip(""); setNotes(""); setPoolSize(""); setPoolLength(""); setPoolWidth("");
-    setPoolNotes(""); setFrequency("weekly"); setSelectedAddons([]); setServiceDay("");
+    setState(""); setZip(""); setPoolSize("");
+    setPoolNotes(""); setFrequency("weekly"); setSelectedAddons([]);
     setTimeWindow("morning"); setStartDate(""); setAutoRecurring(true); setPaymentOption("offline");
     setSendInvite(false); setErrors({});
   };

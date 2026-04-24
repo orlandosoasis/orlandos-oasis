@@ -58,7 +58,7 @@ const TIME_WINDOW_SHORT: Record<string, string> = {
   evening: "Evening",
 };
 
-const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+
 
 const AddHomeownerModal = ({ open, onClose, onCreate }: AddHomeownerModalProps) => {
   const [step, setStep] = useState(1);
@@ -71,18 +71,14 @@ const AddHomeownerModal = ({ open, onClose, onCreate }: AddHomeownerModalProps) 
   const [city, setCity] = useState("");
   const [state, setState] = useState("");
   const [zip, setZip] = useState("");
-  const [notes, setNotes] = useState("");
 
   // Step 2
   const [poolSize, setPoolSize] = useState("");
-  const [poolLength, setPoolLength] = useState("");
-  const [poolWidth, setPoolWidth] = useState("");
   const [poolNotes, setPoolNotes] = useState("");
   const [frequency, setFrequency] = useState("weekly");
   const [selectedAddons, setSelectedAddons] = useState<string[]>([]);
 
   // Step 3
-  const [serviceDay, setServiceDay] = useState("");
   const [timeWindow, setTimeWindow] = useState("morning");
   const [startDate, setStartDate] = useState("");
   const [autoRecurring, setAutoRecurring] = useState(true);
@@ -93,8 +89,8 @@ const AddHomeownerModal = ({ open, onClose, onCreate }: AddHomeownerModalProps) 
 
   const reset = () => {
     setStep(1); setFullName(""); setPhone(""); setEmail(""); setStreet(""); setCity("");
-    setState(""); setZip(""); setNotes(""); setPoolSize(""); setPoolLength(""); setPoolWidth("");
-    setPoolNotes(""); setFrequency("weekly"); setSelectedAddons([]); setServiceDay("");
+    setState(""); setZip(""); setPoolSize("");
+    setPoolNotes(""); setFrequency("weekly"); setSelectedAddons([]);
     setTimeWindow("morning"); setStartDate(""); setAutoRecurring(true); setPaymentOption("offline");
     setSendInvite(false); setErrors({});
   };
@@ -128,7 +124,6 @@ const AddHomeownerModal = ({ open, onClose, onCreate }: AddHomeownerModalProps) 
 
   const handleCreate = () => {
     const fullAddress = [street, city, state, zip].filter(Boolean).join(", ");
-    const sizeStr = poolLength && poolWidth ? `${poolLength}x${poolWidth} ft` : "—";
     const newHomeowner: AdminHomeowner = {
       id: Date.now(),
       name: fullName,
@@ -137,13 +132,13 @@ const AddHomeownerModal = ({ open, onClose, onCreate }: AddHomeownerModalProps) 
       address: fullAddress || "—",
       plan: planLabel,
       startDate: startDate || new Date().toLocaleDateString("en-US", { month: "short", day: "2-digit", year: "numeric" }),
-      pools: [{ address: street || fullAddress || "—", size: sizeStr, technician: "Unassigned", nextService: startDate || "TBD" }],
+      pools: [{ address: street || fullAddress || "—", size: poolSizeLabel, technician: "Unassigned", nextService: startDate || "TBD" }],
       services: [],
       manuallyAdded: true,
       status: "Active",
       frequency: frequencyLabel,
-      paymentMethod: paymentOption === "offline" ? "Pays Offline" : paymentOption === "paid" ? "Marked as Paid" : "Card on File",
-      notes,
+      paymentMethod: paymentOption === "offline" ? "Pays Offline" : "Marked as Paid",
+      notes: poolNotes,
     };
     onCreate(newHomeowner);
     reset();
@@ -187,7 +182,7 @@ const AddHomeownerModal = ({ open, onClose, onCreate }: AddHomeownerModalProps) 
 
   return (
     <Dialog open={open} onOpenChange={(o) => !o && handleClose()}>
-      <DialogContent className="sm:max-w-[760px] max-h-[90vh] overflow-y-auto pt-10">
+      <DialogContent className="sm:max-w-[760px] max-h-[90vh] overflow-y-auto pt-10 bg-white">
         <div>
           <h2 className="text-lg font-semibold mb-1">Add Homeowner</h2>
           <p className="text-sm text-muted-foreground mb-6">Manually add a homeowner to the platform.</p>
@@ -241,15 +236,6 @@ const AddHomeownerModal = ({ open, onClose, onCreate }: AddHomeownerModalProps) 
                 </div>
               </div>
 
-              <div>
-                <SectionTitle>Notes</SectionTitle>
-                <Textarea
-                  value={notes}
-                  onChange={e => setNotes(e.target.value)}
-                  placeholder="Existing customer notes (gate code, preferences, etc.)"
-                  rows={3}
-                />
-              </div>
             </div>
           )}
 
@@ -272,19 +258,14 @@ const AddHomeownerModal = ({ open, onClose, onCreate }: AddHomeownerModalProps) 
                       </SelectContent>
                     </Select>
                   </div>
-                  <div className="grid grid-cols-2 gap-3">
-                    <div>
-                      <Label className="mb-1.5 block">Length (ft)</Label>
-                      <Input value={poolLength} onChange={e => setPoolLength(e.target.value)} placeholder="e.g. 15" />
-                    </div>
-                    <div>
-                      <Label className="mb-1.5 block">Width (ft)</Label>
-                      <Input value={poolWidth} onChange={e => setPoolWidth(e.target.value)} placeholder="e.g. 30" />
-                    </div>
-                  </div>
                   <div>
                     <Label className="mb-1.5 block">Notes <span className="text-muted-foreground text-xs">(optional)</span></Label>
-                    <Textarea value={poolNotes} onChange={e => setPoolNotes(e.target.value)} rows={2} />
+                    <Textarea
+                      value={poolNotes}
+                      onChange={e => setPoolNotes(e.target.value)}
+                      placeholder="Gate code, preferences, etc."
+                      rows={2}
+                    />
                   </div>
                 </div>
               </div>
@@ -294,14 +275,14 @@ const AddHomeownerModal = ({ open, onClose, onCreate }: AddHomeownerModalProps) 
                 <div className="space-y-3">
                   <div>
                     <Label className="mb-1.5 block">Service Frequency</Label>
-                    <RadioGroup value={frequency} onValueChange={setFrequency} className="space-y-2">
-                      {FREQUENCIES.map(f => (
-                        <label key={f.value} className="flex items-center gap-2 cursor-pointer p-3 rounded-md border border-input hover:bg-muted/50">
-                          <RadioGroupItem value={f.value} />
-                          <span className="text-sm">{f.label}</span>
-                        </label>
-                      ))}
-                    </RadioGroup>
+                    <Select value={frequency} onValueChange={setFrequency}>
+                      <SelectTrigger><SelectValue placeholder="Select frequency" /></SelectTrigger>
+                      <SelectContent>
+                        {FREQUENCIES.map(f => (
+                          <SelectItem key={f.value} value={f.value}>{f.label}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   </div>
                   <div>
                     <Label className="mb-2 block">Add-ons</Label>
@@ -327,13 +308,8 @@ const AddHomeownerModal = ({ open, onClose, onCreate }: AddHomeownerModalProps) 
                 <div className="space-y-3">
                   <div className="grid grid-cols-2 gap-3">
                     <div>
-                      <Label className="mb-1.5 block">Preferred Service Day</Label>
-                      <Select value={serviceDay} onValueChange={setServiceDay}>
-                        <SelectTrigger><SelectValue placeholder="Select a day" /></SelectTrigger>
-                        <SelectContent>
-                          {DAYS.map(d => <SelectItem key={d} value={d}>{d}</SelectItem>)}
-                        </SelectContent>
-                      </Select>
+                      <Label className="mb-1.5 block">Start Date</Label>
+                      <Input type="date" value={startDate} onChange={e => setStartDate(e.target.value)} />
                     </div>
                     <div>
                       <Label className="mb-1.5 block">Arrival Window</Label>
@@ -346,10 +322,6 @@ const AddHomeownerModal = ({ open, onClose, onCreate }: AddHomeownerModalProps) 
                         </SelectContent>
                       </Select>
                     </div>
-                  </div>
-                  <div>
-                    <Label className="mb-1.5 block">Start Date</Label>
-                    <Input type="date" value={startDate} onChange={e => setStartDate(e.target.value)} />
                   </div>
                   <div className="flex items-center justify-between p-3 rounded-md border border-input">
                     <div>
@@ -369,13 +341,6 @@ const AddHomeownerModal = ({ open, onClose, onCreate }: AddHomeownerModalProps) 
                     <div>
                       <div className="text-sm font-medium">Customer pays offline (default)</div>
                       <div className="text-xs text-muted-foreground">Track payments manually</div>
-                    </div>
-                  </label>
-                  <label className="flex items-start gap-3 p-3 rounded-md border border-input cursor-pointer">
-                    <RadioGroupItem value="card" id="pay-card" className="mt-0.5" />
-                    <div>
-                      <div className="text-sm font-medium">Add payment method</div>
-                      <div className="text-xs text-muted-foreground">Save a card on file for the homeowner</div>
                     </div>
                   </label>
                   <label className="flex items-start gap-3 p-3 rounded-md border border-input cursor-pointer">
@@ -415,7 +380,7 @@ const AddHomeownerModal = ({ open, onClose, onCreate }: AddHomeownerModalProps) 
                       <h4 className="text-sm font-semibold">Pool & Plan</h4>
                     </div>
                     <div className="text-sm space-y-1 text-muted-foreground">
-                      <div>{poolSizeLabel} • {poolLength && poolWidth ? `${poolLength}×${poolWidth} ft` : "—"}</div>
+                      <div>{poolSizeLabel}</div>
                       <div><span className="text-foreground font-medium">{frequencyLabel}</span></div>
                       <div className="text-xs">Add-ons: {addonTitles.length > 0 ? addonTitles.join(", ") : "None"}</div>
                     </div>
@@ -428,7 +393,7 @@ const AddHomeownerModal = ({ open, onClose, onCreate }: AddHomeownerModalProps) 
                       <h4 className="text-sm font-semibold">Schedule</h4>
                     </div>
                     <div className="text-sm space-y-1 text-muted-foreground">
-                      <div>{serviceDay || "—"} • {TIME_WINDOW_SHORT[timeWindow]}</div>
+                      <div>Arrival: {TIME_WINDOW_SHORT[timeWindow]}</div>
                       <div>Starts: <span className="text-foreground font-medium">{startDate || "—"}</span></div>
                       <div className="text-xs">Auto-recurring: {autoRecurring ? "On" : "Off"}</div>
                     </div>

@@ -144,7 +144,7 @@ const LandingContactStep = ({
               placeholder="First Name"
               value={formData.firstName}
               onChange={handleChange}
-              className={`h-12 rounded-xl border-[1.5px] border-border bg-background shadow-sm text-[15px] placeholder:text-muted-foreground/60 focus-visible:ring-primary focus-visible:border-primary ${inputErrorClass("firstName")}`}
+              className={`h-12 rounded-xl shadow-sm text-[15px] placeholder:text-muted-foreground/60 ${inputErrorClass("firstName")}`}
             />
             {errors.firstName && <p className="text-xs text-destructive">{errors.firstName}</p>}
           </div>
@@ -154,7 +154,7 @@ const LandingContactStep = ({
               placeholder="Last Name"
               value={formData.lastName}
               onChange={handleChange}
-              className={`h-12 rounded-xl border-[1.5px] border-border bg-background shadow-sm text-[15px] placeholder:text-muted-foreground/60 focus-visible:ring-primary focus-visible:border-primary ${inputErrorClass("lastName")}`}
+              className={`h-12 rounded-xl shadow-sm text-[15px] placeholder:text-muted-foreground/60 ${inputErrorClass("lastName")}`}
             />
             {errors.lastName && <p className="text-xs text-destructive">{errors.lastName}</p>}
           </div>
@@ -166,7 +166,7 @@ const LandingContactStep = ({
             placeholder="Email Address"
             value={formData.email}
             onChange={handleChange}
-            className={`h-12 rounded-xl border-[1.5px] border-border bg-background shadow-sm text-[15px] placeholder:text-muted-foreground/60 focus-visible:ring-primary focus-visible:border-primary ${inputErrorClass("email")}`}
+            className={`h-12 rounded-xl shadow-sm text-[15px] placeholder:text-muted-foreground/60 ${inputErrorClass("email")}`}
           />
           {errors.email && <p className="text-xs text-destructive">{errors.email}</p>}
         </div>
@@ -177,7 +177,7 @@ const LandingContactStep = ({
             placeholder="Phone Number"
             value={formData.phone}
             onChange={handleChange}
-            className={`h-12 rounded-xl border-[1.5px] border-border bg-background shadow-sm text-[15px] placeholder:text-muted-foreground/60 focus-visible:ring-primary focus-visible:border-primary ${inputErrorClass("phone")}`}
+            className={`h-12 rounded-xl shadow-sm text-[15px] placeholder:text-muted-foreground/60 ${inputErrorClass("phone")}`}
           />
           {errors.phone && <p className="text-xs text-destructive">{errors.phone}</p>}
         </div>

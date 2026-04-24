@@ -17,6 +17,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import oasisLogo from "@/assets/oo-logo.png";
 import AddHomeownerModal from "@/components/admin/AddHomeownerModal";
+import EditHomeownerModal from "@/components/admin/EditHomeownerModal";
 import {
   INIT_TECHNICIANS, ADMIN_HOMEOWNERS, ADMIN_ISSUES, INIT_APPLICANTS,
   type AdminTechnician, type AdminApplicant, type AdminApplicantCert, type AdminIssue, type AdminTechReview, type ReviewStatus, type ReviewRejectionReason, type AdminHomeowner,
@@ -99,7 +100,10 @@ const AdminDashboard = () => {
   // Homeowners
   const [homeowners, setHomeowners] = useState<AdminHomeowner[]>(ADMIN_HOMEOWNERS);
   const [addHomeownerOpen, setAddHomeownerOpen] = useState(false);
+  const [editHomeownerOpen, setEditHomeownerOpen] = useState(false);
+  const [editingHomeowner, setEditingHomeowner] = useState<AdminHomeowner | null>(null);
   const [homeownerSuccess, setHomeownerSuccess] = useState(false);
+  const [homeownerEditSuccess, setHomeownerEditSuccess] = useState(false);
   const [scheduleTab, setScheduleTab] = useState<"upcoming" | "past">("upcoming");
   const [detailTab, setDetailTab] = useState<"overview" | "pools" | "schedule" | "payments" | "notes">("overview");
 
@@ -376,6 +380,14 @@ const AdminDashboard = () => {
     nav("homeDetail", h.id);
   };
 
+  const handleHomeownerUpdated = (h: AdminHomeowner) => {
+    setHomeowners(prev => prev.map(x => x.id === h.id ? h : x));
+    setEditHomeownerOpen(false);
+    setEditingHomeowner(null);
+    setHomeownerEditSuccess(true);
+    setTimeout(() => setHomeownerEditSuccess(false), 4000);
+  };
+
   const HomeownersPage = () => (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
@@ -447,6 +459,12 @@ const AdminDashboard = () => {
           <ChevronLeft className="h-4 w-4" /> Back to Homeowners
         </button>
 
+        {homeownerEditSuccess && (
+          <div className="flex items-center gap-2 px-4 py-3 rounded-md border border-emerald-200 bg-emerald-50 text-emerald-700 text-sm font-medium">
+            <Check className="h-4 w-4" /> Changes saved successfully
+          </div>
+        )}
+
         {/* Header */}
         <Card>
           <CardContent className="p-5">
@@ -469,7 +487,14 @@ const AdminDashboard = () => {
                 </div>
               </div>
               <div className="flex items-center gap-2">
-                <Button variant="outline" size="sm" className="gap-1.5"><Pencil className="h-3.5 w-3.5" /> Edit Homeowner</Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="gap-1.5"
+                  onClick={() => { setEditingHomeowner(ho); setEditHomeownerOpen(true); }}
+                >
+                  <Pencil className="h-3.5 w-3.5" /> Edit Homeowner
+                </Button>
                 <Button variant="outline" size="icon" className="h-9 w-9"><MoreHorizontal className="h-4 w-4" /></Button>
               </div>
             </div>
@@ -1088,6 +1113,13 @@ const AdminDashboard = () => {
         open={addHomeownerOpen}
         onClose={() => setAddHomeownerOpen(false)}
         onCreate={handleHomeownerCreated}
+      />
+
+      <EditHomeownerModal
+        open={editHomeownerOpen}
+        onClose={() => { setEditHomeownerOpen(false); setEditingHomeowner(null); }}
+        homeowner={editingHomeowner}
+        onSave={handleHomeownerUpdated}
       />
     </div>
   );

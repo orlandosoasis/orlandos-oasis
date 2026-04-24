@@ -17,6 +17,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import oasisLogo from "@/assets/oo-logo.png";
 import AddHomeownerModal from "@/components/admin/AddHomeownerModal";
+import EditHomeownerModal from "@/components/admin/EditHomeownerModal";
 import {
   INIT_TECHNICIANS, ADMIN_HOMEOWNERS, ADMIN_ISSUES, INIT_APPLICANTS,
   type AdminTechnician, type AdminApplicant, type AdminApplicantCert, type AdminIssue, type AdminTechReview, type ReviewStatus, type ReviewRejectionReason, type AdminHomeowner,
@@ -99,7 +100,10 @@ const AdminDashboard = () => {
   // Homeowners
   const [homeowners, setHomeowners] = useState<AdminHomeowner[]>(ADMIN_HOMEOWNERS);
   const [addHomeownerOpen, setAddHomeownerOpen] = useState(false);
+  const [editHomeownerOpen, setEditHomeownerOpen] = useState(false);
+  const [editingHomeowner, setEditingHomeowner] = useState<AdminHomeowner | null>(null);
   const [homeownerSuccess, setHomeownerSuccess] = useState(false);
+  const [homeownerEditSuccess, setHomeownerEditSuccess] = useState(false);
   const [scheduleTab, setScheduleTab] = useState<"upcoming" | "past">("upcoming");
   const [detailTab, setDetailTab] = useState<"overview" | "pools" | "schedule" | "payments" | "notes">("overview");
 
@@ -374,6 +378,14 @@ const AdminDashboard = () => {
     setHomeownerSuccess(true);
     setTimeout(() => setHomeownerSuccess(false), 4000);
     nav("homeDetail", h.id);
+  };
+
+  const handleHomeownerUpdated = (h: AdminHomeowner) => {
+    setHomeowners(prev => prev.map(x => x.id === h.id ? h : x));
+    setEditHomeownerOpen(false);
+    setEditingHomeowner(null);
+    setHomeownerEditSuccess(true);
+    setTimeout(() => setHomeownerEditSuccess(false), 4000);
   };
 
   const HomeownersPage = () => (

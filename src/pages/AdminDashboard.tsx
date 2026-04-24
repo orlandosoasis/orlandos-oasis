@@ -18,6 +18,7 @@ import { useToast } from "@/hooks/use-toast";
 import oasisLogo from "@/assets/oo-logo.png";
 import AddHomeownerModal from "@/components/admin/AddHomeownerModal";
 import EditHomeownerModal from "@/components/admin/EditHomeownerModal";
+import ReportRouteIssueModal, { type RouteService } from "@/components/ReportRouteIssueModal";
 import {
   INIT_TECHNICIANS, ADMIN_HOMEOWNERS, ADMIN_ISSUES, INIT_APPLICANTS,
   type AdminTechnician, type AdminApplicant, type AdminApplicantCert, type AdminIssue, type AdminTechReview, type ReviewStatus, type ReviewRejectionReason, type AdminHomeowner,

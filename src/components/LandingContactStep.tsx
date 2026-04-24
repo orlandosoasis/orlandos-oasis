@@ -132,7 +132,7 @@ const LandingContactStep = ({
 
       {/* Heading */}
       <div>
-        <h2 className="text-2xl font-extrabold text-foreground">Enter Your Name & Email</h2>
+        <h3 className="text-lg font-bold text-foreground mb-0.5">Enter Your Name & Email</h3>
       </div>
 
       {/* Form Fields */}

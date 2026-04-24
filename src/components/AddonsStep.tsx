@@ -151,8 +151,8 @@ const AddonsStep = ({ selectedAddons, onToggleAddon, serviceConfig, timeLeft, on
 
       {/* Heading */}
       <div>
-        <h2 className="text-2xl font-extrabold text-foreground">Add-ons</h2>
-        <p className="text-sm text-muted-foreground mt-1">
+        <h3 className="text-lg font-bold text-foreground mb-0.5">Add-ons</h3>
+        <p className="text-muted-foreground text-sm">
           Select any additional services you'd like to include.
         </p>
       </div>

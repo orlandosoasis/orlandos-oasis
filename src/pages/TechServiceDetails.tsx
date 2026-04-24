@@ -320,6 +320,21 @@ const TechServiceDetails = () => {
         homeownerName={homeowner.name}
         onSubmit={handleCompletionSubmit}
       />
+
+      <ReportRouteIssueModal
+        open={showReportIssue}
+        onOpenChange={setShowReportIssue}
+        role="technician"
+        services={[
+          {
+            id: service.id,
+            homeowner: homeowner.name,
+            type: service.serviceType,
+            time: TIME_LABELS[service.timeWindow],
+          } as RouteService,
+        ]}
+        lockedServiceId={service.id}
+      />
     </TechLayout>
   );
 };

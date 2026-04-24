@@ -344,13 +344,6 @@ const AddHomeownerModal = ({ open, onClose, onCreate }: AddHomeownerModalProps) 
                     </div>
                   </label>
                   <label className="flex items-start gap-3 p-3 rounded-md border border-input cursor-pointer">
-                    <RadioGroupItem value="card" id="pay-card" className="mt-0.5" />
-                    <div>
-                      <div className="text-sm font-medium">Add payment method</div>
-                      <div className="text-xs text-muted-foreground">Save a card on file for the homeowner</div>
-                    </div>
-                  </label>
-                  <label className="flex items-start gap-3 p-3 rounded-md border border-input cursor-pointer">
                     <RadioGroupItem value="paid" id="pay-paid" className="mt-0.5" />
                     <div>
                       <div className="text-sm font-medium">Mark as already paid</div>

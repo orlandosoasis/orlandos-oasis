@@ -275,14 +275,14 @@ const AddHomeownerModal = ({ open, onClose, onCreate }: AddHomeownerModalProps) 
                 <div className="space-y-3">
                   <div>
                     <Label className="mb-1.5 block">Service Frequency</Label>
-                    <RadioGroup value={frequency} onValueChange={setFrequency} className="space-y-2">
-                      {FREQUENCIES.map(f => (
-                        <label key={f.value} className="flex items-center gap-2 cursor-pointer p-3 rounded-md border border-input hover:bg-muted/50">
-                          <RadioGroupItem value={f.value} />
-                          <span className="text-sm">{f.label}</span>
-                        </label>
-                      ))}
-                    </RadioGroup>
+                    <Select value={frequency} onValueChange={setFrequency}>
+                      <SelectTrigger><SelectValue placeholder="Select frequency" /></SelectTrigger>
+                      <SelectContent>
+                        {FREQUENCIES.map(f => (
+                          <SelectItem key={f.value} value={f.value}>{f.label}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   </div>
                   <div>
                     <Label className="mb-2 block">Add-ons</Label>

@@ -1,11 +1,12 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Calendar, Clock, MapPin, CheckCircle2, Droplets, CalendarClock, FileText, MessagesSquare } from "lucide-react";
+import { Calendar, Clock, MapPin, CheckCircle2, Droplets, CalendarClock, FileText, MessagesSquare, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
 import StatusBadge from "@/components/StatusBadge";
 import TechLayout from "@/components/technician/TechLayout";
 import TechRescheduleModal from "@/components/technician/TechRescheduleModal";
+import ReportRouteIssueModal, { type RouteService } from "@/components/ReportRouteIssueModal";
 import {
   createTechServices,
   getHomeowner,

@@ -1,6 +1,10 @@
 import { useState } from "react";
 import { Check, ChevronLeft, User, Waves, Calendar as CalendarIcon, ClipboardList } from "lucide-react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Calendar } from "@/components/ui/calendar";
+import { format } from "date-fns";
+import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -309,7 +313,29 @@ const AddHomeownerModal = ({ open, onClose, onCreate }: AddHomeownerModalProps) 
                   <div className="grid grid-cols-2 gap-3">
                     <div>
                       <Label className="mb-1.5 block">Start Date</Label>
-                      <Input type="date" value={startDate} onChange={e => setStartDate(e.target.value)} />
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <button
+                            type="button"
+                            className={cn(
+                              "flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm text-left transition-colors hover:border-ring focus-visible:outline-none focus-visible:border-ring",
+                              !startDate && "text-muted-foreground"
+                            )}
+                          >
+                            <span>{startDate ? format(new Date(startDate), "PPP") : "Pick a date"}</span>
+                            <CalendarIcon className="h-4 w-4 opacity-50 shrink-0 ml-2" />
+                          </button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-0" align="start">
+                          <Calendar
+                            mode="single"
+                            selected={startDate ? new Date(startDate) : undefined}
+                            onSelect={(d) => setStartDate(d ? format(d, "yyyy-MM-dd") : "")}
+                            initialFocus
+                            className={cn("p-3 pointer-events-auto")}
+                          />
+                        </PopoverContent>
+                      </Popover>
                     </div>
                     <div>
                       <Label className="mb-1.5 block">Arrival Window</Label>

@@ -308,13 +308,8 @@ const AddHomeownerModal = ({ open, onClose, onCreate }: AddHomeownerModalProps) 
                 <div className="space-y-3">
                   <div className="grid grid-cols-2 gap-3">
                     <div>
-                      <Label className="mb-1.5 block">Preferred Service Day</Label>
-                      <Select value={serviceDay} onValueChange={setServiceDay}>
-                        <SelectTrigger><SelectValue placeholder="Select a day" /></SelectTrigger>
-                        <SelectContent>
-                          {DAYS.map(d => <SelectItem key={d} value={d}>{d}</SelectItem>)}
-                        </SelectContent>
-                      </Select>
+                      <Label className="mb-1.5 block">Start Date</Label>
+                      <Input type="date" value={startDate} onChange={e => setStartDate(e.target.value)} />
                     </div>
                     <div>
                       <Label className="mb-1.5 block">Arrival Window</Label>
@@ -327,10 +322,6 @@ const AddHomeownerModal = ({ open, onClose, onCreate }: AddHomeownerModalProps) 
                         </SelectContent>
                       </Select>
                     </div>
-                  </div>
-                  <div>
-                    <Label className="mb-1.5 block">Start Date</Label>
-                    <Input type="date" value={startDate} onChange={e => setStartDate(e.target.value)} />
                   </div>
                   <div className="flex items-center justify-between p-3 rounded-md border border-input">
                     <div>

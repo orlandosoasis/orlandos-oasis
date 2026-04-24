@@ -55,6 +55,7 @@ const TechServiceDetails = () => {
 
   const [showReschedule, setShowReschedule] = useState(false);
   const [showCompletion, setShowCompletion] = useState(false);
+  const [showReportIssue, setShowReportIssue] = useState(false);
   const [messages, setMessages] = useState<ChatMsg[]>([]);
   const [newMsg, setNewMsg] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);

@@ -393,11 +393,15 @@ const AdminDashboard = () => {
         <CardContent className="p-0">
           <Table>
             <TableHeader><TableRow>
-              <TableHead>Name</TableHead><TableHead>Email</TableHead><TableHead>Phone</TableHead><TableHead>Pools</TableHead><TableHead>Plan</TableHead><TableHead>Actions</TableHead>
+              <TableHead>Name</TableHead><TableHead>Email</TableHead><TableHead>Phone</TableHead><TableHead>Pools</TableHead><TableHead>Status</TableHead>
             </TableRow></TableHeader>
             <TableBody>
               {homeowners.map(h => (
-                <TableRow key={h.id}>
+                <TableRow
+                  key={h.id}
+                  onClick={() => nav("homeDetail", h.id)}
+                  className="cursor-pointer hover:bg-muted/50 active:bg-muted transition-colors"
+                >
                   <TableCell className="font-semibold">
                     <div className="flex items-center gap-2">
                       {h.name}
@@ -408,7 +412,6 @@ const AdminDashboard = () => {
                   </TableCell>
                   <TableCell>{h.email}</TableCell><TableCell>{h.phone}</TableCell>
                   <TableCell>{h.pools.length}</TableCell><TableCell><StatusBadge status={h.status || "Active"} /></TableCell>
-                  <TableCell><Button size="sm" onClick={() => nav("homeDetail", h.id)}>View Details</Button></TableCell>
                 </TableRow>
               ))}
             </TableBody>

@@ -258,19 +258,14 @@ const AddHomeownerModal = ({ open, onClose, onCreate }: AddHomeownerModalProps) 
                       </SelectContent>
                     </Select>
                   </div>
-                  <div className="grid grid-cols-2 gap-3">
-                    <div>
-                      <Label className="mb-1.5 block">Length (ft)</Label>
-                      <Input value={poolLength} onChange={e => setPoolLength(e.target.value)} placeholder="e.g. 15" />
-                    </div>
-                    <div>
-                      <Label className="mb-1.5 block">Width (ft)</Label>
-                      <Input value={poolWidth} onChange={e => setPoolWidth(e.target.value)} placeholder="e.g. 30" />
-                    </div>
-                  </div>
                   <div>
                     <Label className="mb-1.5 block">Notes <span className="text-muted-foreground text-xs">(optional)</span></Label>
-                    <Textarea value={poolNotes} onChange={e => setPoolNotes(e.target.value)} rows={2} />
+                    <Textarea
+                      value={poolNotes}
+                      onChange={e => setPoolNotes(e.target.value)}
+                      placeholder="Gate code, preferences, etc."
+                      rows={2}
+                    />
                   </div>
                 </div>
               </div>

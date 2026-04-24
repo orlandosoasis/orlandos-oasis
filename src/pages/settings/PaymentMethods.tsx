@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import {
   CreditCard,
@@ -14,6 +14,9 @@ import {
   Receipt,
   Star,
   Wrench,
+  Repeat,
+  PlusCircle,
+  Settings2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -22,7 +25,16 @@ import { Separator } from "@/components/ui/separator";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { useBooking } from "@/contexts/BookingContext";
-import ManageMembershipModal, { type ServicePlan } from "@/components/ManageMembershipModal";
+import ManageMembershipModal, {
+  type MembershipConfig,
+  type ServicePlan,
+  type PoolSize,
+  type ServiceFrequency,
+  getMembershipMonthlyPrice,
+  getActiveAddons,
+  getFrequencyLabel,
+  getPoolSizeLabel,
+} from "@/components/ManageMembershipModal";
 import PayNowModal from "@/components/PayNowModal";
 import CancelSubscriptionModal from "@/components/CancelSubscriptionModal";
 
@@ -46,13 +58,14 @@ interface InvoiceRow {
 const FULL_DAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 const SHORT_MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
-const FREQUENCY_LABELS: Record<string, string> = {
-  weekly: "Weekly",
-  "twice-weekly": "Twice per week",
-  "three-weekly": "Three times per week",
-  biweekly: "Every two weeks",
-  monthly: "Monthly",
-  once: "One-time",
+// Map booking-context frequency strings into membership frequencies
+const toMembershipFrequency = (f?: string): ServiceFrequency => {
+  if (f === "twice-weekly" || f === "three-weekly") return f;
+  return "weekly";
+};
+const toMembershipPoolSize = (s?: string): PoolSize => {
+  if (s === "medium" || s === "large") return s;
+  return "small";
 };
 
 const PaymentMethods = () => {
@@ -67,7 +80,6 @@ const PaymentMethods = () => {
 
   const [manageOpen, setManageOpen] = useState(false);
   const [cancelled, setCancelled] = useState(false);
-  const [overridePlan, setOverridePlan] = useState<ServicePlan | null>(null);
 
   // ===== Test / dev simulators =====
   const [paymentState, setPaymentState] = useState<PaymentState>("healthy");
@@ -75,71 +87,72 @@ const PaymentMethods = () => {
   const [payNowOpen, setPayNowOpen] = useState(false);
   const [cancelOpen, setCancelOpen] = useState(false);
 
-  // Mock usage data (would come from service_completions)
-  const [usage] = useState({
-    servicesCompleted: 3,
-    estimatedCharges: 285,
-    addOnsTotal: 45,
+  // ===== Single source of truth for membership config =====
+  // Initialised from booking/checkout, then mutated via Manage Plan modal.
+  const [membership, setMembership] = useState<MembershipConfig>({
+    poolSize: toMembershipPoolSize(checkoutData?.poolSize),
+    frequency: toMembershipFrequency(checkoutData?.frequency || booking?.frequency),
+    activeAddonIds: ["tile-cleaning", "pool-inspections"], // mock active add-ons
   });
 
-  // Mock invoices (would come from /invoices)
+  // Cycle progress (mock — would come from service_completions)
+  const [usage] = useState({
+    visitsCompleted: 3,
+    extraVisitCharges: 0, // e.g. 1-time emergency visits beyond plan
+  });
+
   const [invoices, setInvoices] = useState<InvoiceRow[]>([
     { id: "INV-104", date: "Mar 15, 2026", amount: 95, status: "Paid" },
     { id: "INV-103", date: "Feb 15, 2026", amount: 95, status: "Paid" },
     { id: "INV-102", date: "Jan 15, 2026", amount: 95, status: "Paid" },
   ]);
 
-  const isMonthly = booking?.frequency === "monthly";
+  // ===== Derived pricing =====
+  const POOL_BASE: Record<PoolSize, number> = { small: 120, medium: 140, large: 170 };
+  const FREQ_MULT: Record<ServiceFrequency, number> = { weekly: 1, "twice-weekly": 2, "three-weekly": 3 };
+
+  const basePrice = POOL_BASE[membership.poolSize];
+  const frequencyMultiplier = FREQ_MULT[membership.frequency];
+  const frequencyUpgradeCost = basePrice * (frequencyMultiplier - 1);
+  const activeAddons = useMemo(() => getActiveAddons(membership.activeAddonIds), [membership.activeAddonIds]);
+  const addonsTotal = activeAddons.reduce((sum, a) => sum + a.price, 0);
+  const monthlyTotal = getMembershipMonthlyPrice(membership);
+
+  // Voucher detection (intro discount)
+  const hasIntroDiscount =
+    !!checkoutData &&
+    checkoutData.discountPrice < checkoutData.originalPrice &&
+    invoices.length <= 1; // assume voucher applies only to first cycle
+  const voucherSavings = hasIntroDiscount
+    ? checkoutData!.originalPrice - checkoutData!.discountPrice
+    : 0;
+
   const d = booking?.scheduleData?.selectedDate || new Date();
-
-  const planName =
-    overridePlan?.name ||
-    checkoutData?.serviceName ||
-    booking?.selectedPass?.label ||
-    booking?.selectedPlan?.label ||
-    "Pool Care Membership";
-  const discountPrice = overridePlan
-    ? overridePlan.discountPrice
-    : checkoutData?.discountPrice ?? booking?.selectedPass?.discountPrice ?? null;
-  const originalPrice = overridePlan
-    ? overridePlan.originalPrice
-    : checkoutData?.originalPrice ?? booking?.selectedPass?.originalPrice ?? null;
-  const hasVoucher = discountPrice !== null && originalPrice !== null && discountPrice < originalPrice;
-  const savings = hasVoucher ? originalPrice! - discountPrice! : 0;
-  const frequency = overridePlan?.frequency || checkoutData?.frequency || booking?.frequency || "weekly";
-  const frequencyLabel = FREQUENCY_LABELS[frequency] || frequency;
-
   const formatDate = (date: Date) =>
     `${FULL_DAYS[date.getDay()]}, ${SHORT_MONTHS[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()}`;
-
-  const getNextBillingDate = () => {
+  const formatShort = (date: Date) =>
+    `${SHORT_MONTHS[date.getMonth()]} ${date.getDate()}`;
+  const nextBilling = useMemo(() => {
     const next = new Date(d);
     next.setMonth(next.getMonth() + 1);
-    return formatDate(next);
-  };
-  const nextDateStr = getNextBillingDate();
+    return next;
+  }, [d]);
+  const nextDateStr = formatDate(nextBilling);
+  const nextDateShort = formatShort(nextBilling);
 
-  /**
-   * Invariant: when the wallet is non-empty, exactly one card has isDefault=true.
-   * - If multiple are flagged, keep the first and clear the rest.
-   * - If none are flagged, promote the first card.
-   * - If empty, no-op.
-   * Every card mutation MUST go through this.
-   */
+  // ===== Card mutations =====
   const normalizeDefault = (list: SavedCard[], preferredDefaultId?: string): SavedCard[] => {
     if (list.length === 0) return list;
-    let chosenId = preferredDefaultId && list.some((c) => c.id === preferredDefaultId)
+    const chosenId = preferredDefaultId && list.some((c) => c.id === preferredDefaultId)
       ? preferredDefaultId
       : list.find((c) => c.isDefault)?.id ?? list[0].id;
     return list.map((c) => ({ ...c, isDefault: c.id === chosenId }));
   };
-
   const commitCards = (next: SavedCard[], preferredDefaultId?: string) => {
     setCards(normalizeDefault(next, preferredDefaultId));
   };
 
   const handleRemove = (id: string) => {
-    // Block removing the last available card while a balance is owed
     if (outstandingBalance > 0 && cards.length <= 1) {
       toast({
         title: "Cannot remove card",
@@ -181,13 +194,11 @@ const PaymentMethods = () => {
       ...cards,
       { id: newId, last4, brand: "Card", expiry: newCard.expiry, isDefault: false },
     ];
-    // Promote the new card to default only when it's the first one in the wallet
     commitCards(next, isFirst ? newId : undefined);
     setNewCard({ number: "", expiry: "", cvc: "" });
     setShowAdd(false);
     toast({ title: "Card added.", variant: "success" });
 
-    // Flow 1: if there's a failed payment, retry immediately
     if (paymentState === "failed" || paymentState === "warning") {
       toast({ title: "Retrying payment with new card…" });
       setTimeout(() => {
@@ -196,6 +207,20 @@ const PaymentMethods = () => {
         toast({ title: "Payment recovered", description: "Your account is back in good standing.", variant: "success" });
       }, 900);
     }
+  };
+
+  const handleRetryPayment = () => {
+    if (cards.length === 0) {
+      setShowAdd(true);
+      document.getElementById("payment-methods-section")?.scrollIntoView({ behavior: "smooth" });
+      return;
+    }
+    toast({ title: "Retrying payment…" });
+    setTimeout(() => {
+      setPaymentState("healthy");
+      setOutstandingBalance(0);
+      toast({ title: "Payment recovered", description: "Your account is back in good standing.", variant: "success" });
+    }, 900);
   };
 
   const handleCancelled = () => {
@@ -207,37 +232,55 @@ const PaymentMethods = () => {
   };
 
   const handlePaymentSuccess = () => {
-    setOutstandingBalance(0);
-    setPaymentState("healthy");
     setInvoices([
       { id: `INV-${Math.floor(Math.random() * 999)}`, date: formatDate(new Date()), amount: outstandingBalance, status: "Paid" },
       ...invoices,
     ]);
+    setOutstandingBalance(0);
+    setPaymentState("healthy");
   };
 
-  // ===== Banner config =====
-  const bannerConfig: Record<PaymentState, { tone: string; icon: any; title: string; cta?: string } | null> = {
-    healthy: null,
-    failed: {
-      tone: "bg-amber-50 border-amber-200 text-amber-900",
-      icon: AlertTriangle,
-      title: "Payment issue detected. Please update your payment method.",
-      cta: "Update Payment Method",
-    },
-    warning: {
-      tone: "bg-orange-50 border-orange-200 text-orange-900",
-      icon: AlertTriangle,
-      title: "Payment overdue. Service may be paused soon.",
-      cta: "Pay Now",
-    },
-    suspended: {
-      tone: "bg-destructive/10 border-destructive/30 text-destructive",
-      icon: XCircle,
-      title: "Your service is paused due to unpaid balance.",
-      cta: "Pay Now",
-    },
+  const handlePlanSaved = (next: MembershipConfig, _plan: ServicePlan) => {
+    setMembership(next);
+    setCancelled(false);
   };
-  const banner = bannerConfig[paymentState];
+
+  // ===== Banner config — now amount-aware =====
+  const banner: { tone: string; icon: any; title: string; subtitle?: string; cta?: string; onCta?: () => void } | null =
+    paymentState === "healthy"
+      ? null
+      : paymentState === "failed"
+      ? {
+          tone: "bg-amber-50 border-amber-200 text-amber-900",
+          icon: AlertTriangle,
+          title: "Payment issue detected",
+          subtitle:
+            outstandingBalance > 0
+              ? `$${outstandingBalance.toFixed(0)} failed to process. Update your card or retry.`
+              : "Please update your payment method.",
+          cta: "Retry Payment",
+          onCta: handleRetryPayment,
+        }
+      : paymentState === "warning"
+      ? {
+          tone: "bg-orange-50 border-orange-200 text-orange-900",
+          icon: AlertTriangle,
+          title: `$${outstandingBalance.toFixed(0)} overdue`,
+          subtitle: "Pay now to avoid service pause.",
+          cta: "Pay Now",
+          onCta: () => setPayNowOpen(true),
+        }
+      : {
+          tone: "bg-destructive/10 border-destructive/30 text-destructive",
+          icon: XCircle,
+          title: "Service paused",
+          subtitle: `$${outstandingBalance.toFixed(0)} unpaid. Pay now to resume service.`,
+          cta: "Pay Now",
+          onCta: () => setPayNowOpen(true),
+        };
+
+  // Cycle running total
+  const cycleRunningTotal = basePrice + frequencyUpgradeCost + addonsTotal + usage.extraVisitCharges;
 
   return (
     <>
@@ -248,21 +291,12 @@ const PaymentMethods = () => {
         {banner && (
           <div className={`rounded-2xl border ${banner.tone} p-4 flex items-start gap-3`}>
             <banner.icon className="h-5 w-5 shrink-0 mt-0.5" />
-            <div className="flex-1">
-              <p className="text-sm font-medium">{banner.title}</p>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-semibold">{banner.title}</p>
+              {banner.subtitle && <p className="text-sm mt-0.5 opacity-90">{banner.subtitle}</p>}
             </div>
             {banner.cta && (
-              <Button
-                size="sm"
-                onClick={() => {
-                  if (banner.cta === "Update Payment Method") {
-                    setShowAdd(true);
-                    document.getElementById("payment-methods-section")?.scrollIntoView({ behavior: "smooth" });
-                  } else {
-                    setPayNowOpen(true);
-                  }
-                }}
-              >
+              <Button size="sm" onClick={banner.onCta}>
                 {banner.cta}
               </Button>
             )}
@@ -270,7 +304,7 @@ const PaymentMethods = () => {
         )}
 
         {/* B. Outstanding Balance */}
-        {outstandingBalance > 0 && (
+        {outstandingBalance > 0 && paymentState === "healthy" && (
           <section className="bg-card rounded-2xl border border-border shadow-sm p-6 flex items-center justify-between gap-4">
             <div>
               <p className="text-sm text-muted-foreground">Outstanding Balance</p>
@@ -280,8 +314,9 @@ const PaymentMethods = () => {
           </section>
         )}
 
-        {/* C + D: Next Billing & This Cycle */}
+        {/* C + D: Next Billing & This Cycle (now itemised) */}
         <section className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          {/* Next Billing */}
           <div className="bg-card rounded-2xl border border-border shadow-sm p-5 space-y-2">
             <div className="flex items-center gap-2 text-muted-foreground">
               <Calendar className="h-4 w-4" />
@@ -289,10 +324,11 @@ const PaymentMethods = () => {
             </div>
             <p className="text-[15px] font-semibold text-foreground">{cancelled ? "—" : nextDateStr}</p>
             <p className="text-sm text-muted-foreground">
-              Estimated: <span className="text-foreground font-medium">${originalPrice ?? "—"}</span>
+              Estimated: <span className="text-foreground font-semibold">${monthlyTotal}</span>
             </p>
           </div>
 
+          {/* This Billing Cycle */}
           <div className="bg-card rounded-2xl border border-border shadow-sm p-5 space-y-2">
             <div className="flex items-center gap-2 text-muted-foreground">
               <Wrench className="h-4 w-4" />
@@ -300,16 +336,32 @@ const PaymentMethods = () => {
             </div>
             <div className="space-y-1 text-sm">
               <div className="flex justify-between">
-                <span className="text-muted-foreground">Services completed</span>
-                <span className="font-medium text-foreground">{usage.servicesCompleted}</span>
+                <span className="text-muted-foreground">Visits completed</span>
+                <span className="font-medium text-foreground">{usage.visitsCompleted}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-muted-foreground">Estimated charges</span>
-                <span className="font-medium text-foreground">${usage.estimatedCharges}</span>
+                <span className="text-muted-foreground">Base plan</span>
+                <span className="font-medium text-foreground tabular-nums">${basePrice}</span>
               </div>
+              {frequencyUpgradeCost > 0 && (
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Frequency upgrade</span>
+                  <span className="font-medium text-foreground tabular-nums">+${frequencyUpgradeCost}</span>
+                </div>
+              )}
               <div className="flex justify-between">
-                <span className="text-muted-foreground">Add-ons used</span>
-                <span className="font-medium text-foreground">${usage.addOnsTotal}</span>
+                <span className="text-muted-foreground">Add-ons</span>
+                <span className="font-medium text-foreground tabular-nums">${addonsTotal}</span>
+              </div>
+              {usage.extraVisitCharges > 0 && (
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Extra visits</span>
+                  <span className="font-medium text-foreground tabular-nums">+${usage.extraVisitCharges}</span>
+                </div>
+              )}
+              <div className="flex justify-between pt-1.5 mt-1.5 border-t border-border">
+                <span className="font-semibold text-foreground">Running total</span>
+                <span className="font-bold text-foreground tabular-nums">${cycleRunningTotal}</span>
               </div>
             </div>
           </div>
@@ -414,79 +466,136 @@ const PaymentMethods = () => {
         <section className="space-y-4">
           <h2 className="text-[17px] font-bold text-foreground">Membership</h2>
 
-          {isMonthly ? (
-            <div className="bg-card rounded-2xl border border-border shadow-sm overflow-hidden">
-              <div className="p-6 space-y-3">
-                <h3 className="text-[15px] font-semibold text-foreground">Membership Status</h3>
+          <div className="bg-card rounded-2xl border border-border shadow-sm overflow-hidden">
+            {/* Top: status + price */}
+            <div className="p-6">
+              {cancelled && (
+                <div className="bg-destructive/10 border border-destructive/20 rounded-xl p-4 text-sm mb-4">
+                  <p className="font-medium text-destructive">Your membership has been cancelled.</p>
+                  <p className="text-destructive/80 mt-1">No future recurring services will be scheduled.</p>
+                </div>
+              )}
 
-                {cancelled && (
-                  <div className="bg-destructive/10 border border-destructive/20 rounded-xl p-4 text-sm">
-                    <p className="font-medium text-destructive">Your membership has been cancelled.</p>
-                    <p className="text-destructive/80 mt-1">No future recurring services will be scheduled.</p>
-                  </div>
-                )}
-
-                <div className="space-y-2.5 text-sm">
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Plan</span>
-                    <span className="font-medium text-foreground">{planName}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Frequency</span>
-                    <span className="font-medium text-foreground">{frequencyLabel}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Price</span>
-                    <span className="font-medium text-foreground">${originalPrice ?? "—"}/month</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Contract</span>
-                    <span className="font-medium text-foreground">Month-to-month</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Status</span>
-                    <span className={`font-medium ${cancelled ? "text-destructive" : "text-primary"}`}>
+              <div className="flex items-start justify-between gap-4">
+                <div className="space-y-1.5">
+                  <div className="flex items-center gap-2">
+                    <span
+                      className={`h-2 w-2 rounded-full ${cancelled ? "bg-destructive" : "bg-emerald-500"}`}
+                      aria-hidden
+                    />
+                    <span className={`text-sm font-semibold ${cancelled ? "text-destructive" : "text-emerald-700"}`}>
                       {cancelled ? "Cancelled" : "Active"}
                     </span>
                   </div>
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Auto-renew</span>
-                    <span className="font-medium text-foreground">{cancelled ? "No" : "Yes"}</span>
+                  <p className="text-[15px] font-semibold text-foreground">
+                    {getFrequencyLabel(membership.frequency)} Pool Service
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    {getPoolSizeLabel(membership.poolSize)} ·{" "}
+                    {cancelled ? "Ends after current cycle" : `Renews ${nextDateShort}`} ·{" "}
+                    Auto-renew {cancelled ? "Off" : "On"}
+                  </p>
+                </div>
+                <div className="text-right">
+                  <p className="text-3xl font-bold text-foreground tabular-nums leading-none">
+                    ${monthlyTotal}
+                  </p>
+                  <p className="text-xs text-muted-foreground mt-1">/month</p>
+                </div>
+              </div>
+
+              {/* Intro discount (contextual) */}
+              {hasIntroDiscount && !cancelled && (
+                <div className="mt-4 flex items-start gap-2 bg-primary/10 border border-primary/20 rounded-xl px-4 py-3 text-sm">
+                  <BadgePercent className="h-4 w-4 text-primary shrink-0 mt-0.5" />
+                  <div className="flex-1">
+                    <p className="text-primary font-semibold">Intro discount applied (first billing only)</p>
+                    <p className="text-primary/80 mt-0.5 text-xs">
+                      Original: <span className="line-through">${checkoutData!.originalPrice}</span> · Discounted:{" "}
+                      <span className="font-semibold">${checkoutData!.discountPrice}</span> · You saved ${voucherSavings}
+                    </p>
                   </div>
                 </div>
+              )}
+            </div>
 
-                {hasVoucher && !cancelled && (
-                  <div className="flex items-center gap-2 bg-primary/10 border border-primary/20 rounded-xl px-4 py-3 text-sm">
-                    <BadgePercent className="h-4 w-4 text-primary shrink-0" />
-                    <span className="text-primary font-medium">${savings} discount applied to first month</span>
-                  </div>
-                )}
+            <Separator />
+
+            {/* Monthly Plan Breakdown */}
+            <div className="p-6 space-y-3">
+              <h3 className="text-[15px] font-semibold text-foreground">Monthly Plan Breakdown</h3>
+              <div className="space-y-2 text-sm">
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">
+                    Base Plan ({getPoolSizeLabel(membership.poolSize)}, {getFrequencyLabel(membership.frequency)})
+                  </span>
+                  <span className="font-medium text-foreground tabular-nums">${basePrice}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Frequency Upgrade</span>
+                  <span className="font-medium text-foreground tabular-nums">
+                    {frequencyUpgradeCost > 0 ? `+$${frequencyUpgradeCost}` : "$0"}
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">
+                    Add-ons {activeAddons.length > 0 && `(${activeAddons.length})`}
+                  </span>
+                  <span className="font-medium text-foreground tabular-nums">${addonsTotal}</span>
+                </div>
+                <div className="flex justify-between pt-2.5 mt-1 border-t border-border">
+                  <span className="font-semibold text-foreground">Estimated Total This Cycle</span>
+                  <span className="font-bold text-foreground tabular-nums">${monthlyTotal}</span>
+                </div>
               </div>
+            </div>
 
-              <Separator />
+            <Separator />
 
-              <div className="p-6 space-y-3">
-                <Button className="w-full" disabled={cancelled} onClick={() => setManageOpen(true)}>
-                  <RefreshCw className="h-4 w-4 mr-2" />
-                  {cancelled ? "Membership Cancelled" : "Manage Plan"}
-                </Button>
-                {!cancelled && (
+            {/* Quick actions */}
+            {!cancelled && (
+              <>
+                <div className="p-6 grid grid-cols-2 gap-2">
                   <Button
                     variant="outline"
-                    className="w-full text-destructive border-destructive/30 hover:bg-destructive hover:text-destructive-foreground hover:border-transparent"
-                    onClick={() => setCancelOpen(true)}
+                    size="sm"
+                    className="justify-start gap-2 hover:bg-primary hover:text-primary-foreground hover:border-transparent"
+                    onClick={() => setManageOpen(true)}
                   >
-                    Cancel Subscription
+                    <Repeat className="h-4 w-4" />
+                    Change frequency
                   </Button>
-                )}
-              </div>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="justify-start gap-2 hover:bg-primary hover:text-primary-foreground hover:border-transparent"
+                    onClick={() => setManageOpen(true)}
+                  >
+                    <PlusCircle className="h-4 w-4" />
+                    Add services
+                  </Button>
+                </div>
+                <Separator />
+              </>
+            )}
+
+            {/* Primary actions */}
+            <div className="p-6 space-y-3">
+              <Button className="w-full" disabled={cancelled} onClick={() => setManageOpen(true)}>
+                <Settings2 className="h-4 w-4 mr-2" />
+                {cancelled ? "Membership Cancelled" : "Manage Plan"}
+              </Button>
+              {!cancelled && (
+                <Button
+                  variant="outline"
+                  className="w-full text-destructive border-destructive/30 hover:bg-destructive hover:text-destructive-foreground hover:border-transparent"
+                  onClick={() => setCancelOpen(true)}
+                >
+                  Cancel Subscription
+                </Button>
+              )}
             </div>
-          ) : (
-            <div className="bg-card rounded-2xl border border-border p-8 text-center">
-              <Calendar className="h-10 w-10 text-muted-foreground mx-auto mb-3" />
-              <p className="text-muted-foreground">No active membership found.</p>
-            </div>
-          )}
+          </div>
         </section>
 
         <Separator />
@@ -577,7 +686,10 @@ const PaymentMethods = () => {
                 <Button size="sm" variant="outline" onClick={() => { setOutstandingBalance(95); setPaymentState("failed"); }}>
                   Simulate failed payment
                 </Button>
-                <Button size="sm" variant="outline" onClick={() => { setOutstandingBalance(190); setPaymentState("suspended"); }}>
+                <Button size="sm" variant="outline" onClick={() => { setOutstandingBalance(190); setPaymentState("warning"); }}>
+                  Simulate final warning
+                </Button>
+                <Button size="sm" variant="outline" onClick={() => { setOutstandingBalance(285); setPaymentState("suspended"); }}>
                   Simulate suspension
                 </Button>
                 <Button size="sm" variant="outline" onClick={() => { setOutstandingBalance(0); setPaymentState("healthy"); }}>
@@ -599,11 +711,9 @@ const PaymentMethods = () => {
         open={manageOpen}
         onOpenChange={setManageOpen}
         nextServiceDate={nextDateStr}
+        current={membership}
         onCancelled={handleCancelled}
-        onPlanChanged={(plan) => {
-          setOverridePlan(plan);
-          setCancelled(false);
-        }}
+        onSaved={handlePlanSaved}
       />
 
       <PayNowModal
@@ -619,9 +729,9 @@ const PaymentMethods = () => {
         open={cancelOpen}
         onOpenChange={setCancelOpen}
         breakdown={{
-          servicesCompleted: usage.servicesCompleted,
-          serviceCharges: usage.estimatedCharges,
-          addOnsCharges: usage.addOnsTotal,
+          servicesCompleted: usage.visitsCompleted,
+          serviceCharges: basePrice + frequencyUpgradeCost,
+          addOnsCharges: addonsTotal,
           penalty: 0,
         }}
         onConfirmed={handleCancelled}

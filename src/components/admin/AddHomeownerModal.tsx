@@ -327,7 +327,7 @@ const AddHomeownerModal = ({ open, onClose, onCreate }: AddHomeownerModalProps) 
                           <button
                             type="button"
                             className={cn(
-                              "flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm text-left transition-colors hover:border-ring focus-visible:outline-none focus-visible:border-ring",
+                              "flex h-12 w-full items-center justify-between rounded-md border border-input bg-white px-3 py-2 text-base md:text-sm text-left transition-colors hover:border-ring focus-visible:outline-none focus-visible:border-primary",
                               !startDate && "text-muted-foreground"
                             )}
                           >
@@ -345,6 +345,11 @@ const AddHomeownerModal = ({ open, onClose, onCreate }: AddHomeownerModalProps) 
                           />
                         </PopoverContent>
                       </Popover>
+                      {nextServiceDate && (
+                        <p className="text-xs text-muted-foreground mt-1.5">
+                          Next service: {format(nextServiceDate, "PPP")}
+                        </p>
+                      )}
                     </div>
                     <div>
                       <Label className="mb-1.5 block">Arrival Window</Label>

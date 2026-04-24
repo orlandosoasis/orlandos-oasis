@@ -25,6 +25,7 @@ const TechnicianDashboard = () => {
   const navigate = useNavigate();
   const [services, setServices] = useState(createTechServices);
   const [rescheduleService, setRescheduleService] = useState<TechService | null>(null);
+  const [reportIssueOpen, setReportIssueOpen] = useState(false);
 
   const upcoming = services.filter((s) => s.status !== "completed");
   const completed = services.filter((s) => s.status === "completed");

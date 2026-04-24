@@ -124,7 +124,6 @@ const AddHomeownerModal = ({ open, onClose, onCreate }: AddHomeownerModalProps) 
 
   const handleCreate = () => {
     const fullAddress = [street, city, state, zip].filter(Boolean).join(", ");
-    const sizeStr = poolLength && poolWidth ? `${poolLength}x${poolWidth} ft` : "—";
     const newHomeowner: AdminHomeowner = {
       id: Date.now(),
       name: fullName,
@@ -133,13 +132,13 @@ const AddHomeownerModal = ({ open, onClose, onCreate }: AddHomeownerModalProps) 
       address: fullAddress || "—",
       plan: planLabel,
       startDate: startDate || new Date().toLocaleDateString("en-US", { month: "short", day: "2-digit", year: "numeric" }),
-      pools: [{ address: street || fullAddress || "—", size: sizeStr, technician: "Unassigned", nextService: startDate || "TBD" }],
+      pools: [{ address: street || fullAddress || "—", size: poolSizeLabel, technician: "Unassigned", nextService: startDate || "TBD" }],
       services: [],
       manuallyAdded: true,
       status: "Active",
       frequency: frequencyLabel,
-      paymentMethod: paymentOption === "offline" ? "Pays Offline" : paymentOption === "paid" ? "Marked as Paid" : "Card on File",
-      notes,
+      paymentMethod: paymentOption === "offline" ? "Pays Offline" : "Marked as Paid",
+      notes: poolNotes,
     };
     onCreate(newHomeowner);
     reset();

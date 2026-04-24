@@ -120,27 +120,40 @@ const PaymentMethods = () => {
   const nextDateStr = getNextBillingDate();
 
   const handleRemove = (id: string) => {
-    if (outstandingBalance > 0) {
+    // Block removing the last available card while a balance is owed
+    if (outstandingBalance > 0 && cards.length <= 1) {
       toast({
         title: "Cannot remove card",
-        description: "You must pay your outstanding balance before removing this card.",
+        description: "You must pay your outstanding balance before removing your last payment method.",
         variant: "destructive",
       });
       return;
     }
     const target = cards.find((c) => c.id === id);
     const remaining = cards.filter((c) => c.id !== id);
-    // If we removed the default and others exist, promote first
-    if (target?.isDefault && remaining.length > 0) {
+    // Promote a new default if the removed card was the default
+    if (target?.isDefault && remaining.length > 0 && !remaining.some((c) => c.isDefault)) {
       remaining[0] = { ...remaining[0], isDefault: true };
     }
     setCards(remaining);
-    toast({ title: "Card removed.", variant: "success" });
+    toast({
+      title: "Card removed.",
+      description: target?.isDefault && remaining.length > 0
+        ? `${remaining[0].brand} •••• ${remaining[0].last4} is now your default.`
+        : undefined,
+      variant: "success",
+    });
   };
 
   const handleSetDefault = (id: string) => {
+    const target = cards.find((c) => c.id === id);
+    if (!target || target.isDefault) return;
     setCards(cards.map((c) => ({ ...c, isDefault: c.id === id })));
-    toast({ title: "Default payment method updated.", variant: "success" });
+    toast({
+      title: "Default payment method updated.",
+      description: `${target.brand} •••• ${target.last4} will be used for future charges.`,
+      variant: "success",
+    });
   };
 
   const handleAdd = () => {

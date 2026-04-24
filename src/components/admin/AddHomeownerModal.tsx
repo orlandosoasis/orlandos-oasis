@@ -285,7 +285,7 @@ const AddHomeownerModal = ({ open, onClose, onCreate }: AddHomeownerModalProps) 
                     </Select>
                   </div>
                   <div>
-                    <Label className="mb-2 block">Add-ons</Label>
+                    <h3 className="text-lg font-semibold mb-2">Add-ons</h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                       {ADDONS.map(a => (
                         <label key={a.id} className="flex items-start gap-2 cursor-pointer p-2 rounded-md border border-input hover:bg-muted/50">

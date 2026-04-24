@@ -1,11 +1,12 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Calendar, Clock, MapPin, CheckCircle2, Droplets, CalendarClock, FileText, MessagesSquare } from "lucide-react";
+import { Calendar, Clock, MapPin, CheckCircle2, Droplets, CalendarClock, FileText, MessagesSquare, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
 import StatusBadge from "@/components/StatusBadge";
 import TechLayout from "@/components/technician/TechLayout";
 import TechRescheduleModal from "@/components/technician/TechRescheduleModal";
+import ReportRouteIssueModal, { type RouteService } from "@/components/ReportRouteIssueModal";
 import {
   createTechServices,
   getHomeowner,
@@ -24,6 +25,7 @@ const TechnicianDashboard = () => {
   const navigate = useNavigate();
   const [services, setServices] = useState(createTechServices);
   const [rescheduleService, setRescheduleService] = useState<TechService | null>(null);
+  const [reportIssueOpen, setReportIssueOpen] = useState(false);
 
   const upcoming = services.filter((s) => s.status !== "completed");
   const completed = services.filter((s) => s.status === "completed");
@@ -79,7 +81,17 @@ const TechnicianDashboard = () => {
 
       {/* Upcoming Services */}
       <div className="mb-8">
-        <h2 className="text-lg font-bold text-foreground mb-4">Upcoming Services</h2>
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-lg font-bold text-foreground">Upcoming Services</h2>
+          <Button
+            size="sm"
+            variant="outline"
+            className="gap-1.5 text-xs hover:text-primary hover:border-primary hover:bg-transparent"
+            onClick={() => setReportIssueOpen(true)}
+          >
+            <AlertCircle className="h-3.5 w-3.5" /> Report Issue
+          </Button>
+        </div>
         {groupedByMonth.length === 0 && (
           <div className="bg-card rounded-2xl p-8 text-center border border-border">
             <p className="text-muted-foreground">No upcoming services.</p>
@@ -166,6 +178,21 @@ const TechnicianDashboard = () => {
           onConfirm={handleReschedule}
         />
       )}
+
+      {/* Report Route Issue Modal */}
+      <ReportRouteIssueModal
+        open={reportIssueOpen}
+        onOpenChange={setReportIssueOpen}
+        role="technician"
+        services={
+          upcoming.slice(0, 6).map((s) => ({
+            id: s.id,
+            homeowner: getHomeowner(s.homeownerId)?.name || "Homeowner",
+            type: s.serviceType,
+            time: TIME_LABELS[s.timeWindow],
+          })) as RouteService[]
+        }
+      />
     </TechLayout>
   );
 };

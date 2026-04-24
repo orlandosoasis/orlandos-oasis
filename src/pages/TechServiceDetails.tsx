@@ -1,12 +1,13 @@
 import { useState, useRef, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { ArrowLeft, MapPin, Calendar, Clock, Send, CalendarClock, Play, CheckCircle2, MessagesSquare, Camera, FileText } from "lucide-react";
+import { ArrowLeft, MapPin, Calendar, Clock, Send, CalendarClock, Play, CheckCircle2, MessagesSquare, Camera, FileText, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import StatusBadge from "@/components/StatusBadge";
 import TechLayout from "@/components/technician/TechLayout";
 import TechRescheduleModal from "@/components/technician/TechRescheduleModal";
 import ServiceCompletionModal from "@/components/technician/ServiceCompletionModal";
+import ReportRouteIssueModal, { type RouteService } from "@/components/ReportRouteIssueModal";
 import {
   createTechServices,
   getHomeowner,
@@ -54,6 +55,7 @@ const TechServiceDetails = () => {
 
   const [showReschedule, setShowReschedule] = useState(false);
   const [showCompletion, setShowCompletion] = useState(false);
+  const [showReportIssue, setShowReportIssue] = useState(false);
   const [messages, setMessages] = useState<ChatMsg[]>([]);
   const [newMsg, setNewMsg] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -198,6 +200,18 @@ const TechServiceDetails = () => {
             </Button>
           </div>
         )}
+        {!isCompleted && (
+          <div className="mt-3 flex justify-center">
+            <button
+              type="button"
+              onClick={() => setShowReportIssue(true)}
+              className="inline-flex items-center gap-1.5 text-xs font-medium text-muted-foreground hover:text-destructive transition-colors"
+            >
+              <AlertCircle className="h-3.5 w-3.5" />
+              Report an issue with this job
+            </button>
+          </div>
+        )}
       </div>
 
       {/* Completed info */}
@@ -305,6 +319,21 @@ const TechServiceDetails = () => {
         onOpenChange={setShowCompletion}
         homeownerName={homeowner.name}
         onSubmit={handleCompletionSubmit}
+      />
+
+      <ReportRouteIssueModal
+        open={showReportIssue}
+        onOpenChange={setShowReportIssue}
+        role="technician"
+        services={[
+          {
+            id: service.id,
+            homeowner: homeowner.name,
+            type: service.serviceType,
+            time: TIME_LABELS[service.timeWindow],
+          } as RouteService,
+        ]}
+        lockedServiceId={service.id}
       />
     </TechLayout>
   );

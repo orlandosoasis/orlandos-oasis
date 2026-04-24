@@ -18,6 +18,7 @@ import { useToast } from "@/hooks/use-toast";
 import oasisLogo from "@/assets/oo-logo.png";
 import AddHomeownerModal from "@/components/admin/AddHomeownerModal";
 import EditHomeownerModal from "@/components/admin/EditHomeownerModal";
+import ReportRouteIssueModal, { type RouteService } from "@/components/ReportRouteIssueModal";
 import {
   INIT_TECHNICIANS, ADMIN_HOMEOWNERS, ADMIN_ISSUES, INIT_APPLICANTS,
   type AdminTechnician, type AdminApplicant, type AdminApplicantCert, type AdminIssue, type AdminTechReview, type ReviewStatus, type ReviewRejectionReason, type AdminHomeowner,
@@ -88,10 +89,7 @@ const AdminDashboard = () => {
   const [reviewDetailModal, setReviewDetailModal] = useState<AdminTechReview | null>(null);
 
   const [certModalData, setCertModalData] = useState<{ name: string; certs: AdminApplicantCert[] } | null>(null);
-  const [announcementOpen, setAnnouncementOpen] = useState(false);
-  const [announcementTitle, setAnnouncementTitle] = useState("");
-  const [announcementMessage, setAnnouncementMessage] = useState("");
-  const [announcementSent, setAnnouncementSent] = useState(false);
+  const [reportIssueOpen, setReportIssueOpen] = useState(false);
 
   const [rejectionEmailApplicant, setRejectionEmailApplicant] = useState<AdminApplicant | null>(null);
   const [rejectionEmailSubject, setRejectionEmailSubject] = useState("");
@@ -263,8 +261,8 @@ const AdminDashboard = () => {
           <Card>
              <CardHeader className="pb-3 flex flex-row items-center justify-between">
               <CardTitle className="text-sm font-bold">Services Today</CardTitle>
-              <Button size="sm" variant="outline" className="gap-1.5 text-xs" onClick={() => { setAnnouncementOpen(true); setAnnouncementTitle(""); setAnnouncementMessage(""); setAnnouncementSent(false); }}>
-                <Megaphone className="h-3.5 w-3.5" /> Create Announcement
+              <Button size="sm" variant="outline" className="gap-1.5 text-xs" onClick={() => setReportIssueOpen(true)}>
+                <AlertCircle className="h-3.5 w-3.5" /> Report Issue
               </Button>
             </CardHeader>
             <CardContent>
@@ -1051,63 +1049,21 @@ const AdminDashboard = () => {
         </DialogContent>
       </Dialog>
 
-      {/* Announcement Modal */}
-      <Dialog open={announcementOpen} onOpenChange={setAnnouncementOpen}>
-        <DialogContent className="pt-10">
-          <DialogHeader>
-            <DialogTitle>Create Service Announcement</DialogTitle>
-            <DialogDescription>
-              This announcement will be sent to all homeowners with services scheduled for today.
-            </DialogDescription>
-          </DialogHeader>
-          {announcementSent ? (
-            <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-4 text-sm text-emerald-700 font-medium text-center">
-              Announcement sent successfully. Homeowners scheduled for today have been notified.
-            </div>
-          ) : (
-            <div className="space-y-4">
-              <div className="space-y-2">
-                <label className="text-sm font-semibold text-foreground">Title</label>
-                <Input
-                  placeholder="e.g. Service Delay Notice"
-                  value={announcementTitle}
-                  onChange={(e) => setAnnouncementTitle(e.target.value)}
-                />
-              </div>
-              <div className="space-y-2">
-                <label className="text-sm font-semibold text-foreground">Reason / Message</label>
-                <Textarea
-                  placeholder='e.g. "Due to heavy rain this morning, some pool services scheduled today may arrive later than expected."'
-                  value={announcementMessage}
-                  onChange={(e) => setAnnouncementMessage(e.target.value)}
-                  rows={4}
-                />
-              </div>
-              <div className="bg-muted/50 rounded-lg p-3 text-xs text-muted-foreground">
-                <span className="font-semibold text-foreground">Affected Services:</span> All services scheduled for today will be included automatically.
-              </div>
-            </div>
-          )}
-          <DialogFooter>
-            {announcementSent ? (
-              <Button variant="outline" onClick={() => setAnnouncementOpen(false)}>Close</Button>
-            ) : (
-              <>
-                <Button variant="outline" onClick={() => setAnnouncementOpen(false)}>Cancel</Button>
-                <Button
-                  disabled={!announcementTitle.trim() || !announcementMessage.trim()}
-                  onClick={() => {
-                    setAnnouncementSent(true);
-                    toast({ variant: "default", title: "Announcement sent", description: "Homeowners scheduled for today have been notified." });
-                  }}
-                >
-                  <Megaphone className="h-4 w-4 mr-1.5" /> Send Announcement
-                </Button>
-              </>
-            )}
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      {/* Report Route Issue Modal */}
+      <ReportRouteIssueModal
+        open={reportIssueOpen}
+        onOpenChange={setReportIssueOpen}
+        role="admin"
+        services={homeowners.flatMap((h) =>
+          h.services.slice(0, 1).map((s, idx) => ({
+            id: `${h.id}-${idx}`,
+            homeowner: h.name,
+            type: s.type,
+            time: s.date,
+          }))
+        ) as RouteService[]}
+        technicians={technicians.map((t) => ({ id: t.id, name: t.name }))}
+      />
 
       <AddHomeownerModal
         open={addHomeownerOpen}

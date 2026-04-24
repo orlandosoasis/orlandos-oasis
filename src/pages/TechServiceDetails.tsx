@@ -200,6 +200,18 @@ const TechServiceDetails = () => {
             </Button>
           </div>
         )}
+        {!isCompleted && (
+          <div className="mt-3 flex justify-center">
+            <button
+              type="button"
+              onClick={() => setShowReportIssue(true)}
+              className="inline-flex items-center gap-1.5 text-xs font-medium text-muted-foreground hover:text-destructive transition-colors"
+            >
+              <AlertCircle className="h-3.5 w-3.5" />
+              Report an issue with this job
+            </button>
+          </div>
+        )}
       </div>
 
       {/* Completed info */}

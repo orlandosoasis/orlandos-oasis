@@ -59,6 +59,11 @@ export interface AdminHomeowner {
   startDate: string;
   pools: AdminHomeownerPool[];
   services: AdminHomeownerService[];
+  manuallyAdded?: boolean;
+  status?: "Active" | "Offline";
+  frequency?: string;
+  paymentMethod?: string;
+  notes?: string;
 }
 
 export interface AdminIssue {

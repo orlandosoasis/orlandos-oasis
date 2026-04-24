@@ -119,6 +119,25 @@ const PaymentMethods = () => {
   };
   const nextDateStr = getNextBillingDate();
 
+  /**
+   * Invariant: when the wallet is non-empty, exactly one card has isDefault=true.
+   * - If multiple are flagged, keep the first and clear the rest.
+   * - If none are flagged, promote the first card.
+   * - If empty, no-op.
+   * Every card mutation MUST go through this.
+   */
+  const normalizeDefault = (list: SavedCard[], preferredDefaultId?: string): SavedCard[] => {
+    if (list.length === 0) return list;
+    let chosenId = preferredDefaultId && list.some((c) => c.id === preferredDefaultId)
+      ? preferredDefaultId
+      : list.find((c) => c.isDefault)?.id ?? list[0].id;
+    return list.map((c) => ({ ...c, isDefault: c.id === chosenId }));
+  };
+
+  const commitCards = (next: SavedCard[], preferredDefaultId?: string) => {
+    setCards(normalizeDefault(next, preferredDefaultId));
+  };
+
   const handleRemove = (id: string) => {
     // Block removing the last available card while a balance is owed
     if (outstandingBalance > 0 && cards.length <= 1) {
@@ -131,15 +150,12 @@ const PaymentMethods = () => {
     }
     const target = cards.find((c) => c.id === id);
     const remaining = cards.filter((c) => c.id !== id);
-    // Promote a new default if the removed card was the default
-    if (target?.isDefault && remaining.length > 0 && !remaining.some((c) => c.isDefault)) {
-      remaining[0] = { ...remaining[0], isDefault: true };
-    }
-    setCards(remaining);
+    commitCards(remaining);
+    const newDefault = remaining.find((c) => c.id !== id && (c.isDefault || remaining.indexOf(c) === 0));
     toast({
       title: "Card removed.",
-      description: target?.isDefault && remaining.length > 0
-        ? `${remaining[0].brand} •••• ${remaining[0].last4} is now your default.`
+      description: target?.isDefault && newDefault
+        ? `${newDefault.brand} •••• ${newDefault.last4} is now your default.`
         : undefined,
       variant: "success",
     });
@@ -148,7 +164,7 @@ const PaymentMethods = () => {
   const handleSetDefault = (id: string) => {
     const target = cards.find((c) => c.id === id);
     if (!target || target.isDefault) return;
-    setCards(cards.map((c) => ({ ...c, isDefault: c.id === id })));
+    commitCards(cards, id);
     toast({
       title: "Default payment method updated.",
       description: `${target.brand} •••• ${target.last4} will be used for future charges.`,
@@ -159,11 +175,14 @@ const PaymentMethods = () => {
   const handleAdd = () => {
     if (!newCard.number || !newCard.expiry) return;
     const last4 = newCard.number.replace(/\s/g, "").slice(-4);
+    const newId = `card-${Date.now()}`;
     const isFirst = cards.length === 0;
-    setCards([
+    const next: SavedCard[] = [
       ...cards,
-      { id: `card-${Date.now()}`, last4, brand: "Card", expiry: newCard.expiry, isDefault: isFirst },
-    ]);
+      { id: newId, last4, brand: "Card", expiry: newCard.expiry, isDefault: false },
+    ];
+    // Promote the new card to default only when it's the first one in the wallet
+    commitCards(next, isFirst ? newId : undefined);
     setNewCard({ number: "", expiry: "", cvc: "" });
     setShowAdd(false);
     toast({ title: "Card added.", variant: "success" });

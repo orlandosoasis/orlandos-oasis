@@ -477,7 +477,7 @@ const AddHomeownerModal = ({ open, onClose, onCreate }: AddHomeownerModalProps) 
             {step < 4 ? (
               <Button onClick={next}>Next</Button>
             ) : (
-              <Button onClick={handleCreate} className="gap-1.5"><Check className="h-4 w-4" /> Create Homeowner</Button>
+              <Button onClick={handleCreate}>Add Homeowner</Button>
             )}
           </div>
         </div>

@@ -126,6 +126,15 @@ const AddHomeownerModal = ({ open, onClose, onCreate }: AddHomeownerModalProps) 
   const planLabel = poolSize ? `${poolSizeLabel} · ${frequencyLabel}` : "—";
   const addonTitles = ADDONS.filter(a => selectedAddons.includes(a.id)).map(a => a.title);
 
+  const nextServiceDate = (() => {
+    if (!startDate) return null;
+    const base = new Date(startDate);
+    if (isNaN(base.getTime())) return null;
+    const daysToAdd = frequency === "twice-weekly" ? 3 : frequency === "three-weekly" ? 2 : 7;
+    base.setDate(base.getDate() + daysToAdd);
+    return base;
+  })();
+
   const handleCreate = () => {
     const fullAddress = [street, city, state, zip].filter(Boolean).join(", ");
     const newHomeowner: AdminHomeowner = {

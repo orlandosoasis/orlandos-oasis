@@ -182,7 +182,7 @@ const AddHomeownerModal = ({ open, onClose, onCreate }: AddHomeownerModalProps) 
 
   return (
     <Dialog open={open} onOpenChange={(o) => !o && handleClose()}>
-      <DialogContent className="sm:max-w-[760px] max-h-[90vh] overflow-y-auto pt-10">
+      <DialogContent className="sm:max-w-[760px] max-h-[90vh] overflow-y-auto pt-10 bg-white">
         <div>
           <h2 className="text-lg font-semibold mb-1">Add Homeowner</h2>
           <p className="text-sm text-muted-foreground mb-6">Manually add a homeowner to the platform.</p>

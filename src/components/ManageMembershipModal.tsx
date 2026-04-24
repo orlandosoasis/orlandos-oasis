@@ -375,23 +375,6 @@ const ManageMembershipModal = ({
                 </div>
               )}
             </section>
-
-            <Separator />
-
-            {/* Cancel Membership */}
-            <section className="space-y-2">
-              <h3 className="text-[15px] font-semibold text-foreground">Cancel Membership</h3>
-              <p className="text-sm text-muted-foreground">
-                Cancel your membership and stop future recurring cleanings.
-              </p>
-              <Button
-                variant="outline"
-                className="w-full text-destructive border-destructive/30 hover:bg-destructive hover:text-destructive-foreground hover:border-transparent"
-                onClick={() => setShowCancelModal(true)}
-              >
-                Cancel Membership
-              </Button>
-            </section>
           </div>
 
           {/* ===== Sticky Footer: Updated Total ===== */}

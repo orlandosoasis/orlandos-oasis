@@ -58,7 +58,7 @@ const TIME_WINDOW_SHORT: Record<string, string> = {
   evening: "Evening",
 };
 
-const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+
 
 const AddHomeownerModal = ({ open, onClose, onCreate }: AddHomeownerModalProps) => {
   const [step, setStep] = useState(1);

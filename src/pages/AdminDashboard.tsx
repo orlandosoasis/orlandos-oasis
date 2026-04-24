@@ -261,8 +261,8 @@ const AdminDashboard = () => {
           <Card>
              <CardHeader className="pb-3 flex flex-row items-center justify-between">
               <CardTitle className="text-sm font-bold">Services Today</CardTitle>
-              <Button size="sm" variant="outline" className="gap-1.5 text-xs" onClick={() => { setAnnouncementOpen(true); setAnnouncementTitle(""); setAnnouncementMessage(""); setAnnouncementSent(false); }}>
-                <Megaphone className="h-3.5 w-3.5" /> Create Announcement
+              <Button size="sm" variant="outline" className="gap-1.5 text-xs" onClick={() => setReportIssueOpen(true)}>
+                <AlertCircle className="h-3.5 w-3.5" /> Report Issue
               </Button>
             </CardHeader>
             <CardContent>

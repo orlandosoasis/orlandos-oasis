@@ -459,6 +459,12 @@ const AdminDashboard = () => {
           <ChevronLeft className="h-4 w-4" /> Back to Homeowners
         </button>
 
+        {homeownerEditSuccess && (
+          <div className="flex items-center gap-2 px-4 py-3 rounded-md border border-emerald-200 bg-emerald-50 text-emerald-700 text-sm font-medium">
+            <Check className="h-4 w-4" /> Changes saved successfully
+          </div>
+        )}
+
         {/* Header */}
         <Card>
           <CardContent className="p-5">

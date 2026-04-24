@@ -81,7 +81,17 @@ const TechnicianDashboard = () => {
 
       {/* Upcoming Services */}
       <div className="mb-8">
-        <h2 className="text-lg font-bold text-foreground mb-4">Upcoming Services</h2>
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-lg font-bold text-foreground">Upcoming Services</h2>
+          <Button
+            size="sm"
+            variant="outline"
+            className="gap-1.5 text-xs hover:text-primary hover:border-primary hover:bg-transparent"
+            onClick={() => setReportIssueOpen(true)}
+          >
+            <AlertCircle className="h-3.5 w-3.5" /> Report Issue
+          </Button>
+        </div>
         {groupedByMonth.length === 0 && (
           <div className="bg-card rounded-2xl p-8 text-center border border-border">
             <p className="text-muted-foreground">No upcoming services.</p>

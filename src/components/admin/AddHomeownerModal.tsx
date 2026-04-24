@@ -380,7 +380,7 @@ const AddHomeownerModal = ({ open, onClose, onCreate }: AddHomeownerModalProps) 
                       <h4 className="text-sm font-semibold">Pool & Plan</h4>
                     </div>
                     <div className="text-sm space-y-1 text-muted-foreground">
-                      <div>{poolSizeLabel} • {poolLength && poolWidth ? `${poolLength}×${poolWidth} ft` : "—"}</div>
+                      <div>{poolSizeLabel}</div>
                       <div><span className="text-foreground font-medium">{frequencyLabel}</span></div>
                       <div className="text-xs">Add-ons: {addonTitles.length > 0 ? addonTitles.join(", ") : "None"}</div>
                     </div>

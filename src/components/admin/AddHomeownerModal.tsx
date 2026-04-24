@@ -236,15 +236,6 @@ const AddHomeownerModal = ({ open, onClose, onCreate }: AddHomeownerModalProps) 
                 </div>
               </div>
 
-              <div>
-                <SectionTitle>Notes</SectionTitle>
-                <Textarea
-                  value={notes}
-                  onChange={e => setNotes(e.target.value)}
-                  placeholder="Existing customer notes (gate code, preferences, etc.)"
-                  rows={3}
-                />
-              </div>
             </div>
           )}
 

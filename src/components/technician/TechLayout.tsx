@@ -26,7 +26,6 @@ import { useState, useEffect, ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
 const NAV_ITEMS = [
-  { label: "Dashboard", path: "/tech-dashboard", icon: LayoutDashboard },
   { label: "Jobs", path: "/tech/jobs", icon: Briefcase },
   { label: "Pools", path: "/tech/pools", icon: Droplets },
   { label: "Schedule", path: "/tech/schedule", icon: CalendarDays },

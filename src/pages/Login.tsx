@@ -32,7 +32,7 @@ const Login = () => {
       // Route by role
       const normalizedEmail = email.toLowerCase().trim();
       if (normalizedEmail === "tech@example.com") {
-        navigate("/tech-dashboard");
+        navigate("/tech/jobs", { replace: true });
       } else if (normalizedEmail === "admin@example.com") {
         navigate("/admin-dashboard");
       } else {

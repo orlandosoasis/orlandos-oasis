@@ -21,6 +21,10 @@ import {
 const MONTH_NAMES = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
 const TechnicianDashboard = () => {
+  // Strict default: technicians always land on Jobs tab
+  return <Navigate to="/tech/jobs" replace />;
+
+  // eslint-disable-next-line no-unreachable
   const { user } = useAuth();
   const navigate = useNavigate();
   const [services, setServices] = useState(createTechServices);

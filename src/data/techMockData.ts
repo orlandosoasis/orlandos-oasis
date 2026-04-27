@@ -186,6 +186,31 @@ export function createTechServices(): TechService[] {
       timeWindow: "evening",
       status: "scheduled",
     },
+    // Extra "today" jobs (Mar 18, 2026) so the Jobs tab demo shows realistic counts
+    {
+      id: "svc-7",
+      poolId: "pool-2",
+      homeownerId: "ho-2",
+      serviceType: "1-Hour Pool Service",
+      hours: 1,
+      date: new Date(2026, 2, 18),
+      timeWindow: "afternoon",
+      status: "scheduled",
+    },
+    {
+      id: "svc-8",
+      poolId: "pool-3",
+      homeownerId: "ho-3",
+      serviceType: "3-Hour Pool Service",
+      hours: 3,
+      date: new Date(2026, 2, 18),
+      timeWindow: "morning",
+      status: "completed",
+      completedTasks: SERVICE_TASKS,
+      techNotes: "Routine service complete. All chemistry within range.",
+      startedAt: "8:10 AM",
+      completedAt: "11:05 AM",
+    },
   ];
 }
 

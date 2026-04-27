@@ -157,8 +157,14 @@ const TechJobDetail = () => {
       setJobStatus(service.id, "completed", { completedAt });
       setCompleting(false);
       setConfirmOpen(false);
-      toast({ title: "Service completed", description: "Job moved to Completed list." });
-      navigate("/tech/jobs");
+      navigate("/tech/jobs", {
+        state: {
+          completedBanner: {
+            homeownerName: homeowner.name,
+            completedAt,
+          },
+        },
+      });
     }, 400);
   };
 
@@ -332,20 +338,23 @@ const TechJobDetail = () => {
       <AlertDialog open={confirmOpen} onOpenChange={setConfirmOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Complete Service?</AlertDialogTitle>
+            <AlertDialogTitle>Mark this service as complete?</AlertDialogTitle>
             <AlertDialogDescription>
-              Make sure all work is finished and photos are uploaded.
+              Confirm that all tasks are done and before/after photos are uploaded.
+              The homeowner will be notified and the job will move to your Completed list.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel disabled={completing}>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={handleConfirmComplete} disabled={completing}>
+            <AlertDialogCancel disabled={completing}>Not yet</AlertDialogCancel>
+            <AlertDialogAction onClick={handleConfirmComplete} disabled={completing} className="gap-1.5">
               {completing ? (
                 <>
-                  <Loader2 className="h-4 w-4 mr-1.5 animate-spin" /> Completing…
+                  <Loader2 className="h-4 w-4 animate-spin" /> Completing…
                 </>
               ) : (
-                "Confirm"
+                <>
+                  <CheckCircle2 className="h-4 w-4" /> Yes, complete service
+                </>
               )}
             </AlertDialogAction>
           </AlertDialogFooter>

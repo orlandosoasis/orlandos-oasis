@@ -43,6 +43,8 @@ import TechPoolDetails from "./pages/TechPoolDetails";
 import TechServiceDetails from "./pages/TechServiceDetails";
 import TechSchedule from "./pages/TechSchedule";
 import TechCompletedServices from "./pages/TechCompletedServices";
+import TechJobs from "./pages/TechJobs";
+import TechJobDetail from "./pages/TechJobDetail";
 import TechMessages from "./pages/TechMessages";
 import AdminDashboard from "./pages/AdminDashboard";
 import Contact from "./pages/Contact";
@@ -99,6 +101,8 @@ const App = () => (
             <Route path="/tech/service/:serviceId" element={<TechServiceDetails />} />
             <Route path="/tech/schedule" element={<TechSchedule />} />
             <Route path="/tech/completed" element={<TechCompletedServices />} />
+            <Route path="/tech/jobs" element={<TechJobs />} />
+            <Route path="/tech/jobs/:serviceId" element={<TechJobDetail />} />
             <Route path="/tech/messages" element={<TechMessages />} />
             <Route path="/admin-dashboard" element={<AdminDashboard />} />
             <Route path="/contact" element={<Contact />} />

@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import {
   LayoutDashboard,
+  Briefcase,
   Droplets,
   CalendarDays,
   MessagesSquare,
@@ -26,6 +27,7 @@ import { cn } from "@/lib/utils";
 
 const NAV_ITEMS = [
   { label: "Dashboard", path: "/tech-dashboard", icon: LayoutDashboard },
+  { label: "Jobs", path: "/tech/jobs", icon: Briefcase },
   { label: "Pools", path: "/tech/pools", icon: Droplets },
   { label: "Schedule", path: "/tech/schedule", icon: CalendarDays },
   { label: "Messages", path: "/tech/messages", icon: MessagesSquare },

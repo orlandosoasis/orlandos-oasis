@@ -180,8 +180,8 @@ const TechJobs = () => {
       </div>
 
       {/* Sticky tabs */}
-      <div className="sticky top-[60px] z-10 -mx-5 px-5 bg-background/95 backdrop-blur border-b border-border mb-4">
-        <div role="tablist" className="flex gap-1">
+      <div className="sticky top-[60px] z-10 -mx-5 bg-background/95 backdrop-blur border-b border-border mb-4">
+        <div role="tablist" className="grid grid-cols-2">
           <TabButton
             active={tab === "active"}
             onClick={() => setTab("active")}
@@ -324,7 +324,7 @@ const TabButton = ({
     aria-selected={active}
     onClick={onClick}
     className={cn(
-      "relative flex items-center gap-2 px-4 py-3 text-sm font-semibold transition-colors",
+      "relative w-full flex items-center justify-center gap-2 px-4 py-3 text-sm font-semibold transition-colors",
       active
         ? "text-primary"
         : "text-muted-foreground hover:text-foreground"

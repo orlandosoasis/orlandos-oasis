@@ -1,6 +1,15 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { Calendar, Clock, MapPin, Play, CheckCircle2, ArrowRight, X } from "lucide-react";
+import {
+  Calendar,
+  Clock,
+  MapPin,
+  Play,
+  CheckCircle2,
+  ArrowRight,
+  X,
+  Flame,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import StatusBadge from "@/components/StatusBadge";
 import TechLayout from "@/components/technician/TechLayout";
@@ -10,17 +19,31 @@ import {
   getPoolFullAddress,
   formatDateShort,
   TIME_LABELS,
+  SHORT_MONTHS,
   type TechService,
 } from "@/data/techMockData";
 import { getJobs, subscribe, setJobStatus } from "@/data/techJobsStore";
+import { cn } from "@/lib/utils";
 
 type CompletedBanner = { homeownerName: string; completedAt: string };
+type TabKey = "active" | "completed";
+type CompletedScope = "today" | "all";
+
+function isSameDay(a: Date, b: Date) {
+  return (
+    a.getFullYear() === b.getFullYear() &&
+    a.getMonth() === b.getMonth() &&
+    a.getDate() === b.getDate()
+  );
+}
 
 const TechJobs = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [, setTick] = useState(0);
   const [banner, setBanner] = useState<CompletedBanner | null>(null);
+  const [tab, setTab] = useState<TabKey>("active");
+  const [completedScope, setCompletedScope] = useState<CompletedScope>("today");
 
   useEffect(() => subscribe(() => setTick((t) => t + 1)), []);
 
@@ -35,15 +58,74 @@ const TechJobs = () => {
     }
   }, [location.state]);
 
+  // Demo: pin "today" to the date used in the seed data so counts aren't always zero.
+  // Swap to `new Date()` once jobs are date-driven by a real backend.
+  const today = useMemo(() => new Date(2026, 2, 18), []);
+
   const jobs = getJobs();
-  const active = jobs.filter((j) => j.status !== "completed").sort((a, b) => a.date.getTime() - b.date.getTime());
-  const completed = jobs.filter((j) => j.status === "completed").sort((a, b) => b.date.getTime() - a.date.getTime());
+
+  const todayActive = useMemo(
+    () =>
+      jobs
+        .filter(
+          (j) =>
+            (j.status === "scheduled" || j.status === "in_progress") &&
+            isSameDay(j.date, today)
+        )
+        .sort((a, b) => a.date.getTime() - b.date.getTime()),
+    [jobs, today]
+  );
+
+  const todayCompleted = useMemo(
+    () => jobs.filter((j) => j.status === "completed" && isSameDay(j.date, today)),
+    [jobs, today]
+  );
+
+  const allCompleted = useMemo(
+    () =>
+      jobs
+        .filter((j) => j.status === "completed")
+        .sort((a, b) => b.date.getTime() - a.date.getTime()),
+    [jobs]
+  );
+
+  const activeCount = todayActive.length;
+  const completedCount = todayCompleted.length;
+
+  // Identify the priority job: nearest upcoming today (first in sorted active)
+  const priorityId = todayActive[0]?.id;
 
   const handleStart = (svc: TechService) => {
-    const now = new Date().toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit", hour12: true });
+    const now = new Date().toLocaleTimeString("en-US", {
+      hour: "numeric",
+      minute: "2-digit",
+      hour12: true,
+    });
     setJobStatus(svc.id, "in_progress", { startedAt: now });
     navigate(`/tech/jobs/${svc.id}`);
   };
+
+  const completedList = completedScope === "today" ? todayCompleted : allCompleted;
+
+  // Group all-time completed by Month Year
+  const groupedCompleted = useMemo(() => {
+    if (completedScope !== "all") return null;
+    const map = new Map<string, TechService[]>();
+    completedList.forEach((svc) => {
+      const key = `${svc.date.getFullYear()}-${svc.date.getMonth()}`;
+      const arr = map.get(key) || [];
+      arr.push(svc);
+      map.set(key, arr);
+    });
+    return Array.from(map.entries()).map(([key, items]) => {
+      const [y, m] = key.split("-").map(Number);
+      return {
+        key,
+        label: `${SHORT_MONTHS[m]} ${y}`,
+        items,
+      };
+    });
+  }, [completedScope, completedList]);
 
   return (
     <TechLayout>
@@ -54,9 +136,12 @@ const TechJobs = () => {
         >
           <CheckCircle2 className="h-5 w-5 text-green-600 shrink-0 mt-0.5" />
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-semibold text-green-900">Service completed successfully</p>
+            <p className="text-sm font-semibold text-green-900">
+              Service completed successfully
+            </p>
             <p className="text-xs text-green-800/80 mt-0.5">
-              {banner.homeownerName}'s job was marked complete at {banner.completedAt}. The homeowner has been notified.
+              {banner.homeownerName}'s job was marked complete at {banner.completedAt}.
+              The homeowner has been notified.
             </p>
           </div>
           <button
@@ -69,87 +154,252 @@ const TechJobs = () => {
         </div>
       )}
 
-      <div className="mb-6">
+      {/* Header */}
+      <div className="mb-4">
         <h1 className="text-2xl font-bold text-foreground">Jobs</h1>
-        <p className="text-muted-foreground text-sm mt-1">Start, track, and complete your service jobs</p>
+        <p className="text-muted-foreground text-sm mt-1">
+          Start, track, and complete your service jobs
+        </p>
       </div>
 
-      {/* Active */}
-      <section className="mb-8">
-        <h2 className="text-lg font-bold text-foreground mb-3">Active</h2>
-        {active.length === 0 ? (
-          <div className="bg-card rounded-2xl p-8 text-center border border-border">
-            <p className="text-muted-foreground">No active jobs.</p>
-          </div>
-        ) : (
-          <div className="space-y-3">
-            {active.map((svc) => (
-              <JobCard
-                key={svc.id}
-                svc={svc}
-                primary={
-                  svc.status === "in_progress" ? (
-                    <Button className="flex-1 gap-1.5" onClick={() => navigate(`/tech/jobs/${svc.id}`)}>
-                      Resume <ArrowRight className="h-4 w-4" />
-                    </Button>
-                  ) : (
-                    <Button className="flex-1 gap-1.5" onClick={() => handleStart(svc)}>
-                      <Play className="h-4 w-4" /> Start Service
-                    </Button>
-                  )
-                }
-                onView={() => navigate(`/tech/jobs/${svc.id}`)}
-              />
-            ))}
-          </div>
-        )}
-      </section>
+      {/* Today Summary */}
+      <div className="mb-4 bg-card rounded-2xl border border-border p-4 shadow-sm">
+        <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
+          Today's Jobs
+        </p>
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-primary/10 text-primary text-xs font-semibold">
+            <span className="h-1.5 w-1.5 rounded-full bg-primary" />
+            {activeCount} Active
+          </span>
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-green-100 text-green-800 text-xs font-semibold">
+            <CheckCircle2 className="h-3 w-3" />
+            {completedCount} Completed
+          </span>
+        </div>
+      </div>
 
-      {/* Completed */}
-      <section>
-        <h2 className="text-lg font-bold text-foreground mb-3">Completed</h2>
-        {completed.length === 0 ? (
-          <div className="bg-card rounded-2xl p-8 text-center border border-border">
-            <p className="text-muted-foreground">No completed jobs yet.</p>
+      {/* Sticky tabs */}
+      <div className="sticky top-[60px] z-10 -mx-5 px-5 bg-background/95 backdrop-blur border-b border-border mb-4">
+        <div role="tablist" className="flex gap-1">
+          <TabButton
+            active={tab === "active"}
+            onClick={() => setTab("active")}
+            label="Active"
+            count={activeCount}
+          />
+          <TabButton
+            active={tab === "completed"}
+            onClick={() => setTab("completed")}
+            label="Completed"
+            count={completedCount}
+          />
+        </div>
+      </div>
+
+      {/* Active tab */}
+      {tab === "active" && (
+        <section>
+          {todayActive.length === 0 ? (
+            <EmptyState message="No active jobs for today." />
+          ) : (
+            <div className="space-y-3">
+              {todayActive.map((svc) => (
+                <JobCard
+                  key={svc.id}
+                  svc={svc}
+                  isPriority={svc.id === priorityId}
+                  primary={
+                    svc.status === "in_progress" ? (
+                      <Button
+                        className="flex-1 gap-1.5"
+                        onClick={() => navigate(`/tech/jobs/${svc.id}`)}
+                      >
+                        Resume <ArrowRight className="h-4 w-4" />
+                      </Button>
+                    ) : (
+                      <Button className="flex-1 gap-1.5" onClick={() => handleStart(svc)}>
+                        <Play className="h-4 w-4" /> Start Service
+                      </Button>
+                    )
+                  }
+                  onView={() => navigate(`/tech/jobs/${svc.id}`)}
+                />
+              ))}
+            </div>
+          )}
+        </section>
+      )}
+
+      {/* Completed tab */}
+      {tab === "completed" && (
+        <section>
+          {/* Scope toggle */}
+          <div className="inline-flex items-center rounded-xl bg-muted p-1 mb-4">
+            <ScopeButton
+              active={completedScope === "today"}
+              onClick={() => setCompletedScope("today")}
+              label="Today"
+            />
+            <ScopeButton
+              active={completedScope === "all"}
+              onClick={() => setCompletedScope("all")}
+              label="All Time"
+            />
           </div>
-        ) : (
-          <div className="space-y-3">
-            {completed.map((svc) => (
-              <JobCard
-                key={svc.id}
-                svc={svc}
-                primary={
-                  <Button
-                    variant="outline"
-                    className="flex-1 gap-1.5 hover:text-primary hover:border-primary hover:bg-transparent"
-                    onClick={() => navigate(`/tech/service/${svc.id}`)}
-                  >
-                    <CheckCircle2 className="h-4 w-4" /> View Report
-                  </Button>
-                }
-              />
-            ))}
-          </div>
-        )}
-      </section>
+
+          {completedList.length === 0 ? (
+            <EmptyState
+              message={
+                completedScope === "today"
+                  ? "No completed jobs today yet."
+                  : "No completed jobs yet."
+              }
+            />
+          ) : completedScope === "today" ? (
+            <div className="space-y-3">
+              {completedList.map((svc) => (
+                <JobCard
+                  key={svc.id}
+                  svc={svc}
+                  primary={
+                    <Button
+                      variant="outline"
+                      className="flex-1 gap-1.5 hover:text-primary hover:border-primary hover:bg-transparent"
+                      onClick={() => navigate(`/tech/service/${svc.id}`)}
+                    >
+                      <CheckCircle2 className="h-4 w-4" /> View Report
+                    </Button>
+                  }
+                />
+              ))}
+            </div>
+          ) : (
+            <div className="space-y-6">
+              {groupedCompleted?.map((group) => (
+                <div key={group.key}>
+                  <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2 px-1">
+                    {group.label}
+                  </h3>
+                  <div className="space-y-3">
+                    {group.items.map((svc) => (
+                      <JobCard
+                        key={svc.id}
+                        svc={svc}
+                        primary={
+                          <Button
+                            variant="outline"
+                            className="flex-1 gap-1.5 hover:text-primary hover:border-primary hover:bg-transparent"
+                            onClick={() => navigate(`/tech/service/${svc.id}`)}
+                          >
+                            <CheckCircle2 className="h-4 w-4" /> View Report
+                          </Button>
+                        }
+                      />
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </section>
+      )}
     </TechLayout>
   );
 };
+
+const TabButton = ({
+  active,
+  onClick,
+  label,
+  count,
+}: {
+  active: boolean;
+  onClick: () => void;
+  label: string;
+  count: number;
+}) => (
+  <button
+    role="tab"
+    aria-selected={active}
+    onClick={onClick}
+    className={cn(
+      "relative flex items-center gap-2 px-4 py-3 text-sm font-semibold transition-colors",
+      active
+        ? "text-primary"
+        : "text-muted-foreground hover:text-foreground"
+    )}
+  >
+    {label}
+    <span
+      className={cn(
+        "inline-flex items-center justify-center min-w-[22px] h-[22px] px-1.5 rounded-full text-[11px] font-bold",
+        active ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"
+      )}
+    >
+      {count}
+    </span>
+    {active && (
+      <span className="absolute left-0 right-0 -bottom-px h-0.5 bg-primary rounded-full" />
+    )}
+  </button>
+);
+
+const ScopeButton = ({
+  active,
+  onClick,
+  label,
+}: {
+  active: boolean;
+  onClick: () => void;
+  label: string;
+}) => (
+  <button
+    onClick={onClick}
+    className={cn(
+      "px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all",
+      active
+        ? "bg-card text-foreground shadow-sm"
+        : "text-muted-foreground hover:text-foreground"
+    )}
+  >
+    {label}
+  </button>
+);
+
+const EmptyState = ({ message }: { message: string }) => (
+  <div className="bg-card rounded-2xl p-8 text-center border border-border">
+    <p className="text-muted-foreground">{message}</p>
+  </div>
+);
 
 const JobCard = ({
   svc,
   primary,
   onView,
+  isPriority = false,
 }: {
   svc: TechService;
   primary: React.ReactNode;
   onView?: () => void;
+  isPriority?: boolean;
 }) => {
   const ho = getHomeowner(svc.homeownerId);
   const pool = getPool(svc.poolId);
   if (!ho || !pool) return null;
   return (
-    <div className="bg-card rounded-2xl border border-border p-5 shadow-sm">
+    <div
+      className={cn(
+        "bg-card rounded-2xl border p-5 shadow-sm transition-all",
+        isPriority ? "border-primary/40 ring-1 ring-primary/20" : "border-border"
+      )}
+    >
+      {isPriority && (
+        <div className="flex items-center gap-1.5 mb-3 text-[11px] font-bold uppercase tracking-wider text-primary">
+          <Flame className="h-3.5 w-3.5" />
+          Up Next
+        </div>
+      )}
       <div className="flex items-start justify-between mb-3">
         <div>
           <p className="font-semibold text-foreground">{ho.name}</p>

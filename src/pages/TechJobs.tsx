@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { Calendar, Clock, MapPin, Play, CheckCircle2, ArrowRight } from "lucide-react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { Calendar, Clock, MapPin, Play, CheckCircle2, ArrowRight, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import StatusBadge from "@/components/StatusBadge";
 import TechLayout from "@/components/technician/TechLayout";
@@ -14,11 +14,26 @@ import {
 } from "@/data/techMockData";
 import { getJobs, subscribe, setJobStatus } from "@/data/techJobsStore";
 
+type CompletedBanner = { homeownerName: string; completedAt: string };
+
 const TechJobs = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [, setTick] = useState(0);
+  const [banner, setBanner] = useState<CompletedBanner | null>(null);
 
   useEffect(() => subscribe(() => setTick((t) => t + 1)), []);
+
+  // Pick up post-completion banner from navigation state, then clear it
+  useEffect(() => {
+    const state = location.state as { completedBanner?: CompletedBanner } | null;
+    if (state?.completedBanner) {
+      setBanner(state.completedBanner);
+      window.history.replaceState({}, "");
+      const t = setTimeout(() => setBanner(null), 6000);
+      return () => clearTimeout(t);
+    }
+  }, [location.state]);
 
   const jobs = getJobs();
   const active = jobs.filter((j) => j.status !== "completed").sort((a, b) => a.date.getTime() - b.date.getTime());
@@ -32,6 +47,28 @@ const TechJobs = () => {
 
   return (
     <TechLayout>
+      {banner && (
+        <div
+          role="status"
+          className="mb-5 flex items-start gap-3 rounded-2xl border border-green-200 bg-green-50 px-4 py-3 shadow-sm animate-fade-in"
+        >
+          <CheckCircle2 className="h-5 w-5 text-green-600 shrink-0 mt-0.5" />
+          <div className="flex-1 min-w-0">
+            <p className="text-sm font-semibold text-green-900">Service completed successfully</p>
+            <p className="text-xs text-green-800/80 mt-0.5">
+              {banner.homeownerName}'s job was marked complete at {banner.completedAt}. The homeowner has been notified.
+            </p>
+          </div>
+          <button
+            onClick={() => setBanner(null)}
+            className="text-green-700/70 hover:text-green-900 transition-colors shrink-0"
+            aria-label="Dismiss"
+          >
+            <X className="h-4 w-4" />
+          </button>
+        </div>
+      )}
+
       <div className="mb-6">
         <h1 className="text-2xl font-bold text-foreground">Jobs</h1>
         <p className="text-muted-foreground text-sm mt-1">Start, track, and complete your service jobs</p>

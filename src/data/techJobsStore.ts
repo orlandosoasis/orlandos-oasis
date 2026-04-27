@@ -11,9 +11,11 @@ export function getJobs() {
   return services;
 }
 
-export function subscribe(fn: Listener) {
+export function subscribe(fn: Listener): () => void {
   listeners.add(fn);
-  return () => listeners.delete(fn);
+  return () => {
+    listeners.delete(fn);
+  };
 }
 
 function emit() {

@@ -19,12 +19,12 @@ const Index = () => {
       <main className="flex-1">
         <HeroSection />
         <TopBanner />
-        <div id="step-indicator-portal" className="container max-w-6xl mx-auto px-4" />
+        <div id="step-indicator-portal" className="container max-w-6xl mx-auto px-4 md:px-6" />
         
         {/* Two-column layout: Reviews left, Pricing right */}
-        <section className="py-12 px-4 bg-white">
+        <section className="py-10 md:py-14 lg:py-16 px-4 md:px-6 bg-white">
           <div className="container max-w-6xl mx-auto">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8 items-start">
               {/* Reviews - second on mobile, left on desktop */}
               <div className="order-2 lg:order-1">
                 <ReviewsSection />
@@ -46,7 +46,7 @@ const Index = () => {
         <FAQSection />
 
         {/* The Fine Print */}
-        <section className="py-16 px-4 bg-white">
+        <section className="py-10 md:py-14 lg:py-16 px-4 md:px-6 bg-white">
           <div className="max-w-4xl mx-auto">
             <h4 className="text-lg font-semibold text-foreground mb-4 text-center">
               The Fine Print

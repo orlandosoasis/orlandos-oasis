@@ -181,11 +181,11 @@ h4 { font-weight: 600; font-size: 20px; line-height: 1.4; color: #111827; }
 small { font-size: 14px; font-weight: 400; }
 
 .section-title {
-  color: #111827;
+  color: #111827 !important;
 }
 
 .body-text {
-  color: #4B5563;
+  color: #4B5563 !important;
 }
 
 .hero-subtitle {

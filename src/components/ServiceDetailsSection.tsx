@@ -100,7 +100,7 @@ const ServiceDetailsSection = () => {
   };
 
   return (
-    <section className="py-10 md:py-14 lg:py-16 bg-background">
+    <section className="py-10 md:py-14 lg:py-16 bg-[#f2f2f8]">
       <div className="container max-w-4xl mx-auto px-4 md:px-6">
         {/* How to Choose the Right Service Pass */}
         <div className="mb-16">

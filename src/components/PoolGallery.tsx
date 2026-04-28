@@ -20,7 +20,7 @@ const PoolGallery = () => {
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
 
   return (
-    <section className="py-16 md:py-20 px-4 bg-navy">
+    <section className="py-10 md:py-14 lg:py-20 px-4 md:px-6 bg-navy">
       <div className="container max-w-6xl mx-auto">
         <div className="text-center mb-12">
           <span className="inline-flex items-center gap-1.5 bg-card/10 text-card text-xs font-bold tracking-widest uppercase px-3 py-1 rounded-full mb-3">

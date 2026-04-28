@@ -41,8 +41,8 @@ const SERVICES = [
 
 const AdditionalServicesSection = () => {
   return (
-    <section className="py-16 bg-white">
-      <div className="container max-w-6xl mx-auto px-4">
+    <section className="py-10 md:py-14 lg:py-16 bg-white">
+      <div className="container max-w-6xl mx-auto px-4 md:px-6">
         <div className="text-center mb-10">
           <h2 className="text-3xl font-extrabold text-navy mb-3">
             Additional Pool Services

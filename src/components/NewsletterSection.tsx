@@ -34,7 +34,7 @@ const NewsletterSection = () => {
   };
 
   return (
-    <section className="py-16 px-4 bg-navy">
+    <section className="py-10 md:py-14 lg:py-16 px-4 md:px-6 bg-navy">
       <div className="container max-w-2xl mx-auto text-center">
         {submitted ? (
           <div className="animate-fade-in space-y-4">

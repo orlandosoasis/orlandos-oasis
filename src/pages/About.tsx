@@ -49,7 +49,7 @@ const About = () => {
                     <CheckCircle2 className="h-5 w-5 text-trust" />
                   </div>
                   <div>
-                    <p className="text-sm font-semibold text-navy">Background-checked techs</p>
+                    <p className="text-sm font-semibold text-card-foreground">Background-checked techs</p>
                     <p className="text-xs font-semibold text-trust">Verified &amp; insured</p>
                   </div>
                 </div>

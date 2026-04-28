@@ -100,8 +100,8 @@ const ServiceDetailsSection = () => {
   };
 
   return (
-    <section className="py-16 bg-background">
-      <div className="container max-w-4xl mx-auto px-4">
+    <section className="py-10 md:py-14 lg:py-16 bg-background">
+      <div className="container max-w-4xl mx-auto px-4 md:px-6">
         {/* How to Choose the Right Service Pass */}
         <div className="mb-16">
           <h2 className="text-3xl font-extrabold text-navy tracking-tight mb-3 text-center">
@@ -141,8 +141,8 @@ const ServiceDetailsSection = () => {
       </div>
 
       {/* Why Orlando's Oasis - value proposition cards */}
-      <div className="py-16 text-gray-300">
-        <div className="container max-w-6xl mx-auto px-4">
+      <div className="py-10 md:py-14 lg:py-16 text-gray-300">
+        <div className="container max-w-6xl mx-auto px-4 md:px-6">
           <h2 className="text-3xl font-extrabold text-navy tracking-tight mb-10 text-center">
             Why Orlando's Oasis
           </h2>

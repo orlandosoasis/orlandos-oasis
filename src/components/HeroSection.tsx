@@ -79,9 +79,8 @@ const HeroSection = () => {
       <div className="relative z-10 h-full flex items-center justify-center px-4 md:px-6">
         <div className="max-w-3xl mx-auto text-center" style={{ textShadow: '0 2px 24px rgba(0,0,0,0.4)' }}>
           <h1 className="font-extrabold text-white leading-[1.05] md:leading-[0.95] tracking-tight text-4xl sm:text-5xl md:text-7xl lg:text-8xl">
-            <span>Crystal Clear Pools.</span>
-            <br />
-            <span>Zero Hassle.</span>
+            <span className="block md:whitespace-nowrap">Crystal Clear Pools.</span>
+            <span className="block">Zero Hassle.</span>
           </h1>
 
           <p

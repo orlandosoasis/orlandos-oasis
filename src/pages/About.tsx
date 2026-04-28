@@ -73,7 +73,7 @@ const About = () => {
         {/* Mission */}
         <section className="py-16 md:py-20 px-4 bg-muted text-center">
           <div className="container max-w-6xl mx-auto">
-            <h2 className="section-title max-w-[700px] mx-auto mb-4 text-3xl">
+            <h2 className="section-title max-w-[700px] mx-auto mb-4 text-3xl text-card-foreground">
               Dependable pool care that<br />removes stress from pool ownership
             </h2>
             <p className="body-text max-w-[660px] mx-auto mb-12">

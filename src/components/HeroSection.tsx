@@ -69,16 +69,24 @@ const HeroSection = () => {
         </div>
       </div>
 
-      {/* Centered headline with strikethrough accent */}
+      {/* Centered headline + supporting copy + CTA */}
       <div className="relative z-10 h-full flex items-center justify-center px-4">
-        <div className="max-w-6xl mx-auto text-center" style={{ textShadow: '0 2px 24px rgba(0,0,0,0.4)' }}>
+        <div className="max-w-3xl mx-auto text-center" style={{ textShadow: '0 2px 24px rgba(0,0,0,0.4)' }}>
           <h1 className="font-extrabold text-white leading-[0.95] tracking-tight text-5xl sm:text-6xl md:text-7xl lg:text-8xl">
             <span>Crystal Clear Pools.</span>
             <br />
             <span>Zero Hassle.</span>
           </h1>
 
-          <div className="mt-10 flex justify-center">
+          <p
+            className="mt-6 max-w-xl mx-auto text-sm md:text-base text-white/95 leading-relaxed"
+            style={{ textShadow: '0 1px 8px rgba(0,0,0,0.5)' }}
+          >
+            Professional pool maintenance across Tampa, Orlando &amp; Fort Lauderdale.
+            Weekly service, transparent reports, and pros you can trust.
+          </p>
+
+          <div className="mt-8 flex justify-center">
             <Button
               onClick={handleGetVoucher}
               className="h-12 px-8 rounded-full text-base font-semibold shadow-xl"
@@ -88,17 +96,6 @@ const HeroSection = () => {
             </Button>
           </div>
         </div>
-      </div>
-
-      {/* Bottom-left supporting copy */}
-      <div className="absolute left-0 right-0 bottom-8 md:bottom-12 z-10 px-6 md:px-12">
-        <p
-          className="max-w-md text-sm md:text-base text-white/95 leading-relaxed"
-          style={{ textShadow: '0 1px 8px rgba(0,0,0,0.5)' }}
-        >
-          Professional pool maintenance across Tampa, Orlando &amp; Fort Lauderdale.
-          Weekly service, transparent reports, and pros you can trust.
-        </p>
       </div>
     </section>
   );

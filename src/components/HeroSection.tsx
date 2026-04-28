@@ -2,7 +2,11 @@ import { Link } from "react-router-dom";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import logo from "@/assets/oo-logo.png";
-import heroVideo from "@/assets/hero-villa.mp4";
+import heroVideo1080 from "@/assets/hero-villa-1080p.mp4";
+import heroVideo720 from "@/assets/hero-villa-720p.mp4";
+import heroVideo480 from "@/assets/hero-villa-480p.mp4";
+import heroVideo720Webm from "@/assets/hero-villa-720p.webm";
+import heroPoster from "@/assets/hero-villa-poster.jpg";
 import MobileNavMenu from "@/components/MobileNavMenu";
 
 const NAV_ITEMS = [
@@ -25,19 +29,27 @@ const HeroSection = () => {
     <section className="relative w-full h-screen min-h-[640px] overflow-hidden bg-background">
       {/* Background Video — full bleed, on all viewports */}
       <video
-        src={heroVideo}
         autoPlay
         muted
         loop
         playsInline
         preload="auto"
+        poster={heroPoster}
         // @ts-expect-error - fetchpriority is a valid HTML attr not yet in React types
         fetchpriority="high"
         aria-hidden="true"
         onCanPlay={() => setVideoReady(true)}
         onPlaying={() => setVideoReady(true)}
         className={`absolute inset-0 w-full h-full object-cover object-center transition-opacity duration-500 ${videoReady ? "opacity-100" : "opacity-0"}`}
-      />
+      >
+        {/* Mobile: smallest file first for fastest start */}
+        <source src={heroVideo480} type="video/mp4" media="(max-width: 640px)" />
+        {/* Tablet: 720p WebM (VP9) preferred, MP4 fallback */}
+        <source src={heroVideo720Webm} type="video/webm" media="(max-width: 1280px)" />
+        <source src={heroVideo720} type="video/mp4" media="(max-width: 1280px)" />
+        {/* Desktop: 1080p */}
+        <source src={heroVideo1080} type="video/mp4" />
+      </video>
 
 
       {/* Subtle overlay for legibility */}

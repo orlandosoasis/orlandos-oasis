@@ -151,7 +151,7 @@ const ServiceConfigStep = ({ config, onConfigChange }: ServiceConfigStepProps) =
                 </div>
                 <p className={`text-sm font-bold shrink-0 tabular-nums text-right min-w-[90px] ${
                   freq.multiplier === 1
-                    ? "text-accent"
+                    ? "text-card-foreground"
                     : isSelected ? "text-primary" : "text-foreground"
                 }`}>
                   {freq.multiplier === 1

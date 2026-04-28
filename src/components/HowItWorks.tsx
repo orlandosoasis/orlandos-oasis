@@ -64,7 +64,7 @@ const HowItWorks = () => {
                 </div>
 
                 {/* Title */}
-                <h3 className="text-lg font-semibold text-navy mt-4 mb-2 md:text-lg">
+                <h3 className="text-lg font-semibold mt-4 mb-2 md:text-lg text-card-foreground">
                   {step.title}
                 </h3>
 

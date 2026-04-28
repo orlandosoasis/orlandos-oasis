@@ -83,7 +83,7 @@ const About = () => {
               {PILLARS.map((p) => (
                 <div key={p.title} className="bg-card transition-colors px-5 py-7 text-center">
                   <p.icon className="h-7 w-7 text-primary mx-auto mb-3" />
-                  <h3 className="text-sm font-semibold text-navy mb-1">{p.title}</h3>
+                  <h3 className="text-sm font-semibold text-card-foreground mb-1">{p.title}</h3>
                   <p className="text-[13px] text-muted-foreground leading-relaxed">{p.desc}</p>
                 </div>
               ))}

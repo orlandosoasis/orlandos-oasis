@@ -56,7 +56,7 @@ const About = () => {
               </div>
 
               <div>
-                <h2 className="section-title mb-4 text-3xl">
+                <h2 className="section-title mb-4 text-3xl text-card-foreground">
                   Professional pool care<br />across Florida
                 </h2>
                 <p className="body-text mb-4">

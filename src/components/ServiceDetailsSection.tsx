@@ -149,7 +149,7 @@ const ServiceDetailsSection = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
             {VALUE_PROPS.map(({ title, description }) => (
               <div key={title} className="bg-white border border-border/50 rounded-xl p-6 flex flex-col gap-2">
-                <h4 className="text-lg font-bold text-card-foreground">{title}</h4>
+                <h4 className="font-bold text-card-foreground text-base">{title}</h4>
                 <p className="text-sm text-muted-foreground leading-relaxed">{description}</p>
               </div>
             ))}

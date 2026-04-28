@@ -43,7 +43,7 @@ const HeroSection = () => {
 
       {/* Full-width header */}
       <div className="fixed top-0 left-0 right-0 z-50 bg-card/95 backdrop-blur-md shadow-lg">
-        <div className="w-full px-6 md:px-12 py-3 flex flex-col md:flex-row items-center justify-center gap-4 md:gap-12">
+        <div className="w-full px-6 md:px-12 py-4 flex flex-col items-center justify-center gap-4">
           <Link to="/" className="flex items-center gap-2 shrink-0">
             <img src={logo} alt="Orlando's Oasis" className="h-7 w-7 object-contain" />
             <span className="text-base md:text-lg font-bold text-foreground">Orlando's Oasis</span>

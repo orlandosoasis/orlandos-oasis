@@ -41,9 +41,9 @@ const HeroSection = () => {
       <div className="absolute inset-0 bg-black/20" />
       <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-transparent to-black/35" />
 
-      {/* Floating pill header */}
-      <div className="fixed top-4 md:top-6 left-0 right-0 z-50 px-3 sm:px-4 md:px-6">
-        <div className="max-w-[1280px] mx-auto bg-card/95 backdrop-blur-md rounded-full shadow-lg flex items-center justify-between pl-5 pr-2 py-2">
+      {/* Full-width header */}
+      <div className="fixed top-0 left-0 right-0 z-50 bg-card/95 backdrop-blur-md shadow-lg">
+        <div className="w-full px-6 md:px-12 py-3 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2 shrink-0">
             <img src={logo} alt="Orlando's Oasis" className="h-7 w-7 object-contain" />
             <span className="text-base md:text-lg font-bold text-foreground">Orlando's Oasis</span>
@@ -69,16 +69,24 @@ const HeroSection = () => {
         </div>
       </div>
 
-      {/* Centered headline with strikethrough accent */}
+      {/* Centered headline + supporting copy + CTA */}
       <div className="relative z-10 h-full flex items-center justify-center px-4">
-        <div className="max-w-6xl mx-auto text-center" style={{ textShadow: '0 2px 24px rgba(0,0,0,0.4)' }}>
+        <div className="max-w-3xl mx-auto text-center" style={{ textShadow: '0 2px 24px rgba(0,0,0,0.4)' }}>
           <h1 className="font-extrabold text-white leading-[0.95] tracking-tight text-5xl sm:text-6xl md:text-7xl lg:text-8xl">
             <span>Crystal Clear Pools.</span>
             <br />
             <span>Zero Hassle.</span>
           </h1>
 
-          <div className="mt-10 flex justify-center">
+          <p
+            className="mt-6 max-w-xl mx-auto text-sm md:text-base text-white/95 leading-relaxed"
+            style={{ textShadow: '0 1px 8px rgba(0,0,0,0.5)' }}
+          >
+            Professional pool maintenance across Tampa, Orlando &amp; Fort Lauderdale.
+            Weekly service, transparent reports, and pros you can trust.
+          </p>
+
+          <div className="mt-8 flex justify-center">
             <Button
               onClick={handleGetVoucher}
               className="h-12 px-8 rounded-full text-base font-semibold shadow-xl"
@@ -88,17 +96,6 @@ const HeroSection = () => {
             </Button>
           </div>
         </div>
-      </div>
-
-      {/* Bottom-left supporting copy */}
-      <div className="absolute left-0 right-0 bottom-8 md:bottom-12 z-10 px-6 md:px-12">
-        <p
-          className="max-w-md text-sm md:text-base text-white/95 leading-relaxed"
-          style={{ textShadow: '0 1px 8px rgba(0,0,0,0.5)' }}
-        >
-          Professional pool maintenance across Tampa, Orlando &amp; Fort Lauderdale.
-          Weekly service, transparent reports, and pros you can trust.
-        </p>
       </div>
     </section>
   );

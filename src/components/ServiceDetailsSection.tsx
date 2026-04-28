@@ -141,7 +141,7 @@ const ServiceDetailsSection = () => {
       </div>
 
       {/* Why Orlando's Oasis - value proposition cards */}
-      <div className="py-16">
+      <div className="py-16 text-gray-300">
         <div className="container max-w-6xl mx-auto px-4">
           <h2 className="text-3xl font-extrabold text-navy tracking-tight mb-10 text-center">
             Why Orlando's Oasis

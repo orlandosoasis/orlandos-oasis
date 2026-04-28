@@ -115,9 +115,9 @@ const ServiceDetailsSection = () => {
             <table className="w-full border-collapse">
               <thead>
                 <tr className="bg-muted">
-                  <th className="text-left p-3 text-navy border-b font-bold">Service Frequency</th>
-                  <th className="text-left p-3 text-navy border-b font-bold">Best for</th>
-                  <th className="text-left p-3 text-navy border-b font-bold">Typical pool condition</th>
+                  <th className="text-left p-3 border-b font-bold text-card-foreground">Service Frequency</th>
+                  <th className="text-left p-3 border-b font-bold text-card-foreground">Best for</th>
+                  <th className="text-left p-3 border-b font-bold text-card-foreground">Typical pool condition</th>
                 </tr>
               </thead>
               <tbody>

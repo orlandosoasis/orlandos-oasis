@@ -37,30 +37,39 @@ const PoolGallery = () => {
 
         {/* Bento-style grid */}
         <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4">
-          {GALLERY_ITEMS.map((item, i) => (
-            <button
-              key={i}
-              onClick={() => setSelectedIndex(i)}
-              className={`group relative overflow-hidden rounded-xl border border-border cursor-pointer focus-visible:border-ring outline-none ${
-                i === 0 ? "col-span-2 md:col-span-2 row-span-2" : ""
-              }`}
-            >
-              <img
-                src={item.src}
-                alt={item.alt}
-                loading="lazy"
-                width={1024}
-                height={768}
-                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-              />
-              {/* Hover overlay */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-              {/* Label */}
-              <span className="absolute bottom-3 left-3 bg-card/90 backdrop-blur-sm text-foreground text-xs font-semibold px-2.5 py-1 rounded-full border border-border opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                {item.label}
-              </span>
-            </button>
-          ))}
+          {GALLERY_ITEMS.map((item, i) => {
+            const isBeforeAfter = i === 0;
+            return (
+              <button
+                key={i}
+                onClick={() => setSelectedIndex(i)}
+                className={`group relative overflow-hidden rounded-xl border border-border cursor-pointer focus-visible:border-ring outline-none ${
+                  i === 0 ? "col-span-2 md:col-span-2 row-span-2" : ""
+                }`}
+              >
+                <img
+                  src={item.src}
+                  alt={item.alt}
+                  loading="lazy"
+                  width={1024}
+                  height={768}
+                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                />
+                {/* Hover overlay */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                {/* Label */}
+                {isBeforeAfter ? (
+                  <span className="absolute bottom-4 md:bottom-5 left-1/2 -translate-x-1/2 z-[2] bg-card/90 backdrop-blur-sm text-foreground text-xs font-semibold px-3 py-1 rounded-full border border-border shadow-md whitespace-nowrap">
+                    {item.label}
+                  </span>
+                ) : (
+                  <span className="absolute bottom-3 left-3 bg-card/90 backdrop-blur-sm text-foreground text-xs font-semibold px-2.5 py-1 rounded-full border border-border opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    {item.label}
+                  </span>
+                )}
+              </button>
+            );
+          })}
         </div>
       </div>
 

@@ -51,7 +51,7 @@ const TechCompletedServices = () => {
                 </div>
                 {svc.completedTasks && (
                   <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <CheckCircle2 className="h-3.5 w-3.5 text-accent shrink-0" />
+                    <CheckCircle2 className="h-3.5 w-3.5 text-card-foreground shrink-0" />
                     <span>{svc.completedTasks.length} tasks completed</span>
                   </div>
                 )}

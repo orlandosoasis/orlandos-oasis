@@ -318,7 +318,7 @@ const TechJobDetail = () => {
       <div className="fixed bottom-0 left-0 right-0 md:left-[220px] z-20 bg-card/95 backdrop-blur border-t border-border">
         <div className="max-w-[860px] mx-auto px-5 py-3 flex items-center gap-3">
           <div className="flex-1 min-w-0">
-            <p className={cn("text-xs", canComplete ? "text-accent" : "text-muted-foreground")}>
+            <p className={cn("text-xs", canComplete ? "text-card-foreground" : "text-muted-foreground")}>
               {canComplete
                 ? "All requirements met — ready to complete."
                 : "Upload before & after photos to complete service"}
@@ -367,7 +367,7 @@ const TechJobDetail = () => {
 const ChecklistRow = ({ done, label, sub }: { done: boolean; label: string; sub?: string }) => (
   <div className="flex items-start gap-3">
     {done ? (
-      <CheckCircle2 className="h-5 w-5 text-accent shrink-0 mt-0.5" />
+      <CheckCircle2 className="h-5 w-5 text-card-foreground shrink-0 mt-0.5" />
     ) : (
       <Circle className="h-5 w-5 text-muted-foreground/50 shrink-0 mt-0.5" />
     )}

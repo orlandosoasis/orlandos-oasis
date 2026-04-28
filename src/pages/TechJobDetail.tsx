@@ -367,7 +367,7 @@ const TechJobDetail = () => {
 const ChecklistRow = ({ done, label, sub }: { done: boolean; label: string; sub?: string }) => (
   <div className="flex items-start gap-3">
     {done ? (
-      <CheckCircle2 className="h-5 w-5 text-accent shrink-0 mt-0.5" />
+      <CheckCircle2 className="h-5 w-5 text-card-foreground shrink-0 mt-0.5" />
     ) : (
       <Circle className="h-5 w-5 text-muted-foreground/50 shrink-0 mt-0.5" />
     )}

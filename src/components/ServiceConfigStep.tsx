@@ -150,9 +150,7 @@ const ServiceConfigStep = ({ config, onConfigChange }: ServiceConfigStepProps) =
                   <p className="text-muted-foreground text-sm">{freq.description}</p>
                 </div>
                 <p className={`text-sm font-bold shrink-0 tabular-nums text-right min-w-[90px] ${
-                  freq.multiplier === 1
-                    ? "text-card-foreground"
-                    : isSelected ? "text-primary" : "text-foreground"
+                  isSelected ? "text-primary" : "text-card-foreground"
                 }`}>
                   {freq.multiplier === 1
                     ? "Included"

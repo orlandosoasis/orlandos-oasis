@@ -13,11 +13,14 @@ const NAV_ITEMS = [
 
 const FloatingNav = () => (
   <div className="fixed top-3 md:top-6 left-0 right-0 z-50 px-4 md:px-6">
-    <div className="max-w-[1280px] mx-auto bg-card/95 backdrop-blur-md rounded-full shadow-lg flex items-center justify-between gap-3 md:gap-6 pl-4 md:pl-5 pr-2 py-2">
-      <Link to="/" className="flex items-center gap-2 min-w-0 shrink">
-        <img src={logo} alt="Orlando's Oasis" className="h-7 w-7 object-contain shrink-0" />
-        <span className="text-base md:text-lg font-bold text-foreground truncate">Orlando's Oasis</span>
-      </Link>
+    <div className="max-w-[1280px] mx-auto bg-card/95 backdrop-blur-md rounded-full shadow-lg flex items-center justify-between gap-3 md:gap-6 pl-2 md:pl-5 pr-2 py-2">
+      <div className="flex items-center gap-1 min-w-0 shrink">
+        <MobileNavMenu items={NAV_ITEMS} />
+        <Link to="/" className="flex items-center gap-2 min-w-0 shrink">
+          <img src={logo} alt="Orlando's Oasis" className="h-7 w-7 object-contain shrink-0" />
+          <span className="text-base md:text-lg font-bold text-foreground truncate">Orlando's Oasis</span>
+        </Link>
+      </div>
 
       <nav className="hidden md:flex items-center gap-7">
         {NAV_ITEMS.map((item) => (
@@ -37,7 +40,6 @@ const FloatingNav = () => (
             Log In
           </Button>
         </Link>
-        <MobileNavMenu items={NAV_ITEMS} />
       </div>
     </div>
   </div>

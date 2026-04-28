@@ -26,7 +26,7 @@ const Header = memo(function Header() {
 
   return (
     <header className="sticky top-0 left-0 right-0 z-30 bg-card">
-      <div className="max-w-[1400px] mx-auto px-3 sm:px-4 md:px-6 py-4 flex flex-col items-center justify-center gap-4">
+      <div className="max-w-[1400px] mx-auto px-3 sm:px-4 md:px-6 py-3 flex items-center justify-between gap-6">
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2">
           <LogoImg />

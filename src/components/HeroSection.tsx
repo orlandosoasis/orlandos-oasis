@@ -31,6 +31,8 @@ const HeroSection = () => {
         loop
         playsInline
         preload="auto"
+        // @ts-expect-error - fetchpriority is a valid HTML attr not yet in React types
+        fetchpriority="high"
         aria-hidden="true"
         onCanPlay={() => setVideoReady(true)}
         onPlaying={() => setVideoReady(true)}
@@ -43,7 +45,7 @@ const HeroSection = () => {
       <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-transparent to-black/35" />
 
       {/* Full-width header */}
-      <div className="fixed top-0 left-0 right-0 z-50 bg-card/95 backdrop-blur-md shadow-lg">
+      <div className="fixed top-0 left-0 right-0 z-50 bg-card/95 backdrop-blur-md shadow-lg hero-nav-enter motion-reduce:animate-none motion-reduce:opacity-100">
         <div className="w-full px-4 md:px-6 lg:px-12 py-2 md:py-3 flex items-center justify-between gap-3 md:gap-6">
           <div className="flex items-center gap-1 min-w-0">
             <MobileNavMenu items={NAV_ITEMS} />
@@ -78,20 +80,20 @@ const HeroSection = () => {
       {/* Centered headline + supporting copy + CTA */}
       <div className="relative z-10 h-full flex items-center justify-center px-4 md:px-6">
         <div className="max-w-3xl mx-auto text-center" style={{ textShadow: '0 2px 24px rgba(0,0,0,0.4)' }}>
-          <h1 className="font-extrabold text-white leading-[1.05] md:leading-[0.95] tracking-tight text-4xl sm:text-5xl md:text-7xl lg:text-8xl">
+          <h1 className="font-extrabold text-white leading-[1.05] md:leading-[0.95] tracking-tight text-4xl sm:text-5xl md:text-7xl lg:text-8xl hero-rise motion-reduce:animate-none motion-reduce:opacity-100" style={{ animationDelay: '100ms' }}>
             <span className="block md:whitespace-nowrap">Crystal Clear Pools.</span>
             <span className="block">Zero Hassle.</span>
           </h1>
 
           <p
-            className="mt-3 md:mt-4 max-w-xl mx-auto text-sm md:text-base text-white/95 leading-relaxed"
-            style={{ textShadow: '0 1px 8px rgba(0,0,0,0.5)' }}
+            className="mt-3 md:mt-4 max-w-xl mx-auto text-sm md:text-base text-white/95 leading-relaxed hero-rise motion-reduce:animate-none motion-reduce:opacity-100"
+            style={{ textShadow: '0 1px 8px rgba(0,0,0,0.5)', animationDelay: '250ms' }}
           >
             Professional pool maintenance across Tampa, Orlando &amp; Fort Lauderdale.
             Weekly service, transparent reports, and pros you can trust.
           </p>
 
-          <div className="mt-5 md:mt-6 flex justify-center">
+          <div className="mt-5 md:mt-6 flex justify-center hero-rise motion-reduce:animate-none motion-reduce:opacity-100" style={{ animationDelay: '400ms' }}>
             <Button
               onClick={handleGetVoucher}
               className="h-12 px-8 rounded-full text-base font-semibold shadow-xl"
@@ -107,3 +109,4 @@ const HeroSection = () => {
 };
 
 export default HeroSection;
+

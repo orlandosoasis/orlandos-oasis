@@ -331,7 +331,6 @@ const PaymentMethods = () => {
           {/* This Billing Cycle */}
           <div className="bg-card rounded-2xl border border-border shadow-sm p-5 space-y-2">
             <div className="flex items-center gap-2 text-muted-foreground">
-              <Wrench className="h-4 w-4" />
               <p className="text-sm font-medium">This Billing Cycle</p>
             </div>
             <div className="space-y-1 text-sm">

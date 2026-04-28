@@ -17,7 +17,7 @@ const NAV_ITEMS = [
  */
 const FloatingNav = () => (
   <div className="fixed top-4 md:top-6 left-0 right-0 z-50 px-3 sm:px-4 md:px-6">
-    <div className="max-w-[1280px] mx-auto bg-card/95 backdrop-blur-md rounded-full shadow-lg flex flex-col md:flex-row items-center justify-center gap-4 md:gap-10 p-4 md:py-2 md:px-8">
+    <div className="max-w-[1280px] mx-auto bg-card/95 backdrop-blur-md rounded-full shadow-lg flex flex-col items-center justify-center gap-4 p-6 md:py-3 md:px-10">
       <Link to="/" className="flex items-center gap-2 shrink-0">
         <img src={logo} alt="Orlando's Oasis" className="h-7 w-7 object-contain" />
         <span className="text-base md:text-lg font-bold text-foreground">Orlando's Oasis</span>

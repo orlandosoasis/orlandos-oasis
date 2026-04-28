@@ -318,7 +318,7 @@ const TechJobDetail = () => {
       <div className="fixed bottom-0 left-0 right-0 md:left-[220px] z-20 bg-card/95 backdrop-blur border-t border-border">
         <div className="max-w-[860px] mx-auto px-5 py-3 flex items-center gap-3">
           <div className="flex-1 min-w-0">
-            <p className={cn("text-xs", canComplete ? "text-accent" : "text-muted-foreground")}>
+            <p className={cn("text-xs", canComplete ? "text-card-foreground" : "text-muted-foreground")}>
               {canComplete
                 ? "All requirements met — ready to complete."
                 : "Upload before & after photos to complete service"}

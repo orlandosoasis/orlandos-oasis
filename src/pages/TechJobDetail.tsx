@@ -1,5 +1,6 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { useQueryClient } from "@tanstack/react-query";
 import {
   ArrowLeft,
   MapPin,
@@ -14,6 +15,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -26,23 +28,19 @@ import {
 } from "@/components/ui/alert-dialog";
 import StatusBadge from "@/components/StatusBadge";
 import TechLayout from "@/components/technician/TechLayout";
+import { supabase } from "@/integrations/supabase/client";
+import { useService } from "@/hooks/useServices";
+import { usePool } from "@/hooks/usePools";
+import { useProfile } from "@/hooks/useProfiles";
 import {
-  getHomeowner,
-  getPool,
   getPoolFullAddress,
   formatDateFull,
   TIME_LABELS,
-} from "@/data/techMockData";
-import {
-  getJobs,
-  subscribe,
-  setJobStatus,
-  getJobPhotos,
-  addJobPhoto,
-  type JobPhoto,
-} from "@/data/techJobsStore";
+} from "@/types/tech";
 import { cn } from "@/lib/utils";
 import { toast } from "@/hooks/use-toast";
+
+type LocalPhoto = { id: string; src: string; type: "before" | "after"; time: string };
 
 type ChatMsg =
   | { id: string; sender: "tech" | "homeowner"; kind: "text"; text: string; time: string }
@@ -51,15 +49,14 @@ type ChatMsg =
 const TechJobDetail = () => {
   const { serviceId } = useParams();
   const navigate = useNavigate();
-  const [, setTick] = useState(0);
+  const queryClient = useQueryClient();
 
-  useEffect(() => subscribe(() => setTick((t) => t + 1)), []);
+  const { data: service, isLoading } = useService(serviceId);
+  const { data: pool } = usePool(service?.poolId);
+  const { data: homeowner } = useProfile(service?.homeownerId);
+  const homeownerName = homeowner?.fullName || homeowner?.email || "Homeowner";
 
-  const service = getJobs().find((s) => s.id === serviceId);
-  const homeowner = service ? getHomeowner(service.homeownerId) : null;
-  const pool = service ? getPool(service.poolId) : null;
-
-  const photos = service ? getJobPhotos(service.id) : [];
+  const [photos, setPhotos] = useState<LocalPhoto[]>([]);
   const beforePhotos = photos.filter((p) => p.type === "before");
   const afterPhotos = photos.filter((p) => p.type === "after");
 
@@ -81,35 +78,36 @@ const TechJobDetail = () => {
       { id: "2", sender: "tech", kind: "text", text: "Just make sure the gate is accessible. I'll handle the rest!", time: "4:48 PM" },
     ]);
     setTimeout(() => inputRef.current?.focus(), 100);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [homeowner?.id]);
+  }, [homeowner?.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  // Mirror photos from store into the chat as photo messages
-  const seenPhotoIds = useRef<Set<string>>(new Set());
+  // Auto-mark in_progress on entry if still scheduled
   useEffect(() => {
-    const newOnes = photos.filter((p) => !seenPhotoIds.current.has(p.id));
-    if (newOnes.length === 0) return;
-    newOnes.forEach((p) => seenPhotoIds.current.add(p.id));
-    setMessages((prev) => [
-      ...prev,
-      ...newOnes.map<ChatMsg>((p) => ({
-        id: `photo-${p.id}`,
-        sender: "tech",
-        kind: "photo",
-        photoType: p.type,
-        src: p.src,
-        time: p.time,
-      })),
-    ]);
-  }, [photos]);
+    if (!service || service.status !== "scheduled") return;
+    supabase
+      .from("services")
+      .update({ status: "in_progress", started_at: new Date().toISOString() })
+      .eq("id", service.id)
+      .then(() => queryClient.invalidateQueries({ queryKey: ["services"] }));
+  }, [service?.id, service?.status]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const canComplete = beforePhotos.length >= 1 && afterPhotos.length >= 1;
 
-  if (!service || !homeowner || !pool) {
+  if (isLoading) {
+    return (
+      <TechLayout>
+        <Skeleton className="h-8 w-32 mb-6" />
+        <Skeleton className="h-44 rounded-2xl mb-4" />
+        <Skeleton className="h-32 rounded-2xl mb-4" />
+        <Skeleton className="h-96 rounded-2xl" />
+      </TechLayout>
+    );
+  }
+
+  if (!service || !pool) {
     return (
       <TechLayout>
         <div className="text-center py-12">
@@ -118,12 +116,6 @@ const TechJobDetail = () => {
         </div>
       </TechLayout>
     );
-  }
-
-  // Auto-mark in_progress on entry if still scheduled
-  if (service.status === "scheduled") {
-    const now = new Date().toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit", hour12: true });
-    setJobStatus(service.id, "in_progress", { startedAt: now });
   }
 
   const handleSend = () => {
@@ -139,33 +131,51 @@ const TechJobDetail = () => {
   const handleFiles = (files: FileList | null, type: "before" | "after") => {
     if (!files || files.length === 0) return;
     const time = new Date().toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit", hour12: true });
-    Array.from(files).forEach((file) => {
-      const src = URL.createObjectURL(file);
-      const photo: JobPhoto = { id: `p-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`, src, type, time };
-      addJobPhoto(service.id, photo);
-    });
+    const newPhotos: LocalPhoto[] = Array.from(files).map((file) => ({
+      id: `p-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+      src: URL.createObjectURL(file),
+      type,
+      time,
+    }));
+    setPhotos((prev) => [...prev, ...newPhotos]);
+    setMessages((prev) => [
+      ...prev,
+      ...newPhotos.map<ChatMsg>((p) => ({
+        id: `photo-${p.id}`,
+        sender: "tech",
+        kind: "photo",
+        photoType: p.type,
+        src: p.src,
+        time: p.time,
+      })),
+    ]);
     toast({
       title: type === "before" ? "Before photos uploaded" : "After photos uploaded",
       description: `${files.length} photo${files.length > 1 ? "s" : ""} added to the thread.`,
     });
   };
 
-  const handleConfirmComplete = () => {
+  const handleConfirmComplete = async () => {
     setCompleting(true);
-    setTimeout(() => {
-      const completedAt = new Date().toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit", hour12: true });
-      setJobStatus(service.id, "completed", { completedAt });
-      setCompleting(false);
-      setConfirmOpen(false);
-      navigate("/tech/jobs", {
-        state: {
-          completedBanner: {
-            homeownerName: homeowner.name,
-            completedAt,
-          },
-        },
-      });
-    }, 400);
+    const completedAtIso = new Date().toISOString();
+    const completedAt = new Date().toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit", hour12: true });
+    const { error } = await supabase
+      .from("services")
+      .update({ status: "completed", completed_at: completedAtIso })
+      .eq("id", service.id);
+    setCompleting(false);
+    setConfirmOpen(false);
+    if (error) {
+      toast({ title: "Could not complete service", description: error.message, variant: "destructive" });
+      return;
+    }
+    queryClient.invalidateQueries({ queryKey: ["services"] });
+    queryClient.invalidateQueries({ queryKey: ["service", service.id] });
+    navigate("/tech/jobs", {
+      state: {
+        completedBanner: { homeownerName, completedAt },
+      },
+    });
   };
 
   return (
@@ -182,7 +192,7 @@ const TechJobDetail = () => {
       <div className="bg-card rounded-2xl border border-border p-6 shadow-sm mb-4">
         <div className="flex items-start justify-between mb-4">
           <div>
-            <h1 className="text-xl font-bold text-foreground">{homeowner.name}</h1>
+            <h1 className="text-xl font-bold text-foreground">{homeownerName}</h1>
             <p className="text-sm text-muted-foreground mt-1">{service.serviceType}</p>
           </div>
           <StatusBadge status={service.status} />
@@ -216,7 +226,7 @@ const TechJobDetail = () => {
       {/* Messages section */}
       <div className="bg-card rounded-2xl border border-border shadow-sm overflow-hidden mb-24">
         <div className="px-5 py-3 border-b border-border flex items-center justify-between">
-          <p className="text-[15px] font-bold text-foreground">Chat with {homeowner.name}</p>
+          <p className="text-[15px] font-bold text-foreground">Chat with {homeownerName}</p>
           <span className="text-xs text-muted-foreground">Photos here count toward the checklist</span>
         </div>
 
@@ -304,7 +314,7 @@ const TechJobDetail = () => {
               value={newMsg}
               onChange={(e) => setNewMsg(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && handleSend()}
-              placeholder={`Message ${homeowner.name}...`}
+              placeholder={`Message ${homeownerName}...`}
               className="flex-1 rounded-xl border-border bg-muted/50 focus-visible:ring-primary"
             />
             <Button size="icon" onClick={handleSend} disabled={!newMsg.trim()} className="rounded-xl shrink-0">

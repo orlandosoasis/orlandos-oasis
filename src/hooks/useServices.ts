@@ -30,7 +30,7 @@ function rowToService(r: ServiceRow): TechService & { technicianId: string | nul
     // service_date is YYYY-MM-DD; build a local Date so day-of-month doesn't shift
     date: parseDateOnly(r.service_date),
     timeWindow: r.time_window,
-    status: r.status,
+    status: (r.status === "cancelled" ? "scheduled" : r.status) as TechServiceStatus,
     completedTasks: r.completed_tasks ?? undefined,
     techNotes: r.tech_notes ?? undefined,
     startedAt: r.started_at

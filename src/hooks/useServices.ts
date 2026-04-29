@@ -99,7 +99,15 @@ export function useUpdateService() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: async ({ id, patch }: { id: string; patch: UpdateServicePatch }) => {
-      const dbPatch: Record<string, unknown> = {};
+      const dbPatch: {
+        status?: DbServiceStatus;
+        completed_tasks?: string[];
+        tech_notes?: string;
+        started_at?: string;
+        completed_at?: string;
+        service_date?: string;
+        time_window?: "morning" | "afternoon" | "evening";
+      } = {};
       if (patch.status !== undefined) dbPatch.status = patch.status;
       if (patch.completedTasks !== undefined) dbPatch.completed_tasks = patch.completedTasks;
       if (patch.techNotes !== undefined) dbPatch.tech_notes = patch.techNotes;

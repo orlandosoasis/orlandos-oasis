@@ -322,6 +322,33 @@ export type Database = {
           },
         ]
       }
+      service_photos: {
+        Row: {
+          created_at: string
+          id: string
+          photo_type: string
+          service_id: string
+          storage_path: string
+          uploaded_by: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          photo_type: string
+          service_id: string
+          storage_path: string
+          uploaded_by: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          photo_type?: string
+          service_id?: string
+          storage_path?: string
+          uploaded_by?: string
+        }
+        Relationships: []
+      }
       services: {
         Row: {
           completed_at: string | null

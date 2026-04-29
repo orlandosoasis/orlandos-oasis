@@ -15,7 +15,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Switch } from "@/components/ui/switch";
 import { Card, CardContent } from "@/components/ui/card";
 import { ADDONS } from "@/components/AddonsStep";
-import type { AdminHomeowner } from "@/data/adminMockData";
+import type { AdminHomeowner } from "@/types/admin";
 
 interface AddHomeownerModalProps {
   open: boolean;

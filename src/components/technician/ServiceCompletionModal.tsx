@@ -5,7 +5,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
 import { Camera, Upload, X, CheckCircle2, ArrowLeft, ImagePlus } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { SERVICE_TASKS } from "@/data/techMockData";
+import { SERVICE_TASKS } from "@/types/tech";
 
 interface ServiceCompletionModalProps {
   open: boolean;

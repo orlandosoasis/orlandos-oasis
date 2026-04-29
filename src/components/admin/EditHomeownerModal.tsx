@@ -14,7 +14,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Switch } from "@/components/ui/switch";
 import { ADDONS } from "@/components/AddonsStep";
-import type { AdminHomeowner } from "@/data/adminMockData";
+import type { AdminHomeowner } from "@/types/admin";
 
 interface EditHomeownerModalProps {
   open: boolean;

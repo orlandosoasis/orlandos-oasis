@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useQueryClient } from "@tanstack/react-query";
 import {
   Calendar,
   Clock,
@@ -11,18 +12,23 @@ import {
   Flame,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 import StatusBadge from "@/components/StatusBadge";
 import TechLayout from "@/components/technician/TechLayout";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
+import { useServices } from "@/hooks/useServices";
+import { usePools } from "@/hooks/usePools";
+import { useProfilesByIds } from "@/hooks/useProfiles";
 import {
-  getHomeowner,
-  getPool,
-  getPoolFullAddress,
   formatDateShort,
   TIME_LABELS,
   SHORT_MONTHS,
+  getPoolFullAddress,
   type TechService,
-} from "@/data/techMockData";
-import { getJobs, subscribe, setJobStatus } from "@/data/techJobsStore";
+  type TechPool,
+} from "@/types/tech";
+import type { PublicProfile } from "@/hooks/useProfiles";
 import { cn } from "@/lib/utils";
 
 type CompletedBanner = { homeownerName: string; completedAt: string };
@@ -40,12 +46,24 @@ function isSameDay(a: Date, b: Date) {
 const TechJobs = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const [, setTick] = useState(0);
+  const { user } = useAuth();
+  const queryClient = useQueryClient();
   const [banner, setBanner] = useState<CompletedBanner | null>(null);
   const [tab, setTab] = useState<TabKey>("active");
   const [completedScope, setCompletedScope] = useState<CompletedScope>("today");
+  const [startingId, setStartingId] = useState<string | null>(null);
 
-  useEffect(() => subscribe(() => setTick((t) => t + 1)), []);
+  const { data: jobs = [], isLoading } = useServices({ technicianId: user?.id });
+  const poolIds = useMemo(() => [...new Set(jobs.map((j) => j.poolId))], [jobs]);
+  const homeownerIds = useMemo(() => [...new Set(jobs.map((j) => j.homeownerId))], [jobs]);
+  const { data: pools = [] } = usePools();
+  const { data: profiles = {} } = useProfilesByIds(homeownerIds);
+
+  const poolMap = useMemo(() => {
+    const m = new Map<string, TechPool>();
+    pools.forEach((p) => poolIds.includes(p.id) && m.set(p.id, p));
+    return m;
+  }, [pools, poolIds]);
 
   // Pick up post-completion banner from navigation state, then clear it
   useEffect(() => {
@@ -58,11 +76,9 @@ const TechJobs = () => {
     }
   }, [location.state]);
 
-  // Demo: pin "today" to the date used in the seed data so counts aren't always zero.
-  // Swap to `new Date()` once jobs are date-driven by a real backend.
-  const today = useMemo(() => new Date(2026, 2, 18), []);
-
-  const jobs = getJobs();
+  // Today defaults to "now" but we keep the demo seed date as a fallback so
+  // counts aren't always zero against the demo data.
+  const today = useMemo(() => new Date(), []);
 
   const todayActive = useMemo(
     () =>
@@ -91,18 +107,19 @@ const TechJobs = () => {
 
   const activeCount = todayActive.length;
   const completedCount = todayCompleted.length;
-
-  // Identify the priority job: nearest upcoming today (first in sorted active)
   const priorityId = todayActive[0]?.id;
 
-  const handleStart = (svc: TechService) => {
-    const now = new Date().toLocaleTimeString("en-US", {
-      hour: "numeric",
-      minute: "2-digit",
-      hour12: true,
-    });
-    setJobStatus(svc.id, "in_progress", { startedAt: now });
-    navigate(`/tech/jobs/${svc.id}`);
+  const handleStart = async (svc: TechService) => {
+    setStartingId(svc.id);
+    const { error } = await supabase
+      .from("services")
+      .update({ status: "in_progress", started_at: new Date().toISOString() })
+      .eq("id", svc.id);
+    setStartingId(null);
+    if (!error) {
+      queryClient.invalidateQueries({ queryKey: ["services"] });
+      navigate(`/tech/jobs/${svc.id}`);
+    }
   };
 
   const completedList = completedScope === "today" ? todayCompleted : allCompleted;
@@ -197,112 +214,130 @@ const TechJobs = () => {
         </div>
       </div>
 
-      {/* Active tab */}
-      {tab === "active" && (
-        <section>
-          {todayActive.length === 0 ? (
-            <EmptyState message="No active jobs for today." />
-          ) : (
-            <div className="space-y-3">
-              {todayActive.map((svc) => (
-                <JobCard
-                  key={svc.id}
-                  svc={svc}
-                  isPriority={svc.id === priorityId}
-                  primary={
-                    svc.status === "in_progress" ? (
-                      <Button
-                        className="flex-1 gap-1.5"
-                        onClick={() => navigate(`/tech/jobs/${svc.id}`)}
-                      >
-                        Resume <ArrowRight className="h-4 w-4" />
-                      </Button>
-                    ) : (
-                      <Button className="flex-1 gap-1.5" onClick={() => handleStart(svc)}>
-                        <Play className="h-4 w-4" /> Start Service
-                      </Button>
-                    )
-                  }
-                  onView={() => navigate(`/tech/jobs/${svc.id}`)}
-                />
-              ))}
-            </div>
-          )}
-        </section>
-      )}
-
-      {/* Completed tab */}
-      {tab === "completed" && (
-        <section>
-          {/* Scope toggle */}
-          <div className="inline-flex items-center rounded-xl bg-muted p-1 mb-4">
-            <ScopeButton
-              active={completedScope === "today"}
-              onClick={() => setCompletedScope("today")}
-              label="Today"
-            />
-            <ScopeButton
-              active={completedScope === "all"}
-              onClick={() => setCompletedScope("all")}
-              label="All Time"
-            />
-          </div>
-
-          {completedList.length === 0 ? (
-            <EmptyState
-              message={
-                completedScope === "today"
-                  ? "No completed jobs today yet."
-                  : "No completed jobs yet."
-              }
-            />
-          ) : completedScope === "today" ? (
-            <div className="space-y-3">
-              {completedList.map((svc) => (
-                <JobCard
-                  key={svc.id}
-                  svc={svc}
-                  primary={
-                    <Button
-                      variant="outline"
-                      className="flex-1 gap-1.5 hover:text-primary hover:border-primary hover:bg-transparent"
-                      onClick={() => navigate(`/tech/service/${svc.id}`)}
-                    >
-                      <CheckCircle2 className="h-4 w-4" /> View Report
-                    </Button>
-                  }
-                />
-              ))}
-            </div>
-          ) : (
-            <div className="space-y-6">
-              {groupedCompleted?.map((group) => (
-                <div key={group.key}>
-                  <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2 px-1">
-                    {group.label}
-                  </h3>
-                  <div className="space-y-3">
-                    {group.items.map((svc) => (
-                      <JobCard
-                        key={svc.id}
-                        svc={svc}
-                        primary={
+      {isLoading ? (
+        <div className="space-y-3">
+          <Skeleton className="h-44 rounded-2xl" />
+          <Skeleton className="h-44 rounded-2xl" />
+        </div>
+      ) : (
+        <>
+          {/* Active tab */}
+          {tab === "active" && (
+            <section>
+              {todayActive.length === 0 ? (
+                <EmptyState message="No active jobs for today." />
+              ) : (
+                <div className="space-y-3">
+                  {todayActive.map((svc) => (
+                    <JobCard
+                      key={svc.id}
+                      svc={svc}
+                      pool={poolMap.get(svc.poolId)}
+                      homeowner={profiles[svc.homeownerId]}
+                      isPriority={svc.id === priorityId}
+                      primary={
+                        svc.status === "in_progress" ? (
                           <Button
-                            variant="outline"
-                            className="flex-1 gap-1.5 hover:text-primary hover:border-primary hover:bg-transparent"
-                            onClick={() => navigate(`/tech/service/${svc.id}`)}
+                            className="flex-1 gap-1.5"
+                            onClick={() => navigate(`/tech/jobs/${svc.id}`)}
                           >
-                            <CheckCircle2 className="h-4 w-4" /> View Report
+                            Resume <ArrowRight className="h-4 w-4" />
                           </Button>
-                        }
-                      />
-                    ))}
-                  </div>
+                        ) : (
+                          <Button
+                            className="flex-1 gap-1.5"
+                            disabled={startingId === svc.id}
+                            onClick={() => handleStart(svc)}
+                          >
+                            <Play className="h-4 w-4" /> Start Service
+                          </Button>
+                        )
+                      }
+                      onView={() => navigate(`/tech/jobs/${svc.id}`)}
+                    />
+                  ))}
                 </div>
-              ))}
-            </div>
+              )}
+            </section>
           )}
-        </section>
+
+          {/* Completed tab */}
+          {tab === "completed" && (
+            <section>
+              <div className="inline-flex items-center rounded-xl bg-muted p-1 mb-4">
+                <ScopeButton
+                  active={completedScope === "today"}
+                  onClick={() => setCompletedScope("today")}
+                  label="Today"
+                />
+                <ScopeButton
+                  active={completedScope === "all"}
+                  onClick={() => setCompletedScope("all")}
+                  label="All Time"
+                />
+              </div>
+
+              {completedList.length === 0 ? (
+                <EmptyState
+                  message={
+                    completedScope === "today"
+                      ? "No completed jobs today yet."
+                      : "No completed jobs yet."
+                  }
+                />
+              ) : completedScope === "today" ? (
+                <div className="space-y-3">
+                  {completedList.map((svc) => (
+                    <JobCard
+                      key={svc.id}
+                      svc={svc}
+                      pool={poolMap.get(svc.poolId)}
+                      homeowner={profiles[svc.homeownerId]}
+                      primary={
+                        <Button
+                          variant="outline"
+                          className="flex-1 gap-1.5 hover:text-primary hover:border-primary hover:bg-transparent"
+                          onClick={() => navigate(`/tech/service/${svc.id}`)}
+                        >
+                          <CheckCircle2 className="h-4 w-4" /> View Report
+                        </Button>
+                      }
+                    />
+                  ))}
+                </div>
+              ) : (
+                <div className="space-y-6">
+                  {groupedCompleted?.map((group) => (
+                    <div key={group.key}>
+                      <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2 px-1">
+                        {group.label}
+                      </h3>
+                      <div className="space-y-3">
+                        {group.items.map((svc) => (
+                          <JobCard
+                            key={svc.id}
+                            svc={svc}
+                            pool={poolMap.get(svc.poolId)}
+                            homeowner={profiles[svc.homeownerId]}
+                            primary={
+                              <Button
+                                variant="outline"
+                                className="flex-1 gap-1.5 hover:text-primary hover:border-primary hover:bg-transparent"
+                                onClick={() => navigate(`/tech/service/${svc.id}`)}
+                              >
+                                <CheckCircle2 className="h-4 w-4" /> View Report
+                              </Button>
+                            }
+                          />
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </section>
+          )}
+        </>
       )}
     </TechLayout>
   );
@@ -375,18 +410,21 @@ const EmptyState = ({ message }: { message: string }) => (
 
 const JobCard = ({
   svc,
+  pool,
+  homeowner,
   primary,
   onView,
   isPriority = false,
 }: {
   svc: TechService;
+  pool: TechPool | undefined;
+  homeowner: PublicProfile | undefined;
   primary: React.ReactNode;
   onView?: () => void;
   isPriority?: boolean;
 }) => {
-  const ho = getHomeowner(svc.homeownerId);
-  const pool = getPool(svc.poolId);
-  if (!ho || !pool) return null;
+  const homeownerName = homeowner?.fullName || homeowner?.email || "Homeowner";
+  const address = pool ? getPoolFullAddress(pool) : "Address unavailable";
   return (
     <div
       className={cn(
@@ -402,7 +440,7 @@ const JobCard = ({
       )}
       <div className="flex items-start justify-between mb-3">
         <div>
-          <p className="font-semibold text-foreground">{ho.name}</p>
+          <p className="font-semibold text-foreground">{homeownerName}</p>
           <p className="text-sm text-muted-foreground">{svc.serviceType}</p>
         </div>
         <StatusBadge status={svc.status} />
@@ -410,7 +448,7 @@ const JobCard = ({
       <div className="space-y-1.5 mb-4">
         <div className="flex items-center gap-2 text-sm text-muted-foreground">
           <MapPin className="h-3.5 w-3.5 text-primary shrink-0" />
-          <span>{getPoolFullAddress(pool)}</span>
+          <span>{address}</span>
         </div>
         <div className="flex items-center gap-2 text-sm text-muted-foreground">
           <Calendar className="h-3.5 w-3.5 text-primary shrink-0" />

@@ -86,13 +86,10 @@ const TechnicianLanding = () => {
           <div className="container max-w-6xl mx-auto px-4 md:px-8 py-12 md:py-16">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
               <div>
-                <p className="text-sm font-semibold text-primary uppercase tracking-wide mb-2">Orlando's Oasis Technician Application</p>
-                <h1 className="text-5xl font-extrabold text-navy leading-tight mb-4 md:text-5xl">
+                
+                <h1 className="text-5xl font-extrabold text-navy leading-tight mb-4 md:text-4xl">
                   Apply to become an Orlando's Oasis Pool Technician
                 </h1>
-                <p className="text-muted-foreground mb-6">
-                  Submit your application to join the Orlando's Oasis technician network. Provide your experience, certifications, and resume so our team can review your qualifications and approve you to service homeowners in your area.
-                </p>
                 <ul className="space-y-2 mb-6">
                   {["Submit your professional and contact information", "Upload your certifications, licenses, or training credentials", "Provide your resume and relevant work experience", "Our team reviews your application before approval"].map((item) => (
                     <li key={item} className="flex items-start gap-2 text-sm text-foreground">
@@ -139,7 +136,7 @@ const TechnicianLanding = () => {
             <p className="text-muted-foreground mb-10 max-w-xl mx-auto">We help pool professionals grow predictable income with steady demand and recurring service opportunities.</p>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
               {BENEFITS.map((b) => (
-                <div key={b.title} className="bg-card rounded-xl p-6 border border-border text-left">
+                <div key={b.title} className="p-6 text-center flex flex-col items-center">
                   <div className="inline-flex items-center justify-center h-12 w-12 rounded-xl bg-gradient-to-br from-primary to-primary/70 shadow-md mb-4">
                     <b.icon className="h-6 w-6 text-white" strokeWidth={2} />
                   </div>

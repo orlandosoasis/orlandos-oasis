@@ -2,6 +2,7 @@ import { memo } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import logo from "@/assets/oo-logo.png";
+import MobileNavMenu from "@/components/MobileNavMenu";
 
 const NAV_ITEMS = [
   { label: "Home", href: "/" },
@@ -26,22 +27,25 @@ const Header = memo(function Header() {
 
   return (
     <header className="sticky top-0 left-0 right-0 z-30 bg-card">
-      <div className="max-w-[1400px] mx-auto px-3 sm:px-4 md:px-6 py-3 flex items-center justify-between">
-        {/* Logo */}
-        <Link to="/" className="flex items-center gap-2">
-          <LogoImg />
-          <span className="text-xl font-bold text-foreground">Orlando's Oasis</span>
-        </Link>
+      <div className="max-w-[1400px] mx-auto px-4 md:px-6 py-2 md:py-3 flex items-center justify-between gap-4 md:gap-6">
+        {/* Hamburger (mobile) + Logo */}
+        <div className="flex items-center gap-1 min-w-0">
+          <MobileNavMenu items={NAV_ITEMS} />
+          <Link to="/" className="flex items-center gap-2 min-w-0">
+            <LogoImg />
+            <span className="text-lg md:text-xl font-bold text-foreground truncate">Orlando's Oasis</span>
+          </Link>
+        </div>
 
-        {/* Nav Links + Login */}
-        <div className="flex items-center gap-6">
+        {/* Desktop Nav Links + Login */}
+        <div className="flex items-center gap-2 md:gap-6 shrink-0">
           <nav className="hidden md:flex items-center gap-5">
             {NAV_ITEMS.map((item) =>
               item.href.startsWith("/") ? (
                 <Link
                   key={item.label}
                   to={item.href}
-                  className="text-sm font-medium text-foreground/70 hover:text-primary transition-colors"
+                  className="text-sm font-medium text-foreground/70 hover:text-primary transition-colors whitespace-nowrap"
                 >
                   {item.label}
                 </Link>
@@ -50,7 +54,7 @@ const Header = memo(function Header() {
                   key={item.label}
                   href={item.href}
                   onClick={(e) => handleNavClick(e, item.href)}
-                  className="text-sm font-medium text-foreground/70 hover:text-primary transition-colors"
+                  className="text-sm font-medium text-foreground/70 hover:text-primary transition-colors whitespace-nowrap"
                 >
                   {item.label}
                 </a>

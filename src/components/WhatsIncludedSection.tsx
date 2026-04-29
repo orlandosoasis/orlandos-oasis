@@ -14,8 +14,8 @@ const ITEMS = [
 
 const WhatsIncludedSection = () => {
   return (
-    <section className="py-16 bg-white">
-      <div className="container max-w-6xl mx-auto px-4">
+    <section className="py-10 md:py-14 lg:py-16 bg-white">
+      <div className="container max-w-6xl mx-auto px-4 md:px-6">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-stretch">
           {/* Left column */}
           <div className="flex flex-col">

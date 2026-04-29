@@ -21,7 +21,7 @@ const steps = [
 const HowItWorks = () => {
   return (
     <section className="bg-card">
-      <div className="max-w-[1200px] mx-auto py-20 px-6">
+      <div className="max-w-[1200px] mx-auto py-10 md:py-14 lg:py-20 px-4 md:px-6">
         {/* Header */}
         <div className="text-center">
           <h2 className="text-3xl font-extrabold text-navy tracking-tight mb-3">
@@ -64,7 +64,7 @@ const HowItWorks = () => {
                 </div>
 
                 {/* Title */}
-                <h3 className="text-lg font-semibold text-navy mt-4 mb-2 md:text-lg">
+                <h3 className="text-lg font-semibold mt-4 mb-2 md:text-lg text-card-foreground">
                   {step.title}
                 </h3>
 

@@ -73,7 +73,7 @@ const ServiceConfigStep = ({ config, onConfigChange }: ServiceConfigStepProps) =
       {/* Top Banner */}
       <div className="bg-primary rounded-2xl p-5 text-center">
         <p className="text-primary-foreground font-semibold text-[15px] leading-snug">
-          Build your plan below. Pricing updates as you make selections.
+          Build your plan below.<br />Pricing updates as you make selections.
         </p>
         <p className="text-primary-foreground/80 text-sm mt-1">
           Save $25 on your first month · 100% refundable if not used
@@ -150,9 +150,7 @@ const ServiceConfigStep = ({ config, onConfigChange }: ServiceConfigStepProps) =
                   <p className="text-muted-foreground text-sm">{freq.description}</p>
                 </div>
                 <p className={`text-sm font-bold shrink-0 tabular-nums text-right min-w-[90px] ${
-                  freq.multiplier === 1
-                    ? "text-accent"
-                    : isSelected ? "text-primary" : "text-foreground"
+                  isSelected ? "text-primary" : "text-card-foreground"
                 }`}>
                   {freq.multiplier === 1
                     ? "Included"

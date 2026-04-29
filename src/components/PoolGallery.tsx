@@ -20,7 +20,7 @@ const PoolGallery = () => {
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
 
   return (
-    <section className="py-16 md:py-20 px-4 bg-navy">
+    <section className="py-10 md:py-14 lg:py-20 px-4 md:px-6 bg-navy">
       <div className="container max-w-6xl mx-auto">
         <div className="text-center mb-12">
           <span className="inline-flex items-center gap-1.5 bg-card/10 text-card text-xs font-bold tracking-widest uppercase px-3 py-1 rounded-full mb-3">
@@ -55,8 +55,8 @@ const PoolGallery = () => {
               />
               {/* Hover overlay */}
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-              {/* Label */}
-              <span className="absolute bottom-3 left-3 bg-card/90 backdrop-blur-sm text-foreground text-xs font-semibold px-2.5 py-1 rounded-full border border-border opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+              {/* Label — bottom-centered, visible on hover */}
+              <span className="absolute bottom-3 md:bottom-4 left-1/2 -translate-x-1/2 z-[2] bg-card/90 backdrop-blur-sm text-foreground text-xs font-semibold px-3 py-1 rounded-full border border-border shadow-md whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                 {item.label}
               </span>
             </button>
@@ -76,7 +76,7 @@ const PoolGallery = () => {
               alt={GALLERY_ITEMS[selectedIndex].alt}
               className="w-full rounded-xl object-contain max-h-[80vh]"
             />
-            <div className="absolute bottom-4 left-4 bg-card/90 backdrop-blur-sm text-foreground text-sm font-semibold px-3 py-1.5 rounded-full border border-border">
+            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-[2] bg-card/90 backdrop-blur-sm text-foreground text-sm font-semibold px-3 py-1.5 rounded-full border border-border shadow-md whitespace-nowrap">
               {GALLERY_ITEMS[selectedIndex].label}
             </div>
             <button

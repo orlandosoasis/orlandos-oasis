@@ -1,4 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import type { Session } from "@supabase/supabase-js";
 
 export type UserRole = "homeowner" | "technician" | "admin";
 
@@ -21,7 +23,13 @@ interface AuthContextType {
   user: User | null;
   isLoading: boolean;
   login: (email: string, password: string) => Promise<{ success: boolean; error?: string }>;
-  signup: (email: string, password: string, fullName: string, role?: UserRole, extra?: { streetAddress?: string; city?: string; state?: string; zipCode?: string; phone?: string; firstName?: string; lastName?: string }) => Promise<{ success: boolean; error?: string }>;
+  signup: (
+    email: string,
+    password: string,
+    fullName: string,
+    role?: UserRole,
+    extra?: { streetAddress?: string; city?: string; state?: string; zipCode?: string; phone?: string; firstName?: string; lastName?: string }
+  ) => Promise<{ success: boolean; error?: string }>;
   logout: () => void;
   updateUser: (updates: Partial<User>) => void;
   isAuthenticated: boolean;
@@ -29,91 +37,87 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-const STORAGE_KEY = "orlandos_oasis_auth";
-
-// Mock users for demo
-const MOCK_USERS: Record<string, { password: string; user: User }> = {
-  "demo@example.com": {
-    password: "demo123",
-    user: {
-      id: "user-1",
-      email: "demo@example.com",
-      fullName: "John Smith",
-      firstName: "John",
-      lastName: "Smith",
-      role: "homeowner",
-      phone: "(407) 555-1234",
-      streetAddress: "1234 Sunshine Blvd",
-      city: "Orlando",
-      state: "FL",
-      zipCode: "32801",
-    },
-  },
-  "tech@example.com": {
-    password: "tech123",
-    user: {
-      id: "tech-1",
-      email: "tech@example.com",
-      fullName: "Mike Johnson",
-      role: "technician",
-      phone: "(407) 555-5678",
-    },
-  },
-  "admin@example.com": {
-    password: "admin123",
-    user: {
-      id: "admin-1",
-      email: "admin@example.com",
-      fullName: "Sarah Admin",
-      role: "admin",
-      phone: "(407) 555-9999",
-    },
-  },
+type ProfileRow = {
+  id: string;
+  email: string;
+  full_name: string | null;
+  first_name: string | null;
+  last_name: string | null;
+  role: UserRole;
+  avatar_url: string | null;
+  phone: string | null;
+  street_address: string | null;
+  city: string | null;
+  state: string | null;
+  zip_code: string | null;
 };
+
+function profileToUser(p: ProfileRow): User {
+  return {
+    id: p.id,
+    email: p.email,
+    fullName: p.full_name ?? "",
+    firstName: p.first_name ?? undefined,
+    lastName: p.last_name ?? undefined,
+    role: p.role,
+    avatarUrl: p.avatar_url ?? undefined,
+    phone: p.phone ?? undefined,
+    streetAddress: p.street_address ?? undefined,
+    city: p.city ?? undefined,
+    state: p.state ?? undefined,
+    zipCode: p.zip_code ?? undefined,
+  };
+}
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
+  const fetchProfile = async (userId: string) => {
+    const { data, error } = await supabase
+      .from("profiles")
+      .select("*")
+      .eq("id", userId)
+      .maybeSingle();
+    if (error || !data) return null;
+    return profileToUser(data as ProfileRow);
+  };
+
   useEffect(() => {
-    // Check for existing session
-    const stored = localStorage.getItem(STORAGE_KEY);
-    if (stored) {
-      try {
-        const parsed = JSON.parse(stored);
-        setUser(parsed.user);
-      } catch {
-        localStorage.removeItem(STORAGE_KEY);
+    // Set up listener FIRST
+    const { data: subscription } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (session?.user) {
+        // Defer Supabase call to avoid deadlock
+        setTimeout(async () => {
+          const profile = await fetchProfile(session.user.id);
+          setUser(profile);
+        }, 0);
+      } else {
+        setUser(null);
       }
-    }
-    setIsLoading(false);
+    });
+
+    // THEN check existing session
+    supabase.auth.getSession().then(async ({ data: { session } }) => {
+      if (session?.user) {
+        const profile = await fetchProfile(session.user.id);
+        setUser(profile);
+      }
+      setIsLoading(false);
+    });
+
+    return () => {
+      subscription.subscription.unsubscribe();
+    };
   }, []);
 
-  const login = async (email: string, password: string): Promise<{ success: boolean; error?: string }> => {
-    // Simulate network delay
-    await new Promise((resolve) => setTimeout(resolve, 800));
-
-    const normalizedEmail = email.toLowerCase().trim();
-    const mockUser = MOCK_USERS[normalizedEmail];
-
-    if (mockUser && mockUser.password === password) {
-      setUser(mockUser.user);
-      localStorage.setItem(STORAGE_KEY, JSON.stringify({ user: mockUser.user }));
-      return { success: true };
-    }
-
-    // Check if user was registered during this session
-    const registered = localStorage.getItem(`registered_${normalizedEmail}`);
-    if (registered) {
-      const userData = JSON.parse(registered);
-      if (userData.password === password) {
-        setUser(userData.user);
-        localStorage.setItem(STORAGE_KEY, JSON.stringify({ user: userData.user }));
-        return { success: true };
-      }
-    }
-
-    return { success: false, error: "Invalid email or password" };
+  const login = async (email: string, password: string) => {
+    const { error } = await supabase.auth.signInWithPassword({
+      email: email.toLowerCase().trim(),
+      password,
+    });
+    if (error) return { success: false, error: error.message };
+    return { success: true };
   };
 
   const signup = async (
@@ -122,51 +126,68 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     fullName: string,
     role: UserRole = "homeowner",
     extra?: { streetAddress?: string; city?: string; state?: string; zipCode?: string; phone?: string; firstName?: string; lastName?: string }
-  ): Promise<{ success: boolean; error?: string }> => {
-    // Simulate network delay
-    await new Promise((resolve) => setTimeout(resolve, 800));
-
+  ) => {
     const normalizedEmail = email.toLowerCase().trim();
+    const firstName = extra?.firstName || fullName.split(" ")[0];
+    const lastName = extra?.lastName || fullName.split(" ").slice(1).join(" ");
 
-    // Check if email already exists
-    if (MOCK_USERS[normalizedEmail] || localStorage.getItem(`registered_${normalizedEmail}`)) {
-      return { success: false, error: "An account with this email already exists" };
-    }
-
-    const newUser: User = {
-      id: `user-${Date.now()}`,
+    const { data, error } = await supabase.auth.signUp({
       email: normalizedEmail,
-      fullName,
-      firstName: extra?.firstName || fullName.split(" ")[0],
-      lastName: extra?.lastName || fullName.split(" ").slice(1).join(" "),
-      role,
-      phone: extra?.phone,
-      streetAddress: extra?.streetAddress,
-      city: extra?.city,
-      state: extra?.state,
-      zipCode: extra?.zipCode,
-    };
+      password,
+      options: {
+        emailRedirectTo: `${window.location.origin}/`,
+        data: {
+          full_name: fullName,
+          first_name: firstName,
+          last_name: lastName,
+          role,
+        },
+      },
+    });
+    if (error) return { success: false, error: error.message };
 
-    // Store the new user
-    localStorage.setItem(`registered_${normalizedEmail}`, JSON.stringify({ password, user: newUser }));
-    setUser(newUser);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify({ user: newUser }));
+    // Update extra profile fields if provided
+    if (data.user && (extra?.phone || extra?.streetAddress || extra?.city || extra?.state || extra?.zipCode)) {
+      await supabase
+        .from("profiles")
+        .update({
+          phone: extra.phone ?? null,
+          street_address: extra.streetAddress ?? null,
+          city: extra.city ?? null,
+          state: extra.state ?? null,
+          zip_code: extra.zipCode ?? null,
+        })
+        .eq("id", data.user.id);
+    }
 
     return { success: true };
   };
 
-  const logout = () => {
+  const logout = async () => {
+    await supabase.auth.signOut();
     setUser(null);
-    localStorage.removeItem(STORAGE_KEY);
   };
 
-  const updateUser = (updates: Partial<User>) => {
-    setUser((prev) => {
-      if (!prev) return prev;
-      const updated = { ...prev, ...updates };
-      localStorage.setItem(STORAGE_KEY, JSON.stringify({ user: updated }));
-      return updated;
-    });
+  const updateUser = async (updates: Partial<User>) => {
+    if (!user) return;
+    const optimistic = { ...user, ...updates };
+    setUser(optimistic);
+
+    const dbUpdates: Partial<Omit<ProfileRow, "id">> = {};
+    if (updates.fullName !== undefined) dbUpdates.full_name = updates.fullName;
+    if (updates.firstName !== undefined) dbUpdates.first_name = updates.firstName;
+    if (updates.lastName !== undefined) dbUpdates.last_name = updates.lastName;
+    if (updates.avatarUrl !== undefined) dbUpdates.avatar_url = updates.avatarUrl;
+    if (updates.phone !== undefined) dbUpdates.phone = updates.phone;
+    if (updates.streetAddress !== undefined) dbUpdates.street_address = updates.streetAddress;
+    if (updates.city !== undefined) dbUpdates.city = updates.city;
+    if (updates.state !== undefined) dbUpdates.state = updates.state;
+    if (updates.zipCode !== undefined) dbUpdates.zip_code = updates.zipCode;
+    if (updates.role !== undefined) dbUpdates.role = updates.role;
+
+    if (Object.keys(dbUpdates).length > 0) {
+      await supabase.from("profiles").update(dbUpdates).eq("id", user.id);
+    }
   };
 
   return (

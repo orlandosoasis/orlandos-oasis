@@ -100,8 +100,8 @@ const ServiceDetailsSection = () => {
   };
 
   return (
-    <section className="py-16 bg-background">
-      <div className="container max-w-4xl mx-auto px-4">
+    <section className="py-10 md:py-14 lg:py-16 bg-background">
+      <div className="container max-w-4xl mx-auto px-4 md:px-6">
         {/* How to Choose the Right Service Pass */}
         <div className="mb-16">
           <h2 className="text-3xl font-extrabold text-navy tracking-tight mb-3 text-center">
@@ -115,9 +115,9 @@ const ServiceDetailsSection = () => {
             <table className="w-full border-collapse">
               <thead>
                 <tr className="bg-muted">
-                  <th className="text-left p-3 text-navy border-b font-bold">Service Frequency</th>
-                  <th className="text-left p-3 text-navy border-b font-bold">Best for</th>
-                  <th className="text-left p-3 text-navy border-b font-bold">Typical pool condition</th>
+                  <th className="text-left p-3 border-b font-bold text-card-foreground">Service Frequency</th>
+                  <th className="text-left p-3 border-b font-bold text-card-foreground">Best for</th>
+                  <th className="text-left p-3 border-b font-bold text-card-foreground">Typical pool condition</th>
                 </tr>
               </thead>
               <tbody>
@@ -141,15 +141,15 @@ const ServiceDetailsSection = () => {
       </div>
 
       {/* Why Orlando's Oasis - value proposition cards */}
-      <div className="py-16">
-        <div className="container max-w-6xl mx-auto px-4">
+      <div className="py-10 md:py-14 lg:py-16 text-gray-300">
+        <div className="container max-w-6xl mx-auto px-4 md:px-6">
           <h2 className="text-3xl font-extrabold text-navy tracking-tight mb-10 text-center">
             Why Orlando's Oasis
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
             {VALUE_PROPS.map(({ title, description }) => (
               <div key={title} className="bg-white border border-border/50 rounded-xl p-6 flex flex-col gap-2">
-                <h4 className="text-lg font-bold text-navy">{title}</h4>
+                <h4 className="font-bold text-card-foreground text-base">{title}</h4>
                 <p className="text-sm text-muted-foreground leading-relaxed">{description}</p>
               </div>
             ))}

@@ -49,14 +49,14 @@ const About = () => {
                     <CheckCircle2 className="h-5 w-5 text-trust" />
                   </div>
                   <div>
-                    <p className="text-sm font-semibold text-navy">Background-checked techs</p>
+                    <p className="text-sm font-semibold text-card-foreground">Background-checked techs</p>
                     <p className="text-xs font-semibold text-trust">Verified &amp; insured</p>
                   </div>
                 </div>
               </div>
 
               <div>
-                <h2 className="section-title mb-4 text-3xl">
+                <h2 className="section-title mb-4 text-3xl text-card-foreground">
                   Professional pool care<br />across Florida
                 </h2>
                 <p className="body-text mb-4">
@@ -73,7 +73,7 @@ const About = () => {
         {/* Mission */}
         <section className="py-16 md:py-20 px-4 bg-muted text-center">
           <div className="container max-w-6xl mx-auto">
-            <h2 className="section-title max-w-[700px] mx-auto mb-4 text-3xl">
+            <h2 className="section-title max-w-[700px] mx-auto mb-4 text-3xl text-card-foreground">
               Dependable pool care that<br />removes stress from pool ownership
             </h2>
             <p className="body-text max-w-[660px] mx-auto mb-12">
@@ -83,7 +83,7 @@ const About = () => {
               {PILLARS.map((p) => (
                 <div key={p.title} className="bg-card transition-colors px-5 py-7 text-center">
                   <p.icon className="h-7 w-7 text-primary mx-auto mb-3" />
-                  <h3 className="text-sm font-semibold text-navy mb-1">{p.title}</h3>
+                  <h3 className="text-sm font-semibold text-card-foreground mb-1">{p.title}</h3>
                   <p className="text-[13px] text-muted-foreground leading-relaxed">{p.desc}</p>
                 </div>
               ))}

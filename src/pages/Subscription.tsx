@@ -141,7 +141,16 @@ const Subscription = () => {
         open={manageOpen}
         onOpenChange={setManageOpen}
         nextServiceDate={nextDateStr}
+        current={{
+          poolSize: (booking?.pool?.poolSize as "small" | "medium" | "large") || "small",
+          frequency:
+            booking?.frequency === "monthly"
+              ? "weekly"
+              : ((booking?.frequency as "weekly" | "twice-weekly" | "three-weekly") || "weekly"),
+          activeAddonIds: booking?.scheduleData?.addons?.map((a) => a.id) || [],
+        }}
         onCancelled={handleCancelled}
+        onSaved={() => {}}
       />
     </>
   );

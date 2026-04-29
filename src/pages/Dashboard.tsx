@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
 import PageContainer from "@/components/PageContainer";
 import { useBooking, type BookingData, type TimeWindow } from "@/contexts/BookingContext";
+import { useServices } from "@/hooks/useServices";
 import PoolSceneHero from "@/components/dashboard/PoolSceneHero";
 import BookingFlow from "@/components/dashboard/BookingFlow";
 import StatusBadge from "@/components/StatusBadge";

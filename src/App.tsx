@@ -53,6 +53,7 @@ import About from "./pages/About";
 import Services from "./pages/Services";
 import PurchaseSuccess from "./pages/PurchaseSuccess";
 import CustomerLayout from "./components/CustomerLayout";
+import RoleRoute from "./components/RoleRoute";
 
 const queryClient = new QueryClient();
 
@@ -69,8 +70,8 @@ const App = () => (
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
 
-            {/* Customer pages with persistent header */}
-            <Route element={<CustomerLayout />}>
+            {/* Customer pages with persistent header (homeowner only) */}
+            <Route element={<RoleRoute roles={["homeowner"]}><CustomerLayout /></RoleRoute>}>
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/passes" element={<ServicePass />} />
               <Route path="/service/:serviceId" element={<ServiceDetails />} />
@@ -86,27 +87,33 @@ const App = () => (
               <Route path="/account-settings/cleaning-notes" element={<CleaningNotes />} />
               <Route path="/account-settings/preferences" element={<Preferences />} />
               <Route path="/account-settings/experience-level" element={<ExperienceLevel />} />
+              <Route path="/purchase-success" element={<PurchaseSuccess />} />
             </Route>
 
+            {/* Public pages */}
             <Route path="/about" element={<About />} />
             <Route path="/services" element={<Services />} />
             <Route path="/service-areas" element={<ServiceAreas />} />
             <Route path="/terms" element={<Terms />} />
             <Route path="/privacy" element={<Privacy />} />
-            <Route path="/tech-dashboard" element={<TechnicianDashboard />} />
             <Route path="/technician" element={<TechnicianLanding />} />
             <Route path="/technician/apply" element={<TechnicianApplication />} />
-            <Route path="/tech/pools" element={<TechPoolList />} />
-            <Route path="/tech/pools/:poolId" element={<TechPoolDetails />} />
-            <Route path="/tech/service/:serviceId" element={<TechServiceDetails />} />
-            <Route path="/tech/schedule" element={<TechSchedule />} />
-            <Route path="/tech/completed" element={<TechCompletedServices />} />
-            <Route path="/tech/jobs" element={<TechJobs />} />
-            <Route path="/tech/jobs/:serviceId" element={<TechJobDetail />} />
-            <Route path="/tech/messages" element={<TechMessages />} />
-            <Route path="/admin-dashboard" element={<AdminDashboard />} />
             <Route path="/contact" element={<Contact />} />
-            <Route path="/purchase-success" element={<PurchaseSuccess />} />
+
+            {/* Technician routes */}
+            <Route path="/tech-dashboard" element={<RoleRoute roles={["technician"]}><TechnicianDashboard /></RoleRoute>} />
+            <Route path="/tech/pools" element={<RoleRoute roles={["technician"]}><TechPoolList /></RoleRoute>} />
+            <Route path="/tech/pools/:poolId" element={<RoleRoute roles={["technician"]}><TechPoolDetails /></RoleRoute>} />
+            <Route path="/tech/service/:serviceId" element={<RoleRoute roles={["technician"]}><TechServiceDetails /></RoleRoute>} />
+            <Route path="/tech/schedule" element={<RoleRoute roles={["technician"]}><TechSchedule /></RoleRoute>} />
+            <Route path="/tech/completed" element={<RoleRoute roles={["technician"]}><TechCompletedServices /></RoleRoute>} />
+            <Route path="/tech/jobs" element={<RoleRoute roles={["technician"]}><TechJobs /></RoleRoute>} />
+            <Route path="/tech/jobs/:serviceId" element={<RoleRoute roles={["technician"]}><TechJobDetail /></RoleRoute>} />
+            <Route path="/tech/messages" element={<RoleRoute roles={["technician"]}><TechMessages /></RoleRoute>} />
+
+            {/* Admin routes */}
+            <Route path="/admin-dashboard" element={<RoleRoute roles={["admin"]}><AdminDashboard /></RoleRoute>} />
+
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

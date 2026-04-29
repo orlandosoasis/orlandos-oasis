@@ -1,6 +1,9 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
+import { useQueryClient } from "@tanstack/react-query";
+import { Database } from "lucide-react";
 import {
   LayoutDashboard, Wrench, Users, AlertCircle, UserPlus, ChevronLeft,
   Star, Mail, Check, X, LogOut, User, Menu, FileText, Download, Waves, MessageSquare, Megaphone,
@@ -82,6 +85,32 @@ const AdminDashboard = () => {
   const { logout, user } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
+  const queryClient = useQueryClient();
+  const [seeding, setSeeding] = useState(false);
+
+  const handleSeedDemo = async () => {
+    setSeeding(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("seed-demo", {
+        body: user?.id ? { linkExtraToUserId: user.id } : {},
+      });
+      if (error) throw error;
+      if (!data?.ok) throw new Error(data?.error || "Seed failed");
+      toast({
+        title: "Demo data seeded",
+        description: `${data.counts.pools} pools · ${data.counts.services} services · ${data.counts.reviews} reviews`,
+      });
+      await queryClient.invalidateQueries();
+    } catch (e) {
+      toast({
+        title: "Seed failed",
+        description: e instanceof Error ? e.message : String(e),
+        variant: "destructive",
+      });
+    } finally {
+      setSeeding(false);
+    }
+  };
 
   const [reviewFilter, setReviewFilter] = useState<"All" | ReviewStatus>("All");
   const [rejectReviewModal, setRejectReviewModal] = useState<AdminTechReview | null>(null);
@@ -242,6 +271,12 @@ const AdminDashboard = () => {
 
     return (
       <div className="space-y-6">
+        <div className="flex justify-end">
+          <Button size="sm" variant="outline" className="gap-1.5" onClick={handleSeedDemo} disabled={seeding}>
+            <Database className="h-3.5 w-3.5" />
+            {seeding ? "Seeding…" : "Seed demo data"}
+          </Button>
+        </div>
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
           {stats.map((c, i) => (
             <Card key={i}>

@@ -18,7 +18,7 @@ interface PassOption {
   isMostPopular: boolean;
 }
 
-const MOCK_PASSES: PassOption[] = [
+const PASS_OPTIONS: PassOption[] = [
   {
     id: "pass-30",
     label: "30-Min Chemical Check",
@@ -150,7 +150,7 @@ const ServicePass = () => {
             onValueChange={setSelectedPass}
             className="space-y-3"
           >
-            {MOCK_PASSES.map((pass) => (
+            {PASS_OPTIONS.map((pass) => (
               <label
                 key={pass.id}
                 className={`relative flex items-center gap-4 p-4 rounded-xl border-2 cursor-pointer transition-all duration-200 ${

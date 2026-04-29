@@ -6,7 +6,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { ArrowLeft, CheckCircle2 } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { cn } from "@/lib/utils";
-import { TIME_LABELS, formatDateFull } from "@/data/techMockData";
+import { TIME_LABELS, formatDateFull } from "@/types/tech";
 
 const TIME_SLOTS: { value: string; label: string; range: string }[] = [
   { value: "morning", label: "Morning", range: "8:00 AM – 12:00 PM" },

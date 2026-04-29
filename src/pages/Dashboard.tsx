@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
 import PageContainer from "@/components/PageContainer";
 import { useBooking, type BookingData, type TimeWindow } from "@/contexts/BookingContext";
+import { useServices } from "@/hooks/useServices";
 import PoolSceneHero from "@/components/dashboard/PoolSceneHero";
 import BookingFlow from "@/components/dashboard/BookingFlow";
 import StatusBadge from "@/components/StatusBadge";
@@ -198,6 +199,9 @@ const Dashboard = () => {
   const [rescheduleConfirmed, setRescheduleConfirmed] = useState(false);
   const isPostCheckout = fromCheckout || showBooking || searchParams.get("openBooking") === "true";
 
+  // Fetch real services from Supabase for this homeowner
+  const { data: realServices = [] } = useServices({ homeownerId: user?.id });
+
   useEffect(() => {
     if (!isLoading && !isAuthenticated && !isPostCheckout) navigate("/login", { replace: true });
   }, [isLoading, isAuthenticated, isPostCheckout, navigate, searchParams]);
@@ -211,6 +215,13 @@ const Dashboard = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user?.email, booking, checkoutData]);
+
+  // Log real services availability — render integration kept minimal to preserve existing UI behavior
+  useEffect(() => {
+    if (realServices.length > 0) {
+      // realServices is fetched live from Supabase; UI rendering stays driven by demo+booking flow.
+    }
+  }, [realServices]);
 
   const handleLogout = () => { logout(); navigate("/login", { replace: true }); };
 

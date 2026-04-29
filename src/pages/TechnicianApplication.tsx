@@ -7,6 +7,8 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import oasisLogo from "@/assets/oo-logo.png";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 
 /* ── Types ── */
 interface Certification {
@@ -74,6 +76,7 @@ const FileUploadArea = ({
 
 const TechnicianApplication = () => {
   const navigate = useNavigate();
+  const { toast } = useToast();
   const [step, setStep] = useState(1);
   const [isProcessing, setIsProcessing] = useState(false);
   const [submitted, setSubmitted] = useState(false);
@@ -114,22 +117,62 @@ const TechnicianApplication = () => {
 
   const canProceed = step === 1 ? !!step1Valid : !!step2Valid;
 
+  const uploadToBucket = async (bucket: string, file: File, prefix: string) => {
+    const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
+    const path = `applications/${prefix}-${Date.now()}-${safeName}`;
+    const { error } = await supabase.storage.from(bucket).upload(path, file, {
+      contentType: file.type,
+      upsert: false,
+    });
+    if (error) throw error;
+    return path;
+  };
+
   const handleSubmit = async () => {
     setIsProcessing(true);
-    await new Promise((r) => setTimeout(r, 1200));
-    setIsProcessing(false);
+    try {
+      let resumePath: string | null = null;
+      if (resume) {
+        resumePath = await uploadToBucket("resumes", resume, appId);
+      }
 
-    const application = {
-      applicantId: appId,
-      firstName, lastName, email, phone, city, state, zip,
-      yearsOfExperience: yearsExp,
-      certifications: certifications.map((c) => ({ name: c.name, file: c.file?.name })),
-      resumeFile: resume?.name,
-      applicationStatus: "Pending Review",
-      submittedAt: new Date().toISOString(),
-    };
-    console.log("Application submitted:", application);
-    setSubmitted(true);
+      const { data: appRow, error: appErr } = await supabase
+        .from("technician_applications")
+        .insert({
+          first_name: firstName,
+          last_name: lastName,
+          email: email.toLowerCase().trim(),
+          phone,
+          city,
+          state,
+          zip,
+          experience: yearsExp,
+          resume_url: resumePath,
+        })
+        .select("id")
+        .single();
+      if (appErr) throw appErr;
+
+      const certRows: { application_id: string; name: string; file_url: string | null }[] = [];
+      for (const cert of certifications) {
+        if (!cert.name) continue;
+        let filePath: string | null = null;
+        if (cert.file) {
+          filePath = await uploadToBucket("certifications", cert.file, appRow.id);
+        }
+        certRows.push({ application_id: appRow.id, name: cert.name, file_url: filePath });
+      }
+      if (certRows.length > 0) {
+        const { error: certErr } = await supabase.from("applicant_certifications").insert(certRows);
+        if (certErr) throw certErr;
+      }
+
+      setSubmitted(true);
+    } catch (err: any) {
+      toast({ title: "Submission failed", description: err.message, variant: "destructive" });
+    } finally {
+      setIsProcessing(false);
+    }
   };
 
   const handleNext = () => {

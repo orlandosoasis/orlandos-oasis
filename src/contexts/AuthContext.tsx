@@ -173,7 +173,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const optimistic = { ...user, ...updates };
     setUser(optimistic);
 
-    const dbUpdates: Record<string, unknown> = {};
+    const dbUpdates: Record<string, any> = {};
     if (updates.fullName !== undefined) dbUpdates.full_name = updates.fullName;
     if (updates.firstName !== undefined) dbUpdates.first_name = updates.firstName;
     if (updates.lastName !== undefined) dbUpdates.last_name = updates.lastName;

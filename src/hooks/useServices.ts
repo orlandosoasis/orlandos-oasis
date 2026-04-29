@@ -2,6 +2,8 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import type { TechService, TechServiceStatus } from "@/types/tech";
 
+type DbServiceStatus = TechServiceStatus | "cancelled";
+
 type ServiceRow = {
   id: string;
   pool_id: string;
@@ -11,7 +13,7 @@ type ServiceRow = {
   hours: number;
   service_date: string; // ISO date
   time_window: "morning" | "afternoon" | "evening";
-  status: TechServiceStatus;
+  status: DbServiceStatus;
   completed_tasks: string[] | null;
   tech_notes: string | null;
   started_at: string | null;

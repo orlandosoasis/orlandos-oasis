@@ -1,20 +1,20 @@
-// Domain types for the admin portal.
-// Some types are kept for components (AddHomeownerModal, EditHomeownerModal)
-// that still create homeowner objects in-memory; data fetching uses
-// the aggregate types in src/hooks/useAdmin.ts.
+// Domain types for the admin portal view layer.
+// IDs are strings (Supabase UUIDs) for fetched rows, but we accept
+// number too so the AddHomeownerModal can keep using crypto.randomUUID() / Date.now()
+// without immediate breakage.
 
 export type ReviewStatus = "Pending" | "Approved" | "Rejected";
 export type ReviewRejectionReason = "spam" | "inappropriate" | "irrelevant" | "";
 
 export interface AdminTechReview {
-  id: number;
+  id: string;
   reviewer: string;
   technicianName: string;
   rating: number;
   message: string;
   date: string;
   status: ReviewStatus;
-  rejectionReason?: ReviewRejectionReason;
+  rejectionReason?: ReviewRejectionReason | string | null;
 }
 
 export interface AdminTechPool {
@@ -25,7 +25,7 @@ export interface AdminTechPool {
 }
 
 export interface AdminTechnician {
-  id: number;
+  id: string;
   name: string;
   rating: number;
   email: string;
@@ -45,6 +45,7 @@ export interface AdminHomeownerPool {
 }
 
 export interface AdminHomeownerService {
+  id?: string;
   date: string;
   type: string;
   technician: string;
@@ -52,7 +53,7 @@ export interface AdminHomeownerService {
 }
 
 export interface AdminHomeowner {
-  id: number;
+  id: string;
   name: string;
   email: string;
   phone: string;
@@ -69,7 +70,7 @@ export interface AdminHomeowner {
 }
 
 export interface AdminIssue {
-  id: number;
+  id: string;
   homeowner: string;
   type: string;
   message: string;
@@ -86,7 +87,7 @@ export interface AdminApplicantCert {
 }
 
 export interface AdminApplicant {
-  id: number;
+  id: string;
   firstName: string;
   lastName: string;
   email: string;

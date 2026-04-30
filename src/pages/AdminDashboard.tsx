@@ -998,20 +998,38 @@ const AdminDashboard = () => {
   };
 
   // ═══════════ PAGE ROUTER ═══════════
+  const LoadingState = () => (
+    <div className="space-y-4">
+      <Skeleton className="h-8 w-48" />
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+        {Array.from({ length: 5 }).map((_, i) => <Skeleton key={i} className="h-24 w-full" />)}
+      </div>
+      <Skeleton className="h-72 w-full" />
+    </div>
+  );
+
   const renderPage = () => {
+    if (isLoading) return <LoadingState />;
     switch (page) {
       case "dashboard": return <DashboardPage />;
-      case "technicians": return <TechniciansPage />;
+      case "technicians":
+        return technicians.length === 0
+          ? <Card><CardContent className="text-center py-12 text-sm text-muted-foreground">No technicians yet. Approve an applicant or seed demo data to get started.</CardContent></Card>
+          : <TechniciansPage />;
       case "techDetail": return <TechDetailPage />;
       case "homeowners": return <HomeownersPage />;
       case "homeDetail": return <HomeDetailPage />;
       case "issues": return <IssuesPage />;
       case "reviews": return <ReviewsPage />;
-      case "applicants": return <ApplicantsPage />;
+      case "applicants":
+        return applicants.length === 0
+          ? <Card><CardContent className="text-center py-12 text-sm text-muted-foreground">No technician applications yet.</CardContent></Card>
+          : <ApplicantsPage />;
       case "applicantDetail": return <ApplicantDetailPage />;
       default: return <DashboardPage />;
     }
   };
+
 
   return (
     <div className="min-h-screen bg-background text-foreground">

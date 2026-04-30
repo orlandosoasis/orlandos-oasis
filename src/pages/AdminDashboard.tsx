@@ -930,7 +930,7 @@ const AdminDashboard = () => {
 
   // ═══════════ REVIEWS MODERATION ═══════════
   const ReviewsPage = () => {
-    const reviews = technicians.flatMap(t => t.reviews);
+    const reviews = allReviews;
     const filtered = reviewFilter === "All" ? reviews : reviews.filter(r => r.status === reviewFilter);
 
     return (
@@ -1042,7 +1042,7 @@ const AdminDashboard = () => {
               <div className="mt-2.5 p-2.5 bg-blue-50 rounded-lg text-xs text-blue-600 font-medium">Related: {issueModal.relatedService}</div>
               <div className="flex gap-2.5 mt-5 justify-end">
                 <Button variant="outline" className="gap-1.5" onClick={() => setIssueModal(null)}><Mail className="h-4 w-4" /> Reply via Email</Button>
-                {issueModal.status === "Open" && <Button className="gap-1.5" onClick={() => setIssueModal(null)}><Check className="h-4 w-4" /> Mark as Resolved</Button>}
+                {issueModal.status === "Open" && <Button className="gap-1.5" onClick={() => handleResolveIssue(issueModal.id)}><Check className="h-4 w-4" /> Mark as Resolved</Button>}
               </div>
             </div>
           )}

@@ -388,14 +388,14 @@ const AdminDashboard = () => {
   // ═══════════ DASHBOARD PAGE ═══════════
   const DashboardPage = () => {
     const stats = [
-      { label: "Total Homeowners", value: ADMIN_HOMEOWNERS.length, icon: Users, color: "text-primary", bg: "bg-blue-50" },
+      { label: "Total Homeowners", value: homeowners.length, icon: Users, color: "text-primary", bg: "bg-blue-50" },
       { label: "Pool Technicians", value: technicians.length, icon: Wrench, color: "text-violet-500", bg: "bg-violet-50" },
-      { label: "Active Services", value: ADMIN_HOMEOWNERS.reduce((a, h) => a + h.services.filter(s => s.status === "Scheduled").length, 0), icon: Waves, color: "text-emerald-500", bg: "bg-emerald-50" },
+      { label: "Active Services", value: homeowners.reduce((a, h) => a + h.services.filter(s => s.status === "Scheduled").length, 0), icon: Waves, color: "text-emerald-500", bg: "bg-emerald-50" },
       { label: "Reported Issues", value: openIssueCount, icon: AlertCircle, color: "text-amber-500", bg: "bg-amber-50" },
       { label: "Pending Applicants", value: pendingCount, icon: UserPlus, color: "text-violet-500", bg: "bg-violet-50" },
     ];
 
-    const recentServices = ADMIN_HOMEOWNERS.flatMap(h => h.services.map(s => ({ ...s, homeowner: h.name })))
+    const recentServices = homeowners.flatMap(h => h.services.map(s => ({ ...s, homeowner: h.name })))
       .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()).slice(0, 5);
 
     return (
@@ -453,7 +453,7 @@ const AdminDashboard = () => {
                   <TableHead>Homeowner</TableHead><TableHead>Type</TableHead><TableHead>Status</TableHead>
                 </TableRow></TableHeader>
                 <TableBody>
-                  {ADMIN_ISSUES.filter(i => i.status === "Open").map((issue, i) => (
+                  {issues.filter(i => i.status === "Open").map((issue, i) => (
                     <TableRow key={i}>
                       <TableCell className="font-medium">{issue.homeowner}</TableCell><TableCell>{issue.type}</TableCell>
                       <TableCell><StatusBadge status={issue.status} /></TableCell>
@@ -535,7 +535,7 @@ const AdminDashboard = () => {
 
   // ═══════════ HOMEOWNERS ═══════════
   const handleHomeownerCreated = (h: AdminHomeowner) => {
-    setHomeowners(prev => [h, ...prev]);
+    setExtraHomeowners(prev => [h, ...prev]);
     setAddHomeownerOpen(false);
     setHomeownerSuccess(true);
     setTimeout(() => setHomeownerSuccess(false), 4000);
@@ -543,7 +543,7 @@ const AdminDashboard = () => {
   };
 
   const handleHomeownerUpdated = (h: AdminHomeowner) => {
-    setHomeowners(prev => prev.map(x => x.id === h.id ? h : x));
+    setExtraHomeowners(prev => prev.map(x => x.id === h.id ? h : x));
     setEditHomeownerOpen(false);
     setEditingHomeowner(null);
     setHomeownerEditSuccess(true);
@@ -906,7 +906,9 @@ const AdminDashboard = () => {
             <TableHead>Homeowner</TableHead><TableHead>Type</TableHead><TableHead>Message</TableHead><TableHead>Date</TableHead><TableHead>Email</TableHead><TableHead>Status</TableHead><TableHead>Actions</TableHead>
           </TableRow></TableHeader>
           <TableBody>
-            {ADMIN_ISSUES.map(issue => (
+            {issues.length === 0 ? (
+              <TableRow><TableCell colSpan={7} className="text-center text-muted-foreground py-8">No issues reported.</TableCell></TableRow>
+            ) : issues.map(issue => (
               <TableRow key={issue.id}>
                 <TableCell className="font-semibold">{issue.homeowner}</TableCell><TableCell>{issue.type}</TableCell>
                 <TableCell className="max-w-[220px] truncate text-muted-foreground">{issue.message}</TableCell>
@@ -915,7 +917,7 @@ const AdminDashboard = () => {
                 <TableCell>
                   <div className="flex gap-2">
                     <Button size="sm" variant="outline" className="gap-1.5" onClick={() => setIssueModal(issue)}><Mail className="h-3.5 w-3.5" /> Reply</Button>
-                    {issue.status === "Open" && <Button size="sm" className="gap-1.5"><Check className="h-3.5 w-3.5" /> Resolve</Button>}
+                    {issue.status === "Open" && <Button size="sm" className="gap-1.5" onClick={() => handleResolveIssue(issue.id)}><Check className="h-3.5 w-3.5" /> Resolve</Button>}
                   </div>
                 </TableCell>
               </TableRow>

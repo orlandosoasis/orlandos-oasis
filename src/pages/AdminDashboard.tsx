@@ -82,17 +82,128 @@ const InfoRow = ({ label, value, badge }: { label: string; value: React.ReactNod
 
 const AdminDashboard = () => {
   const [page, setPage] = useState<AdminPage>("dashboard");
-  const [detailId, setDetailId] = useState<number | null>(null);
+  const [detailId, setDetailId] = useState<string | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [issueModal, setIssueModal] = useState<AdminIssue | null>(null);
-  const [technicians, setTechnicians] = useState(INIT_TECHNICIANS);
-  const [applicants, setApplicants] = useState(INIT_APPLICANTS);
   const [confirmAction, setConfirmAction] = useState<{ type: "approve" | "reject"; applicant: AdminApplicant } | null>(null);
   const { logout, user } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [seeding, setSeeding] = useState(false);
+
+  // Live data from Supabase
+  const techniciansQuery = useAdminTechnicians();
+  const homeownersQuery = useAdminHomeowners();
+  const issuesQuery = useAdminIssues();
+  const applicationsQuery = useTechnicianApplications();
+  const reviewsQuery = useReviews();
+  const updateIssueStatus = useUpdateIssueStatus();
+  const updateApplicationStatus = useUpdateApplicationStatus();
+  const updateReviewStatus = useUpdateReviewStatus();
+
+  const isLoading =
+    techniciansQuery.isLoading ||
+    homeownersQuery.isLoading ||
+    issuesQuery.isLoading ||
+    applicationsQuery.isLoading ||
+    reviewsQuery.isLoading;
+
+  // Adapt aggregates → legacy view-model shapes used by the existing JSX.
+  const technicians: AdminTechnician[] = (techniciansQuery.data ?? []).map((t) => ({
+    id: t.id,
+    name: t.name,
+    rating: t.rating,
+    email: t.email,
+    phone: t.phone ?? "—",
+    status: t.status,
+    assignedPools: t.assignedPools,
+    completedServices: t.completedServices,
+    reviews: t.reviews.map((r) => ({
+      id: r.id,
+      reviewer: r.reviewer,
+      technicianName: t.name,
+      rating: r.rating,
+      message: r.message,
+      date: r.date,
+      status: r.status,
+      rejectionReason: r.rejectionReason ?? "",
+    })),
+    pools: t.pools.map((p) => ({
+      address: p.address,
+      homeowner: p.homeowner,
+      nextService: p.nextService,
+      serviceType: p.serviceType,
+    })),
+  }));
+
+  const fetchedHomeowners: AdminHomeowner[] = (homeownersQuery.data ?? []).map((h) => ({
+    id: h.id,
+    name: h.name,
+    email: h.email,
+    phone: h.phone ?? "—",
+    address: h.address,
+    plan: h.plan,
+    startDate: h.startDate,
+    pools: h.pools.map((p) => ({
+      address: p.address,
+      size: p.size,
+      technician: p.technicianName,
+      nextService: p.nextService,
+    })),
+    services: h.services.map((s) => ({
+      id: s.id,
+      date: s.date,
+      type: s.type,
+      technician: s.technicianName,
+      status: s.status,
+    })),
+    status: "Active",
+  }));
+
+  const issues: AdminIssue[] = (issuesQuery.data ?? []).map((i) => ({
+    id: i.id,
+    homeowner: i.homeownerName,
+    type: i.type,
+    message: i.message,
+    serviceDate: i.serviceDate ?? "—",
+    email: i.email,
+    phone: i.phone ?? "—",
+    status: i.status === "open" ? "Open" : "Resolved",
+    relatedService: i.relatedService ?? "—",
+  }));
+
+  const applicants: AdminApplicant[] = (applicationsQuery.data ?? []).map((a) => ({
+    id: a.id,
+    firstName: a.firstName,
+    lastName: a.lastName,
+    email: a.email,
+    phone: a.phone ?? "—",
+    city: a.city ?? "—",
+    state: a.state ?? "—",
+    zip: a.zip ?? "—",
+    experience: a.experience ?? "—",
+    resume: a.resumeUrl ?? "",
+    certifications: a.certifications.map((c) => ({
+      name: c.name,
+      file: c.fileUrl ?? "",
+    })),
+    appliedDate: a.appliedDate,
+    status: (a.status.charAt(0).toUpperCase() + a.status.slice(1)) as AdminApplicant["status"],
+  }));
+
+  // Cross-tech reviews list (drives Reviews moderation page + badge).
+  const allReviews: AdminTechReview[] = (reviewsQuery.data ?? []).map((r) => ({
+    id: r.id,
+    reviewer: r.reviewerName,
+    technicianName: r.technicianName,
+    rating: r.rating,
+    message: r.message ?? "",
+    date: new Date(r.createdAt).toLocaleDateString("en-US", { month: "short", day: "2-digit", year: "numeric" }),
+    status: (r.status.charAt(0).toUpperCase() + r.status.slice(1)) as ReviewStatus,
+    rejectionReason: r.rejectionReason ?? "",
+  }));
+  const pendingReviewCount = allReviews.filter((r) => r.status === "Pending").length;
 
   const handleSeedDemo = async () => {
     setSeeding(true);
@@ -130,8 +241,9 @@ const AdminDashboard = () => {
   const [rejectionEmailSubject, setRejectionEmailSubject] = useState("");
   const [rejectionEmailBody, setRejectionEmailBody] = useState("");
 
-  // Homeowners
-  const [homeowners, setHomeowners] = useState<AdminHomeowner[]>(ADMIN_HOMEOWNERS);
+  // Locally-added homeowners (modal-managed; no schema for plan/notes/payments yet).
+  const [extraHomeowners, setExtraHomeowners] = useState<AdminHomeowner[]>([]);
+  const homeowners: AdminHomeowner[] = [...extraHomeowners, ...fetchedHomeowners];
   const [addHomeownerOpen, setAddHomeownerOpen] = useState(false);
   const [editHomeownerOpen, setEditHomeownerOpen] = useState(false);
   const [editingHomeowner, setEditingHomeowner] = useState<AdminHomeowner | null>(null);
@@ -140,31 +252,32 @@ const AdminDashboard = () => {
   const [scheduleTab, setScheduleTab] = useState<"upcoming" | "past">("upcoming");
   const [detailTab, setDetailTab] = useState<"overview" | "pools" | "schedule" | "payments" | "notes">("overview");
 
-  const nav = (p: AdminPage, id: number | null = null) => { setPage(p); setDetailId(id); setSidebarOpen(false); };
+  const nav = (p: AdminPage, id: string | null = null) => { setPage(p); setDetailId(id); setSidebarOpen(false); };
 
-  const handleApprove = (applicant: AdminApplicant) => {
-    setApplicants(prev => prev.map(a => a.id === applicant.id ? { ...a, status: "Approved" as const } : a));
-    const newTech: AdminTechnician = {
-      id: Date.now(), name: `${applicant.firstName} ${applicant.lastName.charAt(0)}.`,
-      rating: 0, email: applicant.email, phone: applicant.phone, status: "Active",
-      assignedPools: 0, completedServices: 0, reviews: [], pools: [],
-    };
-    setTechnicians(prev => [...prev, newTech]);
-    setConfirmAction(null);
-    toast({ title: "Applicant Approved", description: `${applicant.firstName} ${applicant.lastName} approved and added as a technician.`, variant: "success" });
-    if (page === "applicantDetail") nav("applicants");
+  const handleApprove = async (applicant: AdminApplicant) => {
+    try {
+      await updateApplicationStatus.mutateAsync({ id: applicant.id, status: "approved" });
+      setConfirmAction(null);
+      toast({ title: "Applicant Approved", description: `${applicant.firstName} ${applicant.lastName} approved.`, variant: "success" });
+      if (page === "applicantDetail") nav("applicants");
+    } catch (e) {
+      toast({ title: "Approve failed", description: e instanceof Error ? e.message : String(e), variant: "destructive" });
+    }
   };
 
   const DEFAULT_REJECTION_MESSAGE = "Thank you for applying for the position. We appreciate the time and effort you put into your application. After careful review, we have decided to move forward with another candidate at this time. We wish you the best in your job search and future opportunities.";
 
-  const handleReject = (applicant: AdminApplicant) => {
-    setApplicants(prev => prev.map(a => a.id === applicant.id ? { ...a, status: "Rejected" as const } : a));
-    setConfirmAction(null);
-    // Open the rejection email modal
-    setRejectionEmailApplicant(applicant);
-    setRejectionEmailSubject("Thank you for applying");
-    setRejectionEmailBody(DEFAULT_REJECTION_MESSAGE);
-    if (page === "applicantDetail") nav("applicants");
+  const handleReject = async (applicant: AdminApplicant) => {
+    try {
+      await updateApplicationStatus.mutateAsync({ id: applicant.id, status: "rejected" });
+      setConfirmAction(null);
+      setRejectionEmailApplicant(applicant);
+      setRejectionEmailSubject("Thank you for applying");
+      setRejectionEmailBody(DEFAULT_REJECTION_MESSAGE);
+      if (page === "applicantDetail") nav("applicants");
+    } catch (e) {
+      toast({ title: "Reject failed", description: e instanceof Error ? e.message : String(e), variant: "destructive" });
+    }
   };
 
   const handleSendRejectionEmail = () => {
@@ -175,29 +288,39 @@ const AdminDashboard = () => {
 
   const handleLogout = () => { logout(); navigate("/"); };
 
-  const allReviews = technicians.flatMap(t => t.reviews);
-  const pendingReviewCount = allReviews.filter(r => r.status === "Pending").length;
-
-  const handleApproveReview = (reviewId: number) => {
-    setTechnicians(prev => prev.map(t => ({
-      ...t,
-      reviews: t.reviews.map(r => r.id === reviewId ? { ...r, status: "Approved" as const } : r),
-    })));
-    toast({ title: "Review Approved", description: "The review is now publicly visible.", variant: "success" });
+  const handleApproveReview = async (reviewId: string) => {
+    try {
+      await updateReviewStatus.mutateAsync({ id: reviewId, status: "approved" });
+      toast({ title: "Review Approved", description: "The review is now publicly visible.", variant: "success" });
+    } catch (e) {
+      toast({ title: "Update failed", description: e instanceof Error ? e.message : String(e), variant: "destructive" });
+    }
   };
 
-  const handleRejectReview = (reviewId: number, reason: ReviewRejectionReason) => {
-    setTechnicians(prev => prev.map(t => ({
-      ...t,
-      reviews: t.reviews.map(r => r.id === reviewId ? { ...r, status: "Rejected" as const, rejectionReason: reason } : r),
-    })));
-    setRejectReviewModal(null);
-    setRejectionReason("");
-    toast({ title: "Review Rejected", description: "The review has been rejected and hidden from public view.", variant: "destructive" });
+  const handleRejectReview = async (reviewId: string, reason: ReviewRejectionReason) => {
+    try {
+      await updateReviewStatus.mutateAsync({ id: reviewId, status: "rejected", rejectionReason: reason || null });
+      setRejectReviewModal(null);
+      setRejectionReason("");
+      toast({ title: "Review Rejected", description: "The review has been rejected and hidden from public view.", variant: "destructive" });
+    } catch (e) {
+      toast({ title: "Update failed", description: e instanceof Error ? e.message : String(e), variant: "destructive" });
+    }
+  };
+
+  const handleResolveIssue = async (id: string) => {
+    try {
+      await updateIssueStatus.mutateAsync({ id, status: "resolved" });
+      toast({ title: "Issue resolved", variant: "success" });
+      setIssueModal(null);
+    } catch (e) {
+      toast({ title: "Update failed", description: e instanceof Error ? e.message : String(e), variant: "destructive" });
+    }
   };
 
   const pendingCount = applicants.filter(a => a.status === "Pending").length;
-  const openIssueCount = ADMIN_ISSUES.filter(i => i.status === "Open").length;
+  const openIssueCount = issues.filter(i => i.status === "Open").length;
+
 
   const menuItems = [
     { key: "dashboard" as const, label: "Dashboard", icon: LayoutDashboard },

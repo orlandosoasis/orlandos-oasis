@@ -22,10 +22,16 @@ import oasisLogo from "@/assets/oo-logo.png";
 import AddHomeownerModal from "@/components/admin/AddHomeownerModal";
 import EditHomeownerModal from "@/components/admin/EditHomeownerModal";
 import ReportRouteIssueModal, { type RouteService } from "@/components/ReportRouteIssueModal";
+import type {
+  AdminTechnician, AdminApplicant, AdminApplicantCert, AdminIssue,
+  AdminTechReview, ReviewStatus, ReviewRejectionReason, AdminHomeowner,
+} from "@/types/admin";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
-  INIT_TECHNICIANS, ADMIN_HOMEOWNERS, ADMIN_ISSUES, INIT_APPLICANTS,
-  type AdminTechnician, type AdminApplicant, type AdminApplicantCert, type AdminIssue, type AdminTechReview, type ReviewStatus, type ReviewRejectionReason, type AdminHomeowner,
-} from "@/data/adminMockData";
+  useAdminTechnicians, useAdminHomeowners, useAdminIssues,
+  useTechnicianApplications, useUpdateIssueStatus, useUpdateApplicationStatus,
+} from "@/hooks/useAdmin";
+import { useReviews, useUpdateReviewStatus } from "@/hooks/useReviews";
 
 type AdminPage = "dashboard" | "technicians" | "techDetail" | "homeowners" | "homeDetail" | "issues" | "applicants" | "applicantDetail" | "reviews";
 

@@ -138,7 +138,7 @@ const AddHomeownerModal = ({ open, onClose, onCreate }: AddHomeownerModalProps) 
   const handleCreate = () => {
     const fullAddress = [street, city, state, zip].filter(Boolean).join(", ");
     const newHomeowner: AdminHomeowner = {
-      id: Date.now(),
+      id: typeof crypto !== "undefined" && "randomUUID" in crypto ? crypto.randomUUID() : `local-${Date.now()}`,
       name: fullName,
       email,
       phone,

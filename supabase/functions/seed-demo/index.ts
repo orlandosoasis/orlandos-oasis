@@ -221,6 +221,38 @@ Deno.serve(async (req) => {
   }
 
   try {
+    // ===== Admin-only access guard =====
+    // Without this check, anyone with the function URL could call it and
+    // pollute / overwrite demo data. We verify the caller's JWT and confirm
+    // they have role='admin' in the profiles table before proceeding.
+    const authHeader = req.headers.get("Authorization") ?? "";
+    const token = authHeader.replace(/^Bearer\s+/i, "").trim();
+    if (!token) {
+      return new Response(
+        JSON.stringify({ error: "Missing Authorization header" }),
+        { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+      );
+    }
+    const { data: userData, error: userErr } = await admin.auth.getUser(token);
+    if (userErr || !userData?.user) {
+      return new Response(
+        JSON.stringify({ error: "Invalid or expired token" }),
+        { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+      );
+    }
+    const { data: profile, error: profileErr } = await admin
+      .from("profiles")
+      .select("role")
+      .eq("id", userData.user.id)
+      .maybeSingle();
+    if (profileErr || profile?.role !== "admin") {
+      return new Response(
+        JSON.stringify({ error: "Admin role required" }),
+        { status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+      );
+    }
+    // ===== End guard =====
+
     let linkExtraToUserId: string | null = null;
     try {
       const body = await req.json();

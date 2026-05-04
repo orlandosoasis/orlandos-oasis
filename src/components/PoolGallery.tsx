@@ -72,9 +72,7 @@ const PoolGallery = () => {
               alt={GALLERY_ITEMS[selectedIndex].alt}
               className="w-full rounded-xl object-contain max-h-[80vh]"
             />
-            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-[2] bg-card/90 backdrop-blur-sm text-foreground text-sm font-semibold px-3 py-1.5 rounded-full border border-border shadow-md whitespace-nowrap">
-              {GALLERY_ITEMS[selectedIndex].label}
-            </div>
+
             <button
               onClick={() => setSelectedIndex(null)}
               className="absolute top-3 right-3 bg-card/90 backdrop-blur-sm text-foreground w-8 h-8 rounded-full flex items-center justify-center border border-border hover:bg-card transition-colors text-lg"

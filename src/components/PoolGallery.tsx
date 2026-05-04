@@ -55,10 +55,6 @@ const PoolGallery = () => {
               />
               {/* Hover overlay */}
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-              {/* Label — bottom-centered, visible on hover */}
-              <span className="absolute bottom-3 md:bottom-4 left-1/2 -translate-x-1/2 z-[2] bg-card/90 backdrop-blur-sm text-foreground text-xs font-semibold px-3 py-1 rounded-full border border-border shadow-md whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                {item.label}
-              </span>
             </button>
           ))}
         </div>

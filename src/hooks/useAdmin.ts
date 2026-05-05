@@ -39,6 +39,8 @@ export interface AdminHomeownerAggregate {
   services: { id: string; date: string; type: string; technicianName: string; status: "Completed" | "Scheduled" }[];
 }
 
+export type IssueStatusDb = "open" | "in_progress" | "resolved";
+
 export interface AdminIssueRow {
   id: string;
   homeownerId: string;
@@ -48,9 +50,12 @@ export interface AdminIssueRow {
   type: string;
   message: string;
   serviceDate: string | null;
-  status: "open" | "resolved";
+  status: IssueStatusDb;
   relatedService: string | null;
   createdAt: string;
+  adminNotes: string | null;
+  assignedTechnicianId: string | null;
+  resolvedAt: string | null;
 }
 
 export interface AdminApplicantRow {
@@ -274,6 +279,7 @@ export function useAdminIssues() {
         : { data: [] as { id: string; full_name: string | null; email: string; phone: string | null }[] };
       return (issues ?? []).map((i): AdminIssueRow => {
         const p = profiles?.find((x) => x.id === i.homeowner_id);
+        const row = i as typeof i & { admin_notes?: string | null; assigned_technician_id?: string | null; resolved_at?: string | null };
         return {
           id: i.id,
           homeownerId: i.homeowner_id,
@@ -283,20 +289,41 @@ export function useAdminIssues() {
           type: i.type,
           message: i.message,
           serviceDate: i.service_date ? fmtServiceDate(i.service_date) : null,
-          status: i.status as "open" | "resolved",
+          status: i.status as IssueStatusDb,
           relatedService: i.related_service,
           createdAt: i.created_at,
+          adminNotes: row.admin_notes ?? null,
+          assignedTechnicianId: row.assigned_technician_id ?? null,
+          resolvedAt: row.resolved_at ?? null,
         };
       });
     },
   });
 }
 
+export interface UpdateIssuePatch {
+  status?: IssueStatusDb;
+  adminNotes?: string | null;
+  assignedTechnicianId?: string | null;
+}
+
 export function useUpdateIssueStatus() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: async ({ id, status }: { id: string; status: "open" | "resolved" }) => {
-      const { error } = await supabase.from("issues").update({ status }).eq("id", id);
+    mutationFn: async ({ id, status, adminNotes, assignedTechnicianId }: { id: string } & UpdateIssuePatch) => {
+      const patch: {
+        status?: IssueStatusDb;
+        admin_notes?: string | null;
+        assigned_technician_id?: string | null;
+        resolved_at?: string;
+      } = {};
+      if (status !== undefined) {
+        patch.status = status;
+        if (status === "resolved") patch.resolved_at = new Date().toISOString();
+      }
+      if (adminNotes !== undefined) patch.admin_notes = adminNotes;
+      if (assignedTechnicianId !== undefined) patch.assigned_technician_id = assignedTechnicianId;
+      const { error } = await supabase.from("issues").update(patch).eq("id", id);
       if (error) throw error;
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: ["admin-issues"] }),

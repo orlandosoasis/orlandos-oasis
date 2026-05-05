@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -32,6 +32,10 @@ import {
   useTechnicianApplications, useUpdateIssueStatus, useUpdateApplicationStatus,
 } from "@/hooks/useAdmin";
 import { useReviews, useUpdateReviewStatus } from "@/hooks/useReviews";
+import { useService, useUpdateService } from "@/hooks/useServices";
+import { Calendar } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { format } from "date-fns";
 
 type AdminPage = "dashboard" | "technicians" | "techDetail" | "homeowners" | "homeDetail" | "issues" | "applicants" | "applicantDetail" | "reviews";
 
@@ -53,6 +57,7 @@ const StatusBadge = ({ status }: { status: string }) => {
     Inactive: "bg-muted text-muted-foreground border-border",
     Completed: "bg-emerald-50 text-emerald-600 border-emerald-200",
     Scheduled: "bg-blue-50 text-blue-600 border-blue-200",
+    "In Progress": "bg-blue-50 text-blue-600 border-blue-200",
     Open: "bg-amber-50 text-amber-600 border-amber-200",
     Resolved: "bg-emerald-50 text-emerald-600 border-emerald-200",
     Pending: "bg-amber-50 text-amber-600 border-amber-200",
@@ -85,6 +90,51 @@ const AdminDashboard = () => {
   const [detailId, setDetailId] = useState<string | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [issueModal, setIssueModal] = useState<AdminIssue | null>(null);
+  const [issueDraftStatus, setIssueDraftStatus] = useState<"open" | "in_progress" | "resolved">("open");
+  const [issueDraftNotes, setIssueDraftNotes] = useState("");
+  const [issueDraftTechId, setIssueDraftTechId] = useState<string>("");
+  const [editServiceId, setEditServiceId] = useState<string | null>(null);
+  const [svcDraftStatus, setSvcDraftStatus] = useState<"scheduled" | "in_progress" | "completed">("scheduled");
+  const [svcDraftDate, setSvcDraftDate] = useState<Date | undefined>(undefined);
+  const [svcDraftWindow, setSvcDraftWindow] = useState<"morning" | "afternoon" | "evening">("morning");
+  const [svcDraftTechId, setSvcDraftTechId] = useState<string>("");
+  const editServiceQuery = useService(editServiceId ?? undefined);
+  const updateService = useUpdateService();
+
+  useEffect(() => {
+    const svc = editServiceQuery.data;
+    if (svc) {
+      setSvcDraftStatus(svc.status === "completed" ? "completed" : svc.status === "in_progress" ? "in_progress" : "scheduled");
+      setSvcDraftDate(svc.date);
+      setSvcDraftWindow(svc.timeWindow);
+      setSvcDraftTechId(svc.technicianId ?? "");
+    }
+  }, [editServiceQuery.data]);
+
+  const handleSaveService = async () => {
+    if (!editServiceId) return;
+    try {
+      await updateService.mutateAsync({
+        id: editServiceId,
+        patch: {
+          status: svcDraftStatus,
+          serviceDate: svcDraftDate,
+          timeWindow: svcDraftWindow,
+        },
+      });
+      // Tech reassignment requires direct supabase call (hook patch doesn't include it)
+      if (svcDraftTechId !== (editServiceQuery.data?.technicianId ?? "")) {
+        await supabase.from("services").update({ technician_id: svcDraftTechId || null }).eq("id", editServiceId);
+        await queryClient.invalidateQueries({ queryKey: ["services"] });
+        await queryClient.invalidateQueries({ queryKey: ["admin-homeowners"] });
+      }
+      await queryClient.invalidateQueries({ queryKey: ["admin-homeowners"] });
+      toast({ title: "Service updated", variant: "success" });
+      setEditServiceId(null);
+    } catch (e) {
+      toast({ title: "Update failed", description: e instanceof Error ? e.message : String(e), variant: "destructive" });
+    }
+  };
   const [confirmAction, setConfirmAction] = useState<{ type: "approve" | "reject"; applicant: AdminApplicant } | null>(null);
   const { logout, user } = useAuth();
   const navigate = useNavigate();
@@ -169,8 +219,10 @@ const AdminDashboard = () => {
     serviceDate: i.serviceDate ?? "—",
     email: i.email,
     phone: i.phone ?? "—",
-    status: i.status === "open" ? "Open" : "Resolved",
+    status: i.status === "open" ? "Open" : i.status === "in_progress" ? "In Progress" : "Resolved",
     relatedService: i.relatedService ?? "—",
+    adminNotes: i.adminNotes,
+    assignedTechnicianId: i.assignedTechnicianId,
   }));
 
   const applicants: AdminApplicant[] = (applicationsQuery.data ?? []).map((a) => ({
@@ -308,6 +360,29 @@ const AdminDashboard = () => {
     }
   };
 
+  const openIssueModal = (issue: AdminIssue) => {
+    setIssueModal(issue);
+    setIssueDraftStatus(issue.status === "Open" ? "open" : issue.status === "In Progress" ? "in_progress" : "resolved");
+    setIssueDraftNotes(issue.adminNotes ?? "");
+    setIssueDraftTechId(issue.assignedTechnicianId ?? "");
+  };
+
+  const handleSaveIssue = async () => {
+    if (!issueModal) return;
+    try {
+      await updateIssueStatus.mutateAsync({
+        id: issueModal.id,
+        status: issueDraftStatus,
+        adminNotes: issueDraftNotes || null,
+        assignedTechnicianId: issueDraftTechId || null,
+      });
+      toast({ title: "Issue updated", variant: "success" });
+      setIssueModal(null);
+    } catch (e) {
+      toast({ title: "Update failed", description: e instanceof Error ? e.message : String(e), variant: "destructive" });
+    }
+  };
+
   const handleResolveIssue = async (id: string) => {
     try {
       await updateIssueStatus.mutateAsync({ id, status: "resolved" });
@@ -435,8 +510,10 @@ const AdminDashboard = () => {
                   <TableHead>Homeowner</TableHead><TableHead>Service</TableHead><TableHead>Technician</TableHead><TableHead>Status</TableHead>
                 </TableRow></TableHeader>
                 <TableBody>
-                  {recentServices.map((r, i) => (
-                    <TableRow key={i}>
+                  {recentServices.length === 0 ? (
+                    <TableRow><TableCell colSpan={4} className="text-center text-muted-foreground text-xs py-6">No services scheduled</TableCell></TableRow>
+                  ) : recentServices.map((r, i) => (
+                    <TableRow key={r.id ?? i} className="cursor-pointer hover:bg-muted/50" onClick={() => r.id && setEditServiceId(r.id)}>
                       <TableCell className="font-medium">{r.homeowner}</TableCell><TableCell>{r.type}</TableCell><TableCell>{r.technician}</TableCell>
                       <TableCell><StatusBadge status={r.status} /></TableCell>
                     </TableRow>
@@ -453,8 +530,10 @@ const AdminDashboard = () => {
                   <TableHead>Homeowner</TableHead><TableHead>Type</TableHead><TableHead>Status</TableHead>
                 </TableRow></TableHeader>
                 <TableBody>
-                  {issues.filter(i => i.status === "Open").map((issue, i) => (
-                    <TableRow key={i}>
+                  {issues.filter(i => i.status === "Open").length === 0 ? (
+                    <TableRow><TableCell colSpan={3} className="text-center text-muted-foreground text-xs py-6">No open issues</TableCell></TableRow>
+                  ) : issues.filter(i => i.status === "Open").map((issue, i) => (
+                    <TableRow key={i} onClick={() => openIssueModal(issue)} className="cursor-pointer hover:bg-muted/50">
                       <TableCell className="font-medium">{issue.homeowner}</TableCell><TableCell>{issue.type}</TableCell>
                       <TableCell><StatusBadge status={issue.status} /></TableCell>
                     </TableRow>
@@ -909,14 +988,14 @@ const AdminDashboard = () => {
             {issues.length === 0 ? (
               <TableRow><TableCell colSpan={7} className="text-center text-muted-foreground py-8">No issues reported.</TableCell></TableRow>
             ) : issues.map(issue => (
-              <TableRow key={issue.id}>
+              <TableRow key={issue.id} onClick={() => openIssueModal(issue)} className="cursor-pointer hover:bg-muted/50">
                 <TableCell className="font-semibold">{issue.homeowner}</TableCell><TableCell>{issue.type}</TableCell>
                 <TableCell className="max-w-[220px] truncate text-muted-foreground">{issue.message}</TableCell>
                 <TableCell className="whitespace-nowrap">{issue.serviceDate}</TableCell><TableCell>{issue.email}</TableCell>
                 <TableCell><StatusBadge status={issue.status} /></TableCell>
-                <TableCell>
+                <TableCell onClick={(e) => e.stopPropagation()}>
                   <div className="flex gap-2">
-                    <Button size="sm" variant="outline" className="gap-1.5" onClick={() => setIssueModal(issue)}><Mail className="h-3.5 w-3.5" /> Reply</Button>
+                    <Button size="sm" variant="outline" className="gap-1.5" onClick={() => openIssueModal(issue)}>View</Button>
                     {issue.status === "Open" && <Button size="sm" className="gap-1.5" onClick={() => handleResolveIssue(issue.id)}><Check className="h-3.5 w-3.5" /> Resolve</Button>}
                   </div>
                 </TableCell>
@@ -1041,26 +1120,135 @@ const AdminDashboard = () => {
 
       {/* Issue Detail Modal */}
       <Dialog open={!!issueModal} onOpenChange={() => setIssueModal(null)}>
-        <DialogContent className="sm:max-w-[520px]">
+        <DialogContent className="sm:max-w-[560px] pt-10 max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Issue Details</DialogTitle>
+            <DialogDescription>Update status, assign a technician, and add resolution notes.</DialogDescription>
           </DialogHeader>
           {issueModal && (
-            <div>
-              <InfoRow label="Homeowner" value={issueModal.homeowner} />
-              <InfoRow label="Email" value={issueModal.email} />
-              <InfoRow label="Phone" value={issueModal.phone} />
-              <InfoRow label="Issue Type" value={issueModal.type} />
-              <InfoRow label="Service Date" value={issueModal.serviceDate} />
-              <InfoRow label="Status" value={issueModal.status} badge />
-              <div className="mt-4 p-3.5 bg-muted rounded-lg text-sm text-foreground leading-relaxed">
+            <div className="space-y-4">
+              <div>
+                <InfoRow label="Homeowner" value={issueModal.homeowner} />
+                <InfoRow label="Email" value={issueModal.email} />
+                <InfoRow label="Phone" value={issueModal.phone} />
+                <InfoRow label="Issue Type" value={issueModal.type} />
+                <InfoRow label="Service Date" value={issueModal.serviceDate} />
+              </div>
+              <div className="p-3.5 bg-muted rounded-lg text-sm text-foreground leading-relaxed">
                 <div className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-1.5">Message</div>
                 {issueModal.message}
               </div>
-              <div className="mt-2.5 p-2.5 bg-blue-50 rounded-lg text-xs text-blue-600 font-medium">Related: {issueModal.relatedService}</div>
-              <div className="flex gap-2.5 mt-5 justify-end">
-                <Button variant="outline" className="gap-1.5" onClick={() => setIssueModal(null)}><Mail className="h-4 w-4" /> Reply via Email</Button>
-                {issueModal.status === "Open" && <Button className="gap-1.5" onClick={() => handleResolveIssue(issueModal.id)}><Check className="h-4 w-4" /> Mark as Resolved</Button>}
+              <div className="p-2.5 bg-blue-50 rounded-lg text-xs text-blue-600 font-medium">Related: {issueModal.relatedService}</div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="space-y-1.5">
+                  <label className="text-xs font-semibold text-muted-foreground">Status</label>
+                  <Select value={issueDraftStatus} onValueChange={(v) => setIssueDraftStatus(v as typeof issueDraftStatus)}>
+                    <SelectTrigger><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="open">Open</SelectItem>
+                      <SelectItem value="in_progress">In Progress</SelectItem>
+                      <SelectItem value="resolved">Resolved</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-1.5">
+                  <label className="text-xs font-semibold text-muted-foreground">Assign Technician</label>
+                  <Select value={issueDraftTechId || "unassigned"} onValueChange={(v) => setIssueDraftTechId(v === "unassigned" ? "" : v)}>
+                    <SelectTrigger><SelectValue placeholder="Unassigned" /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="unassigned">Unassigned</SelectItem>
+                      {technicians.map(t => (
+                        <SelectItem key={t.id} value={t.id}>{t.name}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="text-xs font-semibold text-muted-foreground">Admin Notes / Resolution Details</label>
+                <Textarea rows={4} value={issueDraftNotes} onChange={(e) => setIssueDraftNotes(e.target.value)} placeholder="What was done, who took action, follow-up needed…" />
+              </div>
+
+              <div className="flex gap-2.5 justify-end pt-2">
+                <Button variant="outline" onClick={() => setIssueModal(null)}>Cancel</Button>
+                <Button className="gap-1.5" onClick={handleSaveIssue} disabled={updateIssueStatus.isPending}>
+                  <Check className="h-4 w-4" /> Save Changes
+                </Button>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Edit Service Modal */}
+      <Dialog open={!!editServiceId} onOpenChange={(open) => !open && setEditServiceId(null)}>
+        <DialogContent className="sm:max-w-[520px] pt-10 max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Edit Service</DialogTitle>
+            <DialogDescription>Reassign technician, change date, time window, or status.</DialogDescription>
+          </DialogHeader>
+          {editServiceQuery.isLoading && <div className="text-sm text-muted-foreground">Loading…</div>}
+          {editServiceQuery.data && (
+            <div className="space-y-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="space-y-1.5">
+                  <label className="text-xs font-semibold text-muted-foreground">Status</label>
+                  <Select value={svcDraftStatus} onValueChange={(v) => setSvcDraftStatus(v as typeof svcDraftStatus)}>
+                    <SelectTrigger><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="scheduled">Scheduled</SelectItem>
+                      <SelectItem value="in_progress">In Progress</SelectItem>
+                      <SelectItem value="completed">Completed</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-1.5">
+                  <label className="text-xs font-semibold text-muted-foreground">Technician</label>
+                  <Select value={svcDraftTechId || "unassigned"} onValueChange={(v) => setSvcDraftTechId(v === "unassigned" ? "" : v)}>
+                    <SelectTrigger><SelectValue placeholder="Unassigned" /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="unassigned">Unassigned</SelectItem>
+                      {technicians.map(t => (
+                        <SelectItem key={t.id} value={t.id}>{t.name}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-1.5">
+                  <label className="text-xs font-semibold text-muted-foreground">Service Date</label>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button variant="outline" className="w-full justify-start font-normal">
+                        {svcDraftDate ? format(svcDraftDate, "PPP") : "Pick a date"}
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <Calendar mode="single" selected={svcDraftDate} onSelect={setSvcDraftDate} initialFocus />
+                    </PopoverContent>
+                  </Popover>
+                </div>
+                <div className="space-y-1.5">
+                  <label className="text-xs font-semibold text-muted-foreground">Time Window</label>
+                  <Select value={svcDraftWindow} onValueChange={(v) => setSvcDraftWindow(v as typeof svcDraftWindow)}>
+                    <SelectTrigger><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="morning">Morning (8am – 12pm)</SelectItem>
+                      <SelectItem value="afternoon">Afternoon (12pm – 4pm)</SelectItem>
+                      <SelectItem value="evening">Evening (4pm – 8pm)</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+              <div className="text-xs text-muted-foreground bg-muted/50 rounded-md p-2.5">
+                Service: <span className="font-semibold text-foreground">{editServiceQuery.data.serviceType}</span> · {editServiceQuery.data.hours}h
+              </div>
+              <div className="flex gap-2 justify-end pt-2">
+                <Button variant="outline" onClick={() => setEditServiceId(null)}>Cancel</Button>
+                <Button onClick={handleSaveService} disabled={updateService.isPending} className="gap-1.5">
+                  <Check className="h-4 w-4" /> Save Changes
+                </Button>
               </div>
             </div>
           )}

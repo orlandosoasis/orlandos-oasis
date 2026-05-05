@@ -51,11 +51,14 @@ export type Database = {
       }
       issues: {
         Row: {
+          admin_notes: string | null
+          assigned_technician_id: string | null
           created_at: string
           homeowner_id: string
           id: string
           message: string
           related_service: string | null
+          resolved_at: string | null
           service_date: string | null
           service_id: string | null
           status: Database["public"]["Enums"]["issue_status"]
@@ -63,11 +66,14 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          admin_notes?: string | null
+          assigned_technician_id?: string | null
           created_at?: string
           homeowner_id: string
           id?: string
           message: string
           related_service?: string | null
+          resolved_at?: string | null
           service_date?: string | null
           service_id?: string | null
           status?: Database["public"]["Enums"]["issue_status"]
@@ -75,11 +81,14 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          admin_notes?: string | null
+          assigned_technician_id?: string | null
           created_at?: string
           homeowner_id?: string
           id?: string
           message?: string
           related_service?: string | null
+          resolved_at?: string | null
           service_date?: string | null
           service_id?: string | null
           status?: Database["public"]["Enums"]["issue_status"]
@@ -497,7 +506,7 @@ export type Database = {
     Enums: {
       app_role: "homeowner" | "technician" | "admin"
       application_status: "pending" | "approved" | "rejected"
-      issue_status: "open" | "resolved"
+      issue_status: "open" | "in_progress" | "resolved"
       review_status: "pending" | "approved" | "rejected"
       service_status: "scheduled" | "in_progress" | "completed" | "cancelled"
       time_window: "morning" | "afternoon" | "evening"
@@ -630,7 +639,7 @@ export const Constants = {
     Enums: {
       app_role: ["homeowner", "technician", "admin"],
       application_status: ["pending", "approved", "rejected"],
-      issue_status: ["open", "resolved"],
+      issue_status: ["open", "in_progress", "resolved"],
       review_status: ["pending", "approved", "rejected"],
       service_status: ["scheduled", "in_progress", "completed", "cancelled"],
       time_window: ["morning", "afternoon", "evening"],

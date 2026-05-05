@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
 import oasisLogo from "@/assets/oo-logo.png";
@@ -13,9 +13,17 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const { login } = useAuth();
+  const { login, user, isAuthenticated } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
+
+  // Redirect once auth context has the user populated (avoids race with RoleRoute).
+  useEffect(() => {
+    if (!isAuthenticated || !user) return;
+    if (user.role === "admin") navigate("/admin-dashboard", { replace: true });
+    else if (user.role === "technician") navigate("/tech/jobs", { replace: true });
+    else navigate("/dashboard", { replace: true });
+  }, [isAuthenticated, user, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -29,23 +37,15 @@ const Login = () => {
         description: "You've successfully logged in.",
         variant: "success",
       });
-      // Route by actual role returned from auth.
-      if (result.role === "admin") {
-        navigate("/admin-dashboard", { replace: true });
-      } else if (result.role === "technician") {
-        navigate("/tech/jobs", { replace: true });
-      } else {
-        navigate("/dashboard", { replace: true });
-      }
+      // Navigation handled by the effect above once user state is populated.
     } else {
       toast({
         title: "Login failed",
         description: result.error || "Please check your credentials.",
         variant: "destructive",
       });
+      setIsLoading(false);
     }
-
-    setIsLoading(false);
   };
 
   return (

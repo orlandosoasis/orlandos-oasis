@@ -168,7 +168,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         extra?.zipCode ||
         extra?.contractLocked !== undefined)
     ) {
-      const patch: Record<string, unknown> = {
+      const patch: {
+        phone: string | null;
+        street_address: string | null;
+        city: string | null;
+        state: string | null;
+        zip_code: string | null;
+        contract_locked?: boolean;
+        contract_start_date?: string;
+      } = {
         phone: extra.phone ?? null,
         street_address: extra.streetAddress ?? null,
         city: extra.city ?? null,

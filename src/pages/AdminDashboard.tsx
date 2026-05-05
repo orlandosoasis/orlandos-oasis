@@ -93,6 +93,13 @@ const AdminDashboard = () => {
   const [issueDraftStatus, setIssueDraftStatus] = useState<"open" | "in_progress" | "resolved">("open");
   const [issueDraftNotes, setIssueDraftNotes] = useState("");
   const [issueDraftTechId, setIssueDraftTechId] = useState<string>("");
+  const [editServiceId, setEditServiceId] = useState<string | null>(null);
+  const [svcDraftStatus, setSvcDraftStatus] = useState<"scheduled" | "in_progress" | "completed">("scheduled");
+  const [svcDraftDate, setSvcDraftDate] = useState<Date | undefined>(undefined);
+  const [svcDraftWindow, setSvcDraftWindow] = useState<"morning" | "afternoon" | "evening">("morning");
+  const [svcDraftTechId, setSvcDraftTechId] = useState<string>("");
+  const editServiceQuery = useService(editServiceId ?? undefined);
+  const updateService = useUpdateService();
   const [confirmAction, setConfirmAction] = useState<{ type: "approve" | "reject"; applicant: AdminApplicant } | null>(null);
   const { logout, user } = useAuth();
   const navigate = useNavigate();

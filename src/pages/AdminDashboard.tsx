@@ -940,14 +940,14 @@ const AdminDashboard = () => {
             {issues.length === 0 ? (
               <TableRow><TableCell colSpan={7} className="text-center text-muted-foreground py-8">No issues reported.</TableCell></TableRow>
             ) : issues.map(issue => (
-              <TableRow key={issue.id}>
+              <TableRow key={issue.id} onClick={() => openIssueModal(issue)} className="cursor-pointer hover:bg-muted/50">
                 <TableCell className="font-semibold">{issue.homeowner}</TableCell><TableCell>{issue.type}</TableCell>
                 <TableCell className="max-w-[220px] truncate text-muted-foreground">{issue.message}</TableCell>
                 <TableCell className="whitespace-nowrap">{issue.serviceDate}</TableCell><TableCell>{issue.email}</TableCell>
                 <TableCell><StatusBadge status={issue.status} /></TableCell>
-                <TableCell>
+                <TableCell onClick={(e) => e.stopPropagation()}>
                   <div className="flex gap-2">
-                    <Button size="sm" variant="outline" className="gap-1.5" onClick={() => setIssueModal(issue)}><Mail className="h-3.5 w-3.5" /> Reply</Button>
+                    <Button size="sm" variant="outline" className="gap-1.5" onClick={() => openIssueModal(issue)}>View</Button>
                     {issue.status === "Open" && <Button size="sm" className="gap-1.5" onClick={() => handleResolveIssue(issue.id)}><Check className="h-3.5 w-3.5" /> Resolve</Button>}
                   </div>
                 </TableCell>

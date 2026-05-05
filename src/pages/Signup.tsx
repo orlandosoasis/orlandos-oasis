@@ -46,7 +46,7 @@ const Signup = () => {
 
     setIsLoading(true);
 
-    const result = await signup(email, password, fullName, "homeowner", { streetAddress, city, state, zipCode });
+    const result = await signup(email, password, fullName, "homeowner", { streetAddress, city, state, zipCode, contractLocked: true });
 
     if (result.success) {
       toast({

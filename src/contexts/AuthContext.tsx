@@ -22,7 +22,7 @@ export interface User {
 interface AuthContextType {
   user: User | null;
   isLoading: boolean;
-  login: (email: string, password: string) => Promise<{ success: boolean; error?: string }>;
+  login: (email: string, password: string) => Promise<{ success: boolean; error?: string; role?: UserRole }>;
   signup: (
     email: string,
     password: string,
@@ -112,12 +112,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const login = async (email: string, password: string) => {
-    const { error } = await supabase.auth.signInWithPassword({
+    const { data, error } = await supabase.auth.signInWithPassword({
       email: email.toLowerCase().trim(),
       password,
     });
     if (error) return { success: false, error: error.message };
-    return { success: true };
+    // Fetch profile immediately so caller can route by role without race.
+    let role: UserRole | undefined;
+    if (data.user) {
+      const profile = await fetchProfile(data.user.id);
+      if (profile) {
+        setUser(profile);
+        role = profile.role;
+      }
+    }
+    return { success: true, role };
   };
 
   const signup = async (

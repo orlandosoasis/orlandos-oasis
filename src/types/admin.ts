@@ -69,6 +69,8 @@ export interface AdminHomeowner {
   notes?: string;
 }
 
+export type AdminIssueStatus = "Open" | "In Progress" | "Resolved";
+
 export interface AdminIssue {
   id: string;
   homeowner: string;
@@ -77,8 +79,10 @@ export interface AdminIssue {
   serviceDate: string;
   email: string;
   phone: string;
-  status: "Open" | "Resolved";
+  status: AdminIssueStatus;
   relatedService: string;
+  adminNotes?: string | null;
+  assignedTechnicianId?: string | null;
 }
 
 export interface AdminApplicantCert {

@@ -49,7 +49,7 @@ const WelcomeBack = () => {
   };
 
   return (
-    <div className="hp-theme min-h-screen flex flex-col bg-background">
+    <div className="min-h-screen flex flex-col bg-background">
       {/* Top branding */}
       <header className="px-6 py-4 border-b border-border bg-card">
         <Link to="/" className="flex items-center gap-2">

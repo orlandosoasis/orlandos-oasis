@@ -482,8 +482,10 @@ const AdminDashboard = () => {
                   <TableHead>Homeowner</TableHead><TableHead>Type</TableHead><TableHead>Status</TableHead>
                 </TableRow></TableHeader>
                 <TableBody>
-                  {issues.filter(i => i.status === "Open").map((issue, i) => (
-                    <TableRow key={i}>
+                  {issues.filter(i => i.status === "Open").length === 0 ? (
+                    <TableRow><TableCell colSpan={3} className="text-center text-muted-foreground text-xs py-6">No open issues</TableCell></TableRow>
+                  ) : issues.filter(i => i.status === "Open").map((issue, i) => (
+                    <TableRow key={i} onClick={() => openIssueModal(issue)} className="cursor-pointer hover:bg-muted/50">
                       <TableCell className="font-medium">{issue.homeowner}</TableCell><TableCell>{issue.type}</TableCell>
                       <TableCell><StatusBadge status={issue.status} /></TableCell>
                     </TableRow>

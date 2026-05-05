@@ -252,13 +252,13 @@ export function useAdminHomeowners() {
           }),
           services: ownerServices
             .sort((a, b) => (a.service_date < b.service_date ? 1 : -1))
-            .slice(0, 10)
             .map((s) => ({
               id: s.id,
               date: fmtServiceDate(s.service_date),
               type: s.service_type,
               technicianName: techName(s.technician_id),
-              status: s.status === "completed" ? "Completed" : "Scheduled",
+              status: (s.status === "completed" ? "Completed" : "Scheduled") as "Completed" | "Scheduled",
+              poolId: s.pool_id,
             })),
         };
       });

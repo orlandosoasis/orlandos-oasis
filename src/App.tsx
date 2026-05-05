@@ -74,6 +74,7 @@ const App = () => (
             <Route path="/signup" element={<Signup />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/reset-password" element={<ResetPassword />} />
+            <Route path="/welcome-back" element={<WelcomeBack />} />
 
             {/* Customer pages with persistent header (homeowner only) */}
             <Route element={<RoleRoute roles={["homeowner"]}><CustomerLayout /></RoleRoute>}>

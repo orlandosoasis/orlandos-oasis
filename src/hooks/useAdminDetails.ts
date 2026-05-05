@@ -263,7 +263,7 @@ export function useUpdateServiceRequest() {
       status?: ServiceRequest["status"];
       adminNotes?: string | null;
     }) => {
-      const patch: Record<string, unknown> = {};
+      const patch: { status?: ServiceRequest["status"]; admin_notes?: string | null; resolved_at?: string } = {};
       if (input.status !== undefined) {
         patch.status = input.status;
         if (input.status === "resolved") patch.resolved_at = new Date().toISOString();

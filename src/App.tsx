@@ -20,6 +20,7 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
+import WelcomeBack from "./pages/WelcomeBack";
 import Dashboard from "./pages/Dashboard";
 import ServicePass from "./pages/ServicePass";
 import ServiceDetails from "./pages/ServiceDetails";

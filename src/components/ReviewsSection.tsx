@@ -41,7 +41,7 @@ const ReviewsSection = () => {
   const visibleReviews = reviews.slice(0, VISIBLE_COUNT);
 
   return (
-    <div className="max-w-[420px] w-full">
+    <div className="w-full lg:max-w-[420px]">
       <h2 className="text-3xl text-navy mb-3 font-extrabold">
         Verified Customer Reviews
       </h2>

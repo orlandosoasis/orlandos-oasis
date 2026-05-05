@@ -311,7 +311,12 @@ export function useUpdateIssueStatus() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: async ({ id, status, adminNotes, assignedTechnicianId }: { id: string } & UpdateIssuePatch) => {
-      const patch: Record<string, unknown> = {};
+      const patch: {
+        status?: IssueStatusDb;
+        admin_notes?: string | null;
+        assigned_technician_id?: string | null;
+        resolved_at?: string;
+      } = {};
       if (status !== undefined) {
         patch.status = status;
         if (status === "resolved") patch.resolved_at = new Date().toISOString();

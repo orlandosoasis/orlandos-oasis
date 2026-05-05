@@ -1072,26 +1072,62 @@ const AdminDashboard = () => {
 
       {/* Issue Detail Modal */}
       <Dialog open={!!issueModal} onOpenChange={() => setIssueModal(null)}>
-        <DialogContent className="sm:max-w-[520px]">
+        <DialogContent className="sm:max-w-[560px] pt-10 max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Issue Details</DialogTitle>
+            <DialogDescription>Update status, assign a technician, and add resolution notes.</DialogDescription>
           </DialogHeader>
           {issueModal && (
-            <div>
-              <InfoRow label="Homeowner" value={issueModal.homeowner} />
-              <InfoRow label="Email" value={issueModal.email} />
-              <InfoRow label="Phone" value={issueModal.phone} />
-              <InfoRow label="Issue Type" value={issueModal.type} />
-              <InfoRow label="Service Date" value={issueModal.serviceDate} />
-              <InfoRow label="Status" value={issueModal.status} badge />
-              <div className="mt-4 p-3.5 bg-muted rounded-lg text-sm text-foreground leading-relaxed">
+            <div className="space-y-4">
+              <div>
+                <InfoRow label="Homeowner" value={issueModal.homeowner} />
+                <InfoRow label="Email" value={issueModal.email} />
+                <InfoRow label="Phone" value={issueModal.phone} />
+                <InfoRow label="Issue Type" value={issueModal.type} />
+                <InfoRow label="Service Date" value={issueModal.serviceDate} />
+              </div>
+              <div className="p-3.5 bg-muted rounded-lg text-sm text-foreground leading-relaxed">
                 <div className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-1.5">Message</div>
                 {issueModal.message}
               </div>
-              <div className="mt-2.5 p-2.5 bg-blue-50 rounded-lg text-xs text-blue-600 font-medium">Related: {issueModal.relatedService}</div>
-              <div className="flex gap-2.5 mt-5 justify-end">
-                <Button variant="outline" className="gap-1.5" onClick={() => setIssueModal(null)}><Mail className="h-4 w-4" /> Reply via Email</Button>
-                {issueModal.status === "Open" && <Button className="gap-1.5" onClick={() => handleResolveIssue(issueModal.id)}><Check className="h-4 w-4" /> Mark as Resolved</Button>}
+              <div className="p-2.5 bg-blue-50 rounded-lg text-xs text-blue-600 font-medium">Related: {issueModal.relatedService}</div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="space-y-1.5">
+                  <label className="text-xs font-semibold text-muted-foreground">Status</label>
+                  <Select value={issueDraftStatus} onValueChange={(v) => setIssueDraftStatus(v as typeof issueDraftStatus)}>
+                    <SelectTrigger><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="open">Open</SelectItem>
+                      <SelectItem value="in_progress">In Progress</SelectItem>
+                      <SelectItem value="resolved">Resolved</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-1.5">
+                  <label className="text-xs font-semibold text-muted-foreground">Assign Technician</label>
+                  <Select value={issueDraftTechId || "unassigned"} onValueChange={(v) => setIssueDraftTechId(v === "unassigned" ? "" : v)}>
+                    <SelectTrigger><SelectValue placeholder="Unassigned" /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="unassigned">Unassigned</SelectItem>
+                      {technicians.map(t => (
+                        <SelectItem key={t.id} value={t.id}>{t.name}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="text-xs font-semibold text-muted-foreground">Admin Notes / Resolution Details</label>
+                <Textarea rows={4} value={issueDraftNotes} onChange={(e) => setIssueDraftNotes(e.target.value)} placeholder="What was done, who took action, follow-up needed…" />
+              </div>
+
+              <div className="flex gap-2.5 justify-end pt-2">
+                <Button variant="outline" onClick={() => setIssueModal(null)}>Cancel</Button>
+                <Button className="gap-1.5" onClick={handleSaveIssue} disabled={updateIssueStatus.isPending}>
+                  <Check className="h-4 w-4" /> Save Changes
+                </Button>
               </div>
             </div>
           )}

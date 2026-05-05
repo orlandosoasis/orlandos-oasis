@@ -39,6 +39,8 @@ export interface AdminHomeownerAggregate {
   services: { id: string; date: string; type: string; technicianName: string; status: "Completed" | "Scheduled" }[];
 }
 
+export type IssueStatusDb = "open" | "in_progress" | "resolved";
+
 export interface AdminIssueRow {
   id: string;
   homeownerId: string;
@@ -48,9 +50,12 @@ export interface AdminIssueRow {
   type: string;
   message: string;
   serviceDate: string | null;
-  status: "open" | "resolved";
+  status: IssueStatusDb;
   relatedService: string | null;
   createdAt: string;
+  adminNotes: string | null;
+  assignedTechnicianId: string | null;
+  resolvedAt: string | null;
 }
 
 export interface AdminApplicantRow {

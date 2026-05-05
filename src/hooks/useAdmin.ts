@@ -35,7 +35,7 @@ export interface AdminHomeownerAggregate {
   address: string;
   plan: string;
   startDate: string;
-  pools: { id: string; address: string; size: string; technicianName: string; nextService: string }[];
+  pools: { id: string; address: string; size: string; technicianName: string; technicianId: string | null; nextService: string }[];
   services: { id: string; date: string; type: string; technicianName: string; status: "Completed" | "Scheduled" }[];
 }
 
@@ -240,11 +240,13 @@ export function useAdminHomeowners() {
             const next = ownerServices
               .filter((s) => s.pool_id === p.id && (s.status === "scheduled" || s.status === "in_progress"))
               .sort((a, b) => (a.service_date < b.service_date ? -1 : 1))[0];
+            const assignedTechId = (p as { assigned_technician_id?: string | null }).assigned_technician_id ?? next?.technician_id ?? null;
             return {
               id: p.id,
               address: p.address,
               size: p.pool_size ?? "—",
-              technicianName: techName(next?.technician_id ?? null),
+              technicianId: assignedTechId,
+              technicianName: techName(assignedTechId),
               nextService: next ? fmtServiceDate(next.service_date) : "—",
             };
           }),

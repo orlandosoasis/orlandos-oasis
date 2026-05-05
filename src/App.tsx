@@ -18,6 +18,8 @@ preloadImage(ooLogo);
 import Index from "./pages/Index";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
 import Dashboard from "./pages/Dashboard";
 import ServicePass from "./pages/ServicePass";
 import ServiceDetails from "./pages/ServiceDetails";
@@ -69,6 +71,8 @@ const App = () => (
             <Route path="/" element={<Index />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
 
             {/* Customer pages with persistent header (homeowner only) */}
             <Route element={<RoleRoute roles={["homeowner"]}><CustomerLayout /></RoleRoute>}>

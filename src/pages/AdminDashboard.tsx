@@ -1182,6 +1182,79 @@ const AdminDashboard = () => {
         </DialogContent>
       </Dialog>
 
+      {/* Edit Service Modal */}
+      <Dialog open={!!editServiceId} onOpenChange={(open) => !open && setEditServiceId(null)}>
+        <DialogContent className="sm:max-w-[520px] pt-10 max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Edit Service</DialogTitle>
+            <DialogDescription>Reassign technician, change date, time window, or status.</DialogDescription>
+          </DialogHeader>
+          {editServiceQuery.isLoading && <div className="text-sm text-muted-foreground">Loading…</div>}
+          {editServiceQuery.data && (
+            <div className="space-y-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="space-y-1.5">
+                  <label className="text-xs font-semibold text-muted-foreground">Status</label>
+                  <Select value={svcDraftStatus} onValueChange={(v) => setSvcDraftStatus(v as typeof svcDraftStatus)}>
+                    <SelectTrigger><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="scheduled">Scheduled</SelectItem>
+                      <SelectItem value="in_progress">In Progress</SelectItem>
+                      <SelectItem value="completed">Completed</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-1.5">
+                  <label className="text-xs font-semibold text-muted-foreground">Technician</label>
+                  <Select value={svcDraftTechId || "unassigned"} onValueChange={(v) => setSvcDraftTechId(v === "unassigned" ? "" : v)}>
+                    <SelectTrigger><SelectValue placeholder="Unassigned" /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="unassigned">Unassigned</SelectItem>
+                      {technicians.map(t => (
+                        <SelectItem key={t.id} value={t.id}>{t.name}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-1.5">
+                  <label className="text-xs font-semibold text-muted-foreground">Service Date</label>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button variant="outline" className="w-full justify-start font-normal">
+                        {svcDraftDate ? format(svcDraftDate, "PPP") : "Pick a date"}
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <Calendar mode="single" selected={svcDraftDate} onSelect={setSvcDraftDate} initialFocus />
+                    </PopoverContent>
+                  </Popover>
+                </div>
+                <div className="space-y-1.5">
+                  <label className="text-xs font-semibold text-muted-foreground">Time Window</label>
+                  <Select value={svcDraftWindow} onValueChange={(v) => setSvcDraftWindow(v as typeof svcDraftWindow)}>
+                    <SelectTrigger><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="morning">Morning (8am – 12pm)</SelectItem>
+                      <SelectItem value="afternoon">Afternoon (12pm – 4pm)</SelectItem>
+                      <SelectItem value="evening">Evening (4pm – 8pm)</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+              <div className="text-xs text-muted-foreground bg-muted/50 rounded-md p-2.5">
+                Service: <span className="font-semibold text-foreground">{editServiceQuery.data.serviceType}</span> · {editServiceQuery.data.hours}h
+              </div>
+              <div className="flex gap-2 justify-end pt-2">
+                <Button variant="outline" onClick={() => setEditServiceId(null)}>Cancel</Button>
+                <Button onClick={handleSaveService} disabled={updateService.isPending} className="gap-1.5">
+                  <Check className="h-4 w-4" /> Save Changes
+                </Button>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+
       {/* Confirm Approve/Reject Modal */}
       <Dialog open={!!confirmAction} onOpenChange={() => setConfirmAction(null)}>
         <DialogContent className="sm:max-w-[440px]">

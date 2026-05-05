@@ -446,9 +446,9 @@ Deno.serve(async (req) => {
       JSON.stringify({
         ok: true,
         users: {
-          homeowner: { id: homeownerId, email: "demo@example.com", password: "demo1234" },
-          technician: { id: techId, email: "tech@example.com", password: "tech1234" },
-          admin: { id: userIds.admin, email: "admin@example.com", password: "admin1234" },
+          homeowner: { id: homeownerId, email: "demo@example.com" },
+          technician: { id: techId, email: "tech@example.com" },
+          admin: { id: userIds.admin, email: "admin@example.com" },
         },
         counts: {
           pools: 3,

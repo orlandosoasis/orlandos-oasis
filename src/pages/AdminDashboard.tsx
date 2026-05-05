@@ -21,6 +21,12 @@ import { useToast } from "@/hooks/use-toast";
 import oasisLogo from "@/assets/oo-logo.png";
 import AddHomeownerModal from "@/components/admin/AddHomeownerModal";
 import EditHomeownerModal from "@/components/admin/EditHomeownerModal";
+import AdminNotesPanel from "@/components/admin/AdminNotesPanel";
+import TechPoolAssignmentPanel from "@/components/admin/TechPoolAssignmentPanel";
+import TechClientUpdatesPanel from "@/components/admin/TechClientUpdatesPanel";
+import HomeownerBillingPanel from "@/components/admin/HomeownerBillingPanel";
+import HomeownerRequestsPanel from "@/components/admin/HomeownerRequestsPanel";
+import PastServiceDetailModal from "@/components/admin/PastServiceDetailModal";
 import ReportRouteIssueModal, { type RouteService } from "@/components/ReportRouteIssueModal";
 import type {
   AdminTechnician, AdminApplicant, AdminApplicantCert, AdminIssue,

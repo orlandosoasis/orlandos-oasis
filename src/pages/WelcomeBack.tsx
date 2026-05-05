@@ -137,7 +137,7 @@ const WelcomeBack = () => {
 
         {/* Reviews */}
         <section className="py-10 md:py-14 lg:py-16 px-4 md:px-6 bg-white">
-          <div className="container max-w-4xl mx-auto">
+          <div className="container max-w-6xl mx-auto">
             <ReviewsSection />
           </div>
         </section>

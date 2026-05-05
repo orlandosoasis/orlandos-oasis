@@ -100,6 +100,41 @@ const AdminDashboard = () => {
   const [svcDraftTechId, setSvcDraftTechId] = useState<string>("");
   const editServiceQuery = useService(editServiceId ?? undefined);
   const updateService = useUpdateService();
+
+  useEffect(() => {
+    const svc = editServiceQuery.data;
+    if (svc) {
+      setSvcDraftStatus(svc.status === "completed" ? "completed" : svc.status === "in_progress" ? "in_progress" : "scheduled");
+      setSvcDraftDate(svc.date);
+      setSvcDraftWindow(svc.timeWindow);
+      setSvcDraftTechId(svc.technicianId ?? "");
+    }
+  }, [editServiceQuery.data]);
+
+  const handleSaveService = async () => {
+    if (!editServiceId) return;
+    try {
+      await updateService.mutateAsync({
+        id: editServiceId,
+        patch: {
+          status: svcDraftStatus,
+          serviceDate: svcDraftDate,
+          timeWindow: svcDraftWindow,
+        },
+      });
+      // Tech reassignment requires direct supabase call (hook patch doesn't include it)
+      if (svcDraftTechId !== (editServiceQuery.data?.technicianId ?? "")) {
+        await supabase.from("services").update({ technician_id: svcDraftTechId || null }).eq("id", editServiceId);
+        await queryClient.invalidateQueries({ queryKey: ["services"] });
+        await queryClient.invalidateQueries({ queryKey: ["admin-homeowners"] });
+      }
+      await queryClient.invalidateQueries({ queryKey: ["admin-homeowners"] });
+      toast({ title: "Service updated", variant: "success" });
+      setEditServiceId(null);
+    } catch (e) {
+      toast({ title: "Update failed", description: e instanceof Error ? e.message : String(e), variant: "destructive" });
+    }
+  };
   const [confirmAction, setConfirmAction] = useState<{ type: "approve" | "reject"; applicant: AdminApplicant } | null>(null);
   const { logout, user } = useAuth();
   const navigate = useNavigate();

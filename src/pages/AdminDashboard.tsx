@@ -314,6 +314,29 @@ const AdminDashboard = () => {
     }
   };
 
+  const openIssueModal = (issue: AdminIssue) => {
+    setIssueModal(issue);
+    setIssueDraftStatus(issue.status === "Open" ? "open" : issue.status === "In Progress" ? "in_progress" : "resolved");
+    setIssueDraftNotes(issue.adminNotes ?? "");
+    setIssueDraftTechId(issue.assignedTechnicianId ?? "");
+  };
+
+  const handleSaveIssue = async () => {
+    if (!issueModal) return;
+    try {
+      await updateIssueStatus.mutateAsync({
+        id: issueModal.id,
+        status: issueDraftStatus,
+        adminNotes: issueDraftNotes || null,
+        assignedTechnicianId: issueDraftTechId || null,
+      });
+      toast({ title: "Issue updated", variant: "success" });
+      setIssueModal(null);
+    } catch (e) {
+      toast({ title: "Update failed", description: e instanceof Error ? e.message : String(e), variant: "destructive" });
+    }
+  };
+
   const handleResolveIssue = async (id: string) => {
     try {
       await updateIssueStatus.mutateAsync({ id, status: "resolved" });

@@ -311,7 +311,8 @@ const AdminDashboard = () => {
   const [homeownerSuccess, setHomeownerSuccess] = useState(false);
   const [homeownerEditSuccess, setHomeownerEditSuccess] = useState(false);
   const [scheduleTab, setScheduleTab] = useState<"upcoming" | "past">("upcoming");
-  const [detailTab, setDetailTab] = useState<"overview" | "pools" | "schedule" | "payments" | "notes">("overview");
+  const [detailTab, setDetailTab] = useState<"overview" | "pools" | "schedule" | "requests" | "billing" | "notes">("overview");
+  const [pastServiceId, setPastServiceId] = useState<string | null>(null);
 
   const nav = (p: AdminPage, id: string | null = null) => { setPage(p); setDetailId(id); setSidebarOpen(false); };
 

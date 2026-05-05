@@ -125,15 +125,6 @@ const Login = () => {
               </p>
             </div>
 
-            {/* Demo credentials hint */}
-            <div className="mt-8 p-4 bg-muted rounded-lg">
-              <p className="text-sm text-muted-foreground text-center mb-2">Demo credentials:</p>
-              <div className="text-xs text-muted-foreground space-y-1">
-                <p><strong>Homeowner:</strong> demo@example.com / demo123</p>
-                <p><strong>Technician:</strong> tech@example.com / tech123</p>
-                <p><strong>Admin:</strong> admin@example.com / admin123</p>
-              </div>
-            </div>
           </div>
         </div>
       </div>

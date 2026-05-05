@@ -38,7 +38,7 @@ const WelcomeBack = () => {
       return;
     }
     setIsLoading(true);
-    const result = await signup(email, password, fullName, "homeowner", { streetAddress, city, state, zipCode });
+    const result = await signup(email, password, fullName, "homeowner", { streetAddress, city, state, zipCode, contractLocked: false });
     if (result.success) {
       toast({ title: "Welcome back!", description: "Your account is ready." });
       navigate("/dashboard");

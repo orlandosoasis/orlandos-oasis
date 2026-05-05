@@ -38,9 +38,11 @@ export interface AdminTechnician {
 }
 
 export interface AdminHomeownerPool {
+  id?: string;
   address: string;
   size: string;
   technician: string;
+  technicianId?: string | null;
   nextService: string;
 }
 
@@ -50,6 +52,7 @@ export interface AdminHomeownerService {
   type: string;
   technician: string;
   status: "Completed" | "Scheduled";
+  poolId?: string;
 }
 
 export interface AdminHomeowner {

@@ -28,7 +28,7 @@ interface AuthContextType {
     password: string,
     fullName: string,
     role?: UserRole,
-    extra?: { streetAddress?: string; city?: string; state?: string; zipCode?: string; phone?: string; firstName?: string; lastName?: string }
+    extra?: { streetAddress?: string; city?: string; state?: string; zipCode?: string; phone?: string; firstName?: string; lastName?: string; contractLocked?: boolean }
   ) => Promise<{ success: boolean; error?: string }>;
   logout: () => void;
   updateUser: (updates: Partial<User>) => void;
@@ -137,7 +137,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     password: string,
     fullName: string,
     role: UserRole = "homeowner",
-    extra?: { streetAddress?: string; city?: string; state?: string; zipCode?: string; phone?: string; firstName?: string; lastName?: string }
+    extra?: { streetAddress?: string; city?: string; state?: string; zipCode?: string; phone?: string; firstName?: string; lastName?: string; contractLocked?: boolean }
   ) => {
     const normalizedEmail = email.toLowerCase().trim();
     const firstName = extra?.firstName || fullName.split(" ")[0];
@@ -159,17 +159,35 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (error) return { success: false, error: error.message };
 
     // Update extra profile fields if provided
-    if (data.user && (extra?.phone || extra?.streetAddress || extra?.city || extra?.state || extra?.zipCode)) {
-      await supabase
-        .from("profiles")
-        .update({
-          phone: extra.phone ?? null,
-          street_address: extra.streetAddress ?? null,
-          city: extra.city ?? null,
-          state: extra.state ?? null,
-          zip_code: extra.zipCode ?? null,
-        })
-        .eq("id", data.user.id);
+    if (
+      data.user &&
+      (extra?.phone ||
+        extra?.streetAddress ||
+        extra?.city ||
+        extra?.state ||
+        extra?.zipCode ||
+        extra?.contractLocked !== undefined)
+    ) {
+      const patch: {
+        phone: string | null;
+        street_address: string | null;
+        city: string | null;
+        state: string | null;
+        zip_code: string | null;
+        contract_locked?: boolean;
+        contract_start_date?: string;
+      } = {
+        phone: extra.phone ?? null,
+        street_address: extra.streetAddress ?? null,
+        city: extra.city ?? null,
+        state: extra.state ?? null,
+        zip_code: extra.zipCode ?? null,
+      };
+      if (extra.contractLocked !== undefined) {
+        patch.contract_locked = extra.contractLocked;
+        patch.contract_start_date = new Date().toISOString().slice(0, 10);
+      }
+      await supabase.from("profiles").update(patch).eq("id", data.user.id);
     }
 
     return { success: true };

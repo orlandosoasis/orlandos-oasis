@@ -14,6 +14,36 @@ export type Database = {
   }
   public: {
     Tables: {
+      admin_notes: {
+        Row: {
+          author_id: string
+          body: string
+          created_at: string
+          id: string
+          target_id: string
+          target_type: Database["public"]["Enums"]["admin_note_target"]
+          updated_at: string
+        }
+        Insert: {
+          author_id: string
+          body: string
+          created_at?: string
+          id?: string
+          target_id: string
+          target_type: Database["public"]["Enums"]["admin_note_target"]
+          updated_at?: string
+        }
+        Update: {
+          author_id?: string
+          body?: string
+          created_at?: string
+          id?: string
+          target_id?: string
+          target_type?: Database["public"]["Enums"]["admin_note_target"]
+          updated_at?: string
+        }
+        Relationships: []
+      }
       applicant_certifications: {
         Row: {
           application_id: string
@@ -117,6 +147,7 @@ export type Database = {
           body: string
           created_at: string
           id: string
+          pool_id: string | null
           read_at: string | null
           recipient_id: string
           sender_id: string
@@ -127,6 +158,7 @@ export type Database = {
           body: string
           created_at?: string
           id?: string
+          pool_id?: string | null
           read_at?: string | null
           recipient_id: string
           sender_id: string
@@ -137,6 +169,7 @@ export type Database = {
           body?: string
           created_at?: string
           id?: string
+          pool_id?: string | null
           read_at?: string | null
           recipient_id?: string
           sender_id?: string
@@ -165,6 +198,7 @@ export type Database = {
           access_detail: string | null
           access_method: string | null
           address: string
+          assigned_technician_id: string | null
           city: string | null
           created_at: string
           equipment: string | null
@@ -181,6 +215,7 @@ export type Database = {
           access_detail?: string | null
           access_method?: string | null
           address: string
+          assigned_technician_id?: string | null
           city?: string | null
           created_at?: string
           equipment?: string | null
@@ -197,6 +232,7 @@ export type Database = {
           access_detail?: string | null
           access_method?: string | null
           address?: string
+          assigned_technician_id?: string | null
           city?: string | null
           created_at?: string
           equipment?: string | null
@@ -223,12 +259,15 @@ export type Database = {
         Row: {
           avatar_url: string | null
           city: string | null
+          contract_locked: boolean
+          contract_start_date: string | null
           created_at: string
           email: string
           first_name: string | null
           full_name: string | null
           id: string
           last_name: string | null
+          monthly_amount: number | null
           phone: string | null
           role: Database["public"]["Enums"]["app_role"]
           state: string | null
@@ -239,12 +278,15 @@ export type Database = {
         Insert: {
           avatar_url?: string | null
           city?: string | null
+          contract_locked?: boolean
+          contract_start_date?: string | null
           created_at?: string
           email: string
           first_name?: string | null
           full_name?: string | null
           id: string
           last_name?: string | null
+          monthly_amount?: number | null
           phone?: string | null
           role?: Database["public"]["Enums"]["app_role"]
           state?: string | null
@@ -255,12 +297,15 @@ export type Database = {
         Update: {
           avatar_url?: string | null
           city?: string | null
+          contract_locked?: boolean
+          contract_start_date?: string | null
           created_at?: string
           email?: string
           first_name?: string | null
           full_name?: string | null
           id?: string
           last_name?: string | null
+          monthly_amount?: number | null
           phone?: string | null
           role?: Database["public"]["Enums"]["app_role"]
           state?: string | null
@@ -355,6 +400,45 @@ export type Database = {
           service_id?: string
           storage_path?: string
           uploaded_by?: string
+        }
+        Relationships: []
+      }
+      service_requests: {
+        Row: {
+          admin_notes: string | null
+          created_at: string
+          description: string
+          homeowner_id: string
+          id: string
+          pool_id: string | null
+          request_type: string
+          resolved_at: string | null
+          status: Database["public"]["Enums"]["service_request_status"]
+          updated_at: string
+        }
+        Insert: {
+          admin_notes?: string | null
+          created_at?: string
+          description: string
+          homeowner_id: string
+          id?: string
+          pool_id?: string | null
+          request_type: string
+          resolved_at?: string | null
+          status?: Database["public"]["Enums"]["service_request_status"]
+          updated_at?: string
+        }
+        Update: {
+          admin_notes?: string | null
+          created_at?: string
+          description?: string
+          homeowner_id?: string
+          id?: string
+          pool_id?: string | null
+          request_type?: string
+          resolved_at?: string | null
+          status?: Database["public"]["Enums"]["service_request_status"]
+          updated_at?: string
         }
         Relationships: []
       }
@@ -504,10 +588,12 @@ export type Database = {
       is_admin: { Args: never; Returns: boolean }
     }
     Enums: {
+      admin_note_target: "technician" | "homeowner" | "pool"
       app_role: "homeowner" | "technician" | "admin"
       application_status: "pending" | "approved" | "rejected"
       issue_status: "open" | "in_progress" | "resolved"
       review_status: "pending" | "approved" | "rejected"
+      service_request_status: "open" | "in_progress" | "resolved" | "cancelled"
       service_status: "scheduled" | "in_progress" | "completed" | "cancelled"
       time_window: "morning" | "afternoon" | "evening"
     }
@@ -637,10 +723,12 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      admin_note_target: ["technician", "homeowner", "pool"],
       app_role: ["homeowner", "technician", "admin"],
       application_status: ["pending", "approved", "rejected"],
       issue_status: ["open", "in_progress", "resolved"],
       review_status: ["pending", "approved", "rejected"],
+      service_request_status: ["open", "in_progress", "resolved", "cancelled"],
       service_status: ["scheduled", "in_progress", "completed", "cancelled"],
       time_window: ["morning", "afternoon", "evening"],
     },

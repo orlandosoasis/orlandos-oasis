@@ -21,6 +21,12 @@ import { useToast } from "@/hooks/use-toast";
 import oasisLogo from "@/assets/oo-logo.png";
 import AddHomeownerModal from "@/components/admin/AddHomeownerModal";
 import EditHomeownerModal from "@/components/admin/EditHomeownerModal";
+import AdminNotesPanel from "@/components/admin/AdminNotesPanel";
+import TechPoolAssignmentPanel from "@/components/admin/TechPoolAssignmentPanel";
+import TechClientUpdatesPanel from "@/components/admin/TechClientUpdatesPanel";
+import HomeownerBillingPanel from "@/components/admin/HomeownerBillingPanel";
+import HomeownerRequestsPanel from "@/components/admin/HomeownerRequestsPanel";
+import PastServiceDetailModal from "@/components/admin/PastServiceDetailModal";
 import ReportRouteIssueModal, { type RouteService } from "@/components/ReportRouteIssueModal";
 import type {
   AdminTechnician, AdminApplicant, AdminApplicantCert, AdminIssue,
@@ -33,6 +39,7 @@ import {
 } from "@/hooks/useAdmin";
 import { useReviews, useUpdateReviewStatus } from "@/hooks/useReviews";
 import { useService, useUpdateService } from "@/hooks/useServices";
+import { useAssignPoolToTech } from "@/hooks/useAdminDetails";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { format } from "date-fns";
@@ -151,6 +158,7 @@ const AdminDashboard = () => {
   const updateIssueStatus = useUpdateIssueStatus();
   const updateApplicationStatus = useUpdateApplicationStatus();
   const updateReviewStatus = useUpdateReviewStatus();
+  const assignPoolToTech = useAssignPoolToTech();
 
   const isLoading =
     techniciansQuery.isLoading ||
@@ -196,9 +204,11 @@ const AdminDashboard = () => {
     plan: h.plan,
     startDate: h.startDate,
     pools: h.pools.map((p) => ({
+      id: p.id,
       address: p.address,
       size: p.size,
       technician: p.technicianName,
+      technicianId: p.technicianId,
       nextService: p.nextService,
     })),
     services: h.services.map((s) => ({
@@ -207,6 +217,7 @@ const AdminDashboard = () => {
       type: s.type,
       technician: s.technicianName,
       status: s.status,
+      poolId: s.poolId,
     })),
     status: "Active",
   }));
@@ -302,7 +313,8 @@ const AdminDashboard = () => {
   const [homeownerSuccess, setHomeownerSuccess] = useState(false);
   const [homeownerEditSuccess, setHomeownerEditSuccess] = useState(false);
   const [scheduleTab, setScheduleTab] = useState<"upcoming" | "past">("upcoming");
-  const [detailTab, setDetailTab] = useState<"overview" | "pools" | "schedule" | "payments" | "notes">("overview");
+  const [detailTab, setDetailTab] = useState<"overview" | "pools" | "schedule" | "requests" | "billing" | "notes">("overview");
+  const [pastServiceId, setPastServiceId] = useState<string | null>(null);
 
   const nav = (p: AdminPage, id: string | null = null) => { setPage(p); setDetailId(id); setSidebarOpen(false); };
 
@@ -583,17 +595,13 @@ const AdminDashboard = () => {
             <InfoRow label="Name" value={tech.name} /><InfoRow label="Rating" value={tech.rating > 0 ? <Stars rating={tech.rating} /> : "New - No ratings yet"} />
             <InfoRow label="Email" value={tech.email} /><InfoRow label="Phone" value={tech.phone} /><InfoRow label="Status" value={tech.status} badge />
           </CardContent></Card>
-        {tech.pools.length > 0 && (
-          <Card><CardHeader><CardTitle className="text-sm">Assigned Pools</CardTitle></CardHeader>
-            <CardContent className="p-0">
-              <Table><TableHeader><TableRow>
-                <TableHead>Address</TableHead><TableHead>Homeowner</TableHead><TableHead>Next Service</TableHead><TableHead>Type</TableHead>
-              </TableRow></TableHeader>
-              <TableBody>{tech.pools.map((p, i) => (
-                <TableRow key={i}><TableCell className="font-semibold">{p.address}</TableCell><TableCell>{p.homeowner}</TableCell><TableCell>{p.nextService}</TableCell><TableCell>{p.serviceType}</TableCell></TableRow>
-              ))}</TableBody></Table>
-            </CardContent></Card>
-        )}
+
+        <TechPoolAssignmentPanel technicianId={tech.id} />
+
+        <TechClientUpdatesPanel technicianId={tech.id} />
+
+        <AdminNotesPanel targetType="technician" targetId={tech.id} />
+
         {tech.reviews.filter(r => r.status === "Approved").length > 0 && (
           <Card><CardHeader><CardTitle className="text-sm">Approved Reviews</CardTitle></CardHeader>
             <CardContent className="p-0">
@@ -604,9 +612,6 @@ const AdminDashboard = () => {
                 <TableRow key={i}><TableCell className="font-semibold">{r.reviewer}</TableCell><TableCell><Stars rating={r.rating} /></TableCell><TableCell className="text-muted-foreground max-w-[300px] truncate">{r.message}</TableCell><TableCell className="whitespace-nowrap">{r.date}</TableCell></TableRow>
               ))}</TableBody></Table>
             </CardContent></Card>
-        )}
-        {tech.pools.length === 0 && tech.reviews.length === 0 && (
-          <Card><CardContent className="text-center py-10 text-muted-foreground text-sm">This technician is newly approved and has no assigned pools or reviews yet.</CardContent></Card>
         )}
       </div>
     );
@@ -763,11 +768,12 @@ const AdminDashboard = () => {
         </Card>
 
         {/* Tabs */}
-        <div className="border-b border-border flex gap-1">
+        <div className="border-b border-border flex gap-1 overflow-x-auto">
           <TabBtn id="overview" label="Overview" />
           <TabBtn id="pools" label="Pools" />
-          <TabBtn id="schedule" label="Schedule" />
-          <TabBtn id="payments" label="Payments" />
+          <TabBtn id="schedule" label="History" />
+          <TabBtn id="requests" label="Requests" />
+          <TabBtn id="billing" label="Billing" />
           <TabBtn id="notes" label="Notes" />
         </div>
 
@@ -783,20 +789,43 @@ const AdminDashboard = () => {
 
         {detailTab === "pools" && (
           <Card>
-            <CardHeader className="flex flex-row items-center justify-between">
-              <CardTitle className="text-sm">Pools</CardTitle>
-              <Button size="sm" variant="outline" className="gap-1.5"><Plus className="h-3.5 w-3.5" /> Add Pool</Button>
+            <CardHeader>
+              <CardTitle className="text-sm">Pools & Assigned Technician</CardTitle>
             </CardHeader>
             <CardContent className="p-0">
               <Table>
                 <TableHeader><TableRow>
-                  <TableHead>Address</TableHead><TableHead>Size</TableHead><TableHead>Technician</TableHead><TableHead>Next Service</TableHead>
+                  <TableHead>Address</TableHead><TableHead>Size</TableHead><TableHead>Assigned Technician</TableHead><TableHead>Next Service</TableHead>
                 </TableRow></TableHeader>
                 <TableBody>{ho.pools.map((p, i) => (
-                  <TableRow key={i} className="cursor-pointer hover:bg-muted/50">
+                  <TableRow key={i}>
                     <TableCell className="font-semibold">{p.address}</TableCell>
                     <TableCell>{p.size}</TableCell>
-                    <TableCell>{p.technician}</TableCell>
+                    <TableCell>
+                      {p.id ? (
+                        <Select
+                          value={p.technicianId ?? "none"}
+                          onValueChange={async (val) => {
+                            try {
+                              await assignPoolToTech.mutateAsync({ poolId: p.id!, technicianId: val === "none" ? null : val });
+                              toast({ title: "Technician reassigned", variant: "success" });
+                            } catch (e) {
+                              toast({ title: "Failed", description: e instanceof Error ? e.message : "", variant: "destructive" });
+                            }
+                          }}
+                        >
+                          <SelectTrigger className="h-8 w-56"><SelectValue /></SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="none">Unassigned</SelectItem>
+                            {technicians.map((t) => (
+                              <SelectItem key={t.id} value={t.id}>{t.name}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      ) : (
+                        p.technician
+                      )}
+                    </TableCell>
                     <TableCell>{p.nextService}</TableCell>
                   </TableRow>
                 ))}</TableBody>
@@ -808,7 +837,7 @@ const AdminDashboard = () => {
         {detailTab === "schedule" && (
           <Card>
             <CardHeader className="flex flex-row items-center justify-between">
-              <CardTitle className="text-sm">Schedule</CardTitle>
+              <CardTitle className="text-sm">Service History</CardTitle>
               <div className="flex gap-1 p-1 rounded-md bg-muted">
                 <button onClick={() => setScheduleTab("upcoming")} className={`px-3 py-1 text-xs font-medium rounded ${scheduleTab === "upcoming" ? "bg-background shadow-sm" : "text-muted-foreground"}`}>Upcoming</button>
                 <button onClick={() => setScheduleTab("past")} className={`px-3 py-1 text-xs font-medium rounded ${scheduleTab === "past" ? "bg-background shadow-sm" : "text-muted-foreground"}`}>Past</button>
@@ -823,14 +852,16 @@ const AdminDashboard = () => {
                   {visibleServices.length === 0 ? (
                     <TableRow><TableCell colSpan={5} className="text-center text-sm text-muted-foreground py-6">No {scheduleTab} services.</TableCell></TableRow>
                   ) : visibleServices.map((s, i) => (
-                    <TableRow key={i}>
+                    <TableRow key={i} className={scheduleTab === "past" ? "cursor-pointer hover:bg-muted/50" : ""} onClick={() => { if (scheduleTab === "past" && s.id) setPastServiceId(s.id); }}>
                       <TableCell className="font-semibold">{s.date}</TableCell>
                       <TableCell>{s.type}</TableCell>
                       <TableCell>{s.technician}</TableCell>
                       <TableCell><StatusBadge status={s.status} /></TableCell>
-                      <TableCell>
-                        {scheduleTab === "upcoming" && (
-                          <Button size="sm" variant="outline">Reschedule</Button>
+                      <TableCell onClick={(e) => e.stopPropagation()}>
+                        {scheduleTab === "upcoming" ? (
+                          <Button size="sm" variant="outline" onClick={() => s.id && setEditServiceId(s.id)}>Edit</Button>
+                        ) : (
+                          <Button size="sm" variant="outline" onClick={() => s.id && setPastServiceId(s.id)}>View</Button>
                         )}
                       </TableCell>
                     </TableRow>
@@ -841,24 +872,11 @@ const AdminDashboard = () => {
           </Card>
         )}
 
-        {detailTab === "payments" && (
-          <Card>
-            <CardHeader><CardTitle className="text-sm">Payments</CardTitle></CardHeader>
-            <CardContent>
-              <p className="text-sm text-muted-foreground">Payment method: <span className="font-medium text-foreground">{ho.paymentMethod || "Card on File"}</span></p>
-              <p className="text-xs text-muted-foreground mt-2">Manual payment logging available for offline customers.</p>
-            </CardContent>
-          </Card>
-        )}
+        {detailTab === "requests" && <HomeownerRequestsPanel homeownerId={ho.id} />}
 
-        {detailTab === "notes" && (
-          <Card>
-            <CardHeader><CardTitle className="text-sm">Notes</CardTitle></CardHeader>
-            <CardContent>
-              <p className="text-sm text-foreground whitespace-pre-wrap">{ho.notes || "No notes for this homeowner."}</p>
-            </CardContent>
-          </Card>
-        )}
+        {detailTab === "billing" && <HomeownerBillingPanel homeownerId={ho.id} />}
+
+        {detailTab === "notes" && <AdminNotesPanel targetType="homeowner" targetId={ho.id} title="Admin Notes (Private)" />}
       </div>
     );
   };
@@ -1449,6 +1467,7 @@ const AdminDashboard = () => {
         homeowner={editingHomeowner}
         onSave={handleHomeownerUpdated}
       />
+      <PastServiceDetailModal serviceId={pastServiceId} onClose={() => setPastServiceId(null)} />
     </div>
   );
 };

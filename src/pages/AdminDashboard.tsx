@@ -510,8 +510,10 @@ const AdminDashboard = () => {
                   <TableHead>Homeowner</TableHead><TableHead>Service</TableHead><TableHead>Technician</TableHead><TableHead>Status</TableHead>
                 </TableRow></TableHeader>
                 <TableBody>
-                  {recentServices.map((r, i) => (
-                    <TableRow key={i}>
+                  {recentServices.length === 0 ? (
+                    <TableRow><TableCell colSpan={4} className="text-center text-muted-foreground text-xs py-6">No services scheduled</TableCell></TableRow>
+                  ) : recentServices.map((r, i) => (
+                    <TableRow key={r.id ?? i} className="cursor-pointer hover:bg-muted/50" onClick={() => r.id && setEditServiceId(r.id)}>
                       <TableCell className="font-medium">{r.homeowner}</TableCell><TableCell>{r.type}</TableCell><TableCell>{r.technician}</TableCell>
                       <TableCell><StatusBadge status={r.status} /></TableCell>
                     </TableRow>

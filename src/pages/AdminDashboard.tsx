@@ -586,17 +586,13 @@ const AdminDashboard = () => {
             <InfoRow label="Name" value={tech.name} /><InfoRow label="Rating" value={tech.rating > 0 ? <Stars rating={tech.rating} /> : "New - No ratings yet"} />
             <InfoRow label="Email" value={tech.email} /><InfoRow label="Phone" value={tech.phone} /><InfoRow label="Status" value={tech.status} badge />
           </CardContent></Card>
-        {tech.pools.length > 0 && (
-          <Card><CardHeader><CardTitle className="text-sm">Assigned Pools</CardTitle></CardHeader>
-            <CardContent className="p-0">
-              <Table><TableHeader><TableRow>
-                <TableHead>Address</TableHead><TableHead>Homeowner</TableHead><TableHead>Next Service</TableHead><TableHead>Type</TableHead>
-              </TableRow></TableHeader>
-              <TableBody>{tech.pools.map((p, i) => (
-                <TableRow key={i}><TableCell className="font-semibold">{p.address}</TableCell><TableCell>{p.homeowner}</TableCell><TableCell>{p.nextService}</TableCell><TableCell>{p.serviceType}</TableCell></TableRow>
-              ))}</TableBody></Table>
-            </CardContent></Card>
-        )}
+
+        <TechPoolAssignmentPanel technicianId={tech.id} />
+
+        <TechClientUpdatesPanel technicianId={tech.id} />
+
+        <AdminNotesPanel targetType="technician" targetId={tech.id} />
+
         {tech.reviews.filter(r => r.status === "Approved").length > 0 && (
           <Card><CardHeader><CardTitle className="text-sm">Approved Reviews</CardTitle></CardHeader>
             <CardContent className="p-0">
@@ -607,9 +603,6 @@ const AdminDashboard = () => {
                 <TableRow key={i}><TableCell className="font-semibold">{r.reviewer}</TableCell><TableCell><Stars rating={r.rating} /></TableCell><TableCell className="text-muted-foreground max-w-[300px] truncate">{r.message}</TableCell><TableCell className="whitespace-nowrap">{r.date}</TableCell></TableRow>
               ))}</TableBody></Table>
             </CardContent></Card>
-        )}
-        {tech.pools.length === 0 && tech.reviews.length === 0 && (
-          <Card><CardContent className="text-center py-10 text-muted-foreground text-sm">This technician is newly approved and has no assigned pools or reviews yet.</CardContent></Card>
         )}
       </div>
     );

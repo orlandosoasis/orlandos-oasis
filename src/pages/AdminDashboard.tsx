@@ -86,6 +86,9 @@ const AdminDashboard = () => {
   const [detailId, setDetailId] = useState<string | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [issueModal, setIssueModal] = useState<AdminIssue | null>(null);
+  const [issueDraftStatus, setIssueDraftStatus] = useState<"open" | "in_progress" | "resolved">("open");
+  const [issueDraftNotes, setIssueDraftNotes] = useState("");
+  const [issueDraftTechId, setIssueDraftTechId] = useState<string>("");
   const [confirmAction, setConfirmAction] = useState<{ type: "approve" | "reject"; applicant: AdminApplicant } | null>(null);
   const { logout, user } = useAuth();
   const navigate = useNavigate();

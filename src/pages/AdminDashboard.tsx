@@ -196,9 +196,11 @@ const AdminDashboard = () => {
     plan: h.plan,
     startDate: h.startDate,
     pools: h.pools.map((p) => ({
+      id: p.id,
       address: p.address,
       size: p.size,
       technician: p.technicianName,
+      technicianId: p.technicianId,
       nextService: p.nextService,
     })),
     services: h.services.map((s) => ({
@@ -207,6 +209,7 @@ const AdminDashboard = () => {
       type: s.type,
       technician: s.technicianName,
       status: s.status,
+      poolId: s.poolId,
     })),
     status: "Active",
   }));

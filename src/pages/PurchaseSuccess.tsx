@@ -34,6 +34,7 @@ const PurchaseSuccess = () => {
           firstName: checkoutData.customerFirstName,
           lastName: checkoutData.customerLastName,
           zipCode: checkoutData.customerZipcode,
+          contractLocked: true,
         }
       );
 

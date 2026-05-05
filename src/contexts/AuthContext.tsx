@@ -124,6 +124,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (profile) {
         setUser(profile);
         role = profile.role;
+      } else {
+        await supabase.auth.signOut();
+        return { success: false, error: "We couldn't load your account profile. Please try signing in again." };
       }
     }
     return { success: true, role };

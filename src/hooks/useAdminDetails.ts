@@ -374,7 +374,7 @@ export function useUpdateHomeownerBilling() {
       contractStartDate?: string | null;
       contractLocked?: boolean;
     }) => {
-      const patch: Record<string, unknown> = {};
+      const patch: { monthly_amount?: number | null; contract_start_date?: string | null; contract_locked?: boolean } = {};
       if (input.monthlyAmount !== undefined) patch.monthly_amount = input.monthlyAmount;
       if (input.contractStartDate !== undefined) patch.contract_start_date = input.contractStartDate;
       if (input.contractLocked !== undefined) patch.contract_locked = input.contractLocked;

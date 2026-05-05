@@ -29,14 +29,13 @@ const Login = () => {
         description: "You've successfully logged in.",
         variant: "success",
       });
-      // Route by role
-      const normalizedEmail = email.toLowerCase().trim();
-      if (normalizedEmail === "tech@example.com") {
+      // Route by actual role returned from auth.
+      if (result.role === "admin") {
+        navigate("/admin-dashboard", { replace: true });
+      } else if (result.role === "technician") {
         navigate("/tech/jobs", { replace: true });
-      } else if (normalizedEmail === "admin@example.com") {
-        navigate("/admin-dashboard");
       } else {
-        navigate("/dashboard");
+        navigate("/dashboard", { replace: true });
       }
     } else {
       toast({

@@ -1467,6 +1467,7 @@ const AdminDashboard = () => {
         homeowner={editingHomeowner}
         onSave={handleHomeownerUpdated}
       />
+      <PastServiceDetailModal serviceId={pastServiceId} onClose={() => setPastServiceId(null)} />
     </div>
   );
 };

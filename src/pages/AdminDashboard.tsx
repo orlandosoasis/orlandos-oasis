@@ -169,8 +169,10 @@ const AdminDashboard = () => {
     serviceDate: i.serviceDate ?? "—",
     email: i.email,
     phone: i.phone ?? "—",
-    status: i.status === "open" ? "Open" : "Resolved",
+    status: i.status === "open" ? "Open" : i.status === "in_progress" ? "In Progress" : "Resolved",
     relatedService: i.relatedService ?? "—",
+    adminNotes: i.adminNotes,
+    assignedTechnicianId: i.assignedTechnicianId,
   }));
 
   const applicants: AdminApplicant[] = (applicationsQuery.data ?? []).map((a) => ({

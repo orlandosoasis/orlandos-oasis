@@ -766,11 +766,12 @@ const AdminDashboard = () => {
         </Card>
 
         {/* Tabs */}
-        <div className="border-b border-border flex gap-1">
+        <div className="border-b border-border flex gap-1 overflow-x-auto">
           <TabBtn id="overview" label="Overview" />
           <TabBtn id="pools" label="Pools" />
-          <TabBtn id="schedule" label="Schedule" />
-          <TabBtn id="payments" label="Payments" />
+          <TabBtn id="schedule" label="History" />
+          <TabBtn id="requests" label="Requests" />
+          <TabBtn id="billing" label="Billing" />
           <TabBtn id="notes" label="Notes" />
         </div>
 
@@ -786,20 +787,43 @@ const AdminDashboard = () => {
 
         {detailTab === "pools" && (
           <Card>
-            <CardHeader className="flex flex-row items-center justify-between">
-              <CardTitle className="text-sm">Pools</CardTitle>
-              <Button size="sm" variant="outline" className="gap-1.5"><Plus className="h-3.5 w-3.5" /> Add Pool</Button>
+            <CardHeader>
+              <CardTitle className="text-sm">Pools & Assigned Technician</CardTitle>
             </CardHeader>
             <CardContent className="p-0">
               <Table>
                 <TableHeader><TableRow>
-                  <TableHead>Address</TableHead><TableHead>Size</TableHead><TableHead>Technician</TableHead><TableHead>Next Service</TableHead>
+                  <TableHead>Address</TableHead><TableHead>Size</TableHead><TableHead>Assigned Technician</TableHead><TableHead>Next Service</TableHead>
                 </TableRow></TableHeader>
                 <TableBody>{ho.pools.map((p, i) => (
-                  <TableRow key={i} className="cursor-pointer hover:bg-muted/50">
+                  <TableRow key={i}>
                     <TableCell className="font-semibold">{p.address}</TableCell>
                     <TableCell>{p.size}</TableCell>
-                    <TableCell>{p.technician}</TableCell>
+                    <TableCell>
+                      {p.id ? (
+                        <Select
+                          value={p.technicianId ?? "none"}
+                          onValueChange={async (val) => {
+                            try {
+                              await assignPoolToTech.mutateAsync({ poolId: p.id!, technicianId: val === "none" ? null : val });
+                              toast({ title: "Technician reassigned", variant: "success" });
+                            } catch (e) {
+                              toast({ title: "Failed", description: e instanceof Error ? e.message : "", variant: "destructive" });
+                            }
+                          }}
+                        >
+                          <SelectTrigger className="h-8 w-56"><SelectValue /></SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="none">Unassigned</SelectItem>
+                            {technicians.map((t) => (
+                              <SelectItem key={t.id} value={t.id}>{t.name}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      ) : (
+                        p.technician
+                      )}
+                    </TableCell>
                     <TableCell>{p.nextService}</TableCell>
                   </TableRow>
                 ))}</TableBody>
@@ -811,7 +835,7 @@ const AdminDashboard = () => {
         {detailTab === "schedule" && (
           <Card>
             <CardHeader className="flex flex-row items-center justify-between">
-              <CardTitle className="text-sm">Schedule</CardTitle>
+              <CardTitle className="text-sm">Service History</CardTitle>
               <div className="flex gap-1 p-1 rounded-md bg-muted">
                 <button onClick={() => setScheduleTab("upcoming")} className={`px-3 py-1 text-xs font-medium rounded ${scheduleTab === "upcoming" ? "bg-background shadow-sm" : "text-muted-foreground"}`}>Upcoming</button>
                 <button onClick={() => setScheduleTab("past")} className={`px-3 py-1 text-xs font-medium rounded ${scheduleTab === "past" ? "bg-background shadow-sm" : "text-muted-foreground"}`}>Past</button>
@@ -826,14 +850,16 @@ const AdminDashboard = () => {
                   {visibleServices.length === 0 ? (
                     <TableRow><TableCell colSpan={5} className="text-center text-sm text-muted-foreground py-6">No {scheduleTab} services.</TableCell></TableRow>
                   ) : visibleServices.map((s, i) => (
-                    <TableRow key={i}>
+                    <TableRow key={i} className={scheduleTab === "past" ? "cursor-pointer hover:bg-muted/50" : ""} onClick={() => { if (scheduleTab === "past" && s.id) setPastServiceId(s.id); }}>
                       <TableCell className="font-semibold">{s.date}</TableCell>
                       <TableCell>{s.type}</TableCell>
                       <TableCell>{s.technician}</TableCell>
                       <TableCell><StatusBadge status={s.status} /></TableCell>
-                      <TableCell>
-                        {scheduleTab === "upcoming" && (
-                          <Button size="sm" variant="outline">Reschedule</Button>
+                      <TableCell onClick={(e) => e.stopPropagation()}>
+                        {scheduleTab === "upcoming" ? (
+                          <Button size="sm" variant="outline" onClick={() => s.id && setEditServiceId(s.id)}>Edit</Button>
+                        ) : (
+                          <Button size="sm" variant="outline" onClick={() => s.id && setPastServiceId(s.id)}>View</Button>
                         )}
                       </TableCell>
                     </TableRow>
@@ -844,24 +870,11 @@ const AdminDashboard = () => {
           </Card>
         )}
 
-        {detailTab === "payments" && (
-          <Card>
-            <CardHeader><CardTitle className="text-sm">Payments</CardTitle></CardHeader>
-            <CardContent>
-              <p className="text-sm text-muted-foreground">Payment method: <span className="font-medium text-foreground">{ho.paymentMethod || "Card on File"}</span></p>
-              <p className="text-xs text-muted-foreground mt-2">Manual payment logging available for offline customers.</p>
-            </CardContent>
-          </Card>
-        )}
+        {detailTab === "requests" && <HomeownerRequestsPanel homeownerId={ho.id} />}
 
-        {detailTab === "notes" && (
-          <Card>
-            <CardHeader><CardTitle className="text-sm">Notes</CardTitle></CardHeader>
-            <CardContent>
-              <p className="text-sm text-foreground whitespace-pre-wrap">{ho.notes || "No notes for this homeowner."}</p>
-            </CardContent>
-          </Card>
-        )}
+        {detailTab === "billing" && <HomeownerBillingPanel homeownerId={ho.id} />}
+
+        {detailTab === "notes" && <AdminNotesPanel targetType="homeowner" targetId={ho.id} title="Admin Notes (Private)" />}
       </div>
     );
   };

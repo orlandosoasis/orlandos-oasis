@@ -51,7 +51,7 @@ const WelcomeBack = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-oasis via-oasis-teal to-navy flex flex-col">
       {/* Top branding */}
-      <header className="px-6 py-4">
+      <header className="px-6 py-4 flex justify-center">
         <Link to="/" className="flex items-center gap-2 text-white">
           <img src={oasisLogo} alt="Orlando's Oasis" className="h-8 w-8 object-contain" />
           <span className="text-lg font-bold text-white">Orlando's Oasis</span>
@@ -63,8 +63,8 @@ const WelcomeBack = () => {
         <section className="py-10 md:py-16 px-4 md:px-6">
           <div className="container max-w-3xl mx-auto">
             <div className="text-center mb-8">
-              <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-3">Welcome Back to Orlando's Oasis</h1>
-              <p className="text-muted-foreground">
+              <h1 className="text-3xl md:text-4xl font-bold text-white mb-3">Welcome Back to Orlando's Oasis</h1>
+              <p className="text-white/80">
                 Existing client? Set up your online account to manage services, view reports, and message your technician.
               </p>
             </div>

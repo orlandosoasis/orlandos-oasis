@@ -60,7 +60,7 @@ const WelcomeBack = () => {
 
       <main className="flex-1">
         {/* Welcome / signup section */}
-        <section className="py-10 md:py-16 px-4 md:px-6 bg-white">
+        <section className="py-10 md:py-16 px-4 md:px-6">
           <div className="container max-w-3xl mx-auto">
             <div className="text-center mb-8">
               <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-3">Welcome Back to Orlando's Oasis</h1>

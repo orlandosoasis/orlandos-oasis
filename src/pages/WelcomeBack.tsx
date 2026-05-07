@@ -52,9 +52,9 @@ const WelcomeBack = () => {
     <div className="min-h-screen bg-gradient-to-br from-oasis via-oasis-teal to-navy flex flex-col">
       {/* Top branding */}
       <header className="px-6 py-4 flex justify-center">
-        <Link to="/" className="flex items-center gap-2 text-white">
+        <Link to="/" className="flex items-center gap-2 bg-white rounded-full px-4 py-2">
           <img src={oasisLogo} alt="Orlando's Oasis" className="h-8 w-8 object-contain" />
-          <span className="text-lg font-bold text-white">Orlando's Oasis</span>
+          <span className="text-lg font-bold text-foreground">Orlando's Oasis</span>
         </Link>
       </header>
 

@@ -29,6 +29,29 @@ function randomPassword() {
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
   try {
+    // ===== Admin-only access guard =====
+    const authHeader = req.headers.get("Authorization") ?? "";
+    const token = authHeader.replace(/^Bearer\s+/i, "").trim();
+    if (!token) {
+      return new Response(JSON.stringify({ error: "Missing Authorization header" }), {
+        status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+    const { data: userData, error: userErr } = await admin.auth.getUser(token);
+    if (userErr || !userData?.user) {
+      return new Response(JSON.stringify({ error: "Invalid or expired token" }), {
+        status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+    const { data: profile } = await admin
+      .from("profiles").select("role").eq("id", userData.user.id).maybeSingle();
+    if (profile?.role !== "admin") {
+      return new Response(JSON.stringify({ error: "Admin role required" }), {
+        status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+    // ===== End guard =====
+
     const { data: list } = await admin.auth.admin.listUsers({ page: 1, perPage: 200 });
 
     // 1. Remove demo accounts.

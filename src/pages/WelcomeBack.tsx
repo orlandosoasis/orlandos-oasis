@@ -49,12 +49,12 @@ const WelcomeBack = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-background">
+    <div className="min-h-screen bg-gradient-to-br from-oasis via-oasis-teal to-navy flex flex-col">
       {/* Top branding */}
-      <header className="px-6 py-4 border-b border-border bg-card">
-        <Link to="/" className="flex items-center gap-2">
+      <header className="px-6 py-4">
+        <Link to="/" className="flex items-center gap-2 text-white">
           <img src={oasisLogo} alt="Orlando's Oasis" className="h-8 w-8 object-contain" />
-          <span className="text-lg font-bold text-foreground">Orlando's Oasis</span>
+          <span className="text-lg font-bold text-white">Orlando's Oasis</span>
         </Link>
       </header>
 

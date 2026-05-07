@@ -63,9 +63,9 @@ const WelcomeBack = () => {
         <section className="py-10 md:py-16 px-4 md:px-6">
           <div className="container max-w-3xl mx-auto">
             <div className="text-center mb-8">
-              <h1 className="text-3xl md:text-4xl font-bold text-white mb-3">Welcome Back to Orlando's Oasis</h1>
+              <h1 className="text-3xl md:text-4xl font-bold text-white mb-3">Set up your account</h1>
               <p className="text-white/80">
-                Existing client? Set up your online account to manage services, view reports, and message your technician.
+                Track and manage your maintenance services all in one place.
               </p>
             </div>
 

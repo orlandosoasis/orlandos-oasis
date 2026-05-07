@@ -23,6 +23,29 @@ Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
   const results: Record<string, unknown> = {};
   try {
+    // ===== Admin-only access guard =====
+    const authHeader = req.headers.get("Authorization") ?? "";
+    const token = authHeader.replace(/^Bearer\s+/i, "").trim();
+    if (!token) {
+      return new Response(JSON.stringify({ error: "Missing Authorization header" }), {
+        status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+    const { data: userData, error: userErr } = await admin.auth.getUser(token);
+    if (userErr || !userData?.user) {
+      return new Response(JSON.stringify({ error: "Invalid or expired token" }), {
+        status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+    const { data: profile } = await admin
+      .from("profiles").select("role").eq("id", userData.user.id).maybeSingle();
+    if (profile?.role !== "admin") {
+      return new Response(JSON.stringify({ error: "Admin role required" }), {
+        status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+    // ===== End guard =====
+
     for (const u of USERS) {
       const { data: list } = await admin.auth.admin.listUsers({ page: 1, perPage: 200 });
       const existing = list.users.find((x) => x.email?.toLowerCase() === u.email);
@@ -39,7 +62,8 @@ Deno.serve(async (req) => {
       }
       // Ensure profile role is correct
       await admin.from("profiles").update({ role: u.role, full_name: u.full_name, first_name: u.first_name, last_name: u.last_name }).eq("id", id!);
-      results[u.role] = { email: u.email, password: u.password, id };
+      // Do NOT return plaintext passwords in the response.
+      results[u.role] = { email: u.email, id };
     }
     return new Response(JSON.stringify({ ok: true, users: results }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },

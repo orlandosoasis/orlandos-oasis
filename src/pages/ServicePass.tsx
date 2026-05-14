@@ -98,8 +98,11 @@ const ServicePass = () => {
     // Simulate payment processing
     await new Promise((resolve) => setTimeout(resolve, 1000));
     
-    // In a real app, this would create a purchase record and redirect to booking
-    navigate(`/book?purchase_id=${selectedPass}`);
+    // Route the user back to the dashboard, where the BookingFlow modal
+    // continues the purchase (date picker, time window, access details).
+    // TODO(payments): when Lovable Payments is wired, redirect here to the
+    // checkout URL returned by `payments-checkout` Edge Function instead.
+    navigate(`/dashboard?purchase_id=${selectedPass}`);
   };
 
   return (

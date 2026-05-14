@@ -26,12 +26,18 @@ const Header = memo(function Header() {
   };
 
   return (
-    <header className="sticky top-0 left-0 right-0 z-30 bg-card">
+    <header role="banner" className="sticky top-0 left-0 right-0 z-30 bg-card">
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-2 focus:z-50 focus:rounded focus:bg-primary focus:px-3 focus:py-2 focus:text-primary-foreground"
+      >
+        Skip to main content
+      </a>
       <div className="max-w-[1400px] mx-auto px-4 md:px-6 py-2 md:py-3 flex items-center justify-between gap-4 md:gap-6">
         {/* Hamburger (mobile) + Logo */}
         <div className="flex items-center gap-1 min-w-0">
           <MobileNavMenu items={NAV_ITEMS} />
-          <Link to="/" className="flex items-center gap-2 min-w-0">
+          <Link to="/" className="flex items-center gap-2 min-w-0" aria-label="Orlando's Oasis — Home">
             <LogoImg />
             <span className="text-lg md:text-xl font-bold text-foreground truncate">Orlando's Oasis</span>
           </Link>
@@ -39,7 +45,7 @@ const Header = memo(function Header() {
 
         {/* Desktop Nav Links + Login */}
         <div className="flex items-center gap-2 md:gap-6 shrink-0">
-          <nav className="hidden md:flex items-center gap-5">
+          <nav aria-label="Primary" className="hidden md:flex items-center gap-5">
             {NAV_ITEMS.map((item) =>
               item.href.startsWith("/") ? (
                 <Link

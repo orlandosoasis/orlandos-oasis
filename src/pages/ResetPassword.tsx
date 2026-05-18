@@ -82,13 +82,27 @@ const ResetPassword = () => {
     }
     setIsLoading(true);
     const { error } = await supabase.auth.updateUser({ password });
-    setIsLoading(false);
     if (error) {
+      setIsLoading(false);
       toast({ title: "Couldn't update password", description: error.message, variant: "destructive" });
       return;
     }
+    // Route by role so non-admin users don't get bounced
+    const { data: sessionData } = await supabase.auth.getSession();
+    const uid = sessionData.session?.user.id;
+    let dest = "/dashboard";
+    if (uid) {
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("role")
+        .eq("id", uid)
+        .maybeSingle();
+      if (profile?.role === "admin") dest = "/admin-dashboard";
+      else if (profile?.role === "technician") dest = "/tech-dashboard";
+    }
+    setIsLoading(false);
     toast({ title: "Password updated", description: "You're signed in.", variant: "success" });
-    navigate("/admin-dashboard", { replace: true });
+    navigate(dest, { replace: true });
   };
 
   return (

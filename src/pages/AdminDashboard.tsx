@@ -590,7 +590,16 @@ const AdminDashboard = () => {
               ) : visible.map((r) => (
                 <TableRow key={r.id}>
                   <TableCell className="font-medium whitespace-nowrap">{r.dateLabel}</TableCell>
-                  <TableCell>{r.homeowner}</TableCell>
+                  <TableCell>
+                    <div className="flex items-center gap-1.5">
+                      <span>{r.homeowner}</span>
+                      {r.isGrandfathered && (
+                        <span title={r.grandfatheredNote ?? "Legacy rate"} className="inline-flex px-1.5 py-0.5 rounded-full text-[9px] font-bold bg-amber-100 text-amber-700 border border-amber-200">
+                          GF
+                        </span>
+                      )}
+                    </div>
+                  </TableCell>
                   <TableCell className="text-muted-foreground">{r.address}</TableCell>
                   <TableCell className="text-xs">{r.poolSize}</TableCell>
                   <TableCell>{r.type}</TableCell>

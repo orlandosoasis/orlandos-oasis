@@ -1834,13 +1834,6 @@ const AdminDashboard = () => {
                             >
                               Details
                             </Button>
-                            <Button
-                              size="sm"
-                              variant="ghost"
-                              onClick={() => nav("homeDetail", h.id)}
-                            >
-                              Details
-                            </Button>
                           </div>
                         </TableCell>
                       </TableRow>

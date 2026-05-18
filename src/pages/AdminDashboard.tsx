@@ -692,6 +692,10 @@ const AdminDashboard = () => {
     const grandfatheredAccounts = homeowners.filter((h) => (h as { isGrandfathered?: boolean }).isGrandfathered);
     const grandfatheredMRR = grandfatheredAccounts.reduce((a, h) => a + (h.monthlyAmount ?? 0), 0);
 
+    // Fred's accounts (notifications suppressed).
+    const fredsAccounts = homeowners.filter((h) => (h as { isFreds?: boolean }).isFreds);
+    const fredsMRR = fredsAccounts.reduce((a, h) => a + (h.monthlyAmount ?? 0), 0);
+
     const now = new Date();
     const fmtMoney = (n: number) =>
       n.toLocaleString("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 });

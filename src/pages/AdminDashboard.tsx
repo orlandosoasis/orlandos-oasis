@@ -741,53 +741,14 @@ const AdminDashboard = () => {
           ))}
         </div>
 
-        <Card>
-          <CardHeader className="pb-3 flex flex-row items-center justify-between">
-            <CardTitle className="text-sm font-bold">
-              Monthly Revenue by Service · {now.toLocaleString("en-US", { month: "long", year: "numeric" })}
-            </CardTitle>
-            <div className="text-xs text-muted-foreground">
-              Total <span className="ml-1 text-foreground font-bold">{fmtMoney(totalMRR)}</span> · {totalPools} pools
-            </div>
-          </CardHeader>
-          <CardContent>
-            {totalPools === 0 ? (
-              <div className="text-center text-muted-foreground text-xs py-10">No pools on file yet.</div>
-            ) : (
-              <div className="h-[280px] w-full">
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={revenueRows} margin={{ top: 24, right: 16, left: 8, bottom: 8 }}>
-                    <XAxis dataKey="label" tick={{ fontSize: 12 }} axisLine={false} tickLine={false} />
-                    <YAxis
-                      tickFormatter={(v) => `$${v}`}
-                      tick={{ fontSize: 11 }}
-                      axisLine={false}
-                      tickLine={false}
-                      width={56}
-                    />
-                    <ReTooltip
-                      cursor={{ fill: "hsl(var(--muted))", opacity: 0.4 }}
-                      formatter={(value: number, _name, p) => [fmtMoney(value), `${p.payload.count} pools × ${fmtMoney(p.payload.price)}`]}
-                      labelStyle={{ fontWeight: 600 }}
-                      contentStyle={{ borderRadius: 8, fontSize: 12 }}
-                    />
-                    <Bar dataKey="revenue" radius={[8, 8, 0, 0]}>
-                      {revenueRows.map((_, i) => (
-                        <Cell key={i} fill={["hsl(var(--primary))", "hsl(199 89% 48%)", "hsl(173 80% 40%)"][i % 3]} />
-                      ))}
-                      <LabelList
-                        dataKey="revenue"
-                        position="top"
-                        formatter={(v: number) => (v > 0 ? fmtMoney(v) : "")}
-                        style={{ fontSize: 11, fontWeight: 600, fill: "hsl(var(--foreground))" }}
-                      />
-                    </Bar>
-                  </BarChart>
-                </ResponsiveContainer>
-              </div>
-            )}
-          </CardContent>
-        </Card>
+        <FinancialsCard
+          revenueRows={revenueRows}
+          totalMRR={totalMRR}
+          totalPools={totalPools}
+          technicians={technicians}
+          homeowners={homeowners}
+        />
+
 
         {(grandfatheredAccounts.length > 0 || fredsAccounts.length > 0) && (() => {
           const tabKey = specialTab;

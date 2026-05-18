@@ -61,6 +61,9 @@ const PAGE_TITLES: Record<string, string> = {
   reviews: "Review Moderation",
 };
 
+const fmtMoney = (n: number) =>
+  n.toLocaleString("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 });
+
 const StatusBadge = ({ status }: { status: string }) => {
   const variants: Record<string, string> = {
     Active: "bg-emerald-50 text-emerald-600 border-emerald-200",

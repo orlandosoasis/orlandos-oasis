@@ -1685,6 +1685,10 @@ const AdminDashboard = () => {
             poolId: h.pools?.[0]?.id ?? null,
             poolSize: h.pools?.[0]?.size ?? null,
             poolAddress: h.address || null,
+            isGrandfathered: h.isGrandfathered,
+            grandfatheredNote: h.grandfatheredNote ?? null,
+            isFreds: h.isFreds,
+            notificationsEnabled: h.notificationsEnabled,
           },
         });
         toast({ title: "Homeowner updated", variant: "success" });

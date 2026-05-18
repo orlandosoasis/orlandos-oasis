@@ -193,6 +193,7 @@ const AdminDashboard = () => {
     status: t.status,
     assignedPools: t.assignedPools,
     completedServices: t.completedServices,
+    payoutPerPool: t.payoutPerPool,
     reviews: t.reviews.map((r) => ({
       id: r.id,
       reviewer: r.reviewer,

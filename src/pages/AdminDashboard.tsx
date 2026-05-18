@@ -769,6 +769,88 @@ const AdminDashboard = () => {
             </Table>
           </CardContent>
         </Card>
+
+        <Card>
+          <CardHeader className="pb-3 flex flex-row items-center justify-between">
+            <CardTitle className="text-sm font-bold">Active Technicians · Day Off Requests</CardTitle>
+            <div className="text-xs text-muted-foreground">
+              {technicians.filter((t) => t.status === "Active").length} active
+            </div>
+          </CardHeader>
+          <CardContent className="p-0">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Technician</TableHead>
+                  <TableHead>Requested Dates</TableHead>
+                  <TableHead>Reason</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead className="text-right">Actions</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {(() => {
+                  const actives = technicians.filter((t) => t.status === "Active");
+                  if (actives.length === 0) {
+                    return (
+                      <TableRow>
+                        <TableCell colSpan={5} className="text-center text-muted-foreground text-xs py-6">
+                          No active technicians
+                        </TableCell>
+                      </TableRow>
+                    );
+                  }
+                  // Mock day-off requests, deterministic by tech index
+                  const samples = [
+                    { dates: "May 23 – May 24, 2026", reason: "Family event", status: "Pending" },
+                    { dates: "Jun 02, 2026", reason: "Medical appointment", status: "Approved" },
+                    { dates: "Jun 14 – Jun 16, 2026", reason: "Vacation", status: "Pending" },
+                    { dates: "—", reason: "—", status: "None" },
+                  ];
+                  return actives.map((t, i) => {
+                    const r = samples[i % samples.length];
+                    return (
+                      <TableRow key={t.id}>
+                        <TableCell className="font-semibold">{t.name}</TableCell>
+                        <TableCell className="text-muted-foreground whitespace-nowrap">{r.dates}</TableCell>
+                        <TableCell className="text-xs">{r.reason}</TableCell>
+                        <TableCell>
+                          {r.status === "None" ? (
+                            <span className="text-xs text-muted-foreground italic">No request</span>
+                          ) : (
+                            <StatusBadge status={r.status} />
+                          )}
+                        </TableCell>
+                        <TableCell className="text-right">
+                          {r.status === "Pending" ? (
+                            <div className="flex justify-end gap-2">
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => toast({ title: "Day off approved", description: `${t.name} · ${r.dates}`, variant: "success" })}
+                              >
+                                Approve
+                              </Button>
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => toast({ title: "Day off denied", description: `${t.name} · ${r.dates}`, variant: "destructive" })}
+                              >
+                                Deny
+                              </Button>
+                            </div>
+                          ) : (
+                            <span className="text-xs text-muted-foreground">—</span>
+                          )}
+                        </TableCell>
+                      </TableRow>
+                    );
+                  });
+                })()}
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
       </div>
     );
   };

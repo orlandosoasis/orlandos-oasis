@@ -74,6 +74,10 @@ export interface AdminHomeowner {
   frequency?: string;
   paymentMethod?: string;
   notes?: string;
+  isGrandfathered?: boolean;
+  grandfatheredNote?: string | null;
+  isFreds?: boolean;
+  notificationsEnabled?: boolean;
 }
 
 export type AdminIssueStatus = "Open" | "In Progress" | "Resolved";

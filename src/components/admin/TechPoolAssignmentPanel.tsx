@@ -4,13 +4,14 @@ import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Plus, X } from "lucide-react";
+import { Plus, X, Eye } from "lucide-react";
 import {
   useTechnicianPools,
   useUnassignedPools,
   useAssignPoolToTech,
 } from "@/hooks/useAdminDetails";
 import { useToast } from "@/hooks/use-toast";
+import TechPoolDetailModal from "./TechPoolDetailModal";
 
 export default function TechPoolAssignmentPanel({ technicianId }: { technicianId: string }) {
   const { toast } = useToast();
@@ -19,6 +20,7 @@ export default function TechPoolAssignmentPanel({ technicianId }: { technicianId
   const assign = useAssignPoolToTech();
   const [addOpen, setAddOpen] = useState(false);
   const [selectedPoolId, setSelectedPoolId] = useState<string>("");
+  const [viewPoolId, setViewPoolId] = useState<string | null>(null);
 
   const handleRemove = async (poolId: string) => {
     try {
@@ -68,10 +70,18 @@ export default function TechPoolAssignmentPanel({ technicianId }: { technicianId
             ) : (techPools.data?.length ?? 0) === 0 ? (
               <TableRow><TableCell colSpan={3} className="text-center text-muted-foreground py-4 text-sm">No pools assigned to this technician.</TableCell></TableRow>
             ) : techPools.data!.map((p) => (
-              <TableRow key={p.id}>
-                <TableCell className="font-semibold">{p.address}</TableCell>
+              <TableRow
+                key={p.id}
+                className="cursor-pointer hover:bg-muted/50"
+                onClick={() => setViewPoolId(p.id)}
+              >
+                <TableCell className="font-semibold">
+                  <span className="inline-flex items-center gap-1.5 text-primary hover:underline">
+                    <Eye className="h-3.5 w-3.5" /> {p.address}
+                  </span>
+                </TableCell>
                 <TableCell>{p.homeownerName}</TableCell>
-                <TableCell>
+                <TableCell onClick={(e) => e.stopPropagation()}>
                   <Button size="sm" variant="outline" className="gap-1.5 text-destructive border-destructive/40 hover:bg-destructive/10" onClick={() => handleRemove(p.id)}>
                     <X className="h-3.5 w-3.5" /> Remove
                   </Button>
@@ -112,6 +122,12 @@ export default function TechPoolAssignmentPanel({ technicianId }: { technicianId
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      <TechPoolDetailModal
+        poolId={viewPoolId}
+        open={!!viewPoolId}
+        onOpenChange={(o) => { if (!o) setViewPoolId(null); }}
+      />
     </Card>
   );
 }

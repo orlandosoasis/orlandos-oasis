@@ -1,9 +1,23 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useTechClientMessages } from "@/hooks/useAdminDetails";
-import { Eye } from "lucide-react";
+import { Eye, MessageSquare } from "lucide-react";
+import { useMemo } from "react";
 
 export default function TechClientUpdatesPanel({ technicianId }: { technicianId: string }) {
   const threads = useTechClientMessages(technicianId);
+
+  const { recent, totalMessages, homeownerCount } = useMemo(() => {
+    const all = (threads.data ?? []).flatMap((t) =>
+      t.messages.map((m) => ({
+        ...m,
+        homeownerName: t.homeownerName,
+        poolAddress: t.poolAddress,
+      }))
+    );
+    all.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+    const homeowners = new Set((threads.data ?? []).map((t) => t.homeownerName));
+    return { recent: all.slice(0, 25), totalMessages: all.length, homeownerCount: homeowners.size };
+  }, [threads.data]);
 
   return (
     <Card>
@@ -12,32 +26,36 @@ export default function TechClientUpdatesPanel({ technicianId }: { technicianId:
           <Eye className="h-3.5 w-3.5 text-muted-foreground" /> Client Updates (Read-Only)
         </CardTitle>
         <p className="text-xs text-muted-foreground">
-          All messages this technician has exchanged with clients, grouped by pool.
+          Recent conversations with all clients · {totalMessages} messages across {homeownerCount} homeowner{homeownerCount === 1 ? "" : "s"}
         </p>
       </CardHeader>
-      <CardContent className="space-y-4">
+      <CardContent className="space-y-2">
         {threads.isLoading && <p className="text-xs text-muted-foreground">Loading…</p>}
-        {!threads.isLoading && (threads.data?.length ?? 0) === 0 && (
-          <p className="text-sm text-muted-foreground italic">No client conversations yet.</p>
+        {!threads.isLoading && recent.length === 0 && (
+          <p className="text-sm text-muted-foreground italic flex items-center gap-2">
+            <MessageSquare className="h-3.5 w-3.5" /> No client conversations yet.
+          </p>
         )}
-        {(threads.data ?? []).map((t, i) => (
-          <div key={i} className="border border-border rounded-md overflow-hidden">
-            <div className="bg-muted/50 px-3 py-2 border-b border-border">
-              <div className="text-sm font-semibold">{t.poolAddress}</div>
-              <div className="text-[11px] text-muted-foreground">{t.homeownerName} • {t.messages.length} messages</div>
-            </div>
-            <div className="p-3 space-y-2 max-h-72 overflow-y-auto">
-              {t.messages.slice(-15).map((m) => (
-                <div key={m.id} className={`text-sm rounded-md p-2 ${m.fromTech ? "bg-primary/10 ml-8" : "bg-muted mr-8"}`}>
-                  <div className="text-[10px] uppercase font-semibold text-muted-foreground mb-0.5">
-                    {m.fromTech ? "Technician" : "Client"} • {new Date(m.createdAt).toLocaleString()}
-                  </div>
-                  <div className="whitespace-pre-wrap">{m.body}</div>
+        <div className="max-h-[420px] overflow-y-auto space-y-2">
+          {recent.map((m) => (
+            <div
+              key={m.id}
+              className={`text-sm rounded-md p-2.5 border ${
+                m.fromTech ? "bg-primary/5 border-primary/20" : "bg-muted border-border"
+              }`}
+            >
+              <div className="flex items-center justify-between gap-2 mb-1">
+                <div className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
+                  {m.fromTech ? "Technician" : m.homeownerName} · {m.poolAddress}
                 </div>
-              ))}
+                <div className="text-[10px] text-muted-foreground whitespace-nowrap">
+                  {new Date(m.createdAt).toLocaleString()}
+                </div>
+              </div>
+              <div className="whitespace-pre-wrap text-foreground">{m.body}</div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </CardContent>
     </Card>
   );

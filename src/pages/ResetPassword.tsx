@@ -120,7 +120,14 @@ const ResetPassword = () => {
               <h1 className="text-2xl font-bold text-foreground mb-2">Set your password</h1>
               <p className="text-muted-foreground">Choose a password to finish signing in.</p>
             </div>
-            {!ready ? (
+            {linkError ? (
+              <div className="text-center py-6 space-y-4">
+                <p className="text-sm text-destructive">{linkError}</p>
+                <Link to="/forgot-password" className="text-primary font-medium hover:underline inline-block">
+                  Request a new reset link
+                </Link>
+              </div>
+            ) : !ready ? (
               <div className="text-center text-muted-foreground py-8">
                 <Loader2 className="h-6 w-6 animate-spin mx-auto mb-2" />
                 Verifying reset link...

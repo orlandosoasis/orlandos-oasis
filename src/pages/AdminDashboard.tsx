@@ -502,7 +502,7 @@ const AdminDashboard = () => {
           poolSize: pool?.size ?? "—",
           type: s.type,
           status: s.status,
-          technicianId: pool?.technicianId ?? null,
+          technicianId: s.technicianId ?? pool?.technicianId ?? null,
           technicianName: s.technician || pool?.technician || "Unassigned",
         });
       }

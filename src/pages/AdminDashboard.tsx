@@ -732,19 +732,27 @@ const AdminDashboard = () => {
       freds: "hsl(271 76% 53%)",
     };
     // Compute the steady recurring monthly revenue per category (across all homeowners).
+    const categoryCount = { small: 0, medium: 0, large: 0, grandfathered: 0, freds: 0 };
     const categoryMRR = (() => {
       const acc = { small: 0, medium: 0, large: 0, grandfathered: 0, freds: 0 };
       for (const h of homeowners) {
-        if (!h.monthlyAmount || h.pools.length === 0) continue;
-        if (h.isFreds) { acc.freds += h.monthlyAmount; continue; }
-        if (h.isGrandfathered) { acc.grandfathered += h.monthlyAmount; continue; }
-        const perPool = h.monthlyAmount / h.pools.length;
+        if (h.pools.length === 0) continue;
+        if (h.isFreds) {
+          categoryCount.freds += h.pools.length;
+          if (h.monthlyAmount) acc.freds += h.monthlyAmount;
+          continue;
+        }
+        if (h.isGrandfathered) {
+          categoryCount.grandfathered += h.pools.length;
+          if (h.monthlyAmount) acc.grandfathered += h.monthlyAmount;
+          continue;
+        }
+        const perPool = h.monthlyAmount ? h.monthlyAmount / h.pools.length : 0;
         for (const p of h.pools) {
           const s = (p.size ?? "").toLowerCase();
-          if (s.includes("small")) acc.small += perPool;
-          else if (s.includes("medium")) acc.medium += perPool;
-          else if (s.includes("large")) acc.large += perPool;
-          else acc.medium += perPool;
+          const bucket = s.includes("small") ? "small" : s.includes("large") ? "large" : "medium";
+          categoryCount[bucket] += 1;
+          acc[bucket] += perPool;
         }
       }
       return acc;

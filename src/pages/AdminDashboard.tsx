@@ -629,27 +629,70 @@ const AdminDashboard = () => {
   };
 
   // ═══════════ TECHNICIANS ═══════════
-  const TechniciansPage = () => (
-    <Card>
-      <CardContent className="p-0">
-        <Table>
-          <TableHeader><TableRow>
-            <TableHead>Name</TableHead><TableHead>Rating</TableHead><TableHead>Pools</TableHead><TableHead>Services</TableHead><TableHead>Reviews</TableHead><TableHead>Actions</TableHead>
-          </TableRow></TableHeader>
-          <TableBody>
-            {technicians.map(t => (
-              <TableRow key={t.id}>
-                <TableCell className="font-semibold">{t.name}</TableCell>
-                <TableCell>{t.rating > 0 ? <Stars rating={t.rating} /> : <span className="text-muted-foreground text-xs italic">New</span>}</TableCell>
-                <TableCell>{t.assignedPools} pools</TableCell><TableCell>{t.completedServices}</TableCell><TableCell>{t.reviews.length} reviews</TableCell>
-                <TableCell><Button size="sm" onClick={() => nav("techDetail", t.id)}>View Details</Button></TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </CardContent>
-    </Card>
-  );
+  const TechniciansPage = () => {
+    const filtered = technicians.filter((t) =>
+      techFilter === "all" ? true : techFilter === "active" ? t.status === "Active" : t.status === "Inactive",
+    );
+    const counts = {
+      all: technicians.length,
+      active: technicians.filter((t) => t.status === "Active").length,
+      inactive: technicians.filter((t) => t.status === "Inactive").length,
+    };
+    const toggle = (id: string, isActive: boolean) =>
+      updateTechnicianActive.mutate(
+        { id, isActive },
+        {
+          onSuccess: () =>
+            toast({ title: isActive ? "Technician activated" : "Technician deactivated", variant: "success" }),
+          onError: (e: Error) => toast({ title: "Update failed", description: e.message, variant: "destructive" }),
+        },
+      );
+
+    return (
+      <div className="space-y-4">
+        <div className="flex items-center gap-2">
+          {(["all", "active", "inactive"] as const).map((k) => (
+            <Button
+              key={k}
+              size="sm"
+              variant={techFilter === k ? "default" : "outline"}
+              onClick={() => setTechFilter(k)}
+              className="capitalize"
+            >
+              {k} ({counts[k]})
+            </Button>
+          ))}
+        </div>
+        <Card>
+          <CardContent className="p-0">
+            <Table>
+              <TableHeader><TableRow>
+                <TableHead>Name</TableHead><TableHead>Status</TableHead><TableHead>Rating</TableHead><TableHead>Pools</TableHead><TableHead>Services</TableHead><TableHead>Reviews</TableHead><TableHead>Actions</TableHead>
+              </TableRow></TableHeader>
+              <TableBody>
+                {filtered.length === 0 ? (
+                  <TableRow><TableCell colSpan={7} className="text-center text-muted-foreground text-xs py-6">No {techFilter !== "all" ? techFilter : ""} technicians.</TableCell></TableRow>
+                ) : filtered.map(t => (
+                  <TableRow key={t.id}>
+                    <TableCell className="font-semibold">{t.name}</TableCell>
+                    <TableCell><StatusBadge status={t.status} /></TableCell>
+                    <TableCell>{t.rating > 0 ? <Stars rating={t.rating} /> : <span className="text-muted-foreground text-xs italic">New</span>}</TableCell>
+                    <TableCell>{t.assignedPools} pools</TableCell><TableCell>{t.completedServices}</TableCell><TableCell>{t.reviews.length} reviews</TableCell>
+                    <TableCell className="flex gap-2">
+                      <Button size="sm" variant="outline" onClick={() => toggle(t.id, t.status !== "Active")} disabled={updateTechnicianActive.isPending}>
+                        {t.status === "Active" ? "Deactivate" : "Activate"}
+                      </Button>
+                      <Button size="sm" onClick={() => nav("techDetail", t.id)}>View Details</Button>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  };
 
   const TechDetailPage = () => {
     const tech = technicians.find(t => t.id === detailId);

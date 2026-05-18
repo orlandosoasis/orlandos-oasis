@@ -1270,15 +1270,11 @@ const AdminDashboard = () => {
                       </TableRow>
                     );
                   }
-                  // Mock day-off requests, deterministic by tech index
-                  const samples = [
-                    { dates: "May 23 – May 24, 2026", reason: "Family event", status: "Pending" },
-                    { dates: "Jun 02, 2026", reason: "Medical appointment", status: "Approved" },
-                    { dates: "Jun 14 – Jun 16, 2026", reason: "Vacation", status: "Pending" },
-                    { dates: "—", reason: "—", status: "None" },
-                  ];
                   return actives.map((t, i) => {
-                    const r = samples[i % samples.length];
+                    const r: DayOffRequest = dayOffByTech[t.id] ?? defaultDayOff[i % defaultDayOff.length];
+                    const setStatus = (status: DayOffStatus) => {
+                      setDayOffByTech((prev) => ({ ...prev, [t.id]: { ...r, status } }));
+                    };
                     return (
                       <TableRow key={t.id}>
                         <TableCell className="font-semibold">{t.name}</TableCell>
@@ -1288,7 +1284,7 @@ const AdminDashboard = () => {
                           {r.status === "None" ? (
                             <span className="text-xs text-muted-foreground italic">No request</span>
                           ) : (
-                            <StatusBadge status={r.status} />
+                            <StatusBadge status={r.status === "Denied" ? "Rejected" : r.status} />
                           )}
                         </TableCell>
                         <TableCell className="text-right">
@@ -1297,34 +1293,39 @@ const AdminDashboard = () => {
                               <>
                                 <Button
                                   size="sm"
-                                  variant="outline"
-                                  onClick={() => toast({ title: "Day off approved", description: `${t.name} · ${r.dates}`, variant: "success" })}
+                                  className="bg-emerald-500 hover:bg-emerald-600 text-white"
+                                  onClick={() => {
+                                    setStatus("Approved");
+                                    toast({ title: "Day off approved", description: `${t.name} · ${r.dates}`, variant: "success" });
+                                  }}
                                 >
                                   Approve
                                 </Button>
                                 <Button
                                   size="sm"
                                   variant="outline"
-                                  onClick={() => toast({ title: "Day off denied", description: `${t.name} · ${r.dates}`, variant: "destructive" })}
+                                  onClick={() => {
+                                    setStatus("Denied");
+                                    toast({ title: "Day off denied", description: `${t.name} · ${r.dates}`, variant: "destructive" });
+                                  }}
                                 >
                                   Deny
                                 </Button>
                               </>
                             )}
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              className="gap-1.5"
-                              onClick={() => {
-                                setTechDraftName(t.name);
-                                setTechDraftEmail(t.email);
-                                setTechDraftPhone(t.phone === "—" || !t.phone ? "" : t.phone);
-                                setTechDraftPayout(String(t.payoutPerPool ?? 100));
-                                setEditTechId(t.id);
-                              }}
-                            >
-                              <Pencil className="h-3.5 w-3.5" /> Edit
-                            </Button>
+                            {r.status !== "None" && (
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                className="gap-1.5"
+                                onClick={() => {
+                                  setEditDayOffDraft(r);
+                                  setEditDayOffTechId(t.id);
+                                }}
+                              >
+                                <Pencil className="h-3.5 w-3.5" /> Edit
+                              </Button>
+                            )}
                           </div>
                         </TableCell>
                       </TableRow>

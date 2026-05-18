@@ -159,7 +159,8 @@ export function useAdminTechnicians() {
           approved.length > 0
             ? Math.round((approved.reduce((sum, r) => sum + r.rating, 0) / approved.length) * 10) / 10
             : 0;
-        const status: "Active" | "Inactive" = upcomingByPool.size > 0 ? "Active" : "Inactive";
+        const status: "Active" | "Inactive" =
+          (tech as { is_active?: boolean | null }).is_active === false ? "Inactive" : "Active";
 
         return {
           id: tech.id,

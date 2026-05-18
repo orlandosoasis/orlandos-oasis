@@ -698,18 +698,74 @@ const AdminDashboard = () => {
       .sort((a, b) => b.total - a.total);
     const totalPayouts = payoutRows.reduce((a, r) => a + r.total, 0);
 
-    // Build 12-month series for a given year. For the current year, future months
-    // are projected at the same recurring value (so the line stays consistent).
-    // For prior years we apply a small deterministic dampener so the historical
-    // view is visibly distinct from the current run-rate.
     const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-    const buildYearSeries = (recurring: number, year: number) => {
-      const factor = year < currentYear ? 0.82 : 1;
-      return MONTHS.map((m) => ({ month: m, total: Math.round(recurring * factor) }));
+    const FIRST_DATA_YEAR = 2025; // earliest year selectable
+    const availableYears: number[] = [];
+    for (let y = currentYear; y >= FIRST_DATA_YEAR; y--) availableYears.push(y);
+
+    // Returns the fraction of a given (year, monthIndex) that has elapsed relative to `now`.
+    // 0 = future (no data yet), 1 = month fully complete, partial = current month.
+    const monthFraction = (year: number, monthIdx: number): number => {
+      if (year < currentYear) return 1;
+      if (year > currentYear) return 0;
+      if (monthIdx < now.getMonth()) return 1;
+      if (monthIdx > now.getMonth()) return 0;
+      const daysInMonth = new Date(year, monthIdx + 1, 0).getDate();
+      return now.getDate() / daysInMonth;
     };
-    const revenueMonthly = buildYearSeries(totalMRR, revenueYear);
-    const payoutMonthly = buildYearSeries(totalPayouts, payoutYear);
-    const revenueYearTotal = revenueMonthly.reduce((a, r) => a + r.total, 0);
+
+    // Stacked revenue breakdown per month for the selected year.
+    // Categories: Small / Medium / Large (standard pools) + Grandfathered + Fred's.
+    const REVENUE_KEYS = ["small", "medium", "large", "grandfathered", "freds"] as const;
+    const REVENUE_LABELS: Record<typeof REVENUE_KEYS[number], string> = {
+      small: "Small Pool",
+      medium: "Medium Pool",
+      large: "Large Pool",
+      grandfathered: "Grandfathered",
+      freds: "Fred's",
+    };
+    const REVENUE_COLORS: Record<typeof REVENUE_KEYS[number], string> = {
+      small: "hsl(var(--primary))",
+      medium: "hsl(199 89% 48%)",
+      large: "hsl(173 80% 40%)",
+      grandfathered: "hsl(38 92% 50%)",
+      freds: "hsl(271 76% 53%)",
+    };
+    // Compute the steady recurring monthly revenue per category (across all homeowners).
+    const categoryMRR = (() => {
+      const acc = { small: 0, medium: 0, large: 0, grandfathered: 0, freds: 0 };
+      for (const h of homeowners) {
+        if (!h.monthlyAmount || h.pools.length === 0) continue;
+        if (h.isFreds) { acc.freds += h.monthlyAmount; continue; }
+        if (h.isGrandfathered) { acc.grandfathered += h.monthlyAmount; continue; }
+        const perPool = h.monthlyAmount / h.pools.length;
+        for (const p of h.pools) {
+          const s = (p.size ?? "").toLowerCase();
+          if (s.includes("small")) acc.small += perPool;
+          else if (s.includes("medium")) acc.medium += perPool;
+          else if (s.includes("large")) acc.large += perPool;
+          else acc.medium += perPool;
+        }
+      }
+      return acc;
+    })();
+    const revenueMonthly = MONTHS.map((m, i) => {
+      const frac = monthFraction(revenueYear, i);
+      const row: Record<string, number | string> = { month: m };
+      let total = 0;
+      for (const k of REVENUE_KEYS) {
+        const v = Math.round(categoryMRR[k] * frac);
+        row[k] = v;
+        total += v;
+      }
+      row.total = total;
+      return row;
+    });
+    const payoutMonthly = MONTHS.map((m, i) => ({
+      month: m,
+      total: Math.round(totalPayouts * monthFraction(payoutYear, i)),
+    }));
+    const revenueYearTotal = revenueMonthly.reduce((a, r) => a + (r.total as number), 0);
     const payoutYearTotal = payoutMonthly.reduce((a, r) => a + r.total, 0);
 
     // Supplies

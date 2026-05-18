@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import type { Session } from "@supabase/supabase-js";
+import { identify, resetIdentity } from "@/lib/monitoring";
 
 export type UserRole = "homeowner" | "technician" | "admin";
 
@@ -104,9 +105,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setTimeout(async () => {
           const profile = await fetchProfile(session.user.id);
           setUser(profile);
+          if (profile) {
+            // Notify analytics (no-op until PostHog DSN is set; respects cookie consent).
+            identify(profile.id, { role: profile.role, email: profile.email });
+          }
         }, 0);
       } else {
         setUser(null);
+        resetIdentity();
       }
     });
 

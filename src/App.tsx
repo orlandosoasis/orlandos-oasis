@@ -8,6 +8,11 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import { BookingProvider } from "@/contexts/BookingContext";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import EmailVerificationBanner from "@/components/EmailVerificationBanner";
+import CookieConsent from "@/components/CookieConsent";
+import { initMonitoring } from "@/lib/monitoring";
+
+// Initialize monitoring shims (errors + analytics, gated on consent).
+initMonitoring();
 
 // Eagerly preload logo assets so they render instantly on navigation
 import ooLogo from "@/assets/oo-logo.png";
@@ -94,6 +99,7 @@ const App = () => (
             <Sonner />
             <BrowserRouter>
               <EmailVerificationBanner />
+              <CookieConsent />
               <Suspense fallback={<RouteFallback />}>
                 <Routes>
                   <Route path="/" element={<Index />} />

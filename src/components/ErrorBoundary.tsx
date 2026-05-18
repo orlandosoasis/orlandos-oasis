@@ -1,5 +1,6 @@
 import { Component, type ErrorInfo, type ReactNode } from "react";
 import { Button } from "@/components/ui/button";
+import { captureError } from "@/lib/monitoring";
 
 interface Props {
   children: ReactNode;
@@ -24,8 +25,10 @@ export class ErrorBoundary extends Component<Props, State> {
   }
 
   componentDidCatch(error: Error, info: ErrorInfo) {
-    // TODO: forward to error-tracking service (Sentry/PostHog) once configured.
     console.error("[ErrorBoundary]", error, info.componentStack);
+    // Forwards to Sentry once VITE_SENTRY_DSN is configured. Today it's a
+    // no-op stub that logs to dev console.
+    captureError(error, { componentStack: info.componentStack ?? undefined });
   }
 
   handleReload = () => {

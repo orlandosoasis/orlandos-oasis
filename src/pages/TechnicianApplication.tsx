@@ -33,6 +33,7 @@ const FileUploadArea = ({
   optional,
   value,
   onChange,
+  maxBytes = 5 * 1024 * 1024,
 }: {
   label: string;
   hint: string;
@@ -40,42 +41,76 @@ const FileUploadArea = ({
   optional?: boolean;
   value: File | null;
   onChange: (file: File | null) => void;
-}) => (
-  <div className="space-y-1.5">
-    <Label className="text-sm font-medium text-foreground">
-      {label}
-      {optional && <span className="text-muted-foreground font-normal ml-1 text-xs">(optional)</span>}
-    </Label>
-    <label
-      className={`relative flex flex-col items-center justify-center rounded-xl border-2 border-dashed p-6 cursor-pointer transition-all ${
-        value
-          ? "border-green-500 bg-green-500/5"
-          : "border-border bg-muted/30 hover:border-primary/50 hover:bg-primary/5"
-      }`}
-    >
-      <input
-        type="file"
-        accept={accept}
-        className="absolute inset-0 opacity-0 cursor-pointer"
-        onChange={(e) => onChange(e.target.files?.[0] || null)}
-      />
-      {value ? (
-        <>
-          <CheckCircle2 className="h-6 w-6 text-green-600 mb-1.5" />
-          <span className="text-sm font-semibold text-green-700">{value.name}</span>
-        </>
-      ) : (
-        <>
-          <Upload className="h-6 w-6 text-muted-foreground mb-1.5" />
-          <p className="text-sm text-muted-foreground">
-            <span className="font-semibold text-primary">Click to upload</span> or drag and drop
-          </p>
-          <p className="text-xs text-muted-foreground/70 mt-0.5">{hint}</p>
-        </>
-      )}
-    </label>
-  </div>
-);
+  maxBytes?: number;
+}) => {
+  const [dragOver, setDragOver] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const accept_ = (file: File | null) => {
+    setError(null);
+    if (file && file.size > maxBytes) {
+      const mb = Math.round((maxBytes / 1024 / 1024) * 10) / 10;
+      setError(`File too large. Max ${mb} MB.`);
+      onChange(null);
+      return;
+    }
+    onChange(file);
+  };
+
+  return (
+    <div className="space-y-1.5">
+      <Label className="text-sm font-medium text-foreground">
+        {label}
+        {optional && <span className="text-muted-foreground font-normal ml-1 text-xs">(optional)</span>}
+      </Label>
+      <label
+        onDragEnter={(e) => { e.preventDefault(); setDragOver(true); }}
+        onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
+        onDragLeave={() => setDragOver(false)}
+        onDrop={(e) => {
+          e.preventDefault();
+          setDragOver(false);
+          const file = e.dataTransfer.files?.[0];
+          if (file) accept_(file);
+        }}
+        className={`relative flex flex-col items-center justify-center rounded-xl border-2 border-dashed p-6 cursor-pointer transition-all ${
+          value
+            ? "border-green-500 bg-green-500/5"
+            : dragOver
+            ? "border-primary bg-primary/10"
+            : "border-border bg-muted/30 hover:border-primary/50 hover:bg-primary/5"
+        }`}
+      >
+        <input
+          type="file"
+          accept={accept}
+          className="absolute inset-0 opacity-0 cursor-pointer"
+          onChange={(e) => accept_(e.target.files?.[0] || null)}
+        />
+        {value ? (
+          <>
+            <CheckCircle2 className="h-6 w-6 text-green-600 mb-1.5" />
+            <span className="text-sm font-semibold text-green-700">{value.name}</span>
+            <span className="text-xs text-muted-foreground mt-0.5">
+              {(value.size / 1024 / 1024).toFixed(1)} MB · click to replace
+            </span>
+          </>
+        ) : (
+          <>
+            <Upload className="h-6 w-6 text-muted-foreground mb-1.5" />
+            <p className="text-sm text-muted-foreground">
+              <span className="font-semibold text-primary">Click to upload</span> or drag and drop
+            </p>
+            <p className="text-xs text-muted-foreground/70 mt-0.5">{hint}</p>
+          </>
+        )}
+      </label>
+      {error ? (
+        <p className="text-xs text-destructive" role="alert">{error}</p>
+      ) : null}
+    </div>
+  );
+};
 
 const TechnicianApplication = () => {
   const navigate = useNavigate();

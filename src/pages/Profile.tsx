@@ -1,23 +1,24 @@
-import { useState, useRef } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Upload, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import { useBooking } from "@/contexts/BookingContext";
 import { supabase } from "@/integrations/supabase/client";
 import { formatUsPhone } from "@/lib/phone";
 import { FORM_LIMITS } from "@/lib/form-limits";
+import FileDropzone from "@/components/FileDropzone";
 
 const Profile = () => {
   const { user, updateUser, isAuthenticated, isLoading } = useAuth();
   const { checkoutData } = useBooking();
   const navigate = useNavigate();
   const { toast } = useToast();
-  const fileRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
 
   const firstName = user?.firstName || checkoutData?.customerFirstName || user?.fullName?.split(" ")[0] || "";
@@ -36,15 +37,8 @@ const Profile = () => {
 
   const initials = `${firstName?.[0] ?? ""}${lastName?.[0] ?? ""}`.toUpperCase() || "U";
 
-  const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file || !user) return;
-
-    if (file.size > 2 * 1024 * 1024) {
-      toast({ title: "File too large", description: "Avatar must be under 2MB.", variant: "destructive" });
-      return;
-    }
-
+  const handleAvatarFile = async (file: File) => {
+    if (!user) return;
     setUploading(true);
     try {
       const ext = file.name.split(".").pop();
@@ -62,7 +56,6 @@ const Profile = () => {
       toast({ title: "Upload failed", description: err.message, variant: "destructive" });
     } finally {
       setUploading(false);
-      if (fileRef.current) fileRef.current.value = "";
     }
   };
 
@@ -85,31 +78,34 @@ const Profile = () => {
       <h1 className="text-2xl font-bold text-foreground mb-6">My Profile</h1>
 
       <div className="space-y-5 max-w-md">
-        <div className="flex items-center gap-4">
-          <Avatar className="h-20 w-20">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-start">
+          <Avatar className="h-20 w-20 flex-shrink-0">
             <AvatarImage src={user?.avatarUrl} alt={firstName} />
             <AvatarFallback>{initials}</AvatarFallback>
           </Avatar>
-          <div>
-            <input
-              ref={fileRef}
-              type="file"
-              accept="image/*"
-              className="hidden"
-              onChange={handleAvatarUpload}
-            />
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              onClick={() => fileRef.current?.click()}
+          <div className="flex-1">
+            <FileDropzone
+              accept="image/png,image/jpeg,image/webp"
+              maxBytes={2 * 1024 * 1024}
+              onFile={handleAvatarFile}
               disabled={uploading}
-              className="gap-2"
+              inputId="avatar-upload"
             >
-              {uploading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Upload className="h-4 w-4" />}
-              {uploading ? "Uploading..." : "Change avatar"}
-            </Button>
-            <p className="text-xs text-muted-foreground mt-1">PNG, JPG up to 2MB</p>
+              {uploading ? (
+                <>
+                  <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" aria-hidden="true" />
+                  <p className="text-sm font-medium text-foreground">Uploading...</p>
+                </>
+              ) : (
+                <>
+                  <Upload className="h-5 w-5 text-muted-foreground" aria-hidden="true" />
+                  <p className="text-sm font-medium text-foreground">
+                    <span className="text-primary">Click, drop, or paste</span> a photo
+                  </p>
+                  <p className="text-xs text-muted-foreground">PNG, JPG, WebP up to 2MB</p>
+                </>
+              )}
+            </FileDropzone>
           </div>
         </div>
 

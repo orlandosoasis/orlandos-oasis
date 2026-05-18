@@ -36,7 +36,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import {
   useAdminTechnicians, useAdminHomeowners, useAdminIssues,
   useTechnicianApplications, useUpdateIssueStatus, useUpdateApplicationStatus,
-  useUpdateTechnicianActive, useUpdateTechnicianProfile,
+  useUpdateTechnicianActive, useUpdateTechnicianProfile, useUpdateHomeownerProfile,
 } from "@/hooks/useAdmin";
 import { useReviews, useUpdateReviewStatus } from "@/hooks/useReviews";
 import { useService, useUpdateService } from "@/hooks/useServices";
@@ -820,6 +820,96 @@ const AdminDashboard = () => {
 
         <AppointmentsCard />
 
+        <Card>
+          <CardHeader className="pb-3 flex flex-row items-center justify-between gap-3 flex-wrap">
+            <div className="flex items-center gap-2">
+              <CardTitle className="text-sm font-bold">Homeowners</CardTitle>
+              <span className="text-xs text-muted-foreground">{homeowners.length} total</span>
+            </div>
+            <Button size="sm" variant="outline" className="gap-1.5" onClick={() => setAddHomeownerOpen(true)}>
+              <Plus className="h-3.5 w-3.5" /> Add Homeowner
+            </Button>
+          </CardHeader>
+          <CardContent className="p-0">
+            <div className="overflow-x-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Name</TableHead>
+                    <TableHead>Email</TableHead>
+                    <TableHead>Phone</TableHead>
+                    <TableHead>Address</TableHead>
+                    <TableHead>Pool Size</TableHead>
+                    <TableHead>Technician</TableHead>
+                    <TableHead className="text-right">Monthly</TableHead>
+                    <TableHead className="text-right">Actions</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {homeowners.length === 0 ? (
+                    <TableRow>
+                      <TableCell colSpan={8} className="text-center text-muted-foreground text-xs py-8">
+                        No homeowners yet.
+                      </TableCell>
+                    </TableRow>
+                  ) : homeowners.map((h) => {
+                    const pool = h.pools?.[0];
+                    const isGF = Boolean((h as { isGrandfathered?: boolean }).isGrandfathered);
+                    const isPlaceholder = Boolean((h as { isPlaceholder?: boolean }).isPlaceholder);
+                    return (
+                      <TableRow key={h.id}>
+                        <TableCell>
+                          <div className="flex items-center gap-1.5">
+                            <span className="font-medium">{h.name}</span>
+                            {isPlaceholder && (
+                              <span className="inline-flex px-1.5 py-0.5 rounded-full text-[9px] font-bold bg-slate-100 text-slate-600 border border-slate-200">
+                                Placeholder
+                              </span>
+                            )}
+                            {isGF && (
+                              <span className="inline-flex px-1.5 py-0.5 rounded-full text-[9px] font-bold bg-amber-100 text-amber-700 border border-amber-200">
+                                GF
+                              </span>
+                            )}
+                          </div>
+                        </TableCell>
+                        <TableCell className="text-xs text-muted-foreground">{h.email}</TableCell>
+                        <TableCell className="text-xs text-muted-foreground whitespace-nowrap">{h.phone || "—"}</TableCell>
+                        <TableCell className="text-xs text-muted-foreground">{h.address}</TableCell>
+                        <TableCell className="text-xs">{pool?.size ?? "—"}</TableCell>
+                        <TableCell className="text-xs">{pool?.technician ?? "Unassigned"}</TableCell>
+                        <TableCell className="text-right font-semibold text-xs">
+                          {h.monthlyAmount ? fmtMoney(h.monthlyAmount) : "—"}
+                        </TableCell>
+                        <TableCell className="text-right">
+                          <div className="flex justify-end gap-1.5">
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              className="gap-1.5"
+                              onClick={() => { setEditingHomeowner(h); setEditHomeownerOpen(true); }}
+                            >
+                              <Pencil className="h-3.5 w-3.5" /> Edit
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              onClick={() => nav("homeDetail", h.id)}
+                            >
+                              Details
+                            </Button>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
+                </TableBody>
+              </Table>
+            </div>
+          </CardContent>
+        </Card>
+
+
 
 
 
@@ -897,26 +987,39 @@ const AdminDashboard = () => {
                           )}
                         </TableCell>
                         <TableCell className="text-right">
-                          {r.status === "Pending" ? (
-                            <div className="flex justify-end gap-2">
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                onClick={() => toast({ title: "Day off approved", description: `${t.name} · ${r.dates}`, variant: "success" })}
-                              >
-                                Approve
-                              </Button>
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                onClick={() => toast({ title: "Day off denied", description: `${t.name} · ${r.dates}`, variant: "destructive" })}
-                              >
-                                Deny
-                              </Button>
-                            </div>
-                          ) : (
-                            <span className="text-xs text-muted-foreground">—</span>
-                          )}
+                          <div className="flex justify-end gap-2">
+                            {r.status === "Pending" && (
+                              <>
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  onClick={() => toast({ title: "Day off approved", description: `${t.name} · ${r.dates}`, variant: "success" })}
+                                >
+                                  Approve
+                                </Button>
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  onClick={() => toast({ title: "Day off denied", description: `${t.name} · ${r.dates}`, variant: "destructive" })}
+                                >
+                                  Deny
+                                </Button>
+                              </>
+                            )}
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              className="gap-1.5"
+                              onClick={() => {
+                                setTechDraftName(t.name);
+                                setTechDraftEmail(t.email);
+                                setTechDraftPhone(t.phone === "—" || !t.phone ? "" : t.phone);
+                                setEditTechId(t.id);
+                              }}
+                            >
+                              <Pencil className="h-3.5 w-3.5" /> Edit
+                            </Button>
+                          </div>
                         </TableCell>
                       </TableRow>
                     );
@@ -1077,8 +1180,38 @@ const AdminDashboard = () => {
     nav("homeDetail", h.id);
   };
 
-  const handleHomeownerUpdated = (h: AdminHomeowner) => {
-    setExtraHomeowners(prev => prev.map(x => x.id === h.id ? h : x));
+  const updateHomeownerProfile = useUpdateHomeownerProfile();
+
+  const handleHomeownerUpdated = async (h: AdminHomeowner) => {
+    const isDbBacked = fetchedHomeowners.some((x) => x.id === h.id);
+    if (isDbBacked) {
+      // Parse "Street, City, State, ZIP" back into parts for persistence.
+      const parts = (h.address || "").split(",").map((s) => s.trim());
+      const [street, city, state, zip] = [parts[0] ?? "", parts[1] ?? "", parts[2] ?? "", parts[3] ?? ""];
+      try {
+        await updateHomeownerProfile.mutateAsync({
+          id: h.id,
+          patch: {
+            fullName: h.name,
+            email: h.email,
+            phone: h.phone || null,
+            street: street || null,
+            city: city || null,
+            state: state || null,
+            zip: zip || null,
+            poolId: h.pools?.[0]?.id ?? null,
+            poolSize: h.pools?.[0]?.size ?? null,
+            poolAddress: h.address || null,
+          },
+        });
+        toast({ title: "Homeowner updated", variant: "success" });
+      } catch (e) {
+        toast({ title: "Update failed", description: e instanceof Error ? e.message : String(e), variant: "destructive" });
+        return;
+      }
+    } else {
+      setExtraHomeowners((prev) => prev.map((x) => (x.id === h.id ? h : x)));
+    }
     setEditHomeownerOpen(false);
     setEditingHomeowner(null);
     setHomeownerEditSuccess(true);

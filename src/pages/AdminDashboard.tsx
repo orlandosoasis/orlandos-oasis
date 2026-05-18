@@ -640,25 +640,36 @@ const AdminDashboard = () => {
   // ═══════════ DASHBOARD PAGE ═══════════
   const DashboardPage = () => {
 
-    // Weekly base price per pool size (Standard plan).
-    const POOL_SIZE_PRICES: { key: "small" | "medium" | "large"; label: string; price: number; match: (s: string) => boolean }[] = [
-      { key: "small", label: "Small Pool", price: 120, match: (s) => /small/i.test(s) },
-      { key: "medium", label: "Medium Pool", price: 140, match: (s) => /medium/i.test(s) },
-      { key: "large", label: "Large Pool", price: 170, match: (s) => /large/i.test(s) },
+    // Revenue per pool size, using each homeowner's actual monthly_amount.
+    // Each placeholder/active homeowner contributes their monthly_amount split
+    // evenly across their pools (most have 1 pool so this is just the amount).
+    const sizeBuckets: { key: "small" | "medium" | "large"; label: string; match: (s: string) => boolean }[] = [
+      { key: "small", label: "Small Pool", match: (s) => /small/i.test(s) },
+      { key: "medium", label: "Medium Pool", match: (s) => /medium/i.test(s) },
+      { key: "large", label: "Large Pool", match: (s) => /large/i.test(s) },
     ];
-
-    // Count pools that have at least one active (scheduled) service.
-    const revenueRows = POOL_SIZE_PRICES.map((cfg) => {
-      const count = homeowners.reduce((a, h) => {
-        const activePoolIds = new Set(
-          h.services.filter((s) => s.status === "Scheduled").map((s) => s.poolId),
-        );
-        return a + h.pools.filter((p) => activePoolIds.has(p.id) && cfg.match(p.size ?? "")).length;
-      }, 0);
-      return { label: cfg.label, count, revenue: count * cfg.price, price: cfg.price };
+    const revenueRows = sizeBuckets.map((cfg) => {
+      let count = 0;
+      let revenue = 0;
+      for (const h of homeowners) {
+        if (!h.monthlyAmount || h.pools.length === 0) continue;
+        const perPool = h.monthlyAmount / h.pools.length;
+        for (const p of h.pools) {
+          if (cfg.match(p.size ?? "")) {
+            count += 1;
+            revenue += perPool;
+          }
+        }
+      }
+      const avgPrice = count > 0 ? Math.round(revenue / count) : 0;
+      return { label: cfg.label, count, revenue: Math.round(revenue), price: avgPrice };
     });
     const totalMRR = revenueRows.reduce((a, r) => a + r.revenue, 0);
     const totalPools = revenueRows.reduce((a, r) => a + r.count, 0);
+
+    // Grandfathered accounts (legacy pricing).
+    const grandfatheredAccounts = homeowners.filter((h) => (h as { isGrandfathered?: boolean }).isGrandfathered);
+    const grandfatheredMRR = grandfatheredAccounts.reduce((a, h) => a + (h.monthlyAmount ?? 0), 0);
 
     const now = new Date();
     const fmtMoney = (n: number) =>

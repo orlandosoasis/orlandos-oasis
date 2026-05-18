@@ -897,26 +897,39 @@ const AdminDashboard = () => {
                           )}
                         </TableCell>
                         <TableCell className="text-right">
-                          {r.status === "Pending" ? (
-                            <div className="flex justify-end gap-2">
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                onClick={() => toast({ title: "Day off approved", description: `${t.name} · ${r.dates}`, variant: "success" })}
-                              >
-                                Approve
-                              </Button>
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                onClick={() => toast({ title: "Day off denied", description: `${t.name} · ${r.dates}`, variant: "destructive" })}
-                              >
-                                Deny
-                              </Button>
-                            </div>
-                          ) : (
-                            <span className="text-xs text-muted-foreground">—</span>
-                          )}
+                          <div className="flex justify-end gap-2">
+                            {r.status === "Pending" && (
+                              <>
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  onClick={() => toast({ title: "Day off approved", description: `${t.name} · ${r.dates}`, variant: "success" })}
+                                >
+                                  Approve
+                                </Button>
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  onClick={() => toast({ title: "Day off denied", description: `${t.name} · ${r.dates}`, variant: "destructive" })}
+                                >
+                                  Deny
+                                </Button>
+                              </>
+                            )}
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              className="gap-1.5"
+                              onClick={() => {
+                                setTechDraftName(t.name);
+                                setTechDraftEmail(t.email);
+                                setTechDraftPhone(t.phone === "—" || !t.phone ? "" : t.phone);
+                                setEditTechId(t.id);
+                              }}
+                            >
+                              <Pencil className="h-3.5 w-3.5" /> Edit
+                            </Button>
+                          </div>
                         </TableCell>
                       </TableRow>
                     );

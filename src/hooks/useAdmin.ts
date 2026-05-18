@@ -114,9 +114,10 @@ export function useAdminTechnicians() {
       const techIds = (techs ?? []).map((t) => t.id);
       if (techIds.length === 0) return [];
 
-      const [{ data: services }, { data: reviews }] = await Promise.all([
+      const [{ data: services }, { data: reviews }, { data: assignedPoolRows }] = await Promise.all([
         supabase.from("services").select("*").in("technician_id", techIds),
         supabase.from("reviews").select("*").in("technician_id", techIds),
+        supabase.from("pools").select("id, assigned_technician_id").in("assigned_technician_id", techIds),
       ]);
 
       // Hydrate homeowner + pool address for service rows.
@@ -175,7 +176,7 @@ export function useAdminTechnicians() {
           phone: tech.phone,
           status,
           rating: avgRating,
-          assignedPools: upcomingByPool.size,
+          assignedPools: (assignedPoolRows ?? []).filter((p) => p.assigned_technician_id === tech.id).length,
           completedServices: completed,
           payoutPerPool: Number((tech as { payout_per_pool?: number | null }).payout_per_pool ?? 100),
           reviews: techReviews

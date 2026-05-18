@@ -660,6 +660,9 @@ const AdminDashboard = () => {
   }) => {
     const [tab, setTab] = useState<"revenue" | "payouts" | "supplies" | "profit">("revenue");
     const now = new Date();
+    const currentYear = now.getFullYear();
+    const [revenueYear, setRevenueYear] = useState<number>(currentYear);
+    const [payoutYear, setPayoutYear] = useState<number>(currentYear);
 
     // ── Editable supplies (from DB) ──
     const expenseItemsQuery = useExpenseItems();
@@ -690,18 +693,19 @@ const AdminDashboard = () => {
       .sort((a, b) => b.total - a.total);
     const totalPayouts = payoutRows.reduce((a, r) => a + r.total, 0);
 
-    // Last 6 months payout trend (using current totals as the recurring monthly figure).
-    const monthlyPayoutTrend = (() => {
-      const out: { month: string; total: number }[] = [];
-      for (let i = 5; i >= 0; i--) {
-        const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
-        out.push({
-          month: d.toLocaleString("en-US", { month: "short" }),
-          total: totalPayouts,
-        });
-      }
-      return out;
-    })();
+    // Build 12-month series for a given year. For the current year, future months
+    // are projected at the same recurring value (so the line stays consistent).
+    // For prior years we apply a small deterministic dampener so the historical
+    // view is visibly distinct from the current run-rate.
+    const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    const buildYearSeries = (recurring: number, year: number) => {
+      const factor = year < currentYear ? 0.82 : 1;
+      return MONTHS.map((m) => ({ month: m, total: Math.round(recurring * factor) }));
+    };
+    const revenueMonthly = buildYearSeries(totalMRR, revenueYear);
+    const payoutMonthly = buildYearSeries(totalPayouts, payoutYear);
+    const revenueYearTotal = revenueMonthly.reduce((a, r) => a + r.total, 0);
+    const payoutYearTotal = payoutMonthly.reduce((a, r) => a + r.total, 0);
 
     // Supplies
     const allPoolsCount = homeowners.reduce((a, h) => a + h.pools.length, 0);
@@ -881,7 +885,7 @@ const AdminDashboard = () => {
         <CardHeader className="pb-3 flex flex-row items-center justify-between gap-3 flex-wrap">
           <div className="flex items-center gap-3 flex-wrap">
             <CardTitle className="text-sm font-bold">
-              Financials · {now.toLocaleString("en-US", { month: "long", year: "numeric" })}
+              Financials
             </CardTitle>
             <div className="flex items-center gap-1 rounded-md bg-muted p-0.5">
               {TAB_BTN("revenue", "Revenue")}
@@ -902,25 +906,39 @@ const AdminDashboard = () => {
             totalPools === 0 ? (
               <div className="text-center text-muted-foreground text-xs py-10">No pools on file yet.</div>
             ) : (
-              <div className="h-[280px] w-full">
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={revenueRows} margin={{ top: 24, right: 16, left: 8, bottom: 8 }}>
-                    <XAxis dataKey="label" tick={{ fontSize: 12 }} axisLine={false} tickLine={false} />
-                    <YAxis tickFormatter={(v) => `$${v}`} tick={{ fontSize: 11 }} axisLine={false} tickLine={false} width={56} />
-                    <ReTooltip
-                      cursor={{ fill: "hsl(var(--muted))", opacity: 0.4 }}
-                      formatter={(value: number, _name, p) => [fmtMoney(value), `${p.payload.count} pools × ${fmtMoney(p.payload.price)}`]}
-                      labelStyle={{ fontWeight: 600 }}
-                      contentStyle={{ borderRadius: 8, fontSize: 12 }}
-                    />
-                    <Bar dataKey="revenue" radius={[8, 8, 0, 0]}>
-                      {revenueRows.map((_, i) => (
-                        <Cell key={i} fill={["hsl(var(--primary))", "hsl(199 89% 48%)", "hsl(173 80% 40%)"][i % 3]} />
-                      ))}
-                      <LabelList dataKey="revenue" position="top" formatter={(v: number) => (v > 0 ? fmtMoney(v) : "")} style={{ fontSize: 11, fontWeight: 600, fill: "hsl(var(--foreground))" }} />
-                    </Bar>
-                  </BarChart>
-                </ResponsiveContainer>
+              <div className="space-y-3">
+                <div className="flex items-center justify-between flex-wrap gap-2">
+                  <div className="text-xs font-bold text-foreground">Revenue by Month · {revenueYear}</div>
+                  <div className="flex items-center gap-2">
+                    <div className="text-xs text-muted-foreground">
+                      Year total <span className="text-foreground font-semibold">{fmtMoney(revenueYearTotal)}</span>
+                    </div>
+                    <div className="flex items-center gap-1 rounded-md bg-muted p-0.5">
+                      <button
+                        onClick={() => setRevenueYear(currentYear - 1)}
+                        className={`px-2 py-0.5 text-xs font-semibold rounded ${revenueYear === currentYear - 1 ? "bg-background shadow-sm text-foreground" : "text-muted-foreground"}`}
+                      >{currentYear - 1}</button>
+                      <button
+                        onClick={() => setRevenueYear(currentYear)}
+                        className={`px-2 py-0.5 text-xs font-semibold rounded ${revenueYear === currentYear ? "bg-background shadow-sm text-foreground" : "text-muted-foreground"}`}
+                      >{currentYear}</button>
+                    </div>
+                  </div>
+                </div>
+                <div className="h-[280px] w-full">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart data={revenueMonthly} margin={{ top: 24, right: 16, left: 8, bottom: 8 }}>
+                      <XAxis dataKey="month" tick={{ fontSize: 12 }} axisLine={false} tickLine={false} />
+                      <YAxis tickFormatter={(v) => `$${v}`} tick={{ fontSize: 11 }} axisLine={false} tickLine={false} width={56} />
+                      <ReTooltip
+                        cursor={{ fill: "hsl(var(--muted))", opacity: 0.4 }}
+                        formatter={(value: number) => [fmtMoney(value), "Revenue"]}
+                        contentStyle={{ borderRadius: 8, fontSize: 12 }}
+                      />
+                      <Bar dataKey="total" radius={[8, 8, 0, 0]} fill="hsl(var(--primary))" />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
               </div>
             )
           )}
@@ -929,12 +947,26 @@ const AdminDashboard = () => {
             <div className="space-y-6">
               <div>
                 <div className="flex items-center justify-between mb-2 flex-wrap gap-2">
-                  <div className="text-xs font-bold text-foreground">Payouts by Month · last 6 months</div>
-                  <div className="text-xs text-muted-foreground">Recurring monthly <span className="text-foreground font-semibold">{fmtMoney(totalPayouts)}</span></div>
+                  <div className="text-xs font-bold text-foreground">Payouts by Month · {payoutYear}</div>
+                  <div className="flex items-center gap-2">
+                    <div className="text-xs text-muted-foreground">
+                      Year total <span className="text-foreground font-semibold">{fmtMoney(payoutYearTotal)}</span>
+                    </div>
+                    <div className="flex items-center gap-1 rounded-md bg-muted p-0.5">
+                      <button
+                        onClick={() => setPayoutYear(currentYear - 1)}
+                        className={`px-2 py-0.5 text-xs font-semibold rounded ${payoutYear === currentYear - 1 ? "bg-background shadow-sm text-foreground" : "text-muted-foreground"}`}
+                      >{currentYear - 1}</button>
+                      <button
+                        onClick={() => setPayoutYear(currentYear)}
+                        className={`px-2 py-0.5 text-xs font-semibold rounded ${payoutYear === currentYear ? "bg-background shadow-sm text-foreground" : "text-muted-foreground"}`}
+                      >{currentYear}</button>
+                    </div>
+                  </div>
                 </div>
                 <div className="h-[240px] w-full">
                   <ResponsiveContainer width="100%" height="100%">
-                    <BarChart data={monthlyPayoutTrend} margin={{ top: 24, right: 16, left: 8, bottom: 8 }}>
+                    <BarChart data={payoutMonthly} margin={{ top: 24, right: 16, left: 8, bottom: 8 }}>
                       <XAxis dataKey="month" tick={{ fontSize: 12 }} axisLine={false} tickLine={false} />
                       <YAxis tickFormatter={(v) => `$${v}`} tick={{ fontSize: 11 }} axisLine={false} tickLine={false} width={56} />
                       <ReTooltip
@@ -942,9 +974,7 @@ const AdminDashboard = () => {
                         formatter={(value: number) => [fmtMoney(value), "Tech payouts"]}
                         contentStyle={{ borderRadius: 8, fontSize: 12 }}
                       />
-                      <Bar dataKey="total" radius={[8, 8, 0, 0]} fill="hsl(38 92% 50%)">
-                        <LabelList dataKey="total" position="top" formatter={(v: number) => (v > 0 ? fmtMoney(v) : "")} style={{ fontSize: 11, fontWeight: 600, fill: "hsl(var(--foreground))" }} />
-                      </Bar>
+                      <Bar dataKey="total" radius={[8, 8, 0, 0]} fill="hsl(38 92% 50%)" />
                     </BarChart>
                   </ResponsiveContainer>
                 </div>
@@ -1084,7 +1114,19 @@ const AdminDashboard = () => {
 
 
 
-  // ═══════════ DASHBOARD PAGE ═══════════
+  // Day-off requests local state (mock, persists for the session).
+  type DayOffStatus = "Pending" | "Approved" | "Denied" | "None";
+  interface DayOffRequest { dates: string; reason: string; status: DayOffStatus }
+  const defaultDayOff: DayOffRequest[] = [
+    { dates: "May 23 – May 24, 2026", reason: "Family event", status: "Pending" },
+    { dates: "Jun 02, 2026", reason: "Medical appointment", status: "Approved" },
+    { dates: "Jun 14 – Jun 16, 2026", reason: "Vacation", status: "Pending" },
+    { dates: "—", reason: "—", status: "None" },
+  ];
+  const [dayOffByTech, setDayOffByTech] = useState<Record<string, DayOffRequest>>({});
+  const [editDayOffTechId, setEditDayOffTechId] = useState<string | null>(null);
+  const [editDayOffDraft, setEditDayOffDraft] = useState<DayOffRequest>({ dates: "", reason: "", status: "Pending" });
+
   const DashboardPage = () => {
 
 
@@ -1228,15 +1270,11 @@ const AdminDashboard = () => {
                       </TableRow>
                     );
                   }
-                  // Mock day-off requests, deterministic by tech index
-                  const samples = [
-                    { dates: "May 23 – May 24, 2026", reason: "Family event", status: "Pending" },
-                    { dates: "Jun 02, 2026", reason: "Medical appointment", status: "Approved" },
-                    { dates: "Jun 14 – Jun 16, 2026", reason: "Vacation", status: "Pending" },
-                    { dates: "—", reason: "—", status: "None" },
-                  ];
                   return actives.map((t, i) => {
-                    const r = samples[i % samples.length];
+                    const r: DayOffRequest = dayOffByTech[t.id] ?? defaultDayOff[i % defaultDayOff.length];
+                    const setStatus = (status: DayOffStatus) => {
+                      setDayOffByTech((prev) => ({ ...prev, [t.id]: { ...r, status } }));
+                    };
                     return (
                       <TableRow key={t.id}>
                         <TableCell className="font-semibold">{t.name}</TableCell>
@@ -1246,7 +1284,7 @@ const AdminDashboard = () => {
                           {r.status === "None" ? (
                             <span className="text-xs text-muted-foreground italic">No request</span>
                           ) : (
-                            <StatusBadge status={r.status} />
+                            <StatusBadge status={r.status === "Denied" ? "Rejected" : r.status} />
                           )}
                         </TableCell>
                         <TableCell className="text-right">
@@ -1255,34 +1293,39 @@ const AdminDashboard = () => {
                               <>
                                 <Button
                                   size="sm"
-                                  variant="outline"
-                                  onClick={() => toast({ title: "Day off approved", description: `${t.name} · ${r.dates}`, variant: "success" })}
+                                  className="bg-emerald-500 hover:bg-emerald-600 text-white"
+                                  onClick={() => {
+                                    setStatus("Approved");
+                                    toast({ title: "Day off approved", description: `${t.name} · ${r.dates}`, variant: "success" });
+                                  }}
                                 >
                                   Approve
                                 </Button>
                                 <Button
                                   size="sm"
                                   variant="outline"
-                                  onClick={() => toast({ title: "Day off denied", description: `${t.name} · ${r.dates}`, variant: "destructive" })}
+                                  onClick={() => {
+                                    setStatus("Denied");
+                                    toast({ title: "Day off denied", description: `${t.name} · ${r.dates}`, variant: "destructive" });
+                                  }}
                                 >
                                   Deny
                                 </Button>
                               </>
                             )}
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              className="gap-1.5"
-                              onClick={() => {
-                                setTechDraftName(t.name);
-                                setTechDraftEmail(t.email);
-                                setTechDraftPhone(t.phone === "—" || !t.phone ? "" : t.phone);
-                                setTechDraftPayout(String(t.payoutPerPool ?? 100));
-                                setEditTechId(t.id);
-                              }}
-                            >
-                              <Pencil className="h-3.5 w-3.5" /> Edit
-                            </Button>
+                            {r.status !== "None" && (
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                className="gap-1.5"
+                                onClick={() => {
+                                  setEditDayOffDraft(r);
+                                  setEditDayOffTechId(t.id);
+                                }}
+                              >
+                                <Pencil className="h-3.5 w-3.5" /> Edit
+                              </Button>
+                            )}
                           </div>
                         </TableCell>
                       </TableRow>
@@ -2592,6 +2635,61 @@ const AdminDashboard = () => {
               }}
             >
               {updateTechnicianProfile.isPending ? "Saving…" : "Save changes"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Edit Day Off Request */}
+      <Dialog open={!!editDayOffTechId} onOpenChange={(o) => !o && setEditDayOffTechId(null)}>
+        <DialogContent className="pt-10 sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Edit Day Off Request</DialogTitle>
+            <DialogDescription>Update the dates, reason, or status for this request.</DialogDescription>
+          </DialogHeader>
+          <div className="space-y-3">
+            <div className="space-y-1">
+              <label className="text-xs font-semibold text-foreground">Dates</label>
+              <Input
+                value={editDayOffDraft.dates}
+                onChange={(e) => setEditDayOffDraft((d) => ({ ...d, dates: e.target.value }))}
+                placeholder="e.g. Jun 14 – Jun 16, 2026"
+              />
+            </div>
+            <div className="space-y-1">
+              <label className="text-xs font-semibold text-foreground">Reason</label>
+              <Textarea
+                value={editDayOffDraft.reason}
+                onChange={(e) => setEditDayOffDraft((d) => ({ ...d, reason: e.target.value }))}
+                rows={2}
+              />
+            </div>
+            <div className="space-y-1">
+              <label className="text-xs font-semibold text-foreground">Status</label>
+              <Select
+                value={editDayOffDraft.status}
+                onValueChange={(v) => setEditDayOffDraft((d) => ({ ...d, status: v as DayOffStatus }))}
+              >
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Pending">Pending</SelectItem>
+                  <SelectItem value="Approved">Approved</SelectItem>
+                  <SelectItem value="Denied">Denied</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setEditDayOffTechId(null)}>Cancel</Button>
+            <Button
+              onClick={() => {
+                if (!editDayOffTechId) return;
+                setDayOffByTech((prev) => ({ ...prev, [editDayOffTechId]: editDayOffDraft }));
+                toast({ title: "Request updated", variant: "success" });
+                setEditDayOffTechId(null);
+              }}
+            >
+              Save
             </Button>
           </DialogFooter>
         </DialogContent>

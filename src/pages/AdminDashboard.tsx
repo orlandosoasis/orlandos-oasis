@@ -702,7 +702,29 @@ const AdminDashboard = () => {
         <button onClick={() => nav("technicians")} className="inline-flex items-center gap-1.5 text-primary text-sm font-semibold hover:underline">
           <ChevronLeft className="h-4 w-4" /> Back to Technicians
         </button>
-        <Card><CardHeader><CardTitle className="text-sm">Technician Information</CardTitle></CardHeader>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between">
+            <CardTitle className="text-sm">Technician Information</CardTitle>
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() =>
+                updateTechnicianActive.mutate(
+                  { id: tech.id, isActive: tech.status !== "Active" },
+                  {
+                    onSuccess: () =>
+                      toast({
+                        title: tech.status === "Active" ? "Technician deactivated" : "Technician activated",
+                        variant: "success",
+                      }),
+                  },
+                )
+              }
+              disabled={updateTechnicianActive.isPending}
+            >
+              {tech.status === "Active" ? "Deactivate" : "Activate"}
+            </Button>
+          </CardHeader>
           <CardContent>
             <InfoRow label="Name" value={tech.name} /><InfoRow label="Rating" value={tech.rating > 0 ? <Stars rating={tech.rating} /> : "New - No ratings yet"} />
             <InfoRow label="Email" value={tech.email} /><InfoRow label="Phone" value={tech.phone} /><InfoRow label="Status" value={tech.status} badge />

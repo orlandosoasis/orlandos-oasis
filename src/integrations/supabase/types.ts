@@ -274,6 +274,7 @@ export type Database = {
           last_name: string | null
           monthly_amount: number | null
           notifications_enabled: boolean
+          payout_per_pool: number
           phone: string | null
           role: Database["public"]["Enums"]["app_role"]
           state: string | null
@@ -299,6 +300,7 @@ export type Database = {
           last_name?: string | null
           monthly_amount?: number | null
           notifications_enabled?: boolean
+          payout_per_pool?: number
           phone?: string | null
           role?: Database["public"]["Enums"]["app_role"]
           state?: string | null
@@ -324,6 +326,7 @@ export type Database = {
           last_name?: string | null
           monthly_amount?: number | null
           notifications_enabled?: boolean
+          payout_per_pool?: number
           phone?: string | null
           role?: Database["public"]["Enums"]["app_role"]
           state?: string | null

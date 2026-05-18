@@ -115,6 +115,9 @@ const EditHomeownerModal = ({ open, onClose, homeowner, onSave }: EditHomeownerM
     setStartDate(homeowner.startDate || "");
     setAutoRecurring(true);
     setPaymentOption(homeowner.paymentMethod === "Marked as Paid" ? "paid" : "offline");
+    setIsGrandfathered(Boolean(homeowner.isGrandfathered));
+    setGrandfatheredNote(homeowner.grandfatheredNote ?? "");
+    setIsFreds(Boolean(homeowner.isFreds));
     setErrors({});
   }, [homeowner, open]);
 

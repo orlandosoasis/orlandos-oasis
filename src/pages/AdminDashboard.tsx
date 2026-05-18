@@ -476,28 +476,24 @@ const AdminDashboard = () => {
 
   // ═══════════ DASHBOARD PAGE ═══════════
   const DashboardPage = () => {
-    const totalMRR = homeowners.reduce((sum, h) => sum + (h.monthlyAmount ?? 0), 0);
+    // Weekly base price per pool size (Standard plan).
+    const POOL_SIZE_PRICES: { key: "small" | "medium" | "large"; label: string; price: number; match: (s: string) => boolean }[] = [
+      { key: "small", label: "Small Pool", price: 120, match: (s) => /small/i.test(s) },
+      { key: "medium", label: "Medium Pool", price: 140, match: (s) => /medium/i.test(s) },
+      { key: "large", label: "Large Pool", price: 170, match: (s) => /large/i.test(s) },
+    ];
 
-    // Revenue breakdown by service type for the current month.
-    // We attribute each homeowner's monthly amount across their visits this month,
-    // grouped by service type — so totals always equal MRR.
+    const revenueRows = POOL_SIZE_PRICES.map((cfg) => {
+      const count = homeowners.reduce(
+        (a, h) => a + h.pools.filter((p) => cfg.match(p.size ?? "")).length,
+        0,
+      );
+      return { label: cfg.label, count, revenue: count * cfg.price, price: cfg.price };
+    });
+    const totalMRR = revenueRows.reduce((a, r) => a + r.revenue, 0);
+    const totalPools = revenueRows.reduce((a, r) => a + r.count, 0);
+
     const now = new Date();
-    const ym = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
-    const revenueByType = new Map<string, { revenue: number; visits: number }>();
-    for (const h of homeowners) {
-      const monthVisits = h.services.filter((s) => (s.serviceDate ?? "").startsWith(ym));
-      if (monthVisits.length === 0 || !h.monthlyAmount) continue;
-      const per = h.monthlyAmount / monthVisits.length;
-      for (const v of monthVisits) {
-        const cur = revenueByType.get(v.type) ?? { revenue: 0, visits: 0 };
-        cur.revenue += per;
-        cur.visits += 1;
-        revenueByType.set(v.type, cur);
-      }
-    }
-    const revenueRows = [...revenueByType.entries()]
-      .map(([type, v]) => ({ type, ...v }))
-      .sort((a, b) => b.revenue - a.revenue);
     const fmtMoney = (n: number) =>
       n.toLocaleString("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 });
 
@@ -546,30 +542,29 @@ const AdminDashboard = () => {
           <CardContent>
             <Table>
               <TableHeader><TableRow>
-                <TableHead>Service Type</TableHead>
-                <TableHead className="text-right">Visits this month</TableHead>
+                <TableHead>Service</TableHead>
+                <TableHead className="text-right">Pools</TableHead>
+                <TableHead className="text-right">Price / pool</TableHead>
                 <TableHead className="text-right">Revenue</TableHead>
               </TableRow></TableHeader>
               <TableBody>
-                {revenueRows.length === 0 ? (
-                  <TableRow><TableCell colSpan={3} className="text-center text-muted-foreground text-xs py-6">No revenue recorded for this month yet.</TableCell></TableRow>
+                {totalPools === 0 ? (
+                  <TableRow><TableCell colSpan={4} className="text-center text-muted-foreground text-xs py-6">No pools on file yet.</TableCell></TableRow>
                 ) : (
                   <>
                     {revenueRows.map((r) => (
-                      <TableRow key={r.type}>
-                        <TableCell className="font-medium">{r.type}</TableCell>
-                        <TableCell className="text-right">{r.visits}</TableCell>
+                      <TableRow key={r.label}>
+                        <TableCell className="font-medium">{r.label}</TableCell>
+                        <TableCell className="text-right">{r.count}</TableCell>
+                        <TableCell className="text-right">{fmtMoney(r.price)}</TableCell>
                         <TableCell className="text-right font-semibold">{fmtMoney(r.revenue)}</TableCell>
                       </TableRow>
                     ))}
                     <TableRow>
                       <TableCell className="font-bold">Total</TableCell>
-                      <TableCell className="text-right font-bold">
-                        {revenueRows.reduce((a, r) => a + r.visits, 0)}
-                      </TableCell>
-                      <TableCell className="text-right font-bold">
-                        {fmtMoney(revenueRows.reduce((a, r) => a + r.revenue, 0))}
-                      </TableCell>
+                      <TableCell className="text-right font-bold">{totalPools}</TableCell>
+                      <TableCell />
+                      <TableCell className="text-right font-bold">{fmtMoney(totalMRR)}</TableCell>
                     </TableRow>
                   </>
                 )}
@@ -577,6 +572,7 @@ const AdminDashboard = () => {
             </Table>
           </CardContent>
         </Card>
+
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           <Card>

@@ -1088,6 +1088,7 @@ const AdminDashboard = () => {
                   setTechDraftName(tech.name);
                   setTechDraftEmail(tech.email);
                   setTechDraftPhone(tech.phone === "—" ? "" : tech.phone);
+                  setTechDraftPayout(String(tech.payoutPerPool ?? 100));
                   setEditTechId(tech.id);
                 }}
               >

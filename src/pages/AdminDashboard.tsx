@@ -700,8 +700,6 @@ const AdminDashboard = () => {
     const fredsMRR = fredsAccounts.reduce((a, h) => a + (h.monthlyAmount ?? 0), 0);
 
     const now = new Date();
-    const fmtMoney = (n: number) =>
-      n.toLocaleString("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 });
 
     const stats = [
       { label: "Monthly Revenue", value: fmtMoney(totalMRR), icon: CreditCard, color: "text-emerald-600", bg: "bg-emerald-50" },

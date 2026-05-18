@@ -222,6 +222,7 @@ const AdminDashboard = () => {
       serviceDate: s.serviceDate,
       type: s.type,
       technician: s.technicianName,
+      technicianId: s.technicianId,
       status: s.status,
       poolId: s.poolId,
     })),

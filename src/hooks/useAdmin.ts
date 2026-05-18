@@ -10,6 +10,7 @@ export interface AdminTechnicianAggregate {
   rating: number;
   assignedPools: number;
   completedServices: number;
+  payoutPerPool: number;
   reviews: {
     id: string;
     reviewer: string;
@@ -106,7 +107,7 @@ export function useAdminTechnicians() {
     queryFn: async (): Promise<AdminTechnicianAggregate[]> => {
       const { data: techs, error } = await supabase
         .from("profiles")
-        .select("id, full_name, email, phone, is_active")
+        .select("id, full_name, email, phone, is_active, payout_per_pool")
         .eq("role", "technician")
         .order("full_name", { ascending: true });
       if (error) throw error;
@@ -176,6 +177,7 @@ export function useAdminTechnicians() {
           rating: avgRating,
           assignedPools: upcomingByPool.size,
           completedServices: completed,
+          payoutPerPool: Number((tech as { payout_per_pool?: number | null }).payout_per_pool ?? 100),
           reviews: techReviews
             .sort((a, b) => (b.created_at > a.created_at ? 1 : -1))
             .map((r) => ({
@@ -417,13 +419,14 @@ export interface TechnicianProfilePatch {
   fullName?: string;
   email?: string;
   phone?: string | null;
+  payoutPerPool?: number | null;
 }
 
 export function useUpdateTechnicianProfile() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: async ({ id, patch }: { id: string; patch: TechnicianProfilePatch }) => {
-      const dbPatch: { full_name?: string; first_name?: string; last_name?: string; email?: string; phone?: string | null } = {};
+      const dbPatch: { full_name?: string; first_name?: string; last_name?: string; email?: string; phone?: string | null; payout_per_pool?: number | null } = {};
       if (patch.fullName !== undefined) {
         dbPatch.full_name = patch.fullName;
         const parts = patch.fullName.trim().split(/\s+/);
@@ -432,6 +435,7 @@ export function useUpdateTechnicianProfile() {
       }
       if (patch.email !== undefined) dbPatch.email = patch.email;
       if (patch.phone !== undefined) dbPatch.phone = patch.phone;
+      if (patch.payoutPerPool !== undefined) dbPatch.payout_per_pool = patch.payoutPerPool;
       const { error } = await supabase.from("profiles").update(dbPatch).eq("id", id);
       if (error) throw error;
     },

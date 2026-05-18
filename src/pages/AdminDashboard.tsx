@@ -665,8 +665,254 @@ const AdminDashboard = () => {
     );
   };
 
+  // ═══════════ FINANCIALS CARD (Revenue / Payouts / Supplies / Profit) ═══════════
+  type RevenueRow = { label: string; count: number; revenue: number; price: number };
+  type FinTech = { id: string; name: string; assignedPools: number; payoutPerPool?: number };
+  type FinHome = { pools: { size: string }[] };
+
+  const CHEMICAL_COSTS: { name: string; perPool: number }[] = [
+    { name: "Chlorine tablets (3\")", perPool: 18 },
+    { name: "Liquid shock", perPool: 6 },
+    { name: "Muriatic acid", perPool: 4 },
+    { name: "Algaecide", perPool: 3 },
+    { name: "Cyanuric acid stabilizer", perPool: 2 },
+    { name: "pH increaser / decreaser", perPool: 2.5 },
+    { name: "Calcium hardness", perPool: 2 },
+    { name: "Clarifier & enzyme", perPool: 2.5 },
+  ];
+  const EQUIPMENT_COSTS: { name: string; perPool: number }[] = [
+    { name: "Skimmer nets & brushes (amortized)", perPool: 3 },
+    { name: "Test strips & reagents", perPool: 1.5 },
+    { name: "Vacuum hose / pole wear", perPool: 2 },
+    { name: "Filter cleaner & lube", perPool: 1.5 },
+  ];
+
+  const FinancialsCard = ({
+    revenueRows, totalMRR, totalPools, technicians, homeowners,
+  }: {
+    revenueRows: RevenueRow[];
+    totalMRR: number;
+    totalPools: number;
+    technicians: FinTech[];
+    homeowners: FinHome[];
+  }) => {
+    const [tab, setTab] = useState<"revenue" | "payouts" | "supplies" | "profit">("revenue");
+    const now = new Date();
+
+    // Tech payouts = assignedPools × payoutPerPool
+    const payoutRows = technicians
+      .map((t) => ({
+        id: t.id,
+        name: t.name,
+        pools: t.assignedPools,
+        rate: t.payoutPerPool ?? 100,
+        total: (t.assignedPools) * (t.payoutPerPool ?? 100),
+      }))
+      .sort((a, b) => b.total - a.total);
+    const totalPayouts = payoutRows.reduce((a, r) => a + r.total, 0);
+
+    // Supplies = (chemicals + equipment) × pools (one full set per pool per month)
+    const allPoolsCount = homeowners.reduce((a, h) => a + h.pools.length, 0);
+    const chemTotalPerPool = CHEMICAL_COSTS.reduce((a, c) => a + c.perPool, 0);
+    const equipTotalPerPool = EQUIPMENT_COSTS.reduce((a, c) => a + c.perPool, 0);
+    const chemMonthly = chemTotalPerPool * allPoolsCount;
+    const equipMonthly = equipTotalPerPool * allPoolsCount;
+    const suppliesTotal = chemMonthly + equipMonthly;
+
+    const netProfit = totalMRR - totalPayouts - suppliesTotal;
+    const yearlyProfit = netProfit * 12;
+
+    const TAB_BTN = (key: typeof tab, label: string) => (
+      <button
+        key={key}
+        onClick={() => setTab(key)}
+        className={`px-3 py-1 text-xs font-semibold rounded ${tab === key ? "bg-background shadow-sm text-foreground" : "text-muted-foreground"}`}
+      >
+        {label}
+      </button>
+    );
+
+    return (
+      <Card>
+        <CardHeader className="pb-3 flex flex-row items-center justify-between gap-3 flex-wrap">
+          <div className="flex items-center gap-3 flex-wrap">
+            <CardTitle className="text-sm font-bold">
+              Financials · {now.toLocaleString("en-US", { month: "long", year: "numeric" })}
+            </CardTitle>
+            <div className="flex items-center gap-1 rounded-md bg-muted p-0.5">
+              {TAB_BTN("revenue", "Revenue")}
+              {TAB_BTN("payouts", "Technician Payouts")}
+              {TAB_BTN("supplies", "Chemicals & Supplies")}
+              {TAB_BTN("profit", "Profit")}
+            </div>
+          </div>
+          <div className="text-xs text-muted-foreground">
+            {tab === "revenue" && <>Total <span className="ml-1 text-foreground font-bold">{fmtMoney(totalMRR)}</span> · {totalPools} pools</>}
+            {tab === "payouts" && <>Total <span className="ml-1 text-foreground font-bold">{fmtMoney(totalPayouts)}</span></>}
+            {tab === "supplies" && <>Total <span className="ml-1 text-foreground font-bold">{fmtMoney(suppliesTotal)}</span> · {allPoolsCount} pools</>}
+            {tab === "profit" && <>Net <span className={`ml-1 font-bold ${netProfit >= 0 ? "text-emerald-600" : "text-red-600"}`}>{fmtMoney(netProfit)}</span>/mo</>}
+          </div>
+        </CardHeader>
+        <CardContent>
+          {tab === "revenue" && (
+            totalPools === 0 ? (
+              <div className="text-center text-muted-foreground text-xs py-10">No pools on file yet.</div>
+            ) : (
+              <div className="h-[280px] w-full">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={revenueRows} margin={{ top: 24, right: 16, left: 8, bottom: 8 }}>
+                    <XAxis dataKey="label" tick={{ fontSize: 12 }} axisLine={false} tickLine={false} />
+                    <YAxis tickFormatter={(v) => `$${v}`} tick={{ fontSize: 11 }} axisLine={false} tickLine={false} width={56} />
+                    <ReTooltip
+                      cursor={{ fill: "hsl(var(--muted))", opacity: 0.4 }}
+                      formatter={(value: number, _name, p) => [fmtMoney(value), `${p.payload.count} pools × ${fmtMoney(p.payload.price)}`]}
+                      labelStyle={{ fontWeight: 600 }}
+                      contentStyle={{ borderRadius: 8, fontSize: 12 }}
+                    />
+                    <Bar dataKey="revenue" radius={[8, 8, 0, 0]}>
+                      {revenueRows.map((_, i) => (
+                        <Cell key={i} fill={["hsl(var(--primary))", "hsl(199 89% 48%)", "hsl(173 80% 40%)"][i % 3]} />
+                      ))}
+                      <LabelList dataKey="revenue" position="top" formatter={(v: number) => (v > 0 ? fmtMoney(v) : "")} style={{ fontSize: 11, fontWeight: 600, fill: "hsl(var(--foreground))" }} />
+                    </Bar>
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            )
+          )}
+
+          {tab === "payouts" && (
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Technician</TableHead>
+                  <TableHead className="text-right">Assigned Pools</TableHead>
+                  <TableHead className="text-right">Rate / Pool</TableHead>
+                  <TableHead className="text-right">Monthly Payout</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {payoutRows.length === 0 ? (
+                  <TableRow><TableCell colSpan={4} className="text-center text-muted-foreground text-xs py-6">No technicians.</TableCell></TableRow>
+                ) : payoutRows.map((r) => (
+                  <TableRow key={r.id}>
+                    <TableCell className="font-medium">{r.name}</TableCell>
+                    <TableCell className="text-right">{r.pools}</TableCell>
+                    <TableCell className="text-right">{fmtMoney(r.rate)}</TableCell>
+                    <TableCell className="text-right font-semibold">{fmtMoney(r.total)}</TableCell>
+                  </TableRow>
+                ))}
+                <TableRow className="bg-muted/40">
+                  <TableCell className="font-bold">Total</TableCell>
+                  <TableCell className="text-right font-bold">{payoutRows.reduce((a, r) => a + r.pools, 0)}</TableCell>
+                  <TableCell></TableCell>
+                  <TableCell className="text-right font-extrabold text-foreground">{fmtMoney(totalPayouts)}</TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
+          )}
+
+          {tab === "supplies" && (
+            <div className="space-y-6">
+              <div>
+                <div className="flex items-center justify-between mb-2">
+                  <div className="text-xs font-bold text-foreground">Chemicals · {allPoolsCount} pools</div>
+                  <div className="text-xs text-muted-foreground">Per pool <span className="text-foreground font-semibold">{fmtMoney(chemTotalPerPool)}</span> · Monthly <span className="text-foreground font-semibold">{fmtMoney(chemMonthly)}</span></div>
+                </div>
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Chemical</TableHead>
+                      <TableHead className="text-right">Cost / Pool</TableHead>
+                      <TableHead className="text-right">Monthly Total</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {CHEMICAL_COSTS.map((c) => (
+                      <TableRow key={c.name}>
+                        <TableCell>{c.name}</TableCell>
+                        <TableCell className="text-right">{fmtMoney(c.perPool)}</TableCell>
+                        <TableCell className="text-right font-semibold">{fmtMoney(c.perPool * allPoolsCount)}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+              <div>
+                <div className="flex items-center justify-between mb-2">
+                  <div className="text-xs font-bold text-foreground">Equipment & Consumables</div>
+                  <div className="text-xs text-muted-foreground">Per pool <span className="text-foreground font-semibold">{fmtMoney(equipTotalPerPool)}</span> · Monthly <span className="text-foreground font-semibold">{fmtMoney(equipMonthly)}</span></div>
+                </div>
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Item</TableHead>
+                      <TableHead className="text-right">Cost / Pool</TableHead>
+                      <TableHead className="text-right">Monthly Total</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {EQUIPMENT_COSTS.map((c) => (
+                      <TableRow key={c.name}>
+                        <TableCell>{c.name}</TableCell>
+                        <TableCell className="text-right">{fmtMoney(c.perPool)}</TableCell>
+                        <TableCell className="text-right font-semibold">{fmtMoney(c.perPool * allPoolsCount)}</TableCell>
+                      </TableRow>
+                    ))}
+                    <TableRow className="bg-muted/40">
+                      <TableCell className="font-bold">Supplies Total</TableCell>
+                      <TableCell></TableCell>
+                      <TableCell className="text-right font-extrabold text-foreground">{fmtMoney(suppliesTotal)}</TableCell>
+                    </TableRow>
+                  </TableBody>
+                </Table>
+              </div>
+            </div>
+          )}
+
+          {tab === "profit" && (
+            <div className="space-y-6">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div className="rounded-lg border bg-emerald-50/50 p-4">
+                  <div className="text-[11px] font-bold uppercase tracking-wide text-emerald-700">Revenue</div>
+                  <div className="text-2xl font-extrabold text-foreground mt-1">{fmtMoney(totalMRR)}</div>
+                  <div className="text-[11px] text-muted-foreground mt-1">{totalPools} pools · this month</div>
+                </div>
+                <div className="rounded-lg border bg-amber-50/50 p-4">
+                  <div className="text-[11px] font-bold uppercase tracking-wide text-amber-700">Tech Payouts</div>
+                  <div className="text-2xl font-extrabold text-foreground mt-1">−{fmtMoney(totalPayouts)}</div>
+                  <div className="text-[11px] text-muted-foreground mt-1">{payoutRows.reduce((a, r) => a + r.pools, 0)} pool services</div>
+                </div>
+                <div className="rounded-lg border bg-rose-50/50 p-4">
+                  <div className="text-[11px] font-bold uppercase tracking-wide text-rose-700">Supplies</div>
+                  <div className="text-2xl font-extrabold text-foreground mt-1">−{fmtMoney(suppliesTotal)}</div>
+                  <div className="text-[11px] text-muted-foreground mt-1">Chemicals + equipment</div>
+                </div>
+              </div>
+              <div className="rounded-lg border-2 border-foreground/10 bg-muted/30 p-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                <div>
+                  <div className="text-[11px] font-bold uppercase tracking-wide text-muted-foreground">Net Profit · This Month</div>
+                  <div className={`text-3xl font-extrabold mt-1 ${netProfit >= 0 ? "text-emerald-600" : "text-red-600"}`}>{fmtMoney(netProfit)}</div>
+                  <div className="text-[11px] text-muted-foreground mt-1">
+                    {fmtMoney(totalMRR)} − {fmtMoney(totalPayouts)} − {fmtMoney(suppliesTotal)}
+                  </div>
+                </div>
+                <div className="sm:text-right">
+                  <div className="text-[11px] font-bold uppercase tracking-wide text-muted-foreground">Annualized Profit</div>
+                  <div className={`text-2xl font-extrabold mt-1 ${yearlyProfit >= 0 ? "text-emerald-600" : "text-red-600"}`}>{fmtMoney(yearlyProfit)}</div>
+                  <div className="text-[11px] text-muted-foreground mt-1">Net × 12 months</div>
+                </div>
+              </div>
+            </div>
+          )}
+        </CardContent>
+      </Card>
+    );
+  };
+
   // ═══════════ DASHBOARD PAGE ═══════════
   const DashboardPage = () => {
+
 
     // Revenue per pool size, using each homeowner's actual monthly_amount.
     // Each placeholder/active homeowner contributes their monthly_amount split

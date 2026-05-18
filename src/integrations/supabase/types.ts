@@ -266,6 +266,7 @@ export type Database = {
           first_name: string | null
           full_name: string | null
           id: string
+          is_active: boolean
           last_name: string | null
           monthly_amount: number | null
           phone: string | null
@@ -285,6 +286,7 @@ export type Database = {
           first_name?: string | null
           full_name?: string | null
           id: string
+          is_active?: boolean
           last_name?: string | null
           monthly_amount?: number | null
           phone?: string | null
@@ -304,6 +306,7 @@ export type Database = {
           first_name?: string | null
           full_name?: string | null
           id?: string
+          is_active?: boolean
           last_name?: string | null
           monthly_amount?: number | null
           phone?: string | null

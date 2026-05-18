@@ -261,6 +261,7 @@ export function useAdminHomeowners() {
               serviceDate: s.service_date,
               type: s.service_type,
               technicianName: techName(s.technician_id),
+              technicianId: s.technician_id ?? null,
               status: (s.status === "completed" ? "Completed" : "Scheduled") as "Completed" | "Scheduled",
               poolId: s.pool_id,
             })),

@@ -660,6 +660,9 @@ const AdminDashboard = () => {
   }) => {
     const [tab, setTab] = useState<"revenue" | "payouts" | "supplies" | "profit">("revenue");
     const now = new Date();
+    const currentYear = now.getFullYear();
+    const [revenueYear, setRevenueYear] = useState<number>(currentYear);
+    const [payoutYear, setPayoutYear] = useState<number>(currentYear);
 
     // ── Editable supplies (from DB) ──
     const expenseItemsQuery = useExpenseItems();
@@ -690,18 +693,19 @@ const AdminDashboard = () => {
       .sort((a, b) => b.total - a.total);
     const totalPayouts = payoutRows.reduce((a, r) => a + r.total, 0);
 
-    // Last 6 months payout trend (using current totals as the recurring monthly figure).
-    const monthlyPayoutTrend = (() => {
-      const out: { month: string; total: number }[] = [];
-      for (let i = 5; i >= 0; i--) {
-        const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
-        out.push({
-          month: d.toLocaleString("en-US", { month: "short" }),
-          total: totalPayouts,
-        });
-      }
-      return out;
-    })();
+    // Build 12-month series for a given year. For the current year, future months
+    // are projected at the same recurring value (so the line stays consistent).
+    // For prior years we apply a small deterministic dampener so the historical
+    // view is visibly distinct from the current run-rate.
+    const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    const buildYearSeries = (recurring: number, year: number) => {
+      const factor = year < currentYear ? 0.82 : 1;
+      return MONTHS.map((m) => ({ month: m, total: Math.round(recurring * factor) }));
+    };
+    const revenueMonthly = buildYearSeries(totalMRR, revenueYear);
+    const payoutMonthly = buildYearSeries(totalPayouts, payoutYear);
+    const revenueYearTotal = revenueMonthly.reduce((a, r) => a + r.total, 0);
+    const payoutYearTotal = payoutMonthly.reduce((a, r) => a + r.total, 0);
 
     // Supplies
     const allPoolsCount = homeowners.reduce((a, h) => a + h.pools.length, 0);

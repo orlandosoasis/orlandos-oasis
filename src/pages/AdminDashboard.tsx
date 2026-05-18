@@ -877,7 +877,7 @@ const AdminDashboard = () => {
                         <TableCell className="text-xs text-muted-foreground whitespace-nowrap">{h.phone || "—"}</TableCell>
                         <TableCell className="text-xs text-muted-foreground">{h.address}</TableCell>
                         <TableCell className="text-xs">{pool?.size ?? "—"}</TableCell>
-                        <TableCell className="text-xs">{pool?.technicianName ?? "Unassigned"}</TableCell>
+                        <TableCell className="text-xs">{pool?.technician ?? "Unassigned"}</TableCell>
                         <TableCell className="text-right font-semibold text-xs">
                           {h.monthlyAmount ? fmtMoney(h.monthlyAmount) : "—"}
                         </TableCell>

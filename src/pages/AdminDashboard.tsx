@@ -162,7 +162,12 @@ const AdminDashboard = () => {
   const updateReviewStatus = useUpdateReviewStatus();
   const assignPoolToTech = useAssignPoolToTech();
   const updateTechnicianActive = useUpdateTechnicianActive();
+  const updateTechnicianProfile = useUpdateTechnicianProfile();
   const [techFilter, setTechFilter] = useState<"all" | "active" | "inactive">("all");
+  const [editTechId, setEditTechId] = useState<string | null>(null);
+  const [techDraftName, setTechDraftName] = useState("");
+  const [techDraftEmail, setTechDraftEmail] = useState("");
+  const [techDraftPhone, setTechDraftPhone] = useState("");
 
   const isLoading =
     techniciansQuery.isLoading ||

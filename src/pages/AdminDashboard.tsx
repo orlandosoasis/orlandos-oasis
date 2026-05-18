@@ -1007,25 +1007,40 @@ const AdminDashboard = () => {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between">
             <CardTitle className="text-sm">Technician Information</CardTitle>
-            <Button
-              size="sm"
-              variant="outline"
-              onClick={() =>
-                updateTechnicianActive.mutate(
-                  { id: tech.id, isActive: tech.status !== "Active" },
-                  {
-                    onSuccess: () =>
-                      toast({
-                        title: tech.status === "Active" ? "Technician deactivated" : "Technician activated",
-                        variant: "success",
-                      }),
-                  },
-                )
-              }
-              disabled={updateTechnicianActive.isPending}
-            >
-              {tech.status === "Active" ? "Deactivate" : "Activate"}
-            </Button>
+            <div className="flex items-center gap-2">
+              <Button
+                size="sm"
+                variant="outline"
+                className="gap-1.5"
+                onClick={() => {
+                  setTechDraftName(tech.name);
+                  setTechDraftEmail(tech.email);
+                  setTechDraftPhone(tech.phone === "—" ? "" : tech.phone);
+                  setEditTechId(tech.id);
+                }}
+              >
+                <Pencil className="h-3.5 w-3.5" /> Edit
+              </Button>
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() =>
+                  updateTechnicianActive.mutate(
+                    { id: tech.id, isActive: tech.status !== "Active" },
+                    {
+                      onSuccess: () =>
+                        toast({
+                          title: tech.status === "Active" ? "Technician deactivated" : "Technician activated",
+                          variant: "success",
+                        }),
+                    },
+                  )
+                }
+                disabled={updateTechnicianActive.isPending}
+              >
+                {tech.status === "Active" ? "Deactivate" : "Activate"}
+              </Button>
+            </div>
           </CardHeader>
           <CardContent>
             <InfoRow label="Name" value={tech.name} /><InfoRow label="Rating" value={tech.rating > 0 ? <Stars rating={tech.rating} /> : "New - No ratings yet"} />

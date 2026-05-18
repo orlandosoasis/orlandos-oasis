@@ -36,6 +36,9 @@ export interface AdminHomeownerAggregate {
   plan: string;
   startDate: string;
   monthlyAmount: number;
+  isGrandfathered: boolean;
+  isPlaceholder: boolean;
+  grandfatheredNote: string | null;
   pools: { id: string; address: string; size: string; technicianName: string; technicianId: string | null; nextService: string }[];
   services: { id: string; date: string; serviceDate: string; type: string; technicianName: string; technicianId: string | null; status: "Completed" | "Scheduled"; poolId: string }[];
 }
@@ -203,7 +206,7 @@ export function useAdminHomeowners() {
     queryFn: async (): Promise<AdminHomeownerAggregate[]> => {
       const { data: homeowners, error } = await supabase
         .from("profiles")
-        .select("id, full_name, email, phone, street_address, city, state, zip_code, created_at, monthly_amount")
+        .select("id, full_name, email, phone, street_address, city, state, zip_code, created_at, monthly_amount, is_grandfathered, is_placeholder, grandfathered_note")
         .eq("role", "homeowner")
         .order("created_at", { ascending: false });
       if (error) throw error;
@@ -239,6 +242,9 @@ export function useAdminHomeowners() {
           plan: "Standard",
           startDate: fmtDate(h.created_at),
           monthlyAmount: Number((h as { monthly_amount?: number | null }).monthly_amount ?? 0),
+          isGrandfathered: Boolean((h as { is_grandfathered?: boolean | null }).is_grandfathered),
+          isPlaceholder: Boolean((h as { is_placeholder?: boolean | null }).is_placeholder),
+          grandfatheredNote: (h as { grandfathered_note?: string | null }).grandfathered_note ?? null,
           pools: ownerPools.map((p) => {
             const next = ownerServices
               .filter((s) => s.pool_id === p.id && (s.status === "scheduled" || s.status === "in_progress"))

@@ -199,7 +199,7 @@ const AdminDashboard = () => {
     })),
   }));
 
-  const fetchedHomeowners: AdminHomeowner[] = (homeownersQuery.data ?? []).map((h) => ({
+  const fetchedHomeowners: (AdminHomeowner & { isGrandfathered?: boolean; grandfatheredNote?: string | null; isPlaceholder?: boolean })[] = (homeownersQuery.data ?? []).map((h) => ({
     id: h.id,
     name: h.name,
     email: h.email,
@@ -208,6 +208,9 @@ const AdminDashboard = () => {
     plan: h.plan,
     startDate: h.startDate,
     monthlyAmount: h.monthlyAmount,
+    isGrandfathered: h.isGrandfathered,
+    isPlaceholder: h.isPlaceholder,
+    grandfatheredNote: h.grandfatheredNote,
     pools: h.pools.map((p) => ({
       id: p.id,
       address: p.address,
@@ -490,6 +493,7 @@ const AdminDashboard = () => {
     type Row = {
       id: string; date: Date; dateLabel: string; homeowner: string; address: string;
       poolSize: string; type: string; status: string; technicianId: string | null; technicianName: string;
+      isGrandfathered: boolean; grandfatheredNote: string | null;
     };
     const upcoming: Row[] = [];
     const past: Row[] = [];
@@ -510,6 +514,8 @@ const AdminDashboard = () => {
           status: s.status,
           technicianId: s.technicianId ?? pool?.technicianId ?? null,
           technicianName: s.technician || pool?.technician || "Unassigned",
+          isGrandfathered: Boolean((h as { isGrandfathered?: boolean }).isGrandfathered),
+          grandfatheredNote: (h as { grandfatheredNote?: string | null }).grandfatheredNote ?? null,
         };
         if (s.status === "Scheduled" && d >= today) upcoming.push(row);
         else if (s.status === "Completed" || d < today) past.push(row);
@@ -584,7 +590,16 @@ const AdminDashboard = () => {
               ) : visible.map((r) => (
                 <TableRow key={r.id}>
                   <TableCell className="font-medium whitespace-nowrap">{r.dateLabel}</TableCell>
-                  <TableCell>{r.homeowner}</TableCell>
+                  <TableCell>
+                    <div className="flex items-center gap-1.5">
+                      <span>{r.homeowner}</span>
+                      {r.isGrandfathered && (
+                        <span title={r.grandfatheredNote ?? "Legacy rate"} className="inline-flex px-1.5 py-0.5 rounded-full text-[9px] font-bold bg-amber-100 text-amber-700 border border-amber-200">
+                          GF
+                        </span>
+                      )}
+                    </div>
+                  </TableCell>
                   <TableCell className="text-muted-foreground">{r.address}</TableCell>
                   <TableCell className="text-xs">{r.poolSize}</TableCell>
                   <TableCell>{r.type}</TableCell>
@@ -637,25 +652,36 @@ const AdminDashboard = () => {
   // ═══════════ DASHBOARD PAGE ═══════════
   const DashboardPage = () => {
 
-    // Weekly base price per pool size (Standard plan).
-    const POOL_SIZE_PRICES: { key: "small" | "medium" | "large"; label: string; price: number; match: (s: string) => boolean }[] = [
-      { key: "small", label: "Small Pool", price: 120, match: (s) => /small/i.test(s) },
-      { key: "medium", label: "Medium Pool", price: 140, match: (s) => /medium/i.test(s) },
-      { key: "large", label: "Large Pool", price: 170, match: (s) => /large/i.test(s) },
+    // Revenue per pool size, using each homeowner's actual monthly_amount.
+    // Each placeholder/active homeowner contributes their monthly_amount split
+    // evenly across their pools (most have 1 pool so this is just the amount).
+    const sizeBuckets: { key: "small" | "medium" | "large"; label: string; match: (s: string) => boolean }[] = [
+      { key: "small", label: "Small Pool", match: (s) => /small/i.test(s) },
+      { key: "medium", label: "Medium Pool", match: (s) => /medium/i.test(s) },
+      { key: "large", label: "Large Pool", match: (s) => /large/i.test(s) },
     ];
-
-    // Count pools that have at least one active (scheduled) service.
-    const revenueRows = POOL_SIZE_PRICES.map((cfg) => {
-      const count = homeowners.reduce((a, h) => {
-        const activePoolIds = new Set(
-          h.services.filter((s) => s.status === "Scheduled").map((s) => s.poolId),
-        );
-        return a + h.pools.filter((p) => activePoolIds.has(p.id) && cfg.match(p.size ?? "")).length;
-      }, 0);
-      return { label: cfg.label, count, revenue: count * cfg.price, price: cfg.price };
+    const revenueRows = sizeBuckets.map((cfg) => {
+      let count = 0;
+      let revenue = 0;
+      for (const h of homeowners) {
+        if (!h.monthlyAmount || h.pools.length === 0) continue;
+        const perPool = h.monthlyAmount / h.pools.length;
+        for (const p of h.pools) {
+          if (cfg.match(p.size ?? "")) {
+            count += 1;
+            revenue += perPool;
+          }
+        }
+      }
+      const avgPrice = count > 0 ? Math.round(revenue / count) : 0;
+      return { label: cfg.label, count, revenue: Math.round(revenue), price: avgPrice };
     });
     const totalMRR = revenueRows.reduce((a, r) => a + r.revenue, 0);
     const totalPools = revenueRows.reduce((a, r) => a + r.count, 0);
+
+    // Grandfathered accounts (legacy pricing).
+    const grandfatheredAccounts = homeowners.filter((h) => (h as { isGrandfathered?: boolean }).isGrandfathered);
+    const grandfatheredMRR = grandfatheredAccounts.reduce((a, h) => a + (h.monthlyAmount ?? 0), 0);
 
     const now = new Date();
     const fmtMoney = (n: number) =>
@@ -745,7 +771,51 @@ const AdminDashboard = () => {
           </CardContent>
         </Card>
 
+        {grandfatheredAccounts.length > 0 && (
+          <Card className="border-amber-200">
+            <CardHeader className="pb-3 flex flex-row items-center justify-between">
+              <div className="flex items-center gap-2">
+                <CardTitle className="text-sm font-bold">Grandfathered Accounts</CardTitle>
+                <span className="inline-flex px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-700 border border-amber-200">
+                  Legacy pricing
+                </span>
+              </div>
+              <div className="text-xs text-muted-foreground">
+                {grandfatheredAccounts.length} accounts · <span className="text-foreground font-bold">{fmtMoney(grandfatheredMRR)}/mo</span>
+              </div>
+            </CardHeader>
+            <CardContent className="p-0">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Account</TableHead>
+                    <TableHead>Pool Size</TableHead>
+                    <TableHead>Address</TableHead>
+                    <TableHead>Rate</TableHead>
+                    <TableHead>Note</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {grandfatheredAccounts.map((h) => (
+                    <TableRow key={h.id}>
+                      <TableCell className="font-medium">{h.name}</TableCell>
+                      <TableCell className="text-xs">{h.pools[0]?.size ?? "—"}</TableCell>
+                      <TableCell className="text-muted-foreground text-xs">{h.pools[0]?.address ?? "—"}</TableCell>
+                      <TableCell className="font-semibold">{fmtMoney(h.monthlyAmount ?? 0)}/mo</TableCell>
+                      <TableCell className="text-xs text-amber-700">
+                        {(h as { grandfatheredNote?: string | null }).grandfatheredNote ?? "Legacy rate"}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
+        )}
+
         <AppointmentsCard />
+
+
 
 
 

@@ -265,8 +265,11 @@ export type Database = {
           email: string
           first_name: string | null
           full_name: string | null
+          grandfathered_note: string | null
           id: string
           is_active: boolean
+          is_grandfathered: boolean
+          is_placeholder: boolean
           last_name: string | null
           monthly_amount: number | null
           phone: string | null
@@ -285,8 +288,11 @@ export type Database = {
           email: string
           first_name?: string | null
           full_name?: string | null
+          grandfathered_note?: string | null
           id: string
           is_active?: boolean
+          is_grandfathered?: boolean
+          is_placeholder?: boolean
           last_name?: string | null
           monthly_amount?: number | null
           phone?: string | null
@@ -305,8 +311,11 @@ export type Database = {
           email?: string
           first_name?: string | null
           full_name?: string | null
+          grandfathered_note?: string | null
           id?: string
           is_active?: boolean
+          is_grandfathered?: boolean
+          is_placeholder?: boolean
           last_name?: string | null
           monthly_amount?: number | null
           phone?: string | null

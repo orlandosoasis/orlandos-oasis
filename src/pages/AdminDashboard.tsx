@@ -175,6 +175,7 @@ const AdminDashboard = () => {
   const [techDraftName, setTechDraftName] = useState("");
   const [techDraftEmail, setTechDraftEmail] = useState("");
   const [techDraftPhone, setTechDraftPhone] = useState("");
+  const [techDraftPayout, setTechDraftPayout] = useState("100");
 
   const isLoading =
     techniciansQuery.isLoading ||

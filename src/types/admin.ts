@@ -33,6 +33,7 @@ export interface AdminTechnician {
   status: "Active" | "Inactive";
   assignedPools: number;
   completedServices: number;
+  payoutPerPool?: number;
   reviews: AdminTechReview[];
   pools: AdminTechPool[];
 }

@@ -10,6 +10,7 @@ export interface AdminTechnicianAggregate {
   rating: number;
   assignedPools: number;
   completedServices: number;
+  payoutPerPool: number;
   reviews: {
     id: string;
     reviewer: string;

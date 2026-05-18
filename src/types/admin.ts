@@ -52,6 +52,7 @@ export interface AdminHomeownerService {
   serviceDate?: string;
   type: string;
   technician: string;
+  technicianId?: string | null;
   status: "Completed" | "Scheduled";
   poolId?: string;
 }

@@ -223,7 +223,10 @@ export function useAdminHomeowners() {
         supabase.from("services").select("*").in("homeowner_id", homeownerIds),
       ]);
 
-      const techIds = [...new Set((services ?? []).map((s) => s.technician_id).filter(Boolean) as string[])];
+      const techIds = [...new Set([
+        ...((services ?? []).map((s) => s.technician_id).filter(Boolean) as string[]),
+        ...((pools ?? []).map((p) => (p as { assigned_technician_id?: string | null }).assigned_technician_id).filter(Boolean) as string[]),
+      ])];
       const { data: techProfiles } = techIds.length
         ? await supabase.from("profiles").select("id, full_name, email").in("id", techIds)
         : { data: [] as { id: string; full_name: string | null; email: string }[] };

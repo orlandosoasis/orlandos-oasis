@@ -833,7 +833,7 @@ const AdminDashboard = () => {
       <button
         key={key}
         onClick={() => setTab(key)}
-        className={`px-3 py-1 text-xs font-semibold rounded ${tab === key ? "bg-background shadow-sm text-foreground" : "text-muted-foreground"}`}
+        className={`px-3 py-1 text-xs font-semibold rounded transition-colors ${tab === key ? "bg-sky-100 text-sky-800 shadow-sm" : "text-muted-foreground hover:text-foreground"}`}
       >
         {label}
       </button>
@@ -1475,12 +1475,13 @@ const AdminDashboard = () => {
                         <TableHead>Technician</TableHead>
                         <TableHead className="text-right">Rate</TableHead>
                         <TableHead>{lastColLabel}</TableHead>
+                        <TableHead className="w-10 text-right"></TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
                       {rows.length === 0 ? (
                         <TableRow>
-                          <TableCell colSpan={6} className="text-center text-muted-foreground text-xs py-8">
+                          <TableCell colSpan={7} className="text-center text-muted-foreground text-xs py-8">
                             No {isStd ? "standard" : isGF ? "grandfathered" : "Fred's"} accounts.
                           </TableCell>
                         </TableRow>
@@ -1500,6 +1501,17 @@ const AdminDashboard = () => {
                                 : isFreds
                                   ? "Notifications off"
                                   : "Standard"}
+                            </TableCell>
+                            <TableCell className="text-right">
+                              <Button
+                                size="icon"
+                                variant="ghost"
+                                className="h-7 w-7"
+                                aria-label={`Edit ${h.name}`}
+                                onClick={() => { setEditingHomeowner(h); setEditHomeownerOpen(true); }}
+                              >
+                                <Pencil className="h-3.5 w-3.5" />
+                              </Button>
                             </TableCell>
                           </TableRow>
                         ))}

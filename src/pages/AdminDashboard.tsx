@@ -1077,8 +1077,38 @@ const AdminDashboard = () => {
     nav("homeDetail", h.id);
   };
 
-  const handleHomeownerUpdated = (h: AdminHomeowner) => {
-    setExtraHomeowners(prev => prev.map(x => x.id === h.id ? h : x));
+  const updateHomeownerProfile = useUpdateHomeownerProfile();
+
+  const handleHomeownerUpdated = async (h: AdminHomeowner) => {
+    const isDbBacked = fetchedHomeowners.some((x) => x.id === h.id);
+    if (isDbBacked) {
+      // Parse "Street, City, State, ZIP" back into parts for persistence.
+      const parts = (h.address || "").split(",").map((s) => s.trim());
+      const [street, city, state, zip] = [parts[0] ?? "", parts[1] ?? "", parts[2] ?? "", parts[3] ?? ""];
+      try {
+        await updateHomeownerProfile.mutateAsync({
+          id: h.id,
+          patch: {
+            fullName: h.name,
+            email: h.email,
+            phone: h.phone || null,
+            street: street || null,
+            city: city || null,
+            state: state || null,
+            zip: zip || null,
+            poolId: h.pools?.[0]?.id ?? null,
+            poolSize: h.pools?.[0]?.size ?? null,
+            poolAddress: h.address || null,
+          },
+        });
+        toast({ title: "Homeowner updated", variant: "success" });
+      } catch (e) {
+        toast({ title: "Update failed", description: e instanceof Error ? e.message : String(e), variant: "destructive" });
+        return;
+      }
+    } else {
+      setExtraHomeowners((prev) => prev.map((x) => (x.id === h.id ? h : x)));
+    }
     setEditHomeownerOpen(false);
     setEditingHomeowner(null);
     setHomeownerEditSuccess(true);

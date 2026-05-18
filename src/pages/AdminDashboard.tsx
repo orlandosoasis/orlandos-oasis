@@ -2165,6 +2165,11 @@ const AdminDashboard = () => {
               <label className="text-xs font-semibold text-muted-foreground">Phone</label>
               <Input value={techDraftPhone} onChange={(e) => setTechDraftPhone(e.target.value)} placeholder="(407) 555-0000" />
             </div>
+            <div className="space-y-1">
+              <label className="text-xs font-semibold text-muted-foreground">Payout per pool ($)</label>
+              <Input type="number" min="0" step="1" value={techDraftPayout} onChange={(e) => setTechDraftPayout(e.target.value)} placeholder="100" />
+              <p className="text-[11px] text-muted-foreground">Amount paid to this technician for each pool serviced per month.</p>
+            </div>
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setEditTechId(null)}>Cancel</Button>
@@ -2173,9 +2178,15 @@ const AdminDashboard = () => {
               onClick={async () => {
                 if (!editTechId) return;
                 try {
+                  const payoutNum = Number(techDraftPayout);
                   await updateTechnicianProfile.mutateAsync({
                     id: editTechId,
-                    patch: { fullName: techDraftName.trim(), email: techDraftEmail.trim(), phone: techDraftPhone.trim() || null },
+                    patch: {
+                      fullName: techDraftName.trim(),
+                      email: techDraftEmail.trim(),
+                      phone: techDraftPhone.trim() || null,
+                      payoutPerPool: Number.isFinite(payoutNum) && payoutNum >= 0 ? payoutNum : 100,
+                    },
                   });
                   toast({ title: "Technician updated", variant: "success" });
                   setEditTechId(null);

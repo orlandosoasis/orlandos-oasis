@@ -79,6 +79,36 @@ export type Database = {
           },
         ]
       }
+      expense_items: {
+        Row: {
+          category: string
+          created_at: string
+          id: string
+          name: string
+          per_pool_cost: number
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          id?: string
+          name: string
+          per_pool_cost?: number
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          id?: string
+          name?: string
+          per_pool_cost?: number
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       issues: {
         Row: {
           admin_notes: string | null

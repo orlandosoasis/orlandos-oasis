@@ -759,7 +759,51 @@ const AdminDashboard = () => {
           </CardContent>
         </Card>
 
+        {grandfatheredAccounts.length > 0 && (
+          <Card className="border-amber-200">
+            <CardHeader className="pb-3 flex flex-row items-center justify-between">
+              <div className="flex items-center gap-2">
+                <CardTitle className="text-sm font-bold">Grandfathered Accounts</CardTitle>
+                <span className="inline-flex px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-700 border border-amber-200">
+                  Legacy pricing
+                </span>
+              </div>
+              <div className="text-xs text-muted-foreground">
+                {grandfatheredAccounts.length} accounts · <span className="text-foreground font-bold">{fmtMoney(grandfatheredMRR)}/mo</span>
+              </div>
+            </CardHeader>
+            <CardContent className="p-0">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Account</TableHead>
+                    <TableHead>Pool Size</TableHead>
+                    <TableHead>Address</TableHead>
+                    <TableHead>Rate</TableHead>
+                    <TableHead>Note</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {grandfatheredAccounts.map((h) => (
+                    <TableRow key={h.id}>
+                      <TableCell className="font-medium">{h.name}</TableCell>
+                      <TableCell className="text-xs">{h.pools[0]?.size ?? "—"}</TableCell>
+                      <TableCell className="text-muted-foreground text-xs">{h.pools[0]?.address ?? "—"}</TableCell>
+                      <TableCell className="font-semibold">{fmtMoney(h.monthlyAmount ?? 0)}/mo</TableCell>
+                      <TableCell className="text-xs text-amber-700">
+                        {(h as { grandfatheredNote?: string | null }).grandfatheredNote ?? "Legacy rate"}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
+        )}
+
         <AppointmentsCard />
+
+
 
 
 

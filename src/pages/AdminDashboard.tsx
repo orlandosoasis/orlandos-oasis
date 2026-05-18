@@ -486,11 +486,14 @@ const AdminDashboard = () => {
       { key: "large", label: "Large Pool", price: 170, match: (s) => /large/i.test(s) },
     ];
 
+    // Count pools that have at least one active (scheduled) service.
     const revenueRows = POOL_SIZE_PRICES.map((cfg) => {
-      const count = homeowners.reduce(
-        (a, h) => a + h.pools.filter((p) => cfg.match(p.size ?? "")).length,
-        0,
-      );
+      const count = homeowners.reduce((a, h) => {
+        const activePoolIds = new Set(
+          h.services.filter((s) => s.status === "Scheduled").map((s) => s.poolId),
+        );
+        return a + h.pools.filter((p) => activePoolIds.has(p.id) && cfg.match(p.size ?? "")).length;
+      }, 0);
       return { label: cfg.label, count, revenue: count * cfg.price, price: cfg.price };
     });
     const totalMRR = revenueRows.reduce((a, r) => a + r.revenue, 0);

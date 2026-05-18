@@ -1829,27 +1829,10 @@ const AdminDashboard = () => {
                             </Button>
                             <Button
                               size="sm"
-                              variant="outline"
-                              className={`gap-1.5 ${isFreds ? "border-violet-300 text-violet-700 hover:bg-violet-50" : ""}`}
-                              onClick={() =>
-                                toggleFredsTag.mutate(
-                                  { id: h.id, isFreds: !isFreds },
-                                  {
-                                    onSuccess: () =>
-                                      toast({
-                                        title: isFreds ? "Removed Fred's tag" : "Tagged as Fred's",
-                                        description: isFreds
-                                          ? "Notifications re-enabled for this account."
-                                          : "Notifications and emails will be suppressed.",
-                                        variant: "success",
-                                      }),
-                                    onError: (e) =>
-                                      toast({ title: "Tag update failed", description: e instanceof Error ? e.message : String(e), variant: "destructive" }),
-                                  },
-                                )
-                              }
+                              variant="ghost"
+                              onClick={() => nav("homeDetail", h.id)}
                             >
-                              {isFreds ? "Untag Fred's" : "Tag Fred's"}
+                              Details
                             </Button>
                             <Button
                               size="sm"

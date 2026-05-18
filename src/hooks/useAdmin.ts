@@ -177,6 +177,7 @@ export function useAdminTechnicians() {
           rating: avgRating,
           assignedPools: upcomingByPool.size,
           completedServices: completed,
+          payoutPerPool: Number((tech as { payout_per_pool?: number | null }).payout_per_pool ?? 100),
           reviews: techReviews
             .sort((a, b) => (b.created_at > a.created_at ? 1 : -1))
             .map((r) => ({

@@ -242,6 +242,9 @@ export function useAdminHomeowners() {
           plan: "Standard",
           startDate: fmtDate(h.created_at),
           monthlyAmount: Number((h as { monthly_amount?: number | null }).monthly_amount ?? 0),
+          isGrandfathered: Boolean((h as { is_grandfathered?: boolean | null }).is_grandfathered),
+          isPlaceholder: Boolean((h as { is_placeholder?: boolean | null }).is_placeholder),
+          grandfatheredNote: (h as { grandfathered_note?: string | null }).grandfathered_note ?? null,
           pools: ownerPools.map((p) => {
             const next = ownerServices
               .filter((s) => s.pool_id === p.id && (s.status === "scheduled" || s.status === "in_progress"))

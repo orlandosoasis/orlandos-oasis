@@ -419,7 +419,7 @@ export function useUpdateTechnicianProfile() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: async ({ id, patch }: { id: string; patch: TechnicianProfilePatch }) => {
-      const dbPatch: Record<string, unknown> = {};
+      const dbPatch: { full_name?: string; first_name?: string; last_name?: string; email?: string; phone?: string | null } = {};
       if (patch.fullName !== undefined) {
         dbPatch.full_name = patch.fullName;
         const parts = patch.fullName.trim().split(/\s+/);

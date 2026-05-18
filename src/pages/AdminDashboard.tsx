@@ -493,6 +493,7 @@ const AdminDashboard = () => {
     type Row = {
       id: string; date: Date; dateLabel: string; homeowner: string; address: string;
       poolSize: string; type: string; status: string; technicianId: string | null; technicianName: string;
+      isGrandfathered: boolean; grandfatheredNote: string | null;
     };
     const upcoming: Row[] = [];
     const past: Row[] = [];
@@ -513,6 +514,8 @@ const AdminDashboard = () => {
           status: s.status,
           technicianId: s.technicianId ?? pool?.technicianId ?? null,
           technicianName: s.technician || pool?.technician || "Unassigned",
+          isGrandfathered: Boolean((h as { isGrandfathered?: boolean }).isGrandfathered),
+          grandfatheredNote: (h as { grandfatheredNote?: string | null }).grandfatheredNote ?? null,
         };
         if (s.status === "Scheduled" && d >= today) upcoming.push(row);
         else if (s.status === "Completed" || d < today) past.push(row);

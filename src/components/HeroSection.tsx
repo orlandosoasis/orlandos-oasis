@@ -27,7 +27,7 @@ const HeroSection = () => {
 
   return (
     <section className="relative w-full h-screen min-h-[640px] overflow-hidden bg-background">
-      {/* Background Video — full bleed, on all viewports */}
+      {/* Background Video - full bleed, on all viewports */}
       <video
         autoPlay
         muted

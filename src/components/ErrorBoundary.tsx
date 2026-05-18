@@ -50,7 +50,7 @@ export class ErrorBoundary extends Component<Props, State> {
           <div className="mx-auto max-w-md space-y-4 text-center">
             <h1 className="text-3xl font-semibold tracking-tight">Something went wrong</h1>
             <p className="text-muted-foreground">
-              We hit an unexpected error. Try refreshing — if it keeps happening, let us
+              We hit an unexpected error. Try refreshing - if it keeps happening, let us
               know at support@orlandosoasis.com.
             </p>
             {import.meta.env.DEV && this.state.error?.message ? (

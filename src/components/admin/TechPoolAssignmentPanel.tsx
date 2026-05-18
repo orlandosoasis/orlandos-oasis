@@ -94,7 +94,7 @@ export default function TechPoolAssignmentPanel({ technicianId }: { technicianId
               <SelectContent>
                 {candidatePools.map((p) => (
                   <SelectItem key={p.id} value={p.id}>
-                    {p.address} — {p.homeownerName}
+                    {p.address} - {p.homeownerName}
                     {p.assignedTechId ? " (currently assigned)" : ""}
                   </SelectItem>
                 ))}

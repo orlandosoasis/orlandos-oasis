@@ -52,7 +52,7 @@ export default function AdminNotesPanel({
         <CardTitle className="text-sm flex items-center gap-2">
           <Lock className="h-3.5 w-3.5 text-amber-600" /> {title}
         </CardTitle>
-        <p className="text-xs text-muted-foreground">Visible to admins only — not shown to technicians or clients.</p>
+        <p className="text-xs text-muted-foreground">Visible to admins only - not shown to technicians or clients.</p>
       </CardHeader>
       <CardContent className="space-y-3">
         <Textarea

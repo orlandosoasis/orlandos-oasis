@@ -9,7 +9,7 @@ const NotFound = () => {
   useEffect(() => {
     // Stays as console.error until error tracking is wired up.
     console.error("404 Error: User attempted to access non-existent route:", location.pathname);
-    document.title = "Page not found — Orlando's Oasis";
+    document.title = "Page not found - Orlando's Oasis";
   }, [location.pathname]);
 
   return (

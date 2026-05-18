@@ -215,7 +215,7 @@ const ServiceConfigStep = ({ config, onConfigChange }: ServiceConfigStepProps) =
 
         <div className="h-px bg-border" />
 
-        {/* Due today — primary focus */}
+        {/* Due today - primary focus */}
         <div className="flex justify-between items-center bg-primary/5 rounded-xl px-4 py-4 -mx-1">
           <div>
             <p className="font-bold text-foreground text-sm">Today you pay</p>

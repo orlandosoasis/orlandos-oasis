@@ -99,7 +99,7 @@ const fmtServiceDate = (s: string | null) => {
 
 /**
  * Admin: list all technicians with aggregated pools, reviews, and counts.
- * Joins are done in JS — RLS-safe (admins can read all rows we touch here).
+ * Joins are done in JS - RLS-safe (admins can read all rows we touch here).
  */
 export function useAdminTechnicians() {
   return useQuery({
@@ -246,7 +246,7 @@ export function useAdminHomeowners() {
           name: h.full_name || h.email,
           email: h.email,
           phone: h.phone,
-          address: addressParts.join(", ") || "—",
+          address: addressParts.join(", ") || "-",
           plan: "Standard",
           startDate: fmtDate(h.created_at),
           monthlyAmount: Number((h as { monthly_amount?: number | null }).monthly_amount ?? 0),
@@ -263,10 +263,10 @@ export function useAdminHomeowners() {
             return {
               id: p.id,
               address: p.address,
-              size: p.pool_size ?? "—",
+              size: p.pool_size ?? "-",
               technicianId: assignedTechId,
               technicianName: techName(assignedTechId),
-              nextService: next ? fmtServiceDate(next.service_date) : "—",
+              nextService: next ? fmtServiceDate(next.service_date) : "-",
             };
           }),
           services: ownerServices

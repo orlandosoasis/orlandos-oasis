@@ -216,7 +216,7 @@ const Dashboard = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user?.email, booking, checkoutData]);
 
-  // Log real services availability — render integration kept minimal to preserve existing UI behavior
+  // Log real services availability - render integration kept minimal to preserve existing UI behavior
   useEffect(() => {
     if (realServices.length > 0) {
       // realServices is fetched live from Supabase; UI rendering stays driven by demo+booking flow.

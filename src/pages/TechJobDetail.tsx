@@ -330,7 +330,7 @@ const TechJobDetail = () => {
           <div className="flex-1 min-w-0">
             <p className={cn("text-xs", canComplete ? "text-card-foreground" : "text-muted-foreground")}>
               {canComplete
-                ? "All requirements met — ready to complete."
+                ? "All requirements met - ready to complete."
                 : "Upload before & after photos to complete service"}
             </p>
           </div>

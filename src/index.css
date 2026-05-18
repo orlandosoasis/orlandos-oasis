@@ -122,7 +122,7 @@
 
 /* ============================================================
    GLOBAL THEME (promoted from .hp-theme)
-   Premium pool design system — applied app-wide.
+   Premium pool design system - applied app-wide.
    ============================================================ */
 :root, .hp-theme {
   /* Color palette */
@@ -222,7 +222,7 @@ section .text-white {
   h3 { font-size: 22px; }
 }
 
-/* Hero gradient background — applied to first <section> in main */
+/* Hero gradient background - applied to first <section> in main */
 .hp-theme main > section:first-of-type {
   position: relative;
 }

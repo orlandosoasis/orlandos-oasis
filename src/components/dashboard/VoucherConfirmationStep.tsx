@@ -94,7 +94,7 @@ const VoucherConfirmationStep = ({ plan, serviceConfig, selectedAddons = [], tim
         </div>
       )}
 
-      {/* Total Due Today — only shown when add-ons are selected */}
+      {/* Total Due Today - only shown when add-ons are selected */}
       {selectedAddonObjects.length > 0 && (
         <div className="bg-card rounded-2xl p-5 px-6 border border-border shadow-sm">
           <div className="flex items-center justify-between">

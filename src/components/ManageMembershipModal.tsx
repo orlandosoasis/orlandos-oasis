@@ -90,7 +90,7 @@ const ManageMembershipModal = ({
   const { toast } = useToast();
   const [showCancelModal, setShowCancelModal] = useState(false);
 
-  // Local draft state — only commits on Save
+  // Local draft state - only commits on Save
   const [draft, setDraft] = useState<MembershipConfig>(current);
   const [showAllAddons, setShowAllAddons] = useState(false);
   const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({});
@@ -139,7 +139,7 @@ const ManageMembershipModal = ({
   const activeAddons = useMemo(() => getActiveAddons(draft.activeAddonIds), [draft.activeAddonIds]);
   const activeAddonsTotal = activeAddons.reduce((sum, a) => sum + a.price, 0);
 
-  // Build available list — exclude active, then optionally collapse to first 3
+  // Build available list - exclude active, then optionally collapse to first 3
   const availableAddons = ADDONS.filter((a) => !draft.activeAddonIds.includes(a.id));
   const visibleAvailableFlat = showAllAddons ? availableAddons : availableAddons.slice(0, 3);
 

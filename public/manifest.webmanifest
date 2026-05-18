@@ -1,7 +1,7 @@
 {
   "name": "Orlando's Oasis",
   "short_name": "Orlando's Oasis",
-  "description": "Book trusted pool service in Central Florida — verified technicians, transparent pricing, photo-verified work.",
+  "description": "Book trusted pool service in Central Florida with verified technicians, transparent pricing, and photo-verified work.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",

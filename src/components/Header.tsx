@@ -37,7 +37,7 @@ const Header = memo(function Header() {
         {/* Hamburger (mobile) + Logo */}
         <div className="flex items-center gap-1 min-w-0">
           <MobileNavMenu items={NAV_ITEMS} />
-          <Link to="/" className="flex items-center gap-2 min-w-0" aria-label="Orlando's Oasis — Home">
+          <Link to="/" className="flex items-center gap-2 min-w-0" aria-label="Orlando's Oasis - Home">
             <LogoImg />
             <span className="text-lg md:text-xl font-bold text-foreground truncate">Orlando's Oasis</span>
           </Link>

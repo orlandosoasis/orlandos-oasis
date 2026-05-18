@@ -39,7 +39,7 @@ import CustomerLayout from "./components/CustomerLayout";
 import RoleRoute from "./components/RoleRoute";
 
 // ============================================================================
-// Lazy-loaded (large, role-gated, or rarely visited — code-split out of the
+// Lazy-loaded (large, role-gated, or rarely visited - code-split out of the
 // main bundle to keep initial load fast for marketing pages)
 // ============================================================================
 const Dashboard = lazy(() => import("./pages/Dashboard"));

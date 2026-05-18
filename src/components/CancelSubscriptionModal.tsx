@@ -73,12 +73,12 @@ const CancelSubscriptionModal = ({ open, onOpenChange, breakdown, onConfirmed }:
           <DialogTitle className="text-center text-xl font-bold">Cancel Subscription</DialogTitle>
           <DialogDescription className="text-center">
             {step === 1 && "Review the final charges before cancelling."}
-            {step === 2 && "Help us improve — tell us why you're leaving."}
+            {step === 2 && "Help us improve - tell us why you're leaving."}
             {step === 3 && "Confirm your final payment to complete cancellation."}
           </DialogDescription>
         </DialogHeader>
 
-        {/* Step 1 — Breakdown */}
+        {/* Step 1 - Breakdown */}
         {step === 1 && (
           <div className="space-y-4 mt-2">
             <div className="bg-muted/50 border border-border rounded-xl p-5 space-y-2.5 text-sm">
@@ -116,7 +116,7 @@ const CancelSubscriptionModal = ({ open, onOpenChange, breakdown, onConfirmed }:
           </div>
         )}
 
-        {/* Step 2 — Reason */}
+        {/* Step 2 - Reason */}
         {step === 2 && (
           <div className="space-y-4 mt-2">
             <div className="space-y-2">
@@ -148,7 +148,7 @@ const CancelSubscriptionModal = ({ open, onOpenChange, breakdown, onConfirmed }:
           </div>
         )}
 
-        {/* Step 3 — Charge */}
+        {/* Step 3 - Charge */}
         {step === 3 && (
           <div className="space-y-4 mt-2">
             <div className="bg-muted/50 border border-border rounded-xl p-5 text-center">

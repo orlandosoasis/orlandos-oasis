@@ -121,9 +121,9 @@ const AddHomeownerModal = ({ open, onClose, onCreate }: AddHomeownerModalProps) 
     setSelectedAddons(prev => prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]);
   };
 
-  const poolSizeLabel = POOL_SIZES.find(p => p.value === poolSize)?.label ?? "—";
+  const poolSizeLabel = POOL_SIZES.find(p => p.value === poolSize)?.label ?? "-";
   const frequencyLabel = FREQUENCY_SHORT[frequency];
-  const planLabel = poolSize ? `${poolSizeLabel} · ${frequencyLabel}` : "—";
+  const planLabel = poolSize ? `${poolSizeLabel} · ${frequencyLabel}` : "-";
   const addonTitles = ADDONS.filter(a => selectedAddons.includes(a.id)).map(a => a.title);
 
   const nextServiceDate = (() => {
@@ -142,10 +142,10 @@ const AddHomeownerModal = ({ open, onClose, onCreate }: AddHomeownerModalProps) 
       name: fullName,
       email,
       phone,
-      address: fullAddress || "—",
+      address: fullAddress || "-",
       plan: planLabel,
       startDate: startDate || new Date().toLocaleDateString("en-US", { month: "short", day: "2-digit", year: "numeric" }),
-      pools: [{ address: street || fullAddress || "—", size: poolSizeLabel, technician: "Unassigned", nextService: startDate || "TBD" }],
+      pools: [{ address: street || fullAddress || "-", size: poolSizeLabel, technician: "Unassigned", nextService: startDate || "TBD" }],
       services: [],
       manuallyAdded: true,
       status: "Active",
@@ -265,7 +265,7 @@ const AddHomeownerModal = ({ open, onClose, onCreate }: AddHomeownerModalProps) 
                       <SelectContent>
                         {POOL_SIZES.map(p => (
                           <SelectItem key={p.value} value={p.value}>
-                            {p.label} — {p.sublabel}
+                            {p.label} - {p.sublabel}
                           </SelectItem>
                         ))}
                       </SelectContent>
@@ -406,10 +406,10 @@ const AddHomeownerModal = ({ open, onClose, onCreate }: AddHomeownerModalProps) 
                       <h4 className="text-sm font-semibold">Homeowner Info</h4>
                     </div>
                     <div className="text-sm space-y-1 text-muted-foreground">
-                      <div><span className="text-foreground font-medium">{fullName || "—"}</span></div>
-                      <div>{phone || "—"}</div>
-                      <div>{email || "—"}</div>
-                      <div className="text-xs pt-1">{[street, city, state, zip].filter(Boolean).join(", ") || "—"}</div>
+                      <div><span className="text-foreground font-medium">{fullName || "-"}</span></div>
+                      <div>{phone || "-"}</div>
+                      <div>{email || "-"}</div>
+                      <div className="text-xs pt-1">{[street, city, state, zip].filter(Boolean).join(", ") || "-"}</div>
                     </div>
                   </CardContent>
                 </Card>
@@ -434,7 +434,7 @@ const AddHomeownerModal = ({ open, onClose, onCreate }: AddHomeownerModalProps) 
                     </div>
                     <div className="text-sm space-y-1 text-muted-foreground">
                       <div>Arrival: {TIME_WINDOW_SHORT[timeWindow]}</div>
-                      <div>Starts: <span className="text-foreground font-medium">{startDate || "—"}</span></div>
+                      <div>Starts: <span className="text-foreground font-medium">{startDate || "-"}</span></div>
                       <div className="text-xs">Auto-recurring: {autoRecurring ? "On" : "Off"}</div>
                     </div>
                   </CardContent>

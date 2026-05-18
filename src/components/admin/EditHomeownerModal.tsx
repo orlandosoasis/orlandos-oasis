@@ -47,7 +47,7 @@ const TIME_WINDOWS = [
   { value: "evening", label: "Evening (4pm–6pm)" },
 ];
 
-// Reverse lookup helpers — derive form values from the saved label strings.
+// Reverse lookup helpers - derive form values from the saved label strings.
 const findFrequencyValue = (label?: string) => {
   if (!label) return "weekly";
   const match = Object.entries(FREQUENCY_SHORT).find(([, v]) => label.includes(v));
@@ -145,7 +145,7 @@ const EditHomeownerModal = ({ open, onClose, homeowner, onSave }: EditHomeownerM
   const handleSave = () => {
     if (!homeowner || !validate()) return;
     const fullAddress = [street, city, state, zip].filter(Boolean).join(", ");
-    const poolSizeLabel = POOL_SIZES.find(p => p.value === poolSize)?.label ?? homeowner.pools?.[0]?.size ?? "—";
+    const poolSizeLabel = POOL_SIZES.find(p => p.value === poolSize)?.label ?? homeowner.pools?.[0]?.size ?? "-";
     const frequencyLabel = FREQUENCY_SHORT[frequency];
     const planLabel = poolSize ? `${poolSizeLabel} · ${frequencyLabel}` : homeowner.plan;
 

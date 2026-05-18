@@ -95,7 +95,7 @@ const PaymentMethods = () => {
     activeAddonIds: ["tile-cleaning", "pool-inspections"], // mock active add-ons
   });
 
-  // Cycle progress (mock — would come from service_completions)
+  // Cycle progress (mock - would come from service_completions)
   const [usage] = useState({
     visitsCompleted: 3,
     extraVisitCharges: 0, // e.g. 1-time emergency visits beyond plan
@@ -245,7 +245,7 @@ const PaymentMethods = () => {
     setCancelled(false);
   };
 
-  // ===== Banner config — now amount-aware =====
+  // ===== Banner config - now amount-aware =====
   const banner: { tone: string; icon: any; title: string; subtitle?: string; cta?: string; onCta?: () => void } | null =
     paymentState === "healthy"
       ? null
@@ -322,7 +322,7 @@ const PaymentMethods = () => {
               <Calendar className="h-4 w-4" />
               <p className="text-sm font-medium">Next Billing</p>
             </div>
-            <p className="text-[15px] font-semibold text-foreground">{cancelled ? "—" : nextDateStr}</p>
+            <p className="text-[15px] font-semibold text-foreground">{cancelled ? "-" : nextDateStr}</p>
             <p className="text-sm text-muted-foreground">
               Estimated: <span className="text-foreground font-semibold">${monthlyTotal}</span>
             </p>
@@ -646,7 +646,7 @@ const PaymentMethods = () => {
         <section className="space-y-3">
           <details className="bg-muted/40 rounded-2xl border border-dashed border-border p-5">
             <summary className="cursor-pointer text-sm font-semibold text-foreground">
-              🧪 Test Panel — simulate payment states
+              🧪 Test Panel - simulate payment states
             </summary>
             <div className="mt-4 space-y-4 text-sm">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">

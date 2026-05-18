@@ -12,3 +12,14 @@ Allow: /
 
 User-agent: *
 Allow: /
+Disallow: /dashboard
+Disallow: /tech-dashboard
+Disallow: /tech/
+Disallow: /admin-dashboard
+Disallow: /account-settings
+Disallow: /messages
+Disallow: /profile
+Disallow: /purchase-success
+Disallow: /reset-password
+
+Sitemap: https://pool-snap-magic.lovable.app/sitemap.xml

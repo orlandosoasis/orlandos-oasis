@@ -25,7 +25,7 @@ interface ReportRouteIssueModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   role: ReportRole;
-  /** All services on today's route — used when "Entire route" is selected and as picker source */
+  /** All services on today's route - used when "Entire route" is selected and as picker source */
   services: RouteService[];
   /** When set, scope is locked to this single service (e.g. job detail page entry) */
   lockedServiceId?: string;
@@ -231,7 +231,7 @@ const ReportRouteIssueModal = ({
                 <div className="flex items-center gap-2">
                   <RadioGroupItem value="all" id="scope-all" />
                   <Label htmlFor="scope-all" className="font-normal cursor-pointer">
-                    Entire route (Today) — {services.length} service{services.length === 1 ? "" : "s"}
+                    Entire route (Today) - {services.length} service{services.length === 1 ? "" : "s"}
                   </Label>
                 </div>
                 <div className="flex items-center gap-2">
@@ -365,7 +365,7 @@ const ReportRouteIssueModal = ({
               </div>
               {role === "technician" && (
                 <p className="text-xs text-muted-foreground">
-                  This creates a pending request — admin approval required before changes apply.
+                  This creates a pending request - admin approval required before changes apply.
                 </p>
               )}
             </div>
@@ -421,7 +421,7 @@ const ReportRouteIssueModal = ({
               <SummaryRow label="Action" value={ACTION_LABEL[action]} />
               {action === "delay" && <SummaryRow label="Delay" value={formatDelay()} />}
               {action === "reschedule" && (newDate || newTime) && (
-                <SummaryRow label="New schedule" value={`${newDate || "—"} ${newTime ? `• ${newTime}` : ""}`} />
+                <SummaryRow label="New schedule" value={`${newDate || "-"} ${newTime ? `• ${newTime}` : ""}`} />
               )}
               {action === "reassign" && reassignTechName && (
                 <SummaryRow label="Technician" value={reassignTechName} />

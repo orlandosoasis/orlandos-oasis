@@ -826,7 +826,53 @@ const AdminDashboard = () => {
           </Card>
         )}
 
+        {fredsAccounts.length > 0 && (
+          <Card className="border-violet-200">
+            <CardHeader className="pb-3 flex flex-row items-center justify-between">
+              <div className="flex items-center gap-2">
+                <CardTitle className="text-sm font-bold">Fred's Accounts</CardTitle>
+                <span className="inline-flex px-2 py-0.5 rounded-full text-[10px] font-bold bg-violet-100 text-violet-700 border border-violet-200">
+                  Notifications suppressed
+                </span>
+              </div>
+              <div className="text-xs text-muted-foreground">
+                {fredsAccounts.length} accounts · <span className="text-foreground font-bold">{fmtMoney(fredsMRR)}/mo</span>
+              </div>
+            </CardHeader>
+            <CardContent className="p-0">
+              <div className="max-h-[360px] overflow-y-auto">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Account</TableHead>
+                      <TableHead>Pool Size</TableHead>
+                      <TableHead>Address</TableHead>
+                      <TableHead>Technician</TableHead>
+                      <TableHead className="text-right">Rate</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {fredsAccounts
+                      .slice()
+                      .sort((a, b) => (a.monthlyAmount ?? 0) - (b.monthlyAmount ?? 0))
+                      .map((h) => (
+                        <TableRow key={h.id}>
+                          <TableCell className="font-medium">{h.name}</TableCell>
+                          <TableCell className="text-xs">{h.pools[0]?.size ?? "—"}</TableCell>
+                          <TableCell className="text-muted-foreground text-xs">{h.pools[0]?.address ?? "—"}</TableCell>
+                          <TableCell className="text-xs">{h.pools[0]?.technician ?? "Unassigned"}</TableCell>
+                          <TableCell className="text-right font-semibold">{fmtMoney(h.monthlyAmount ?? 0)}/mo</TableCell>
+                        </TableRow>
+                      ))}
+                  </TableBody>
+                </Table>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
         <AppointmentsCard />
+
 
         <Card>
           <CardHeader className="pb-3 flex flex-row items-center justify-between gap-3 flex-wrap">

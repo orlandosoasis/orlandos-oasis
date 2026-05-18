@@ -965,12 +965,7 @@ const AdminDashboard = () => {
 
     return (
       <div className="space-y-6">
-        <div className="flex justify-end">
-          <Button size="sm" variant="outline" className="gap-1.5" onClick={handleSeedDemo} disabled={seeding}>
-            <Database className="h-3.5 w-3.5" />
-            {seeding ? "Seeding…" : "Seed demo data"}
-          </Button>
-        </div>
+
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
           {stats.map((c, i) => (
             <Card key={i}>

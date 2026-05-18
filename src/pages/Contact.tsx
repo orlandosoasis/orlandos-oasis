@@ -187,8 +187,11 @@ const Contact = () => {
               {/* Name row */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-navy mb-1.5">First Name</label>
+                  <label htmlFor="contact-first-name" className="block text-xs font-bold uppercase tracking-wider text-navy mb-1.5">First Name</label>
                   <Input
+                    id="contact-first-name"
+                    name="given-name"
+                    autoComplete="given-name"
                     placeholder="First Name"
                     value={formData.firstName}
                     onChange={(e) => update("firstName", e.target.value)}
@@ -197,8 +200,11 @@ const Contact = () => {
                   {errors.firstName && <p className="text-sm text-destructive mt-1">{errors.firstName}</p>}
                 </div>
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-navy mb-1.5">Last Name</label>
+                  <label htmlFor="contact-last-name" className="block text-xs font-bold uppercase tracking-wider text-navy mb-1.5">Last Name</label>
                   <Input
+                    id="contact-last-name"
+                    name="family-name"
+                    autoComplete="family-name"
                     placeholder="Last Name"
                     value={formData.lastName}
                     onChange={(e) => update("lastName", e.target.value)}
@@ -209,11 +215,18 @@ const Contact = () => {
               {/* Email + Phone row */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-navy mb-1.5">
+                  <label htmlFor="contact-email" className="block text-xs font-bold uppercase tracking-wider text-navy mb-1.5">
                     Email <span className="text-destructive">*</span>
                   </label>
                   <Input
+                    id="contact-email"
+                    name="email"
                     type="email"
+                    inputMode="email"
+                    autoComplete="email"
+                    autoCapitalize="none"
+                    autoCorrect="off"
+                    spellCheck={false}
                     placeholder="Email"
                     value={formData.email}
                     onChange={(e) => update("email", e.target.value)}
@@ -222,9 +235,13 @@ const Contact = () => {
                   {errors.email && <p className="text-sm text-destructive mt-1">{errors.email}</p>}
                 </div>
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-navy mb-1.5">Mobile Phone</label>
+                  <label htmlFor="contact-phone" className="block text-xs font-bold uppercase tracking-wider text-navy mb-1.5">Mobile Phone</label>
                   <Input
+                    id="contact-phone"
+                    name="phone"
                     type="tel"
+                    inputMode="tel"
+                    autoComplete="tel"
                     placeholder="(561) 000-0000"
                     value={formData.phone}
                     onChange={(e) => update("phone", e.target.value)}

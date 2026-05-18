@@ -30,6 +30,13 @@ interface AuthContextType {
     role?: UserRole,
     extra?: { streetAddress?: string; city?: string; state?: string; zipCode?: string; phone?: string; firstName?: string; lastName?: string; contractLocked?: boolean }
   ) => Promise<{ success: boolean; error?: string }>;
+  /**
+   * Start the Google OAuth flow. Browser redirects to Google, then back to
+   * the site. On return, onAuthStateChange handles session setup and the
+   * handle_new_user trigger creates a homeowner profile for first-time users.
+   * Existing users keep whatever role they already have (admin / technician).
+   */
+  loginWithGoogle: () => Promise<{ success: boolean; error?: string }>;
   logout: () => void;
   updateUser: (updates: Partial<User>) => void;
   isAuthenticated: boolean;
@@ -193,6 +200,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return { success: true };
   };
 
+  const loginWithGoogle = async () => {
+    // Redirect back to /login so the existing role-based useEffect there
+    // routes the user to /dashboard, /tech/jobs, or /admin-dashboard.
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: {
+        redirectTo: `${window.location.origin}/login`,
+        queryParams: {
+          access_type: "offline",
+          prompt: "consent",
+        },
+      },
+    });
+    if (error) return { success: false, error: error.message };
+    // The browser is redirecting to Google now; nothing else to do here.
+    return { success: true };
+  };
+
   const logout = async () => {
     await supabase.auth.signOut();
     setUser(null);
@@ -227,6 +252,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         isLoading,
         login,
         signup,
+        loginWithGoogle,
         logout,
         updateUser,
         isAuthenticated: !!user,

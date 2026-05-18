@@ -29,24 +29,24 @@ const CleaningAddress = () => {
         <div className="bg-card rounded-2xl border border-border shadow-sm p-6 space-y-5">
           <div className="space-y-2">
             <Label htmlFor="streetAddress">Street Address</Label>
-            <Input id="streetAddress" value={streetAddress} onChange={(e) => setStreetAddress(e.target.value)} placeholder="1234 Sunshine Blvd" />
+            <Input id="streetAddress" name="street-address" autoComplete="street-address" value={streetAddress} onChange={(e) => setStreetAddress(e.target.value)} placeholder="1234 Sunshine Blvd" />
           </div>
           <div className="space-y-2">
             <Label htmlFor="unitInfo">Unit / Access Information (Optional)</Label>
-            <Input id="unitInfo" value={unitInfo} onChange={(e) => setUnitInfo(e.target.value)} placeholder="Apt 2B, Gate code: 1234" />
+            <Input id="unitInfo" name="address-line2" autoComplete="address-line2" value={unitInfo} onChange={(e) => setUnitInfo(e.target.value)} placeholder="Apt 2B, Gate code: 1234" />
           </div>
           <div className="grid grid-cols-3 gap-4">
             <div className="space-y-2">
               <Label htmlFor="city">City</Label>
-              <Input id="city" value={city} onChange={(e) => setCity(e.target.value)} placeholder="Orlando" />
+              <Input id="city" name="city" autoComplete="address-level2" value={city} onChange={(e) => setCity(e.target.value)} placeholder="Orlando" />
             </div>
             <div className="space-y-2">
               <Label htmlFor="state">State</Label>
-              <Input id="state" value={state} onChange={(e) => setState(e.target.value)} placeholder="FL" />
+              <Input id="state" name="state" autoComplete="address-level1" maxLength={2} value={state} onChange={(e) => setState(e.target.value.toUpperCase())} placeholder="FL" />
             </div>
             <div className="space-y-2">
               <Label htmlFor="zipCode">Zip Code</Label>
-              <Input id="zipCode" value={zipCode} onChange={(e) => setZipCode(e.target.value)} placeholder="32801" />
+              <Input id="zipCode" name="postal-code" inputMode="numeric" autoComplete="postal-code" maxLength={5} value={zipCode} onChange={(e) => setZipCode(e.target.value.replace(/\D/g, ""))} placeholder="32801" />
             </div>
           </div>
           <Button onClick={handleSave} className="mt-2">Save Changes</Button>

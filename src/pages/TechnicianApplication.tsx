@@ -8,6 +8,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import oasisLogo from "@/assets/oo-logo.png";
 import { supabase } from "@/integrations/supabase/client";
+import { formatUsPhone } from "@/lib/phone";
 import { useToast } from "@/hooks/use-toast";
 
 /* ── Types ── */
@@ -247,20 +248,20 @@ const TechnicianApplication = () => {
               <div className="grid grid-cols-2 gap-3 mb-3">
                 <div className="space-y-1.5">
                   <Label className="text-xs font-medium text-muted-foreground">First Name</Label>
-                  <Input placeholder="John" value={firstName} onChange={(e) => setFirstName(e.target.value)} className="h-10 rounded-[10px] border-2 border-border bg-muted/30 text-sm" />
+                  <Input name="given-name" autoComplete="given-name" placeholder="John" value={firstName} onChange={(e) => setFirstName(e.target.value)} className="h-10 rounded-[10px] border-2 border-border bg-muted/30 text-sm" />
                 </div>
                 <div className="space-y-1.5">
                   <Label className="text-xs font-medium text-muted-foreground">Last Name</Label>
-                  <Input placeholder="Doe" value={lastName} onChange={(e) => setLastName(e.target.value)} className="h-10 rounded-[10px] border-2 border-border bg-muted/30 text-sm" />
+                  <Input name="family-name" autoComplete="family-name" placeholder="Doe" value={lastName} onChange={(e) => setLastName(e.target.value)} className="h-10 rounded-[10px] border-2 border-border bg-muted/30 text-sm" />
                 </div>
               </div>
               <div className="space-y-1.5 mb-3">
                 <Label className="text-xs font-medium text-muted-foreground">Email Address</Label>
-                <Input type="email" placeholder="john.doe@email.com" value={email} onChange={(e) => setEmail(e.target.value)} className="h-10 rounded-[10px] border-2 border-border bg-muted/30 text-sm" />
+                <Input name="email" type="email" inputMode="email" autoComplete="email" autoCapitalize="none" autoCorrect="off" spellCheck={false} placeholder="john.doe@email.com" value={email} onChange={(e) => setEmail(e.target.value)} className="h-10 rounded-[10px] border-2 border-border bg-muted/30 text-sm" />
               </div>
               <div className="space-y-1.5">
                 <Label className="text-xs font-medium text-muted-foreground">Phone Number</Label>
-                <Input type="tel" placeholder="(407) 555-0100" value={phone} onChange={(e) => setPhone(e.target.value)} className="h-10 rounded-[10px] border-2 border-border bg-muted/30 text-sm" />
+                <Input name="phone" type="tel" inputMode="tel" autoComplete="tel" placeholder="(407) 555-0100" value={phone} onChange={(e) => setPhone(e.target.value)} onBlur={(e) => setPhone(formatUsPhone(e.target.value))} className="h-10 rounded-[10px] border-2 border-border bg-muted/30 text-sm" />
               </div>
             </div>
 
@@ -270,15 +271,15 @@ const TechnicianApplication = () => {
               <div className="grid grid-cols-3 gap-3 mb-3">
                 <div className="space-y-1.5">
                   <Label className="text-xs font-medium text-muted-foreground">City</Label>
-                  <Input placeholder="Orlando" value={city} onChange={(e) => setCity(e.target.value)} className="h-10 rounded-[10px] border-2 border-border bg-muted/30 text-sm" />
+                  <Input name="city" autoComplete="address-level2" placeholder="Orlando" value={city} onChange={(e) => setCity(e.target.value)} className="h-10 rounded-[10px] border-2 border-border bg-muted/30 text-sm" />
                 </div>
                 <div className="space-y-1.5">
                   <Label className="text-xs font-medium text-muted-foreground">State</Label>
-                  <Input placeholder="FL" value={state} onChange={(e) => setState(e.target.value)} className="h-10 rounded-[10px] border-2 border-border bg-muted/30 text-sm" />
+                  <Input name="state" autoComplete="address-level1" maxLength={2} placeholder="FL" value={state} onChange={(e) => setState(e.target.value.toUpperCase())} className="h-10 rounded-[10px] border-2 border-border bg-muted/30 text-sm" />
                 </div>
                 <div className="space-y-1.5">
                   <Label className="text-xs font-medium text-muted-foreground">ZIP Code</Label>
-                  <Input placeholder="32801" value={zip} onChange={(e) => setZip(e.target.value)} className="h-10 rounded-[10px] border-2 border-border bg-muted/30 text-sm" />
+                  <Input name="postal-code" inputMode="numeric" autoComplete="postal-code" maxLength={5} placeholder="32801" value={zip} onChange={(e) => setZip(e.target.value.replace(/\D/g, ""))} className="h-10 rounded-[10px] border-2 border-border bg-muted/30 text-sm" />
                 </div>
               </div>
             </div>

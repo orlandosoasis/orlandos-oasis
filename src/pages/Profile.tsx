@@ -9,6 +9,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import { useBooking } from "@/contexts/BookingContext";
 import { supabase } from "@/integrations/supabase/client";
+import { formatUsPhone } from "@/lib/phone";
 
 const Profile = () => {
   const { user, updateUser, isAuthenticated, isLoading } = useAuth();
@@ -123,11 +124,32 @@ const Profile = () => {
         </div>
         <div className="space-y-2">
           <Label htmlFor="email">Email</Label>
-          <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
+          <Input
+            id="email"
+            name="email"
+            type="email"
+            inputMode="email"
+            autoComplete="email"
+            autoCapitalize="none"
+            autoCorrect="off"
+            spellCheck={false}
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
         </div>
         <div className="space-y-2">
           <Label htmlFor="phone">Phone Number</Label>
-          <Input id="phone" type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="(407) 555-1234" />
+          <Input
+            id="phone"
+            name="phone"
+            type="tel"
+            inputMode="tel"
+            autoComplete="tel"
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
+            onBlur={(e) => setPhone(formatUsPhone(e.target.value))}
+            placeholder="(407) 555-1234"
+          />
         </div>
         <div className="space-y-2">
           <Label htmlFor="streetAddress">Street Address</Label>

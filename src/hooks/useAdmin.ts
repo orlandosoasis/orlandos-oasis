@@ -176,7 +176,7 @@ export function useAdminTechnicians() {
           phone: tech.phone,
           status,
           rating: avgRating,
-          assignedPools: upcomingByPool.size,
+          assignedPools: (assignedPoolRows ?? []).filter((p) => p.assigned_technician_id === tech.id).length,
           completedServices: completed,
           payoutPerPool: Number((tech as { payout_per_pool?: number | null }).payout_per_pool ?? 100),
           reviews: techReviews

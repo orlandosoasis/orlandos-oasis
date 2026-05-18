@@ -36,7 +36,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import {
   useAdminTechnicians, useAdminHomeowners, useAdminIssues,
   useTechnicianApplications, useUpdateIssueStatus, useUpdateApplicationStatus,
-  useUpdateTechnicianActive,
+  useUpdateTechnicianActive, useUpdateTechnicianProfile,
 } from "@/hooks/useAdmin";
 import { useReviews, useUpdateReviewStatus } from "@/hooks/useReviews";
 import { useService, useUpdateService } from "@/hooks/useServices";
@@ -162,7 +162,12 @@ const AdminDashboard = () => {
   const updateReviewStatus = useUpdateReviewStatus();
   const assignPoolToTech = useAssignPoolToTech();
   const updateTechnicianActive = useUpdateTechnicianActive();
+  const updateTechnicianProfile = useUpdateTechnicianProfile();
   const [techFilter, setTechFilter] = useState<"all" | "active" | "inactive">("all");
+  const [editTechId, setEditTechId] = useState<string | null>(null);
+  const [techDraftName, setTechDraftName] = useState("");
+  const [techDraftEmail, setTechDraftEmail] = useState("");
+  const [techDraftPhone, setTechDraftPhone] = useState("");
 
   const isLoading =
     techniciansQuery.isLoading ||
@@ -1002,25 +1007,40 @@ const AdminDashboard = () => {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between">
             <CardTitle className="text-sm">Technician Information</CardTitle>
-            <Button
-              size="sm"
-              variant="outline"
-              onClick={() =>
-                updateTechnicianActive.mutate(
-                  { id: tech.id, isActive: tech.status !== "Active" },
-                  {
-                    onSuccess: () =>
-                      toast({
-                        title: tech.status === "Active" ? "Technician deactivated" : "Technician activated",
-                        variant: "success",
-                      }),
-                  },
-                )
-              }
-              disabled={updateTechnicianActive.isPending}
-            >
-              {tech.status === "Active" ? "Deactivate" : "Activate"}
-            </Button>
+            <div className="flex items-center gap-2">
+              <Button
+                size="sm"
+                variant="outline"
+                className="gap-1.5"
+                onClick={() => {
+                  setTechDraftName(tech.name);
+                  setTechDraftEmail(tech.email);
+                  setTechDraftPhone(tech.phone === "—" ? "" : tech.phone);
+                  setEditTechId(tech.id);
+                }}
+              >
+                <Pencil className="h-3.5 w-3.5" /> Edit
+              </Button>
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() =>
+                  updateTechnicianActive.mutate(
+                    { id: tech.id, isActive: tech.status !== "Active" },
+                    {
+                      onSuccess: () =>
+                        toast({
+                          title: tech.status === "Active" ? "Technician deactivated" : "Technician activated",
+                          variant: "success",
+                        }),
+                    },
+                  )
+                }
+                disabled={updateTechnicianActive.isPending}
+              >
+                {tech.status === "Active" ? "Deactivate" : "Activate"}
+              </Button>
+            </div>
           </CardHeader>
           <CardContent>
             <InfoRow label="Name" value={tech.name} /><InfoRow label="Rating" value={tech.rating > 0 ? <Stars rating={tech.rating} /> : "New - No ratings yet"} />
@@ -1899,6 +1919,50 @@ const AdminDashboard = () => {
         onSave={handleHomeownerUpdated}
       />
       <PastServiceDetailModal serviceId={pastServiceId} onClose={() => setPastServiceId(null)} />
+
+      <Dialog open={!!editTechId} onOpenChange={(o) => !o && setEditTechId(null)}>
+        <DialogContent className="pt-10 sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Edit technician</DialogTitle>
+            <DialogDescription>Update the technician's contact details.</DialogDescription>
+          </DialogHeader>
+          <div className="space-y-3">
+            <div className="space-y-1">
+              <label className="text-xs font-semibold text-muted-foreground">Full name</label>
+              <Input value={techDraftName} onChange={(e) => setTechDraftName(e.target.value)} />
+            </div>
+            <div className="space-y-1">
+              <label className="text-xs font-semibold text-muted-foreground">Email</label>
+              <Input type="email" value={techDraftEmail} onChange={(e) => setTechDraftEmail(e.target.value)} />
+            </div>
+            <div className="space-y-1">
+              <label className="text-xs font-semibold text-muted-foreground">Phone</label>
+              <Input value={techDraftPhone} onChange={(e) => setTechDraftPhone(e.target.value)} placeholder="(407) 555-0000" />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setEditTechId(null)}>Cancel</Button>
+            <Button
+              disabled={updateTechnicianProfile.isPending || !techDraftName.trim()}
+              onClick={async () => {
+                if (!editTechId) return;
+                try {
+                  await updateTechnicianProfile.mutateAsync({
+                    id: editTechId,
+                    patch: { fullName: techDraftName.trim(), email: techDraftEmail.trim(), phone: techDraftPhone.trim() || null },
+                  });
+                  toast({ title: "Technician updated", variant: "success" });
+                  setEditTechId(null);
+                } catch (e) {
+                  toast({ title: "Update failed", description: e instanceof Error ? e.message : String(e), variant: "destructive" });
+                }
+              }}
+            >
+              {updateTechnicianProfile.isPending ? "Saving…" : "Save changes"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

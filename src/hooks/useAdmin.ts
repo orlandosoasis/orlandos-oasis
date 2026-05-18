@@ -408,3 +408,29 @@ export function useUpdateTechnicianActive() {
     onSuccess: () => qc.invalidateQueries({ queryKey: ["admin-technicians"] }),
   });
 }
+
+export interface TechnicianProfilePatch {
+  fullName?: string;
+  email?: string;
+  phone?: string | null;
+}
+
+export function useUpdateTechnicianProfile() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ id, patch }: { id: string; patch: TechnicianProfilePatch }) => {
+      const dbPatch: { full_name?: string; first_name?: string; last_name?: string; email?: string; phone?: string | null } = {};
+      if (patch.fullName !== undefined) {
+        dbPatch.full_name = patch.fullName;
+        const parts = patch.fullName.trim().split(/\s+/);
+        dbPatch.first_name = parts[0] ?? "";
+        dbPatch.last_name = parts.slice(1).join(" ") || "";
+      }
+      if (patch.email !== undefined) dbPatch.email = patch.email;
+      if (patch.phone !== undefined) dbPatch.phone = patch.phone;
+      const { error } = await supabase.from("profiles").update(dbPatch).eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["admin-technicians"] }),
+  });
+}

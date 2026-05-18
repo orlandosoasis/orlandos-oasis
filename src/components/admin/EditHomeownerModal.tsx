@@ -356,6 +356,37 @@ const EditHomeownerModal = ({ open, onClose, homeowner, onSave }: EditHomeownerM
                 </label>
               </RadioGroup>
             </div>
+
+            {/* Section 5: Account Tags */}
+            <div>
+              <SectionTitle>Account Tags</SectionTitle>
+              <div className="space-y-3">
+                <div className="flex items-start justify-between p-3 rounded-md border border-amber-200 bg-amber-50/50 gap-3">
+                  <div>
+                    <div className="text-sm font-medium text-amber-900">Grandfathered (legacy pricing)</div>
+                    <div className="text-xs text-amber-800/70">Flags this account as a legacy-rate customer.</div>
+                  </div>
+                  <Switch checked={isGrandfathered} onCheckedChange={setIsGrandfathered} />
+                </div>
+                {isGrandfathered && (
+                  <div>
+                    <Label className="mb-1.5 block">Grandfathered Note <span className="text-muted-foreground text-xs">(optional)</span></Label>
+                    <Input
+                      value={grandfatheredNote}
+                      onChange={(e) => setGrandfatheredNote(e.target.value)}
+                      placeholder="e.g. Original 2019 rate"
+                    />
+                  </div>
+                )}
+                <div className="flex items-start justify-between p-3 rounded-md border border-violet-200 bg-violet-50/50 gap-3">
+                  <div>
+                    <div className="text-sm font-medium text-violet-900">Fred's (notifications suppressed)</div>
+                    <div className="text-xs text-violet-800/70">No emails or notifications will be sent. Service data is still tracked.</div>
+                  </div>
+                  <Switch checked={isFreds} onCheckedChange={setIsFreds} />
+                </div>
+              </div>
+            </div>
           </div>
 
           {/* Footer */}

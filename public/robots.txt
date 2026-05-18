@@ -22,4 +22,4 @@ Disallow: /profile
 Disallow: /purchase-success
 Disallow: /reset-password
 
-Sitemap: https://pool-snap-magic.lovable.app/sitemap.xml
+Sitemap: https://orlandosoasispools.com/sitemap.xml

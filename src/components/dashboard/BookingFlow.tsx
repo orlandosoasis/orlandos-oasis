@@ -122,42 +122,58 @@ const BookingFlow = ({ onClose, onComplete, selectedService: selectedServiceProp
   };
 
   const handleConfirmBooking = async () => {
+    // Idempotency guard: ignore extra clicks once submission is in flight.
+    // Prevents accidental double-bookings if the user mashes the button.
+    if (isProcessing) return;
     setIsProcessing(true);
-    await new Promise((r) => setTimeout(r, 1200));
-    setIsProcessing(false);
+    try {
+      // TODO(backend-wire-up): replace the simulated delay with a real
+      // supabase.from('services').insert(...) once the booking-to-DB wiring
+      // is in place. Until then, the booking lives only in BookingContext +
+      // localStorage and won't appear in the technician's queue.
+      await new Promise((r) => setTimeout(r, 1200));
 
-    // Persist address to user profile (only if logged in)
-    if (user) {
-      updateUser({ streetAddress: address, city, state, zipCode: zip });
-    }
-
-    const scheduleData: ScheduleData = {
-      selectedDate,
-      timeWindow,
-      accessMethod,
-      accessDetail: getAccessDetail(),
-      addons: [],
-      addonsTotal: 0
-    };
-
-    setBooking({
-      frequency,
-      selectedPass,
-      recurrence: "monthly",
-      scheduleData,
-      technician: matchTechnician(),
-      specialNotes: specialNotes || undefined,
-      pool: {
-        address, city, state, zip, poolType, poolSize, accessMethod,
-        accessDetail: getAccessDetail(), hasPets
+      // Persist address to user profile (only if logged in)
+      if (user) {
+        updateUser({ streetAddress: address, city, state, zipCode: zip });
       }
-    });
 
-    if (standalone) {
-      // In standalone mode, skip the success screen and call onComplete directly
-      onComplete();
-    } else {
-      setBookingSuccess(true);
+      const scheduleData: ScheduleData = {
+        selectedDate,
+        timeWindow,
+        accessMethod,
+        accessDetail: getAccessDetail(),
+        addons: [],
+        addonsTotal: 0,
+      };
+
+      setBooking({
+        frequency,
+        selectedPass,
+        recurrence: "monthly",
+        scheduleData,
+        technician: matchTechnician(),
+        specialNotes: specialNotes || undefined,
+        pool: {
+          address, city, state, zip, poolType, poolSize, accessMethod,
+          accessDetail: getAccessDetail(), hasPets,
+        },
+      });
+
+      if (standalone) {
+        // In standalone mode, skip the success screen and call onComplete directly.
+        onComplete();
+      } else {
+        setBookingSuccess(true);
+      }
+      // Intentionally do NOT reset isProcessing on success — the success
+      // screen replaces this form, and re-enabling the button here would
+      // briefly expose it during the React re-render.
+    } catch (err) {
+      // Reset so user can retry. Toast intentionally left to the wired-up
+      // Supabase version; the simulated delay can't fail today.
+      setIsProcessing(false);
+      throw err;
     }
   };
 

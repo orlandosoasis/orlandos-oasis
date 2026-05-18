@@ -74,34 +74,55 @@ const CATEGORIES = [
 
 const HelpCenter = () => {
   const [search, setSearch] = useState("");
+  const q = search.trim().toLowerCase();
 
-  const filteredCategories = search.trim()
-    ? CATEGORIES.filter(
-        (c) =>
-          c.label.toLowerCase().includes(search.toLowerCase()) ||
-          c.articles.some((a) => a.title.toLowerCase().includes(search.toLowerCase()))
-      )
+  /** Match in title OR body OR category label so users can type anything. */
+  const articleMatches = (a: { title: string; body: string }, catLabel: string) =>
+    !q ||
+    a.title.toLowerCase().includes(q) ||
+    a.body.toLowerCase().includes(q) ||
+    catLabel.toLowerCase().includes(q);
+
+  const filteredCategories = q
+    ? CATEGORIES.map((c) => ({
+        ...c,
+        articles: c.articles.filter((a) => articleMatches(a, c.label)),
+      })).filter((c) => c.articles.length > 0)
     : CATEGORIES;
+
+  const totalMatches = q ? filteredCategories.reduce((n, c) => n + c.articles.length, 0) : 0;
 
   return (
     <>
-
       <main className="max-w-[760px] mx-auto px-5 py-8 pb-16">
         <h1 className="text-2xl font-bold text-foreground mb-6">Help Center</h1>
 
         {/* Search */}
-        <div className="relative mb-6">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+        <div className="relative mb-2">
+          <Search aria-hidden="true" className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
-            placeholder="Search for help..."
+            type="search"
+            role="searchbox"
+            aria-label="Search help articles"
+            inputMode="search"
+            placeholder="Search by question, topic, or keyword..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="pl-10"
           />
         </div>
+        {q ? (
+          <p className="mb-4 text-xs text-muted-foreground" role="status" aria-live="polite">
+            {totalMatches === 0
+              ? "No matches"
+              : `${totalMatches} match${totalMatches === 1 ? "" : "es"} for "${search.trim()}"`}
+          </p>
+        ) : (
+          <div className="mb-4" />
+        )}
 
         {/* Full Accordion Layout */}
-        <Accordion type="single" collapsible className="space-y-2">
+        <Accordion type="single" collapsible className="space-y-2" defaultValue={q && filteredCategories[0] ? filteredCategories[0].id : undefined}>
           {filteredCategories.map((cat) => {
             const Icon = cat.icon;
             return (
@@ -114,28 +135,29 @@ const HelpCenter = () => {
                   <div className="flex items-center gap-3">
                     <Icon className="h-5 w-5 text-primary shrink-0" />
                     <span>{cat.label}</span>
+                    {q ? (
+                      <span className="ml-auto text-xs font-normal text-muted-foreground">
+                        {cat.articles.length}
+                      </span>
+                    ) : null}
                   </div>
                 </AccordionTrigger>
                 <AccordionContent className="pb-4">
                   <Accordion type="single" collapsible className="space-y-1.5">
-                    {cat.articles
-                      .filter((a) =>
-                        !search.trim() || a.title.toLowerCase().includes(search.toLowerCase())
-                      )
-                      .map((article, idx) => (
-                        <AccordionItem
-                          key={idx}
-                          value={`${cat.id}-${idx}`}
-                          className="border border-border rounded-xl overflow-hidden px-3 bg-muted/30"
-                        >
-                          <AccordionTrigger className="text-sm font-medium text-foreground text-left py-3 hover:no-underline">
-                            {article.title}
-                          </AccordionTrigger>
-                          <AccordionContent className="text-sm text-muted-foreground leading-relaxed pb-3">
-                            {article.body}
-                          </AccordionContent>
-                        </AccordionItem>
-                      ))}
+                    {cat.articles.map((article, idx) => (
+                      <AccordionItem
+                        key={idx}
+                        value={`${cat.id}-${idx}`}
+                        className="border border-border rounded-xl overflow-hidden px-3 bg-muted/30"
+                      >
+                        <AccordionTrigger className="text-sm font-medium text-foreground text-left py-3 hover:no-underline">
+                          {article.title}
+                        </AccordionTrigger>
+                        <AccordionContent className="text-sm text-muted-foreground leading-relaxed pb-3">
+                          {article.body}
+                        </AccordionContent>
+                      </AccordionItem>
+                    ))}
                   </Accordion>
                 </AccordionContent>
               </AccordionItem>
@@ -144,7 +166,17 @@ const HelpCenter = () => {
         </Accordion>
 
         {filteredCategories.length === 0 && (
-          <p className="text-sm text-muted-foreground text-center py-8">No results found. Try a different search term.</p>
+          <div className="rounded-2xl border border-border bg-card py-10 px-6 text-center">
+            <HelpCircle className="mx-auto mb-3 h-8 w-8 text-muted-foreground" aria-hidden="true" />
+            <p className="font-medium text-foreground">No matching articles</p>
+            <p className="mt-1 text-sm text-muted-foreground">
+              Try different keywords or{" "}
+              <Link to="/contact" className="text-primary underline">
+                contact support
+              </Link>
+              .
+            </p>
+          </div>
         )}
       </main>
     </>

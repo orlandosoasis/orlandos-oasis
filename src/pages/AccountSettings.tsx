@@ -1,6 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import { ChevronRight, User, CreditCard, MapPin, StickyNote, SlidersHorizontal } from "lucide-react";
 import PageContainer from "@/components/PageContainer";
+import DangerZone from "@/components/account/DangerZone";
 
 const settingsItems = [
   {
@@ -61,10 +62,12 @@ const AccountSettings = () => {
             </button>
           ))}
         </div>
+        <DangerZone />
+
         <footer className="text-center text-xs text-muted-foreground mt-10 space-x-3">
           <Link to="/terms" className="text-primary hover:underline">Terms</Link>
           <Link to="/privacy" className="text-primary hover:underline">Privacy</Link>
-          <p className="mt-3">© Orlando's Oasis 2015 – 2026</p>
+          <p className="mt-3">© Orlando's Oasis 2015 - 2026</p>
         </footer>
       </PageContainer>
     </>

@@ -3,7 +3,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Checkbox } from "@/components/ui/checkbox";
-import { AlertTriangle, ArrowLeft, ArrowRight } from "lucide-react";
+import { AlertTriangle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 export interface CancelBreakdown {
@@ -29,19 +29,30 @@ const REASONS = [
   "Other",
 ];
 
+/**
+ * Simplified single-screen cancel flow.
+ *
+ * Previously this was a 3-step retention "fight" (review charges -> ask
+ * reason + force consent -> confirm charge). Multi-step cancellation flows
+ * are increasingly classified as dark patterns (California AB-2863, FTC
+ * click-to-cancel rule) and they erode trust. Pattern now:
+ *
+ * 1. Show the user exactly what they're about to be charged.
+ * 2. Single optional "tell us why" picker (NOT required).
+ * 3. One button to cancel. One button to keep.
+ *
+ * No coerced consent checkbox. No staged steps. Cancellation is the
+ * primary action; staying is the secondary one.
+ */
 const CancelSubscriptionModal = ({ open, onOpenChange, breakdown, onConfirmed }: CancelSubscriptionModalProps) => {
   const { toast } = useToast();
-  const [step, setStep] = useState<1 | 2 | 3>(1);
   const [reason, setReason] = useState("");
-  const [agreed, setAgreed] = useState(false);
   const [processing, setProcessing] = useState(false);
 
   const total = breakdown.serviceCharges + breakdown.addOnsCharges + breakdown.penalty;
 
   const reset = () => {
-    setStep(1);
     setReason("");
-    setAgreed(false);
     setProcessing(false);
   };
 
@@ -50,38 +61,54 @@ const CancelSubscriptionModal = ({ open, onOpenChange, breakdown, onConfirmed }:
     onOpenChange(isOpen);
   };
 
-  const handleCharge = async () => {
+  const handleCancel = async () => {
+    if (processing) return;
     setProcessing(true);
-    await new Promise((r) => setTimeout(r, 800));
-    setProcessing(false);
-    toast({
-      title: "Subscription cancelled",
-      description: total > 0 ? `Final charge of $${total.toFixed(2)} processed.` : "Your membership has been cancelled.",
-      variant: "success",
-    });
-    onConfirmed();
-    handleClose(false);
+    try {
+      // TODO(payments): when Lovable Payments is wired, charge the breakdown
+      // total here and only finalize cancellation after the charge succeeds.
+      await new Promise((r) => setTimeout(r, 800));
+      // TODO(feedback): persist `reason` to a cancellation_feedback table
+      // so the team can review churn reasons.
+      toast({
+        title: "Subscription cancelled",
+        description: total > 0
+          ? `Final charge of $${total.toFixed(2)} processed.`
+          : "Your membership has been cancelled.",
+        variant: "success",
+      });
+      onConfirmed();
+      handleClose(false);
+    } catch (err: any) {
+      toast({
+        title: "Cancellation failed",
+        description: err?.message ?? "Please try again or contact support.",
+        variant: "destructive",
+      });
+      setProcessing(false);
+    }
   };
 
   return (
     <Dialog open={open} onOpenChange={handleClose}>
-      <DialogContent className="max-w-[520px] pt-10">
+      <DialogContent className="max-w-[520px] pt-8 max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <div className="flex items-center justify-center h-12 w-12 rounded-full bg-destructive/10 mx-auto mb-2">
-            <AlertTriangle className="h-6 w-6 text-destructive" />
+            <AlertTriangle className="h-6 w-6 text-destructive" aria-hidden="true" />
           </div>
-          <DialogTitle className="text-center text-xl font-bold">Cancel Subscription</DialogTitle>
+          <DialogTitle className="text-center text-xl font-bold">Cancel subscription</DialogTitle>
           <DialogDescription className="text-center">
-            {step === 1 && "Review the final charges before cancelling."}
-            {step === 2 && "Help us improve - tell us why you're leaving."}
-            {step === 3 && "Confirm your final payment to complete cancellation."}
+            We're sorry to see you go. Here's exactly what will happen.
           </DialogDescription>
         </DialogHeader>
 
-        {/* Step 1 - Breakdown */}
-        {step === 1 && (
-          <div className="space-y-4 mt-2">
-            <div className="bg-muted/50 border border-border rounded-xl p-5 space-y-2.5 text-sm">
+        <div className="space-y-5 mt-2">
+          {/* What you'll be charged */}
+          {total > 0 ? (
+            <div className="bg-muted/50 border border-border rounded-xl p-4 space-y-2 text-sm">
+              <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                Final charge
+              </p>
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Services completed this cycle</span>
                 <span className="font-medium text-foreground">{breakdown.servicesCompleted}</span>
@@ -90,10 +117,12 @@ const CancelSubscriptionModal = ({ open, onOpenChange, breakdown, onConfirmed }:
                 <span className="text-muted-foreground">Service charges</span>
                 <span className="font-medium text-foreground">${breakdown.serviceCharges.toFixed(2)}</span>
               </div>
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">Add-ons used</span>
-                <span className="font-medium text-foreground">${breakdown.addOnsCharges.toFixed(2)}</span>
-              </div>
+              {breakdown.addOnsCharges > 0 && (
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Add-ons used</span>
+                  <span className="font-medium text-foreground">${breakdown.addOnsCharges.toFixed(2)}</span>
+                </div>
+              )}
               {breakdown.penalty > 0 && (
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Early cancellation fee</span>
@@ -101,76 +130,64 @@ const CancelSubscriptionModal = ({ open, onOpenChange, breakdown, onConfirmed }:
                 </div>
               )}
               <Separator />
-              <div className="flex justify-between text-base">
-                <span className="font-semibold text-foreground">Total due today</span>
+              <div className="flex justify-between text-base pt-1">
+                <span className="font-semibold text-foreground">Total today</span>
                 <span className="font-bold text-foreground">${total.toFixed(2)}</span>
               </div>
+              <p className="text-xs text-muted-foreground pt-1">
+                Charged to your default payment method on file.
+              </p>
             </div>
-            {breakdown.servicesCompleted === 0 && (
-              <p className="text-xs text-muted-foreground text-center">Minimum of one service charge applies even if no services were completed.</p>
-            )}
-            <div className="flex gap-2">
-              <Button variant="outline" className="flex-1" onClick={() => handleClose(false)}>Keep My Plan</Button>
-              <Button className="flex-1 gap-2" onClick={() => setStep(2)}>Continue <ArrowRight className="h-4 w-4" /></Button>
+          ) : (
+            <div className="bg-muted/50 border border-border rounded-xl p-4 text-center text-sm text-muted-foreground">
+              No charges due. Your membership ends today.
             </div>
-          </div>
-        )}
+          )}
 
-        {/* Step 2 - Reason */}
-        {step === 2 && (
-          <div className="space-y-4 mt-2">
-            <div className="space-y-2">
-              <p className="text-[15px] font-semibold text-foreground">Reason for cancelling</p>
-              <div className="space-y-2">
-                {REASONS.map((r) => (
-                  <button
-                    key={r}
-                    onClick={() => setReason(r)}
-                    className={`w-full text-left rounded-xl border-2 px-4 py-3 text-sm transition-all ${
-                      reason === r ? "border-primary bg-primary/5 text-foreground" : "border-border bg-card hover:border-primary/40 text-foreground"
-                    }`}
-                  >
-                    {r}
-                  </button>
-                ))}
-              </div>
+          {/* Optional reason picker */}
+          <fieldset className="space-y-2">
+            <legend className="text-sm font-medium text-foreground">
+              Reason for cancelling{" "}
+              <span className="text-xs font-normal text-muted-foreground">(optional)</span>
+            </legend>
+            <div className="flex flex-wrap gap-2">
+              {REASONS.map((r) => (
+                <button
+                  key={r}
+                  type="button"
+                  onClick={() => setReason(reason === r ? "" : r)}
+                  aria-pressed={reason === r}
+                  className={`rounded-full border px-3 py-1.5 text-xs transition-all ${
+                    reason === r
+                      ? "border-primary bg-primary/10 text-primary"
+                      : "border-border bg-card text-muted-foreground hover:border-primary/40 hover:text-foreground"
+                  }`}
+                >
+                  {r}
+                </button>
+              ))}
             </div>
-            <label className="flex items-start gap-2 text-sm cursor-pointer">
-              <Checkbox checked={agreed} onCheckedChange={(v) => setAgreed(!!v)} className="mt-0.5" />
-              <span className="text-foreground">I understand my recurring service will end and ${total.toFixed(2)} will be charged today.</span>
-            </label>
-            <div className="flex gap-2">
-              <Button variant="outline" className="flex-1 gap-2" onClick={() => setStep(1)}><ArrowLeft className="h-4 w-4" /> Back</Button>
-              <Button className="flex-1 gap-2" disabled={!reason || !agreed} onClick={() => setStep(3)}>
-                Continue <ArrowRight className="h-4 w-4" />
-              </Button>
-            </div>
-          </div>
-        )}
+          </fieldset>
 
-        {/* Step 3 - Charge */}
-        {step === 3 && (
-          <div className="space-y-4 mt-2">
-            <div className="bg-muted/50 border border-border rounded-xl p-5 text-center">
-              <p className="text-sm text-muted-foreground">Final charge</p>
-              <p className="text-3xl font-bold text-foreground mt-1">${total.toFixed(2)}</p>
-              <p className="text-xs text-muted-foreground mt-2">Charged to your default payment method on file.</p>
-            </div>
-            <div className="flex gap-2">
-              <Button variant="outline" className="flex-1 gap-2" onClick={() => setStep(2)} disabled={processing}>
-                <ArrowLeft className="h-4 w-4" /> Back
-              </Button>
-              <Button
-                variant="outline"
-                className="flex-1 text-destructive border-destructive/30 hover:bg-destructive hover:text-destructive-foreground hover:border-transparent"
-                onClick={handleCharge}
-                disabled={processing}
-              >
-                {processing ? "Processing…" : "Charge & Cancel"}
-              </Button>
-            </div>
+          {/* Actions: cancel is primary action, keep is secondary */}
+          <div className="flex flex-col-reverse sm:flex-row gap-2 pt-2">
+            <Button variant="outline" className="flex-1" onClick={() => handleClose(false)} disabled={processing}>
+              Keep my plan
+            </Button>
+            <Button
+              variant="destructive"
+              className="flex-1"
+              onClick={handleCancel}
+              disabled={processing}
+            >
+              {processing
+                ? "Cancelling..."
+                : total > 0
+                ? `Cancel and pay $${total.toFixed(2)}`
+                : "Cancel my subscription"}
+            </Button>
           </div>
-        )}
+        </div>
       </DialogContent>
     </Dialog>
   );

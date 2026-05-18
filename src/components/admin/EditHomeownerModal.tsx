@@ -160,6 +160,10 @@ const EditHomeownerModal = ({ open, onClose, homeowner, onSave }: EditHomeownerM
       frequency: frequencyLabel,
       paymentMethod: paymentOption === "offline" ? "Pays Offline" : "Marked as Paid",
       notes: poolNotes,
+      isGrandfathered,
+      grandfatheredNote: isGrandfathered ? (grandfatheredNote || null) : null,
+      isFreds,
+      notificationsEnabled: !isFreds,
       // Update only the first pool's size; preserve past services & payment history.
       pools: homeowner.pools.map((p, i) =>
         i === 0

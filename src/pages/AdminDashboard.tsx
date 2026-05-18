@@ -647,7 +647,12 @@ const AdminDashboard = () => {
   // ═══════════ FINANCIALS CARD (Revenue / Payouts / Supplies / Profit) ═══════════
   type RevenueRow = { label: string; count: number; revenue: number; price: number };
   type FinTech = { id: string; name: string; assignedPools: number; payoutPerPool?: number };
-  type FinHome = { pools: { size: string }[] };
+  type FinHome = {
+    pools: { size: string }[];
+    monthlyAmount?: number;
+    isGrandfathered?: boolean;
+    isFreds?: boolean;
+  };
 
   const FinancialsCard = ({
     revenueRows, totalMRR, totalPools, technicians, homeowners,
@@ -693,18 +698,74 @@ const AdminDashboard = () => {
       .sort((a, b) => b.total - a.total);
     const totalPayouts = payoutRows.reduce((a, r) => a + r.total, 0);
 
-    // Build 12-month series for a given year. For the current year, future months
-    // are projected at the same recurring value (so the line stays consistent).
-    // For prior years we apply a small deterministic dampener so the historical
-    // view is visibly distinct from the current run-rate.
     const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-    const buildYearSeries = (recurring: number, year: number) => {
-      const factor = year < currentYear ? 0.82 : 1;
-      return MONTHS.map((m) => ({ month: m, total: Math.round(recurring * factor) }));
+    const FIRST_DATA_YEAR = 2025; // earliest year selectable
+    const availableYears: number[] = [];
+    for (let y = currentYear; y >= FIRST_DATA_YEAR; y--) availableYears.push(y);
+
+    // Returns the fraction of a given (year, monthIndex) that has elapsed relative to `now`.
+    // 0 = future (no data yet), 1 = month fully complete, partial = current month.
+    const monthFraction = (year: number, monthIdx: number): number => {
+      if (year < currentYear) return 1;
+      if (year > currentYear) return 0;
+      if (monthIdx < now.getMonth()) return 1;
+      if (monthIdx > now.getMonth()) return 0;
+      const daysInMonth = new Date(year, monthIdx + 1, 0).getDate();
+      return now.getDate() / daysInMonth;
     };
-    const revenueMonthly = buildYearSeries(totalMRR, revenueYear);
-    const payoutMonthly = buildYearSeries(totalPayouts, payoutYear);
-    const revenueYearTotal = revenueMonthly.reduce((a, r) => a + r.total, 0);
+
+    // Stacked revenue breakdown per month for the selected year.
+    // Categories: Small / Medium / Large (standard pools) + Grandfathered + Fred's.
+    const REVENUE_KEYS = ["small", "medium", "large", "grandfathered", "freds"] as const;
+    const REVENUE_LABELS: Record<typeof REVENUE_KEYS[number], string> = {
+      small: "Small Pool",
+      medium: "Medium Pool",
+      large: "Large Pool",
+      grandfathered: "Grandfathered",
+      freds: "Fred's",
+    };
+    const REVENUE_COLORS: Record<typeof REVENUE_KEYS[number], string> = {
+      small: "hsl(var(--primary))",
+      medium: "hsl(199 89% 48%)",
+      large: "hsl(173 80% 40%)",
+      grandfathered: "hsl(38 92% 50%)",
+      freds: "hsl(271 76% 53%)",
+    };
+    // Compute the steady recurring monthly revenue per category (across all homeowners).
+    const categoryMRR = (() => {
+      const acc = { small: 0, medium: 0, large: 0, grandfathered: 0, freds: 0 };
+      for (const h of homeowners) {
+        if (!h.monthlyAmount || h.pools.length === 0) continue;
+        if (h.isFreds) { acc.freds += h.monthlyAmount; continue; }
+        if (h.isGrandfathered) { acc.grandfathered += h.monthlyAmount; continue; }
+        const perPool = h.monthlyAmount / h.pools.length;
+        for (const p of h.pools) {
+          const s = (p.size ?? "").toLowerCase();
+          if (s.includes("small")) acc.small += perPool;
+          else if (s.includes("medium")) acc.medium += perPool;
+          else if (s.includes("large")) acc.large += perPool;
+          else acc.medium += perPool;
+        }
+      }
+      return acc;
+    })();
+    const revenueMonthly = MONTHS.map((m, i) => {
+      const frac = monthFraction(revenueYear, i);
+      const row: Record<string, number | string> = { month: m };
+      let total = 0;
+      for (const k of REVENUE_KEYS) {
+        const v = Math.round(categoryMRR[k] * frac);
+        row[k] = v;
+        total += v;
+      }
+      row.total = total;
+      return row;
+    });
+    const payoutMonthly = MONTHS.map((m, i) => ({
+      month: m,
+      total: Math.round(totalPayouts * monthFraction(payoutYear, i)),
+    }));
+    const revenueYearTotal = revenueMonthly.reduce((a, r) => a + (r.total as number), 0);
     const payoutYearTotal = payoutMonthly.reduce((a, r) => a + r.total, 0);
 
     // Supplies
@@ -909,35 +970,50 @@ const AdminDashboard = () => {
               <div className="space-y-3">
                 <div className="flex items-center justify-between flex-wrap gap-2">
                   <div className="text-xs font-bold text-foreground">Revenue by Month · {revenueYear}</div>
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-3">
                     <div className="text-xs text-muted-foreground">
                       Year total <span className="text-foreground font-semibold">{fmtMoney(revenueYearTotal)}</span>
                     </div>
-                    <div className="flex items-center gap-1 rounded-md bg-muted p-0.5">
-                      <button
-                        onClick={() => setRevenueYear(currentYear - 1)}
-                        className={`px-2 py-0.5 text-xs font-semibold rounded ${revenueYear === currentYear - 1 ? "bg-background shadow-sm text-foreground" : "text-muted-foreground"}`}
-                      >{currentYear - 1}</button>
-                      <button
-                        onClick={() => setRevenueYear(currentYear)}
-                        className={`px-2 py-0.5 text-xs font-semibold rounded ${revenueYear === currentYear ? "bg-background shadow-sm text-foreground" : "text-muted-foreground"}`}
-                      >{currentYear}</button>
-                    </div>
+                    <Select value={String(revenueYear)} onValueChange={(v) => setRevenueYear(Number(v))}>
+                      <SelectTrigger className="h-8 w-[110px] text-xs"><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        {availableYears.map((y) => (
+                          <SelectItem key={y} value={String(y)}>{y}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   </div>
                 </div>
                 <div className="h-[280px] w-full">
                   <ResponsiveContainer width="100%" height="100%">
-                    <BarChart data={revenueMonthly} margin={{ top: 24, right: 16, left: 8, bottom: 8 }}>
+                    <BarChart data={revenueMonthly} margin={{ top: 16, right: 16, left: 8, bottom: 8 }}>
                       <XAxis dataKey="month" tick={{ fontSize: 12 }} axisLine={false} tickLine={false} />
                       <YAxis tickFormatter={(v) => `$${v}`} tick={{ fontSize: 11 }} axisLine={false} tickLine={false} width={56} />
                       <ReTooltip
                         cursor={{ fill: "hsl(var(--muted))", opacity: 0.4 }}
-                        formatter={(value: number) => [fmtMoney(value), "Revenue"]}
+                        formatter={(value: number, name) => [fmtMoney(value), REVENUE_LABELS[name as typeof REVENUE_KEYS[number]] ?? String(name)]}
                         contentStyle={{ borderRadius: 8, fontSize: 12 }}
                       />
-                      <Bar dataKey="total" radius={[8, 8, 0, 0]} fill="hsl(var(--primary))" />
+                      {REVENUE_KEYS.map((k, idx) => (
+                        <Bar
+                          key={k}
+                          dataKey={k}
+                          stackId="rev"
+                          fill={REVENUE_COLORS[k]}
+                          radius={idx === REVENUE_KEYS.length - 1 ? [8, 8, 0, 0] : [0, 0, 0, 0]}
+                        />
+                      ))}
                     </BarChart>
                   </ResponsiveContainer>
+                </div>
+                <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted-foreground pt-1">
+                  {REVENUE_KEYS.map((k) => (
+                    <div key={k} className="flex items-center gap-1.5">
+                      <span className="inline-block h-2.5 w-2.5 rounded-sm" style={{ background: REVENUE_COLORS[k] }} />
+                      <span className="text-foreground">{REVENUE_LABELS[k]}</span>
+                      <span>· {fmtMoney(categoryMRR[k])}/mo</span>
+                    </div>
+                  ))}
                 </div>
               </div>
             )
@@ -948,20 +1024,18 @@ const AdminDashboard = () => {
               <div>
                 <div className="flex items-center justify-between mb-2 flex-wrap gap-2">
                   <div className="text-xs font-bold text-foreground">Payouts by Month · {payoutYear}</div>
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-3">
                     <div className="text-xs text-muted-foreground">
                       Year total <span className="text-foreground font-semibold">{fmtMoney(payoutYearTotal)}</span>
                     </div>
-                    <div className="flex items-center gap-1 rounded-md bg-muted p-0.5">
-                      <button
-                        onClick={() => setPayoutYear(currentYear - 1)}
-                        className={`px-2 py-0.5 text-xs font-semibold rounded ${payoutYear === currentYear - 1 ? "bg-background shadow-sm text-foreground" : "text-muted-foreground"}`}
-                      >{currentYear - 1}</button>
-                      <button
-                        onClick={() => setPayoutYear(currentYear)}
-                        className={`px-2 py-0.5 text-xs font-semibold rounded ${payoutYear === currentYear ? "bg-background shadow-sm text-foreground" : "text-muted-foreground"}`}
-                      >{currentYear}</button>
-                    </div>
+                    <Select value={String(payoutYear)} onValueChange={(v) => setPayoutYear(Number(v))}>
+                      <SelectTrigger className="h-8 w-[110px] text-xs"><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        {availableYears.map((y) => (
+                          <SelectItem key={y} value={String(y)}>{y}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   </div>
                 </div>
                 <div className="h-[240px] w-full">

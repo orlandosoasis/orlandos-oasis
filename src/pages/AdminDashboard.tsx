@@ -1919,6 +1919,50 @@ const AdminDashboard = () => {
         onSave={handleHomeownerUpdated}
       />
       <PastServiceDetailModal serviceId={pastServiceId} onClose={() => setPastServiceId(null)} />
+
+      <Dialog open={!!editTechId} onOpenChange={(o) => !o && setEditTechId(null)}>
+        <DialogContent className="pt-10 sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Edit technician</DialogTitle>
+            <DialogDescription>Update the technician's contact details.</DialogDescription>
+          </DialogHeader>
+          <div className="space-y-3">
+            <div className="space-y-1">
+              <label className="text-xs font-semibold text-muted-foreground">Full name</label>
+              <Input value={techDraftName} onChange={(e) => setTechDraftName(e.target.value)} />
+            </div>
+            <div className="space-y-1">
+              <label className="text-xs font-semibold text-muted-foreground">Email</label>
+              <Input type="email" value={techDraftEmail} onChange={(e) => setTechDraftEmail(e.target.value)} />
+            </div>
+            <div className="space-y-1">
+              <label className="text-xs font-semibold text-muted-foreground">Phone</label>
+              <Input value={techDraftPhone} onChange={(e) => setTechDraftPhone(e.target.value)} placeholder="(407) 555-0000" />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setEditTechId(null)}>Cancel</Button>
+            <Button
+              disabled={updateTechnicianProfile.isPending || !techDraftName.trim()}
+              onClick={async () => {
+                if (!editTechId) return;
+                try {
+                  await updateTechnicianProfile.mutateAsync({
+                    id: editTechId,
+                    patch: { fullName: techDraftName.trim(), email: techDraftEmail.trim(), phone: techDraftPhone.trim() || null },
+                  });
+                  toast({ title: "Technician updated", variant: "success" });
+                  setEditTechId(null);
+                } catch (e) {
+                  toast({ title: "Update failed", description: e instanceof Error ? e.message : String(e), variant: "destructive" });
+                }
+              }}
+            >
+              {updateTechnicianProfile.isPending ? "Saving…" : "Save changes"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

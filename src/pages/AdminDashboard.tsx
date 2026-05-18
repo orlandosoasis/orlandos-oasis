@@ -160,6 +160,8 @@ const AdminDashboard = () => {
   const updateApplicationStatus = useUpdateApplicationStatus();
   const updateReviewStatus = useUpdateReviewStatus();
   const assignPoolToTech = useAssignPoolToTech();
+  const updateTechnicianActive = useUpdateTechnicianActive();
+  const [techFilter, setTechFilter] = useState<"all" | "active" | "inactive">("all");
 
   const isLoading =
     techniciansQuery.isLoading ||

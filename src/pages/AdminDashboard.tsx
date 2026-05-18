@@ -218,6 +218,8 @@ const AdminDashboard = () => {
     isGrandfathered: h.isGrandfathered,
     isPlaceholder: h.isPlaceholder,
     grandfatheredNote: h.grandfatheredNote,
+    isFreds: h.isFreds,
+    notificationsEnabled: h.notificationsEnabled,
     pools: h.pools.map((p) => ({
       id: p.id,
       address: p.address,

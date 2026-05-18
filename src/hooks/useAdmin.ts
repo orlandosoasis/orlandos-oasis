@@ -35,8 +35,9 @@ export interface AdminHomeownerAggregate {
   address: string;
   plan: string;
   startDate: string;
+  monthlyAmount: number;
   pools: { id: string; address: string; size: string; technicianName: string; technicianId: string | null; nextService: string }[];
-  services: { id: string; date: string; type: string; technicianName: string; status: "Completed" | "Scheduled"; poolId: string }[];
+  services: { id: string; date: string; serviceDate: string; type: string; technicianName: string; status: "Completed" | "Scheduled"; poolId: string }[];
 }
 
 export type IssueStatusDb = "open" | "in_progress" | "resolved";
@@ -201,7 +202,7 @@ export function useAdminHomeowners() {
     queryFn: async (): Promise<AdminHomeownerAggregate[]> => {
       const { data: homeowners, error } = await supabase
         .from("profiles")
-        .select("id, full_name, email, phone, street_address, city, state, zip_code, created_at")
+        .select("id, full_name, email, phone, street_address, city, state, zip_code, created_at, monthly_amount")
         .eq("role", "homeowner")
         .order("created_at", { ascending: false });
       if (error) throw error;
@@ -236,6 +237,7 @@ export function useAdminHomeowners() {
           address: addressParts.join(", ") || "—",
           plan: "Standard",
           startDate: fmtDate(h.created_at),
+          monthlyAmount: Number((h as { monthly_amount?: number | null }).monthly_amount ?? 0),
           pools: ownerPools.map((p) => {
             const next = ownerServices
               .filter((s) => s.pool_id === p.id && (s.status === "scheduled" || s.status === "in_progress"))
@@ -255,6 +257,7 @@ export function useAdminHomeowners() {
             .map((s) => ({
               id: s.id,
               date: fmtServiceDate(s.service_date),
+              serviceDate: s.service_date,
               type: s.service_type,
               technicianName: techName(s.technician_id),
               status: (s.status === "completed" ? "Completed" : "Scheduled") as "Completed" | "Scheduled",

@@ -1685,6 +1685,10 @@ const AdminDashboard = () => {
             poolId: h.pools?.[0]?.id ?? null,
             poolSize: h.pools?.[0]?.size ?? null,
             poolAddress: h.address || null,
+            isGrandfathered: h.isGrandfathered,
+            grandfatheredNote: h.grandfatheredNote ?? null,
+            isFreds: h.isFreds,
+            notificationsEnabled: h.notificationsEnabled,
           },
         });
         toast({ title: "Homeowner updated", variant: "success" });
@@ -1822,30 +1826,6 @@ const AdminDashboard = () => {
                               onClick={() => { setEditingHomeowner(h); setEditHomeownerOpen(true); }}
                             >
                               <Pencil className="h-3.5 w-3.5" /> Edit
-                            </Button>
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              className={`gap-1.5 ${isFreds ? "border-violet-300 text-violet-700 hover:bg-violet-50" : ""}`}
-                              onClick={() =>
-                                toggleFredsTag.mutate(
-                                  { id: h.id, isFreds: !isFreds },
-                                  {
-                                    onSuccess: () =>
-                                      toast({
-                                        title: isFreds ? "Removed Fred's tag" : "Tagged as Fred's",
-                                        description: isFreds
-                                          ? "Notifications re-enabled for this account."
-                                          : "Notifications and emails will be suppressed.",
-                                        variant: "success",
-                                      }),
-                                    onError: (e) =>
-                                      toast({ title: "Tag update failed", description: e instanceof Error ? e.message : String(e), variant: "destructive" }),
-                                  },
-                                )
-                              }
-                            >
-                              {isFreds ? "Untag Fred's" : "Tag Fred's"}
                             </Button>
                             <Button
                               size="sm"

@@ -456,6 +456,10 @@ export interface HomeownerProfilePatch {
   poolId?: string | null;
   poolSize?: string | null;
   poolAddress?: string | null;
+  isGrandfathered?: boolean;
+  grandfatheredNote?: string | null;
+  isFreds?: boolean;
+  notificationsEnabled?: boolean;
 }
 
 export function useUpdateHomeownerProfile() {
@@ -467,6 +471,8 @@ export function useUpdateHomeownerProfile() {
         email?: string; phone?: string | null;
         street_address?: string | null; city?: string | null; state?: string | null; zip_code?: string | null;
         monthly_amount?: number | null;
+        is_grandfathered?: boolean; grandfathered_note?: string | null;
+        is_freds?: boolean; notifications_enabled?: boolean;
       } = {};
       if (patch.fullName !== undefined) {
         dbPatch.full_name = patch.fullName;
@@ -481,6 +487,17 @@ export function useUpdateHomeownerProfile() {
       if (patch.state !== undefined) dbPatch.state = patch.state;
       if (patch.zip !== undefined) dbPatch.zip_code = patch.zip;
       if (patch.monthlyAmount !== undefined) dbPatch.monthly_amount = patch.monthlyAmount;
+      if (patch.isGrandfathered !== undefined) dbPatch.is_grandfathered = patch.isGrandfathered;
+      if (patch.grandfatheredNote !== undefined) dbPatch.grandfathered_note = patch.grandfatheredNote;
+      if (patch.isFreds !== undefined) {
+        dbPatch.is_freds = patch.isFreds;
+        // Tagging as Fred's suppresses notifications; untagging re-enables them
+        // unless caller explicitly set notificationsEnabled below.
+        if (patch.notificationsEnabled === undefined) {
+          dbPatch.notifications_enabled = !patch.isFreds;
+        }
+      }
+      if (patch.notificationsEnabled !== undefined) dbPatch.notifications_enabled = patch.notificationsEnabled;
 
       if (Object.keys(dbPatch).length > 0) {
         const { error } = await supabase.from("profiles").update(dbPatch).eq("id", id);

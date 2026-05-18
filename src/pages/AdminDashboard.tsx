@@ -37,6 +37,7 @@ import {
   useAdminTechnicians, useAdminHomeowners, useAdminIssues,
   useTechnicianApplications, useUpdateIssueStatus, useUpdateApplicationStatus,
   useUpdateTechnicianActive, useUpdateTechnicianProfile, useUpdateHomeownerProfile,
+  useToggleFredsTag,
 } from "@/hooks/useAdmin";
 import { useReviews, useUpdateReviewStatus } from "@/hooks/useReviews";
 import { useService, useUpdateService } from "@/hooks/useServices";
@@ -163,6 +164,7 @@ const AdminDashboard = () => {
   const assignPoolToTech = useAssignPoolToTech();
   const updateTechnicianActive = useUpdateTechnicianActive();
   const updateTechnicianProfile = useUpdateTechnicianProfile();
+  const toggleFredsTag = useToggleFredsTag();
   const [techFilter, setTechFilter] = useState<"all" | "active" | "inactive">("all");
   const [editTechId, setEditTechId] = useState<string | null>(null);
   const [techDraftName, setTechDraftName] = useState("");
@@ -204,7 +206,7 @@ const AdminDashboard = () => {
     })),
   }));
 
-  const fetchedHomeowners: (AdminHomeowner & { isGrandfathered?: boolean; grandfatheredNote?: string | null; isPlaceholder?: boolean })[] = (homeownersQuery.data ?? []).map((h) => ({
+  const fetchedHomeowners: (AdminHomeowner & { isGrandfathered?: boolean; grandfatheredNote?: string | null; isPlaceholder?: boolean; isFreds?: boolean; notificationsEnabled?: boolean })[] = (homeownersQuery.data ?? []).map((h) => ({
     id: h.id,
     name: h.name,
     email: h.email,
@@ -216,6 +218,8 @@ const AdminDashboard = () => {
     isGrandfathered: h.isGrandfathered,
     isPlaceholder: h.isPlaceholder,
     grandfatheredNote: h.grandfatheredNote,
+    isFreds: h.isFreds,
+    notificationsEnabled: h.notificationsEnabled,
     pools: h.pools.map((p) => ({
       id: p.id,
       address: p.address,
@@ -688,6 +692,10 @@ const AdminDashboard = () => {
     const grandfatheredAccounts = homeowners.filter((h) => (h as { isGrandfathered?: boolean }).isGrandfathered);
     const grandfatheredMRR = grandfatheredAccounts.reduce((a, h) => a + (h.monthlyAmount ?? 0), 0);
 
+    // Fred's accounts (notifications suppressed).
+    const fredsAccounts = homeowners.filter((h) => (h as { isFreds?: boolean }).isFreds);
+    const fredsMRR = fredsAccounts.reduce((a, h) => a + (h.monthlyAmount ?? 0), 0);
+
     const now = new Date();
     const fmtMoney = (n: number) =>
       n.toLocaleString("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 });
@@ -818,7 +826,53 @@ const AdminDashboard = () => {
           </Card>
         )}
 
+        {fredsAccounts.length > 0 && (
+          <Card className="border-violet-200">
+            <CardHeader className="pb-3 flex flex-row items-center justify-between">
+              <div className="flex items-center gap-2">
+                <CardTitle className="text-sm font-bold">Fred's Accounts</CardTitle>
+                <span className="inline-flex px-2 py-0.5 rounded-full text-[10px] font-bold bg-violet-100 text-violet-700 border border-violet-200">
+                  Notifications suppressed
+                </span>
+              </div>
+              <div className="text-xs text-muted-foreground">
+                {fredsAccounts.length} accounts · <span className="text-foreground font-bold">{fmtMoney(fredsMRR)}/mo</span>
+              </div>
+            </CardHeader>
+            <CardContent className="p-0">
+              <div className="max-h-[360px] overflow-y-auto">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Account</TableHead>
+                      <TableHead>Pool Size</TableHead>
+                      <TableHead>Address</TableHead>
+                      <TableHead>Technician</TableHead>
+                      <TableHead className="text-right">Rate</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {fredsAccounts
+                      .slice()
+                      .sort((a, b) => (a.monthlyAmount ?? 0) - (b.monthlyAmount ?? 0))
+                      .map((h) => (
+                        <TableRow key={h.id}>
+                          <TableCell className="font-medium">{h.name}</TableCell>
+                          <TableCell className="text-xs">{h.pools[0]?.size ?? "—"}</TableCell>
+                          <TableCell className="text-muted-foreground text-xs">{h.pools[0]?.address ?? "—"}</TableCell>
+                          <TableCell className="text-xs">{h.pools[0]?.technician ?? "Unassigned"}</TableCell>
+                          <TableCell className="text-right font-semibold">{fmtMoney(h.monthlyAmount ?? 0)}/mo</TableCell>
+                        </TableRow>
+                      ))}
+                  </TableBody>
+                </Table>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
         <AppointmentsCard />
+
 
         <Card>
           <CardHeader className="pb-3 flex flex-row items-center justify-between gap-3 flex-wrap">
@@ -856,10 +910,11 @@ const AdminDashboard = () => {
                     const pool = h.pools?.[0];
                     const isGF = Boolean((h as { isGrandfathered?: boolean }).isGrandfathered);
                     const isPlaceholder = Boolean((h as { isPlaceholder?: boolean }).isPlaceholder);
+                    const isFreds = Boolean((h as { isFreds?: boolean }).isFreds);
                     return (
                       <TableRow key={h.id}>
                         <TableCell>
-                          <div className="flex items-center gap-1.5">
+                          <div className="flex items-center gap-1.5 flex-wrap">
                             <span className="font-medium">{h.name}</span>
                             {isPlaceholder && (
                               <span className="inline-flex px-1.5 py-0.5 rounded-full text-[9px] font-bold bg-slate-100 text-slate-600 border border-slate-200">
@@ -869,6 +924,11 @@ const AdminDashboard = () => {
                             {isGF && (
                               <span className="inline-flex px-1.5 py-0.5 rounded-full text-[9px] font-bold bg-amber-100 text-amber-700 border border-amber-200">
                                 GF
+                              </span>
+                            )}
+                            {isFreds && (
+                              <span title="Fred's account — notifications suppressed" className="inline-flex px-1.5 py-0.5 rounded-full text-[9px] font-bold bg-violet-100 text-violet-700 border border-violet-200">
+                                Fred's
                               </span>
                             )}
                           </div>
@@ -890,6 +950,30 @@ const AdminDashboard = () => {
                               onClick={() => { setEditingHomeowner(h); setEditHomeownerOpen(true); }}
                             >
                               <Pencil className="h-3.5 w-3.5" /> Edit
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              className={`gap-1.5 ${isFreds ? "border-violet-300 text-violet-700 hover:bg-violet-50" : ""}`}
+                              onClick={() =>
+                                toggleFredsTag.mutate(
+                                  { id: h.id, isFreds: !isFreds },
+                                  {
+                                    onSuccess: () =>
+                                      toast({
+                                        title: isFreds ? "Removed Fred's tag" : "Tagged as Fred's",
+                                        description: isFreds
+                                          ? "Notifications re-enabled for this account."
+                                          : "Notifications and emails will be suppressed.",
+                                        variant: "success",
+                                      }),
+                                    onError: (e) =>
+                                      toast({ title: "Tag update failed", description: e instanceof Error ? e.message : String(e), variant: "destructive" }),
+                                  },
+                                )
+                              }
+                            >
+                              {isFreds ? "Untag Fred's" : "Tag Fred's"}
                             </Button>
                             <Button
                               size="sm"

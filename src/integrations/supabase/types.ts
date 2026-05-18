@@ -268,10 +268,12 @@ export type Database = {
           grandfathered_note: string | null
           id: string
           is_active: boolean
+          is_freds: boolean
           is_grandfathered: boolean
           is_placeholder: boolean
           last_name: string | null
           monthly_amount: number | null
+          notifications_enabled: boolean
           phone: string | null
           role: Database["public"]["Enums"]["app_role"]
           state: string | null
@@ -291,10 +293,12 @@ export type Database = {
           grandfathered_note?: string | null
           id: string
           is_active?: boolean
+          is_freds?: boolean
           is_grandfathered?: boolean
           is_placeholder?: boolean
           last_name?: string | null
           monthly_amount?: number | null
+          notifications_enabled?: boolean
           phone?: string | null
           role?: Database["public"]["Enums"]["app_role"]
           state?: string | null
@@ -314,10 +318,12 @@ export type Database = {
           grandfathered_note?: string | null
           id?: string
           is_active?: boolean
+          is_freds?: boolean
           is_grandfathered?: boolean
           is_placeholder?: boolean
           last_name?: string | null
           monthly_amount?: number | null
+          notifications_enabled?: boolean
           phone?: string | null
           role?: Database["public"]["Enums"]["app_role"]
           state?: string | null

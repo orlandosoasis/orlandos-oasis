@@ -39,6 +39,8 @@ export interface AdminHomeownerAggregate {
   isGrandfathered: boolean;
   isPlaceholder: boolean;
   grandfatheredNote: string | null;
+  isFreds: boolean;
+  notificationsEnabled: boolean;
   pools: { id: string; address: string; size: string; technicianName: string; technicianId: string | null; nextService: string }[];
   services: { id: string; date: string; serviceDate: string; type: string; technicianName: string; technicianId: string | null; status: "Completed" | "Scheduled"; poolId: string }[];
 }
@@ -206,7 +208,7 @@ export function useAdminHomeowners() {
     queryFn: async (): Promise<AdminHomeownerAggregate[]> => {
       const { data: homeowners, error } = await supabase
         .from("profiles")
-        .select("id, full_name, email, phone, street_address, city, state, zip_code, created_at, monthly_amount, is_grandfathered, is_placeholder, grandfathered_note")
+        .select("id, full_name, email, phone, street_address, city, state, zip_code, created_at, monthly_amount, is_grandfathered, is_placeholder, grandfathered_note, is_freds, notifications_enabled")
         .eq("role", "homeowner")
         .order("created_at", { ascending: false });
       if (error) throw error;
@@ -245,6 +247,8 @@ export function useAdminHomeowners() {
           isGrandfathered: Boolean((h as { is_grandfathered?: boolean | null }).is_grandfathered),
           isPlaceholder: Boolean((h as { is_placeholder?: boolean | null }).is_placeholder),
           grandfatheredNote: (h as { grandfathered_note?: string | null }).grandfathered_note ?? null,
+          isFreds: Boolean((h as { is_freds?: boolean | null }).is_freds),
+          notificationsEnabled: Boolean((h as { notifications_enabled?: boolean | null }).notifications_enabled ?? true),
           pools: ownerPools.map((p) => {
             const next = ownerServices
               .filter((s) => s.pool_id === p.id && (s.status === "scheduled" || s.status === "in_progress"))
@@ -491,5 +495,22 @@ export function useUpdateHomeownerProfile() {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["admin-homeowners"] });
     },
+  });
+}
+
+/**
+ * Toggle the Fred's tag on a homeowner. When tagged, notifications are suppressed.
+ */
+export function useToggleFredsTag() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ id, isFreds }: { id: string; isFreds: boolean }) => {
+      const { error } = await supabase
+        .from("profiles")
+        .update({ is_freds: isFreds, notifications_enabled: !isFreds })
+        .eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["admin-homeowners"] }),
   });
 }

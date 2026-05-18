@@ -1024,20 +1024,18 @@ const AdminDashboard = () => {
               <div>
                 <div className="flex items-center justify-between mb-2 flex-wrap gap-2">
                   <div className="text-xs font-bold text-foreground">Payouts by Month · {payoutYear}</div>
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-3">
                     <div className="text-xs text-muted-foreground">
                       Year total <span className="text-foreground font-semibold">{fmtMoney(payoutYearTotal)}</span>
                     </div>
-                    <div className="flex items-center gap-1 rounded-md bg-muted p-0.5">
-                      <button
-                        onClick={() => setPayoutYear(currentYear - 1)}
-                        className={`px-2 py-0.5 text-xs font-semibold rounded ${payoutYear === currentYear - 1 ? "bg-background shadow-sm text-foreground" : "text-muted-foreground"}`}
-                      >{currentYear - 1}</button>
-                      <button
-                        onClick={() => setPayoutYear(currentYear)}
-                        className={`px-2 py-0.5 text-xs font-semibold rounded ${payoutYear === currentYear ? "bg-background shadow-sm text-foreground" : "text-muted-foreground"}`}
-                      >{currentYear}</button>
-                    </div>
+                    <Select value={String(payoutYear)} onValueChange={(v) => setPayoutYear(Number(v))}>
+                      <SelectTrigger className="h-8 w-[110px] text-xs"><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        {availableYears.map((y) => (
+                          <SelectItem key={y} value={String(y)}>{y}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   </div>
                 </div>
                 <div className="h-[240px] w-full">

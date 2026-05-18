@@ -476,7 +476,33 @@ const AdminDashboard = () => {
 
   // ═══════════ DASHBOARD PAGE ═══════════
   const DashboardPage = () => {
+    const totalMRR = homeowners.reduce((sum, h) => sum + (h.monthlyAmount ?? 0), 0);
+
+    // Revenue breakdown by service type for the current month.
+    // We attribute each homeowner's monthly amount across their visits this month,
+    // grouped by service type — so totals always equal MRR.
+    const now = new Date();
+    const ym = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
+    const revenueByType = new Map<string, { revenue: number; visits: number }>();
+    for (const h of homeowners) {
+      const monthVisits = h.services.filter((s) => (s.serviceDate ?? "").startsWith(ym));
+      if (monthVisits.length === 0 || !h.monthlyAmount) continue;
+      const per = h.monthlyAmount / monthVisits.length;
+      for (const v of monthVisits) {
+        const cur = revenueByType.get(v.type) ?? { revenue: 0, visits: 0 };
+        cur.revenue += per;
+        cur.visits += 1;
+        revenueByType.set(v.type, cur);
+      }
+    }
+    const revenueRows = [...revenueByType.entries()]
+      .map(([type, v]) => ({ type, ...v }))
+      .sort((a, b) => b.revenue - a.revenue);
+    const fmtMoney = (n: number) =>
+      n.toLocaleString("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 });
+
     const stats = [
+      { label: "Monthly Revenue", value: fmtMoney(totalMRR), icon: CreditCard, color: "text-emerald-600", bg: "bg-emerald-50" },
       { label: "Total Homeowners", value: homeowners.length, icon: Users, color: "text-primary", bg: "bg-blue-50" },
       { label: "Pool Technicians", value: technicians.length, icon: Wrench, color: "text-violet-500", bg: "bg-violet-50" },
       { label: "Active Services", value: homeowners.reduce((a, h) => a + h.services.filter(s => s.status === "Scheduled").length, 0), icon: Waves, color: "text-emerald-500", bg: "bg-emerald-50" },
@@ -495,7 +521,7 @@ const AdminDashboard = () => {
             {seeding ? "Seeding…" : "Seed demo data"}
           </Button>
         </div>
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
           {stats.map((c, i) => (
             <Card key={i}>
               <CardContent className="p-5 flex items-center gap-4">
@@ -510,6 +536,48 @@ const AdminDashboard = () => {
             </Card>
           ))}
         </div>
+
+        <Card>
+          <CardHeader className="pb-3">
+            <CardTitle className="text-sm font-bold">
+              Monthly Revenue by Service · {now.toLocaleString("en-US", { month: "long", year: "numeric" })}
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <Table>
+              <TableHeader><TableRow>
+                <TableHead>Service Type</TableHead>
+                <TableHead className="text-right">Visits this month</TableHead>
+                <TableHead className="text-right">Revenue</TableHead>
+              </TableRow></TableHeader>
+              <TableBody>
+                {revenueRows.length === 0 ? (
+                  <TableRow><TableCell colSpan={3} className="text-center text-muted-foreground text-xs py-6">No revenue recorded for this month yet.</TableCell></TableRow>
+                ) : (
+                  <>
+                    {revenueRows.map((r) => (
+                      <TableRow key={r.type}>
+                        <TableCell className="font-medium">{r.type}</TableCell>
+                        <TableCell className="text-right">{r.visits}</TableCell>
+                        <TableCell className="text-right font-semibold">{fmtMoney(r.revenue)}</TableCell>
+                      </TableRow>
+                    ))}
+                    <TableRow>
+                      <TableCell className="font-bold">Total</TableCell>
+                      <TableCell className="text-right font-bold">
+                        {revenueRows.reduce((a, r) => a + r.visits, 0)}
+                      </TableCell>
+                      <TableCell className="text-right font-bold">
+                        {fmtMoney(revenueRows.reduce((a, r) => a + r.revenue, 0))}
+                      </TableCell>
+                    </TableRow>
+                  </>
+                )}
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
+
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           <Card>
              <CardHeader className="pb-3 flex flex-row items-center justify-between">

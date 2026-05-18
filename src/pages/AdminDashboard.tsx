@@ -168,7 +168,7 @@ const AdminDashboard = () => {
   const updateTechnicianActive = useUpdateTechnicianActive();
   const updateTechnicianProfile = useUpdateTechnicianProfile();
   const toggleFredsTag = useToggleFredsTag();
-  const [specialTab, setSpecialTab] = useState<"grandfathered" | "freds">("grandfathered");
+  const [specialTab, setSpecialTab] = useState<"standard" | "grandfathered" | "freds">("standard");
   const [homeownerFilter, setHomeownerFilter] = useState<"all" | "standard" | "grandfathered" | "freds" | "placeholder">("all");
   const [techFilter, setTechFilter] = useState<"all" | "active" | "inactive">("all");
   const [editTechId, setEditTechId] = useState<string | null>(null);
@@ -996,88 +996,7 @@ const AdminDashboard = () => {
         />
 
 
-        {(grandfatheredAccounts.length > 0 || fredsAccounts.length > 0) && (() => {
-          const tabKey = specialTab;
-          const isGF = tabKey === "grandfathered";
-          const accent = isGF ? "amber" : "violet";
-          const borderClass = isGF ? "border-amber-200" : "border-violet-200";
-          const badgeClass = isGF
-            ? "bg-amber-100 text-amber-700 border-amber-200"
-            : "bg-violet-100 text-violet-700 border-violet-200";
-          const badgeLabel = isGF ? "Legacy pricing" : "Notifications suppressed";
-          const rows = isGF ? grandfatheredAccounts : fredsAccounts;
-          const totalMo = isGF ? grandfatheredMRR : fredsMRR;
-          return (
-            <Card className={borderClass}>
-              <CardHeader className="pb-3 flex flex-row items-center justify-between gap-3 flex-wrap">
-                <div className="flex items-center gap-3">
-                  <CardTitle className="text-sm font-bold">Special Accounts</CardTitle>
-                  <div className="flex items-center gap-1 rounded-md bg-muted p-0.5">
-                    <button
-                      onClick={() => setSpecialTab("grandfathered")}
-                      className={`px-3 py-1 text-xs font-semibold rounded ${specialTab === "grandfathered" ? "bg-background shadow-sm text-foreground" : "text-muted-foreground"}`}
-                    >
-                      Grandfathered ({grandfatheredAccounts.length})
-                    </button>
-                    <button
-                      onClick={() => setSpecialTab("freds")}
-                      className={`px-3 py-1 text-xs font-semibold rounded ${specialTab === "freds" ? "bg-background shadow-sm text-foreground" : "text-muted-foreground"}`}
-                    >
-                      Fred's ({fredsAccounts.length})
-                    </button>
-                  </div>
-                  <span className={`inline-flex px-2 py-0.5 rounded-full text-[10px] font-bold border ${badgeClass}`}>
-                    {badgeLabel}
-                  </span>
-                </div>
-                <div className="text-xs text-muted-foreground">
-                  {rows.length} accounts · <span className="text-foreground font-bold">{fmtMoney(totalMo)}/mo</span>
-                </div>
-              </CardHeader>
-              <CardContent className="p-0">
-                <div className="max-h-[360px] overflow-y-auto">
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>Account</TableHead>
-                        <TableHead>Pool Size</TableHead>
-                        <TableHead>Address</TableHead>
-                        <TableHead>Technician</TableHead>
-                        <TableHead className="text-right">Rate</TableHead>
-                        <TableHead>{isGF ? "Note" : "Status"}</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {rows.length === 0 ? (
-                        <TableRow>
-                          <TableCell colSpan={6} className="text-center text-muted-foreground text-xs py-8">
-                            No {isGF ? "grandfathered" : "Fred's"} accounts.
-                          </TableCell>
-                        </TableRow>
-                      ) : rows
-                        .slice()
-                        .sort((a, b) => (a.monthlyAmount ?? 0) - (b.monthlyAmount ?? 0))
-                        .map((h) => (
-                          <TableRow key={h.id}>
-                            <TableCell className="font-medium">{h.name}</TableCell>
-                            <TableCell className="text-xs">{h.pools[0]?.size ?? "—"}</TableCell>
-                            <TableCell className="text-muted-foreground text-xs">{h.pools[0]?.address ?? "—"}</TableCell>
-                            <TableCell className="text-xs">{h.pools[0]?.technician ?? "Unassigned"}</TableCell>
-                            <TableCell className="text-right font-semibold">{fmtMoney(h.monthlyAmount ?? 0)}/mo</TableCell>
-                            <TableCell className={`text-xs text-${accent}-700`}>
-                              {isGF
-                                ? ((h as { grandfatheredNote?: string | null }).grandfatheredNote ?? "Legacy rate")
-                                : "Notifications off"}
-                            </TableCell>
-                          </TableRow>
-                        ))}
-                    </TableBody>
-                  </Table>
-                </div>
-              </CardContent>
-            </Card>
-          );
-        })()}
+
 
         <AppointmentsCard />
 
@@ -1205,7 +1124,108 @@ const AdminDashboard = () => {
             </Table>
           </CardContent>
         </Card>
+
+        {(() => {
+          const standardAccounts = homeowners.filter(
+            (h) => !(h as { isGrandfathered?: boolean }).isGrandfathered && !(h as { isFreds?: boolean }).isFreds,
+          );
+          const standardMRR = standardAccounts.reduce((a, h) => a + (h.monthlyAmount ?? 0), 0);
+          const tabKey = specialTab;
+          const isStd = tabKey === "standard";
+          const isGF = tabKey === "grandfathered";
+          const isFreds = tabKey === "freds";
+          const borderClass = isGF ? "border-amber-200" : isFreds ? "border-violet-200" : "";
+          const badgeClass = isGF
+            ? "bg-amber-100 text-amber-700 border-amber-200"
+            : isFreds
+              ? "bg-violet-100 text-violet-700 border-violet-200"
+              : "bg-blue-100 text-blue-700 border-blue-200";
+          const badgeLabel = isGF ? "Legacy pricing" : isFreds ? "Notifications suppressed" : "Standard pricing";
+          const rows = isStd ? standardAccounts : isGF ? grandfatheredAccounts : fredsAccounts;
+          const totalMo = isStd ? standardMRR : isGF ? grandfatheredMRR : fredsMRR;
+          const lastColLabel = isGF ? "Note" : isFreds ? "Status" : "Plan";
+          const accentClass = isGF ? "text-amber-700" : isFreds ? "text-violet-700" : "text-muted-foreground";
+          return (
+            <Card className={borderClass}>
+              <CardHeader className="pb-3 flex flex-row items-center justify-between gap-3 flex-wrap">
+                <div className="flex items-center gap-3 flex-wrap">
+                  <CardTitle className="text-sm font-bold">Homeowners</CardTitle>
+                  <div className="flex items-center gap-1 rounded-md bg-muted p-0.5">
+                    <button
+                      onClick={() => setSpecialTab("standard")}
+                      className={`px-3 py-1 text-xs font-semibold rounded ${isStd ? "bg-background shadow-sm text-foreground" : "text-muted-foreground"}`}
+                    >
+                      Standard ({standardAccounts.length})
+                    </button>
+                    <button
+                      onClick={() => setSpecialTab("grandfathered")}
+                      className={`px-3 py-1 text-xs font-semibold rounded ${isGF ? "bg-background shadow-sm text-foreground" : "text-muted-foreground"}`}
+                    >
+                      Grandfathered ({grandfatheredAccounts.length})
+                    </button>
+                    <button
+                      onClick={() => setSpecialTab("freds")}
+                      className={`px-3 py-1 text-xs font-semibold rounded ${isFreds ? "bg-background shadow-sm text-foreground" : "text-muted-foreground"}`}
+                    >
+                      Fred's ({fredsAccounts.length})
+                    </button>
+                  </div>
+                  <span className={`inline-flex px-2 py-0.5 rounded-full text-[10px] font-bold border ${badgeClass}`}>
+                    {badgeLabel}
+                  </span>
+                </div>
+                <div className="text-xs text-muted-foreground">
+                  {rows.length} accounts · <span className="text-foreground font-bold">{fmtMoney(totalMo)}/mo</span>
+                </div>
+              </CardHeader>
+              <CardContent className="p-0">
+                <div className="max-h-[360px] overflow-y-auto">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Account</TableHead>
+                        <TableHead>Pool Size</TableHead>
+                        <TableHead>Address</TableHead>
+                        <TableHead>Technician</TableHead>
+                        <TableHead className="text-right">Rate</TableHead>
+                        <TableHead>{lastColLabel}</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {rows.length === 0 ? (
+                        <TableRow>
+                          <TableCell colSpan={6} className="text-center text-muted-foreground text-xs py-8">
+                            No {isStd ? "standard" : isGF ? "grandfathered" : "Fred's"} accounts.
+                          </TableCell>
+                        </TableRow>
+                      ) : rows
+                        .slice()
+                        .sort((a, b) => (a.monthlyAmount ?? 0) - (b.monthlyAmount ?? 0))
+                        .map((h) => (
+                          <TableRow key={h.id}>
+                            <TableCell className="font-medium">{h.name}</TableCell>
+                            <TableCell className="text-xs">{h.pools[0]?.size ?? "—"}</TableCell>
+                            <TableCell className="text-muted-foreground text-xs">{h.pools[0]?.address ?? "—"}</TableCell>
+                            <TableCell className="text-xs">{h.pools[0]?.technician ?? "Unassigned"}</TableCell>
+                            <TableCell className="text-right font-semibold">{fmtMoney(h.monthlyAmount ?? 0)}/mo</TableCell>
+                            <TableCell className={`text-xs ${accentClass}`}>
+                              {isGF
+                                ? ((h as { grandfatheredNote?: string | null }).grandfatheredNote ?? "Legacy rate")
+                                : isFreds
+                                  ? "Notifications off"
+                                  : "Standard"}
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                    </TableBody>
+                  </Table>
+                </div>
+              </CardContent>
+            </Card>
+          );
+        })()}
       </div>
+
     );
   };
 

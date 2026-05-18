@@ -44,6 +44,7 @@ import { useAssignPoolToTech } from "@/hooks/useAdminDetails";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { format } from "date-fns";
+import { BarChart, Bar, XAxis, YAxis, Tooltip as ReTooltip, ResponsiveContainer, Cell, LabelList } from "recharts";
 
 type AdminPage = "dashboard" | "technicians" | "techDetail" | "homeowners" | "homeDetail" | "issues" | "applicants" | "applicantDetail" | "reviews";
 
@@ -221,6 +222,7 @@ const AdminDashboard = () => {
       serviceDate: s.serviceDate,
       type: s.type,
       technician: s.technicianName,
+      technicianId: s.technicianId,
       status: s.status,
       poolId: s.poolId,
     })),
@@ -477,8 +479,114 @@ const AdminDashboard = () => {
     </header>
   );
 
+  // ═══════════ UPCOMING APPOINTMENTS ═══════════
+  const UpcomingAppointmentsCard = () => {
+    const today = new Date(); today.setHours(0, 0, 0, 0);
+    type Row = {
+      id: string; date: Date; dateLabel: string; homeowner: string; address: string;
+      poolSize: string; type: string; status: string; technicianId: string | null; technicianName: string;
+    };
+    const rows: Row[] = [];
+    for (const h of fetchedHomeowners) {
+      for (const s of h.services) {
+        if (s.status !== "Scheduled" || !s.id) continue;
+        const d = s.serviceDate ? new Date(s.serviceDate) : new Date(s.date);
+        if (isNaN(d.getTime()) || d < today) continue;
+        const pool = h.pools.find((p) => p.id === s.poolId);
+        rows.push({
+          id: s.id,
+          date: d,
+          dateLabel: format(d, "EEE, MMM d"),
+          homeowner: h.name,
+          address: pool?.address ?? h.address ?? "—",
+          poolSize: pool?.size ?? "—",
+          type: s.type,
+          status: s.status,
+          technicianId: s.technicianId ?? pool?.technicianId ?? null,
+          technicianName: s.technician || pool?.technician || "Unassigned",
+        });
+      }
+    }
+    rows.sort((a, b) => a.date.getTime() - b.date.getTime());
+    const visible = rows.slice(0, 12);
+
+    const handleAssign = async (serviceId: string, techId: string) => {
+      try {
+        const newTech = techId === "unassigned" ? null : techId;
+        const { error } = await supabase.from("services").update({ technician_id: newTech }).eq("id", serviceId);
+        if (error) throw error;
+        await queryClient.invalidateQueries({ queryKey: ["services"] });
+        await queryClient.invalidateQueries({ queryKey: ["admin-homeowners"] });
+        toast({ title: newTech ? "Technician assigned" : "Technician unassigned", variant: "success" });
+      } catch (e) {
+        toast({ title: "Update failed", description: e instanceof Error ? e.message : String(e), variant: "destructive" });
+      }
+    };
+
+    const activeTechs = technicians.filter((t) => t.status === "Active");
+
+    return (
+      <Card>
+        <CardHeader className="pb-3 flex flex-row items-center justify-between">
+          <CardTitle className="text-sm font-bold">Upcoming Appointments</CardTitle>
+          <div className="text-xs text-muted-foreground">{rows.length} scheduled</div>
+        </CardHeader>
+        <CardContent className="p-0">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Date</TableHead>
+                <TableHead>Homeowner</TableHead>
+                <TableHead>Address</TableHead>
+                <TableHead>Pool</TableHead>
+                <TableHead>Service</TableHead>
+                <TableHead className="w-[220px]">Technician</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {visible.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={6} className="text-center text-muted-foreground text-xs py-8">
+                    No upcoming appointments.
+                  </TableCell>
+                </TableRow>
+              ) : visible.map((r) => (
+                <TableRow key={r.id}>
+                  <TableCell className="font-medium whitespace-nowrap">{r.dateLabel}</TableCell>
+                  <TableCell>{r.homeowner}</TableCell>
+                  <TableCell className="text-muted-foreground">{r.address}</TableCell>
+                  <TableCell className="text-xs">{r.poolSize}</TableCell>
+                  <TableCell>{r.type}</TableCell>
+                  <TableCell>
+                    <Select
+                      value={r.technicianId ?? "unassigned"}
+                      onValueChange={(v) => handleAssign(r.id, v)}
+                    >
+                      <SelectTrigger className="h-9 text-xs">
+                        <SelectValue placeholder="Assign technician" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="unassigned">
+                          <span className="text-muted-foreground">Unassigned</span>
+                        </SelectItem>
+                        {activeTechs.map((t) => (
+                          <SelectItem key={t.id} value={t.id}>{t.name}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </CardContent>
+      </Card>
+    );
+  };
+
   // ═══════════ DASHBOARD PAGE ═══════════
   const DashboardPage = () => {
+
     // Weekly base price per pool size (Standard plan).
     const POOL_SIZE_PRICES: { key: "small" | "medium" | "large"; label: string; price: number; match: (s: string) => boolean }[] = [
       { key: "small", label: "Small Pool", price: 120, match: (s) => /small/i.test(s) },
@@ -540,44 +648,55 @@ const AdminDashboard = () => {
         </div>
 
         <Card>
-          <CardHeader className="pb-3">
+          <CardHeader className="pb-3 flex flex-row items-center justify-between">
             <CardTitle className="text-sm font-bold">
               Monthly Revenue by Service · {now.toLocaleString("en-US", { month: "long", year: "numeric" })}
             </CardTitle>
+            <div className="text-xs text-muted-foreground">
+              Total <span className="ml-1 text-foreground font-bold">{fmtMoney(totalMRR)}</span> · {totalPools} pools
+            </div>
           </CardHeader>
           <CardContent>
-            <Table>
-              <TableHeader><TableRow>
-                <TableHead>Service</TableHead>
-                <TableHead className="text-right">Pools</TableHead>
-                <TableHead className="text-right">Price / pool</TableHead>
-                <TableHead className="text-right">Revenue</TableHead>
-              </TableRow></TableHeader>
-              <TableBody>
-                {totalPools === 0 ? (
-                  <TableRow><TableCell colSpan={4} className="text-center text-muted-foreground text-xs py-6">No pools on file yet.</TableCell></TableRow>
-                ) : (
-                  <>
-                    {revenueRows.map((r) => (
-                      <TableRow key={r.label}>
-                        <TableCell className="font-medium">{r.label}</TableCell>
-                        <TableCell className="text-right">{r.count}</TableCell>
-                        <TableCell className="text-right">{fmtMoney(r.price)}</TableCell>
-                        <TableCell className="text-right font-semibold">{fmtMoney(r.revenue)}</TableCell>
-                      </TableRow>
-                    ))}
-                    <TableRow>
-                      <TableCell className="font-bold">Total</TableCell>
-                      <TableCell className="text-right font-bold">{totalPools}</TableCell>
-                      <TableCell />
-                      <TableCell className="text-right font-bold">{fmtMoney(totalMRR)}</TableCell>
-                    </TableRow>
-                  </>
-                )}
-              </TableBody>
-            </Table>
+            {totalPools === 0 ? (
+              <div className="text-center text-muted-foreground text-xs py-10">No pools on file yet.</div>
+            ) : (
+              <div className="h-[280px] w-full">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={revenueRows} margin={{ top: 24, right: 16, left: 8, bottom: 8 }}>
+                    <XAxis dataKey="label" tick={{ fontSize: 12 }} axisLine={false} tickLine={false} />
+                    <YAxis
+                      tickFormatter={(v) => `$${v}`}
+                      tick={{ fontSize: 11 }}
+                      axisLine={false}
+                      tickLine={false}
+                      width={56}
+                    />
+                    <ReTooltip
+                      cursor={{ fill: "hsl(var(--muted))", opacity: 0.4 }}
+                      formatter={(value: number, _name, p) => [fmtMoney(value), `${p.payload.count} pools × ${fmtMoney(p.payload.price)}`]}
+                      labelStyle={{ fontWeight: 600 }}
+                      contentStyle={{ borderRadius: 8, fontSize: 12 }}
+                    />
+                    <Bar dataKey="revenue" radius={[8, 8, 0, 0]}>
+                      {revenueRows.map((_, i) => (
+                        <Cell key={i} fill={["hsl(var(--primary))", "hsl(199 89% 48%)", "hsl(173 80% 40%)"][i % 3]} />
+                      ))}
+                      <LabelList
+                        dataKey="revenue"
+                        position="top"
+                        formatter={(v: number) => (v > 0 ? fmtMoney(v) : "")}
+                        style={{ fontSize: 11, fontWeight: 600, fill: "hsl(var(--foreground))" }}
+                      />
+                    </Bar>
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            )}
           </CardContent>
         </Card>
+
+        <UpcomingAppointmentsCard />
+
 
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">

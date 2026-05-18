@@ -479,21 +479,27 @@ const AdminDashboard = () => {
     </header>
   );
 
-  // ═══════════ UPCOMING APPOINTMENTS ═══════════
-  const UpcomingAppointmentsCard = () => {
+  // ═══════════ APPOINTMENTS (UPCOMING / PAST) ═══════════
+  const [apptTab, setApptTab] = useState<"upcoming" | "past">("upcoming");
+  const [apptPage, setApptPage] = useState(1);
+  useEffect(() => { setApptPage(1); }, [apptTab]);
+  const PAGE_SIZE = 10;
+
+  const AppointmentsCard = () => {
     const today = new Date(); today.setHours(0, 0, 0, 0);
     type Row = {
       id: string; date: Date; dateLabel: string; homeowner: string; address: string;
       poolSize: string; type: string; status: string; technicianId: string | null; technicianName: string;
     };
-    const rows: Row[] = [];
+    const upcoming: Row[] = [];
+    const past: Row[] = [];
     for (const h of fetchedHomeowners) {
       for (const s of h.services) {
-        if (s.status !== "Scheduled" || !s.id) continue;
+        if (!s.id) continue;
         const d = s.serviceDate ? new Date(s.serviceDate) : new Date(s.date);
-        if (isNaN(d.getTime()) || d < today) continue;
+        if (isNaN(d.getTime())) continue;
         const pool = h.pools.find((p) => p.id === s.poolId);
-        rows.push({
+        const row: Row = {
           id: s.id,
           date: d,
           dateLabel: format(d, "EEE, MMM d"),
@@ -504,11 +510,18 @@ const AdminDashboard = () => {
           status: s.status,
           technicianId: s.technicianId ?? pool?.technicianId ?? null,
           technicianName: s.technician || pool?.technician || "Unassigned",
-        });
+        };
+        if (s.status === "Scheduled" && d >= today) upcoming.push(row);
+        else if (s.status === "Completed" || d < today) past.push(row);
       }
     }
-    rows.sort((a, b) => a.date.getTime() - b.date.getTime());
-    const visible = rows.slice(0, 12);
+    upcoming.sort((a, b) => a.date.getTime() - b.date.getTime());
+    past.sort((a, b) => b.date.getTime() - a.date.getTime());
+
+    const rows = apptTab === "upcoming" ? upcoming : past;
+    const totalPages = Math.max(1, Math.ceil(rows.length / PAGE_SIZE));
+    const page = Math.min(apptPage, totalPages);
+    const visible = rows.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
     const handleAssign = async (serviceId: string, techId: string) => {
       try {
@@ -527,9 +540,27 @@ const AdminDashboard = () => {
 
     return (
       <Card>
-        <CardHeader className="pb-3 flex flex-row items-center justify-between">
-          <CardTitle className="text-sm font-bold">Upcoming Appointments</CardTitle>
-          <div className="text-xs text-muted-foreground">{rows.length} scheduled</div>
+        <CardHeader className="pb-3 flex flex-row items-center justify-between gap-3 flex-wrap">
+          <div className="flex items-center gap-3">
+            <CardTitle className="text-sm font-bold">Appointments</CardTitle>
+            <div className="flex items-center gap-1 rounded-md bg-muted p-0.5">
+              <button
+                onClick={() => setApptTab("upcoming")}
+                className={`px-3 py-1 text-xs font-semibold rounded ${apptTab === "upcoming" ? "bg-background shadow-sm text-foreground" : "text-muted-foreground"}`}
+              >
+                Upcoming ({upcoming.length})
+              </button>
+              <button
+                onClick={() => setApptTab("past")}
+                className={`px-3 py-1 text-xs font-semibold rounded ${apptTab === "past" ? "bg-background shadow-sm text-foreground" : "text-muted-foreground"}`}
+              >
+                Past ({past.length})
+              </button>
+            </div>
+          </div>
+          <Button size="sm" variant="outline" className="gap-1.5 text-xs" onClick={() => setReportIssueOpen(true)}>
+            <AlertCircle className="h-3.5 w-3.5" /> Report Issue
+          </Button>
         </CardHeader>
         <CardContent className="p-0">
           <Table>
@@ -547,7 +578,7 @@ const AdminDashboard = () => {
               {visible.length === 0 ? (
                 <TableRow>
                   <TableCell colSpan={6} className="text-center text-muted-foreground text-xs py-8">
-                    No upcoming appointments.
+                    No {apptTab} appointments.
                   </TableCell>
                 </TableRow>
               ) : visible.map((r) => (
@@ -558,27 +589,46 @@ const AdminDashboard = () => {
                   <TableCell className="text-xs">{r.poolSize}</TableCell>
                   <TableCell>{r.type}</TableCell>
                   <TableCell>
-                    <Select
-                      value={r.technicianId ?? "unassigned"}
-                      onValueChange={(v) => handleAssign(r.id, v)}
-                    >
-                      <SelectTrigger className="h-9 text-xs">
-                        <SelectValue placeholder="Assign technician" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="unassigned">
-                          <span className="text-muted-foreground">Unassigned</span>
-                        </SelectItem>
-                        {activeTechs.map((t) => (
-                          <SelectItem key={t.id} value={t.id}>{t.name}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                    {apptTab === "upcoming" ? (
+                      <Select
+                        value={r.technicianId ?? "unassigned"}
+                        onValueChange={(v) => handleAssign(r.id, v)}
+                      >
+                        <SelectTrigger className="h-9 text-xs">
+                          <SelectValue placeholder="Assign technician" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="unassigned">
+                            <span className="text-muted-foreground">Unassigned</span>
+                          </SelectItem>
+                          {activeTechs.map((t) => (
+                            <SelectItem key={t.id} value={t.id}>{t.name}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    ) : (
+                      <span className="text-xs">{r.technicianName}</span>
+                    )}
                   </TableCell>
                 </TableRow>
               ))}
             </TableBody>
           </Table>
+          {rows.length > PAGE_SIZE && (
+            <div className="flex items-center justify-between px-4 py-3 border-t border-border">
+              <div className="text-xs text-muted-foreground">
+                Page {page} of {totalPages} · {rows.length} total
+              </div>
+              <div className="flex items-center gap-2">
+                <Button size="sm" variant="outline" disabled={page <= 1} onClick={() => setApptPage(page - 1)}>
+                  Previous
+                </Button>
+                <Button size="sm" variant="outline" disabled={page >= totalPages} onClick={() => setApptPage(page + 1)}>
+                  Next
+                </Button>
+              </div>
+            </div>
+          )}
         </CardContent>
       </Card>
     );

@@ -547,13 +547,13 @@ const AdminDashboard = () => {
             <div className="flex items-center gap-1 rounded-md bg-muted p-0.5">
               <button
                 onClick={() => setApptTab("upcoming")}
-                className={`px-3 py-1 text-xs font-semibold rounded ${apptTab === "upcoming" ? "bg-background shadow-sm text-foreground" : "text-muted-foreground"}`}
+                className={`px-3 py-1 text-xs font-semibold rounded transition-colors ${apptTab === "upcoming" ? "bg-sky-100 text-sky-800 shadow-sm" : "text-muted-foreground hover:text-foreground"}`}
               >
                 Upcoming ({upcoming.length})
               </button>
               <button
                 onClick={() => setApptTab("past")}
-                className={`px-3 py-1 text-xs font-semibold rounded ${apptTab === "past" ? "bg-background shadow-sm text-foreground" : "text-muted-foreground"}`}
+                className={`px-3 py-1 text-xs font-semibold rounded transition-colors ${apptTab === "past" ? "bg-sky-100 text-sky-800 shadow-sm" : "text-muted-foreground hover:text-foreground"}`}
               >
                 Past ({past.length})
               </button>
@@ -1447,19 +1447,19 @@ const AdminDashboard = () => {
                   <div className="flex items-center gap-1 rounded-md bg-muted p-0.5">
                     <button
                       onClick={() => setSpecialTab("standard")}
-                      className={`px-3 py-1 text-xs font-semibold rounded ${isStd ? "bg-background shadow-sm text-foreground" : "text-muted-foreground"}`}
+                      className={`px-3 py-1 text-xs font-semibold rounded transition-colors ${isStd ? "bg-sky-100 text-sky-800 shadow-sm" : "text-muted-foreground hover:text-foreground"}`}
                     >
                       Standard ({standardAccounts.length})
                     </button>
                     <button
                       onClick={() => setSpecialTab("grandfathered")}
-                      className={`px-3 py-1 text-xs font-semibold rounded ${isGF ? "bg-background shadow-sm text-foreground" : "text-muted-foreground"}`}
+                      className={`px-3 py-1 text-xs font-semibold rounded transition-colors ${isGF ? "bg-sky-100 text-sky-800 shadow-sm" : "text-muted-foreground hover:text-foreground"}`}
                     >
                       Grandfathered ({grandfatheredAccounts.length})
                     </button>
                     <button
                       onClick={() => setSpecialTab("freds")}
-                      className={`px-3 py-1 text-xs font-semibold rounded ${isFreds ? "bg-background shadow-sm text-foreground" : "text-muted-foreground"}`}
+                      className={`px-3 py-1 text-xs font-semibold rounded transition-colors ${isFreds ? "bg-sky-100 text-sky-800 shadow-sm" : "text-muted-foreground hover:text-foreground"}`}
                     >
                       Fred's ({fredsAccounts.length})
                     </button>
@@ -1557,17 +1557,15 @@ const AdminDashboard = () => {
 
     return (
       <div className="space-y-4">
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1 rounded-md bg-muted p-0.5">
           {(["all", "active", "inactive"] as const).map((k) => (
-            <Button
+            <button
               key={k}
-              size="sm"
-              variant={techFilter === k ? "default" : "outline"}
               onClick={() => setTechFilter(k)}
-              className="capitalize"
+              className={`px-3 py-1 text-xs font-semibold rounded capitalize transition-colors ${techFilter === k ? "bg-sky-100 text-sky-800 shadow-sm" : "text-muted-foreground hover:text-foreground"}`}
             >
               {k} ({counts[k]})
-            </Button>
+            </button>
           ))}
         </div>
         <Card>
@@ -1763,7 +1761,7 @@ const AdminDashboard = () => {
                 <button
                   key={t.key}
                   onClick={() => setHomeownerFilter(t.key)}
-                  className={`px-3 py-1 text-xs font-semibold rounded ${homeownerFilter === t.key ? "bg-background shadow-sm text-foreground" : "text-muted-foreground"}`}
+                  className={`px-3 py-1 text-xs font-semibold rounded transition-colors ${homeownerFilter === t.key ? "bg-sky-100 text-sky-800 shadow-sm" : "text-muted-foreground hover:text-foreground"}`}
                 >
                   {t.label} ({counts[t.key]})
                 </button>
@@ -1879,10 +1877,10 @@ const AdminDashboard = () => {
     const TabBtn = ({ id, label }: { id: typeof detailTab; label: string }) => (
       <button
         onClick={() => setDetailTab(id)}
-        className={`px-3 py-2 text-sm font-medium border-b-2 transition-colors ${
+        className={`px-3 py-1 text-sm font-medium rounded transition-colors ${
           detailTab === id
-            ? "border-primary text-foreground"
-            : "border-transparent text-muted-foreground hover:text-foreground"
+            ? "bg-sky-100 text-sky-800 shadow-sm"
+            : "text-muted-foreground hover:text-foreground"
         }`}
       >
         {label}
@@ -2029,8 +2027,8 @@ const AdminDashboard = () => {
             <CardHeader className="flex flex-row items-center justify-between">
               <CardTitle className="text-sm">Service History</CardTitle>
               <div className="flex gap-1 p-1 rounded-md bg-muted">
-                <button onClick={() => setScheduleTab("upcoming")} className={`px-3 py-1 text-xs font-medium rounded ${scheduleTab === "upcoming" ? "bg-background shadow-sm" : "text-muted-foreground"}`}>Upcoming</button>
-                <button onClick={() => setScheduleTab("past")} className={`px-3 py-1 text-xs font-medium rounded ${scheduleTab === "past" ? "bg-background shadow-sm" : "text-muted-foreground"}`}>Past</button>
+                <button onClick={() => setScheduleTab("upcoming")} className={`px-3 py-1 text-xs font-medium rounded transition-colors ${scheduleTab === "upcoming" ? "bg-sky-100 text-sky-800 shadow-sm" : "text-muted-foreground hover:text-foreground"}`}>Upcoming</button>
+                <button onClick={() => setScheduleTab("past")} className={`px-3 py-1 text-xs font-medium rounded transition-colors ${scheduleTab === "past" ? "bg-sky-100 text-sky-800 shadow-sm" : "text-muted-foreground hover:text-foreground"}`}>Past</button>
               </div>
             </CardHeader>
             <CardContent className="p-0">
@@ -2222,16 +2220,16 @@ const AdminDashboard = () => {
 
     return (
       <div className="space-y-4">
-        <div className="flex items-center gap-2 flex-wrap">
+        <div className="flex items-center gap-1 rounded-md bg-muted p-0.5 flex-wrap">
           {(["All", "Pending", "Approved", "Rejected"] as const).map(f => (
-            <Button key={f} size="sm" variant={reviewFilter === f ? "default" : "outline"} onClick={() => setReviewFilter(f)}>
+            <button key={f} onClick={() => setReviewFilter(f)} className={`px-3 py-1 text-xs font-semibold rounded transition-colors ${reviewFilter === f ? "bg-sky-100 text-sky-800 shadow-sm" : "text-muted-foreground hover:text-foreground"}`}>
               {f}
               {f !== "All" && (
-                <span className="ml-1.5 text-[10px] bg-background/20 px-1.5 py-0.5 rounded-full">
+                <span className="ml-1.5 text-[10px] bg-sky-200/50 px-1.5 py-0.5 rounded-full">
                   {reviews.filter(r => r.status === f).length}
                 </span>
               )}
-            </Button>
+            </button>
           ))}
         </div>
         <Card>

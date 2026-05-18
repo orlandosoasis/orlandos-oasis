@@ -647,7 +647,12 @@ const AdminDashboard = () => {
   // ═══════════ FINANCIALS CARD (Revenue / Payouts / Supplies / Profit) ═══════════
   type RevenueRow = { label: string; count: number; revenue: number; price: number };
   type FinTech = { id: string; name: string; assignedPools: number; payoutPerPool?: number };
-  type FinHome = { pools: { size: string }[] };
+  type FinHome = {
+    pools: { size: string }[];
+    monthlyAmount?: number;
+    isGrandfathered?: boolean;
+    isFreds?: boolean;
+  };
 
   const FinancialsCard = ({
     revenueRows, totalMRR, totalPools, technicians, homeowners,

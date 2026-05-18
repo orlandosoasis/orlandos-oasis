@@ -885,7 +885,7 @@ const AdminDashboard = () => {
         <CardHeader className="pb-3 flex flex-row items-center justify-between gap-3 flex-wrap">
           <div className="flex items-center gap-3 flex-wrap">
             <CardTitle className="text-sm font-bold">
-              Financials · {now.toLocaleString("en-US", { month: "long", year: "numeric" })}
+              Financials
             </CardTitle>
             <div className="flex items-center gap-1 rounded-md bg-muted p-0.5">
               {TAB_BTN("revenue", "Revenue")}

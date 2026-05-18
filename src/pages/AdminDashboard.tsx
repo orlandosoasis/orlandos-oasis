@@ -206,7 +206,7 @@ const AdminDashboard = () => {
     })),
   }));
 
-  const fetchedHomeowners: (AdminHomeowner & { isGrandfathered?: boolean; grandfatheredNote?: string | null; isPlaceholder?: boolean })[] = (homeownersQuery.data ?? []).map((h) => ({
+  const fetchedHomeowners: (AdminHomeowner & { isGrandfathered?: boolean; grandfatheredNote?: string | null; isPlaceholder?: boolean; isFreds?: boolean; notificationsEnabled?: boolean })[] = (homeownersQuery.data ?? []).map((h) => ({
     id: h.id,
     name: h.name,
     email: h.email,

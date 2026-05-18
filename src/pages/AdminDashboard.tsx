@@ -906,25 +906,39 @@ const AdminDashboard = () => {
             totalPools === 0 ? (
               <div className="text-center text-muted-foreground text-xs py-10">No pools on file yet.</div>
             ) : (
-              <div className="h-[280px] w-full">
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={revenueRows} margin={{ top: 24, right: 16, left: 8, bottom: 8 }}>
-                    <XAxis dataKey="label" tick={{ fontSize: 12 }} axisLine={false} tickLine={false} />
-                    <YAxis tickFormatter={(v) => `$${v}`} tick={{ fontSize: 11 }} axisLine={false} tickLine={false} width={56} />
-                    <ReTooltip
-                      cursor={{ fill: "hsl(var(--muted))", opacity: 0.4 }}
-                      formatter={(value: number, _name, p) => [fmtMoney(value), `${p.payload.count} pools × ${fmtMoney(p.payload.price)}`]}
-                      labelStyle={{ fontWeight: 600 }}
-                      contentStyle={{ borderRadius: 8, fontSize: 12 }}
-                    />
-                    <Bar dataKey="revenue" radius={[8, 8, 0, 0]}>
-                      {revenueRows.map((_, i) => (
-                        <Cell key={i} fill={["hsl(var(--primary))", "hsl(199 89% 48%)", "hsl(173 80% 40%)"][i % 3]} />
-                      ))}
-                      <LabelList dataKey="revenue" position="top" formatter={(v: number) => (v > 0 ? fmtMoney(v) : "")} style={{ fontSize: 11, fontWeight: 600, fill: "hsl(var(--foreground))" }} />
-                    </Bar>
-                  </BarChart>
-                </ResponsiveContainer>
+              <div className="space-y-3">
+                <div className="flex items-center justify-between flex-wrap gap-2">
+                  <div className="text-xs font-bold text-foreground">Revenue by Month · {revenueYear}</div>
+                  <div className="flex items-center gap-2">
+                    <div className="text-xs text-muted-foreground">
+                      Year total <span className="text-foreground font-semibold">{fmtMoney(revenueYearTotal)}</span>
+                    </div>
+                    <div className="flex items-center gap-1 rounded-md bg-muted p-0.5">
+                      <button
+                        onClick={() => setRevenueYear(currentYear - 1)}
+                        className={`px-2 py-0.5 text-xs font-semibold rounded ${revenueYear === currentYear - 1 ? "bg-background shadow-sm text-foreground" : "text-muted-foreground"}`}
+                      >{currentYear - 1}</button>
+                      <button
+                        onClick={() => setRevenueYear(currentYear)}
+                        className={`px-2 py-0.5 text-xs font-semibold rounded ${revenueYear === currentYear ? "bg-background shadow-sm text-foreground" : "text-muted-foreground"}`}
+                      >{currentYear}</button>
+                    </div>
+                  </div>
+                </div>
+                <div className="h-[280px] w-full">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart data={revenueMonthly} margin={{ top: 24, right: 16, left: 8, bottom: 8 }}>
+                      <XAxis dataKey="month" tick={{ fontSize: 12 }} axisLine={false} tickLine={false} />
+                      <YAxis tickFormatter={(v) => `$${v}`} tick={{ fontSize: 11 }} axisLine={false} tickLine={false} width={56} />
+                      <ReTooltip
+                        cursor={{ fill: "hsl(var(--muted))", opacity: 0.4 }}
+                        formatter={(value: number) => [fmtMoney(value), "Revenue"]}
+                        contentStyle={{ borderRadius: 8, fontSize: 12 }}
+                      />
+                      <Bar dataKey="total" radius={[8, 8, 0, 0]} fill="hsl(var(--primary))" />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
               </div>
             )
           )}
@@ -933,12 +947,26 @@ const AdminDashboard = () => {
             <div className="space-y-6">
               <div>
                 <div className="flex items-center justify-between mb-2 flex-wrap gap-2">
-                  <div className="text-xs font-bold text-foreground">Payouts by Month · last 6 months</div>
-                  <div className="text-xs text-muted-foreground">Recurring monthly <span className="text-foreground font-semibold">{fmtMoney(totalPayouts)}</span></div>
+                  <div className="text-xs font-bold text-foreground">Payouts by Month · {payoutYear}</div>
+                  <div className="flex items-center gap-2">
+                    <div className="text-xs text-muted-foreground">
+                      Year total <span className="text-foreground font-semibold">{fmtMoney(payoutYearTotal)}</span>
+                    </div>
+                    <div className="flex items-center gap-1 rounded-md bg-muted p-0.5">
+                      <button
+                        onClick={() => setPayoutYear(currentYear - 1)}
+                        className={`px-2 py-0.5 text-xs font-semibold rounded ${payoutYear === currentYear - 1 ? "bg-background shadow-sm text-foreground" : "text-muted-foreground"}`}
+                      >{currentYear - 1}</button>
+                      <button
+                        onClick={() => setPayoutYear(currentYear)}
+                        className={`px-2 py-0.5 text-xs font-semibold rounded ${payoutYear === currentYear ? "bg-background shadow-sm text-foreground" : "text-muted-foreground"}`}
+                      >{currentYear}</button>
+                    </div>
+                  </div>
                 </div>
                 <div className="h-[240px] w-full">
                   <ResponsiveContainer width="100%" height="100%">
-                    <BarChart data={monthlyPayoutTrend} margin={{ top: 24, right: 16, left: 8, bottom: 8 }}>
+                    <BarChart data={payoutMonthly} margin={{ top: 24, right: 16, left: 8, bottom: 8 }}>
                       <XAxis dataKey="month" tick={{ fontSize: 12 }} axisLine={false} tickLine={false} />
                       <YAxis tickFormatter={(v) => `$${v}`} tick={{ fontSize: 11 }} axisLine={false} tickLine={false} width={56} />
                       <ReTooltip
@@ -946,9 +974,7 @@ const AdminDashboard = () => {
                         formatter={(value: number) => [fmtMoney(value), "Tech payouts"]}
                         contentStyle={{ borderRadius: 8, fontSize: 12 }}
                       />
-                      <Bar dataKey="total" radius={[8, 8, 0, 0]} fill="hsl(38 92% 50%)">
-                        <LabelList dataKey="total" position="top" formatter={(v: number) => (v > 0 ? fmtMoney(v) : "")} style={{ fontSize: 11, fontWeight: 600, fill: "hsl(var(--foreground))" }} />
-                      </Bar>
+                      <Bar dataKey="total" radius={[8, 8, 0, 0]} fill="hsl(38 92% 50%)" />
                     </BarChart>
                   </ResponsiveContainer>
                 </div>

@@ -164,6 +164,7 @@ const AdminDashboard = () => {
   const assignPoolToTech = useAssignPoolToTech();
   const updateTechnicianActive = useUpdateTechnicianActive();
   const updateTechnicianProfile = useUpdateTechnicianProfile();
+  const toggleFredsTag = useToggleFredsTag();
   const [techFilter, setTechFilter] = useState<"all" | "active" | "inactive">("all");
   const [editTechId, setEditTechId] = useState<string | null>(null);
   const [techDraftName, setTechDraftName] = useState("");

@@ -49,6 +49,7 @@ export interface AdminHomeownerPool {
 export interface AdminHomeownerService {
   id?: string;
   date: string;
+  serviceDate?: string;
   type: string;
   technician: string;
   status: "Completed" | "Scheduled";
@@ -63,6 +64,7 @@ export interface AdminHomeowner {
   address: string;
   plan: string;
   startDate: string;
+  monthlyAmount?: number;
   pools: AdminHomeownerPool[];
   services: AdminHomeownerService[];
   manuallyAdded?: boolean;

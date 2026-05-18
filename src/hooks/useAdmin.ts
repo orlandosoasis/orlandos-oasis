@@ -237,6 +237,7 @@ export function useAdminHomeowners() {
           address: addressParts.join(", ") || "—",
           plan: "Standard",
           startDate: fmtDate(h.created_at),
+          monthlyAmount: Number((h as { monthly_amount?: number | null }).monthly_amount ?? 0),
           pools: ownerPools.map((p) => {
             const next = ownerServices
               .filter((s) => s.pool_id === p.id && (s.status === "scheduled" || s.status === "in_progress"))
@@ -256,6 +257,7 @@ export function useAdminHomeowners() {
             .map((s) => ({
               id: s.id,
               date: fmtServiceDate(s.service_date),
+              serviceDate: s.service_date,
               type: s.service_type,
               technicianName: techName(s.technician_id),
               status: (s.status === "completed" ? "Completed" : "Scheduled") as "Completed" | "Scheduled",

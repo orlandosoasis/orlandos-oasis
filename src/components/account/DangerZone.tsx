@@ -41,7 +41,7 @@ export function DangerZone() {
   const handleExport = async () => {
     setExporting(true);
     try {
-      const { data, error } = await supabase.rpc("export_my_data");
+      const { data, error } = await (supabase.rpc as any)("export_my_data");
       if (error) throw error;
       const blob = new Blob([JSON.stringify(data, null, 2)], {
         type: "application/json",
@@ -71,7 +71,7 @@ export function DangerZone() {
     if (confirmText !== "DELETE") return;
     setDeleting(true);
     try {
-      const { error } = await supabase.rpc("delete_my_account");
+      const { error } = await (supabase.rpc as any)("delete_my_account");
       if (error) throw error;
       await logout();
       toast({

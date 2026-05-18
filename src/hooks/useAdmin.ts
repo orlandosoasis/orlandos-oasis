@@ -497,3 +497,20 @@ export function useUpdateHomeownerProfile() {
     },
   });
 }
+
+/**
+ * Toggle the Fred's tag on a homeowner. When tagged, notifications are suppressed.
+ */
+export function useToggleFredsTag() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ id, isFreds }: { id: string; isFreds: boolean }) => {
+      const { error } = await supabase
+        .from("profiles")
+        .update({ is_freds: isFreds, notifications_enabled: !isFreds })
+        .eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["admin-homeowners"] }),
+  });
+}

@@ -203,6 +203,7 @@ const AdminDashboard = () => {
     address: h.address,
     plan: h.plan,
     startDate: h.startDate,
+    monthlyAmount: h.monthlyAmount,
     pools: h.pools.map((p) => ({
       id: p.id,
       address: p.address,
@@ -214,6 +215,7 @@ const AdminDashboard = () => {
     services: h.services.map((s) => ({
       id: s.id,
       date: s.date,
+      serviceDate: s.serviceDate,
       type: s.type,
       technician: s.technicianName,
       status: s.status,

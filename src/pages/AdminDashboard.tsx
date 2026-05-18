@@ -1114,7 +1114,19 @@ const AdminDashboard = () => {
 
 
 
-  // ═══════════ DASHBOARD PAGE ═══════════
+  // Day-off requests local state (mock, persists for the session).
+  type DayOffStatus = "Pending" | "Approved" | "Denied" | "None";
+  interface DayOffRequest { dates: string; reason: string; status: DayOffStatus }
+  const defaultDayOff: DayOffRequest[] = [
+    { dates: "May 23 – May 24, 2026", reason: "Family event", status: "Pending" },
+    { dates: "Jun 02, 2026", reason: "Medical appointment", status: "Approved" },
+    { dates: "Jun 14 – Jun 16, 2026", reason: "Vacation", status: "Pending" },
+    { dates: "—", reason: "—", status: "None" },
+  ];
+  const [dayOffByTech, setDayOffByTech] = useState<Record<string, DayOffRequest>>({});
+  const [editDayOffTechId, setEditDayOffTechId] = useState<string | null>(null);
+  const [editDayOffDraft, setEditDayOffDraft] = useState<DayOffRequest>({ dates: "", reason: "", status: "Pending" });
+
   const DashboardPage = () => {
 
 

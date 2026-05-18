@@ -478,8 +478,114 @@ const AdminDashboard = () => {
     </header>
   );
 
+  // ═══════════ UPCOMING APPOINTMENTS ═══════════
+  const UpcomingAppointmentsCard = () => {
+    const today = new Date(); today.setHours(0, 0, 0, 0);
+    type Row = {
+      id: string; date: Date; dateLabel: string; homeowner: string; address: string;
+      poolSize: string; type: string; status: string; technicianId: string | null; technicianName: string;
+    };
+    const rows: Row[] = [];
+    for (const h of fetchedHomeowners) {
+      for (const s of h.services) {
+        if (s.status !== "Scheduled" || !s.id) continue;
+        const d = s.serviceDate ? new Date(s.serviceDate) : new Date(s.date);
+        if (isNaN(d.getTime()) || d < today) continue;
+        const pool = h.pools.find((p) => p.id === s.poolId);
+        rows.push({
+          id: s.id,
+          date: d,
+          dateLabel: format(d, "EEE, MMM d"),
+          homeowner: h.name,
+          address: pool?.address ?? h.address ?? "—",
+          poolSize: pool?.size ?? "—",
+          type: s.type,
+          status: s.status,
+          technicianId: pool?.technicianId ?? null,
+          technicianName: s.technician || pool?.technician || "Unassigned",
+        });
+      }
+    }
+    rows.sort((a, b) => a.date.getTime() - b.date.getTime());
+    const visible = rows.slice(0, 12);
+
+    const handleAssign = async (serviceId: string, techId: string) => {
+      try {
+        const newTech = techId === "unassigned" ? null : techId;
+        const { error } = await supabase.from("services").update({ technician_id: newTech }).eq("id", serviceId);
+        if (error) throw error;
+        await queryClient.invalidateQueries({ queryKey: ["services"] });
+        await queryClient.invalidateQueries({ queryKey: ["admin-homeowners"] });
+        toast({ title: newTech ? "Technician assigned" : "Technician unassigned", variant: "success" });
+      } catch (e) {
+        toast({ title: "Update failed", description: e instanceof Error ? e.message : String(e), variant: "destructive" });
+      }
+    };
+
+    const activeTechs = technicians.filter((t) => t.status === "Active");
+
+    return (
+      <Card>
+        <CardHeader className="pb-3 flex flex-row items-center justify-between">
+          <CardTitle className="text-sm font-bold">Upcoming Appointments</CardTitle>
+          <div className="text-xs text-muted-foreground">{rows.length} scheduled</div>
+        </CardHeader>
+        <CardContent className="p-0">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Date</TableHead>
+                <TableHead>Homeowner</TableHead>
+                <TableHead>Address</TableHead>
+                <TableHead>Pool</TableHead>
+                <TableHead>Service</TableHead>
+                <TableHead className="w-[220px]">Technician</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {visible.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={6} className="text-center text-muted-foreground text-xs py-8">
+                    No upcoming appointments.
+                  </TableCell>
+                </TableRow>
+              ) : visible.map((r) => (
+                <TableRow key={r.id}>
+                  <TableCell className="font-medium whitespace-nowrap">{r.dateLabel}</TableCell>
+                  <TableCell>{r.homeowner}</TableCell>
+                  <TableCell className="text-muted-foreground">{r.address}</TableCell>
+                  <TableCell className="text-xs">{r.poolSize}</TableCell>
+                  <TableCell>{r.type}</TableCell>
+                  <TableCell>
+                    <Select
+                      value={r.technicianId ?? "unassigned"}
+                      onValueChange={(v) => handleAssign(r.id, v)}
+                    >
+                      <SelectTrigger className="h-9 text-xs">
+                        <SelectValue placeholder="Assign technician" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="unassigned">
+                          <span className="text-muted-foreground">Unassigned</span>
+                        </SelectItem>
+                        {activeTechs.map((t) => (
+                          <SelectItem key={t.id} value={t.id}>{t.name}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </CardContent>
+      </Card>
+    );
+  };
+
   // ═══════════ DASHBOARD PAGE ═══════════
   const DashboardPage = () => {
+
     // Weekly base price per pool size (Standard plan).
     const POOL_SIZE_PRICES: { key: "small" | "medium" | "large"; label: string; price: number; match: (s: string) => boolean }[] = [
       { key: "small", label: "Small Pool", price: 120, match: (s) => /small/i.test(s) },

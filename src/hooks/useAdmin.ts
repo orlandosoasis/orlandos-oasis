@@ -247,6 +247,8 @@ export function useAdminHomeowners() {
           isGrandfathered: Boolean((h as { is_grandfathered?: boolean | null }).is_grandfathered),
           isPlaceholder: Boolean((h as { is_placeholder?: boolean | null }).is_placeholder),
           grandfatheredNote: (h as { grandfathered_note?: string | null }).grandfathered_note ?? null,
+          isFreds: Boolean((h as { is_freds?: boolean | null }).is_freds),
+          notificationsEnabled: Boolean((h as { notifications_enabled?: boolean | null }).notifications_enabled ?? true),
           pools: ownerPools.map((p) => {
             const next = ownerServices
               .filter((s) => s.pool_id === p.id && (s.status === "scheduled" || s.status === "in_progress"))

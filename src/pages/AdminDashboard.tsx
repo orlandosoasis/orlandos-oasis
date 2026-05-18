@@ -745,57 +745,30 @@ const AdminDashboard = () => {
           </CardContent>
         </Card>
 
-        <UpcomingAppointmentsCard />
+        <AppointmentsCard />
 
 
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-          <Card>
-             <CardHeader className="pb-3 flex flex-row items-center justify-between">
-              <CardTitle className="text-sm font-bold">Services Today</CardTitle>
-              <Button size="sm" variant="outline" className="gap-1.5 text-xs" onClick={() => setReportIssueOpen(true)}>
-                <AlertCircle className="h-3.5 w-3.5" /> Report Issue
-              </Button>
-            </CardHeader>
-            <CardContent>
-              <Table>
-                <TableHeader><TableRow>
-                  <TableHead>Homeowner</TableHead><TableHead>Service</TableHead><TableHead>Technician</TableHead><TableHead>Status</TableHead>
-                </TableRow></TableHeader>
-                <TableBody>
-                  {recentServices.length === 0 ? (
-                    <TableRow><TableCell colSpan={4} className="text-center text-muted-foreground text-xs py-6">No services scheduled</TableCell></TableRow>
-                  ) : recentServices.map((r, i) => (
-                    <TableRow key={r.id ?? i} className="cursor-pointer hover:bg-muted/50" onClick={() => r.id && setEditServiceId(r.id)}>
-                      <TableCell className="font-medium">{r.homeowner}</TableCell><TableCell>{r.type}</TableCell><TableCell>{r.technician}</TableCell>
-                      <TableCell><StatusBadge status={r.status} /></TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader className="pb-3"><CardTitle className="text-sm font-bold">Open Issues</CardTitle></CardHeader>
-            <CardContent>
-              <Table>
-                <TableHeader><TableRow>
-                  <TableHead>Homeowner</TableHead><TableHead>Type</TableHead><TableHead>Status</TableHead>
-                </TableRow></TableHeader>
-                <TableBody>
-                  {issues.filter(i => i.status === "Open").length === 0 ? (
-                    <TableRow><TableCell colSpan={3} className="text-center text-muted-foreground text-xs py-6">No open issues</TableCell></TableRow>
-                  ) : issues.filter(i => i.status === "Open").map((issue, i) => (
-                    <TableRow key={i} onClick={() => openIssueModal(issue)} className="cursor-pointer hover:bg-muted/50">
-                      <TableCell className="font-medium">{issue.homeowner}</TableCell><TableCell>{issue.type}</TableCell>
-                      <TableCell><StatusBadge status={issue.status} /></TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </CardContent>
-          </Card>
-        </div>
+        <Card>
+          <CardHeader className="pb-3"><CardTitle className="text-sm font-bold">Open Issues</CardTitle></CardHeader>
+          <CardContent>
+            <Table>
+              <TableHeader><TableRow>
+                <TableHead>Homeowner</TableHead><TableHead>Type</TableHead><TableHead>Status</TableHead>
+              </TableRow></TableHeader>
+              <TableBody>
+                {issues.filter(i => i.status === "Open").length === 0 ? (
+                  <TableRow><TableCell colSpan={3} className="text-center text-muted-foreground text-xs py-6">No open issues</TableCell></TableRow>
+                ) : issues.filter(i => i.status === "Open").map((issue, i) => (
+                  <TableRow key={i} onClick={() => openIssueModal(issue)} className="cursor-pointer hover:bg-muted/50">
+                    <TableCell className="font-medium">{issue.homeowner}</TableCell><TableCell>{issue.type}</TableCell>
+                    <TableCell><StatusBadge status={issue.status} /></TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
       </div>
     );
   };

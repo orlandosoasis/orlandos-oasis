@@ -206,7 +206,7 @@ export function useAdminHomeowners() {
     queryFn: async (): Promise<AdminHomeownerAggregate[]> => {
       const { data: homeowners, error } = await supabase
         .from("profiles")
-        .select("id, full_name, email, phone, street_address, city, state, zip_code, created_at, monthly_amount")
+        .select("id, full_name, email, phone, street_address, city, state, zip_code, created_at, monthly_amount, is_grandfathered, is_placeholder, grandfathered_note")
         .eq("role", "homeowner")
         .order("created_at", { ascending: false });
       if (error) throw error;

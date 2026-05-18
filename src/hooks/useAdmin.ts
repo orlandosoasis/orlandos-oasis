@@ -39,6 +39,8 @@ export interface AdminHomeownerAggregate {
   isGrandfathered: boolean;
   isPlaceholder: boolean;
   grandfatheredNote: string | null;
+  isFreds: boolean;
+  notificationsEnabled: boolean;
   pools: { id: string; address: string; size: string; technicianName: string; technicianId: string | null; nextService: string }[];
   services: { id: string; date: string; serviceDate: string; type: string; technicianName: string; technicianId: string | null; status: "Completed" | "Scheduled"; poolId: string }[];
 }

@@ -14,18 +14,60 @@ const ResetPassword = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [ready, setReady] = useState(false);
+  const [linkError, setLinkError] = useState<string | null>(null);
   const navigate = useNavigate();
   const { toast } = useToast();
 
   useEffect(() => {
-    // Supabase puts the recovery token in the URL hash and auto-creates a session.
+    let cancelled = false;
+
     const { data: sub } = supabase.auth.onAuthStateChange((event) => {
       if (event === "PASSWORD_RECOVERY" || event === "SIGNED_IN") setReady(true);
     });
-    supabase.auth.getSession().then(({ data }) => {
-      if (data.session) setReady(true);
-    });
-    return () => sub.subscription.unsubscribe();
+
+    (async () => {
+      // 1) PKCE flow: ?code=... in query string
+      const url = new URL(window.location.href);
+      const code = url.searchParams.get("code");
+      if (code) {
+        const { error } = await supabase.auth.exchangeCodeForSession(code);
+        if (!cancelled) {
+          if (error) setLinkError(error.message);
+          else {
+            setReady(true);
+            url.searchParams.delete("code");
+            window.history.replaceState({}, "", url.pathname + url.search + url.hash);
+          }
+        }
+        return;
+      }
+
+      // 2) Hash error from Supabase (expired/invalid)
+      const hash = new URLSearchParams(window.location.hash.replace(/^#/, ""));
+      const hashErr = hash.get("error_description") || hash.get("error");
+      if (hashErr) {
+        if (!cancelled) setLinkError(decodeURIComponent(hashErr.replace(/\+/g, " ")));
+        return;
+      }
+
+      // 3) Implicit/hash flow: session auto-created by detectSessionInUrl
+      const { data } = await supabase.auth.getSession();
+      if (!cancelled && data.session) setReady(true);
+      else if (!cancelled) {
+        // Give the auth listener a moment, then show a friendly error
+        setTimeout(async () => {
+          const { data: d2 } = await supabase.auth.getSession();
+          if (!cancelled && !d2.session) {
+            setLinkError("This reset link is invalid or has expired. Please request a new one.");
+          }
+        }, 2000);
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+      sub.subscription.unsubscribe();
+    };
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {

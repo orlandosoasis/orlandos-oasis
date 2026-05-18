@@ -434,3 +434,62 @@ export function useUpdateTechnicianProfile() {
     onSuccess: () => qc.invalidateQueries({ queryKey: ["admin-technicians"] }),
   });
 }
+
+export interface HomeownerProfilePatch {
+  fullName?: string;
+  email?: string;
+  phone?: string | null;
+  street?: string | null;
+  city?: string | null;
+  state?: string | null;
+  zip?: string | null;
+  monthlyAmount?: number | null;
+  poolId?: string | null;
+  poolSize?: string | null;
+  poolAddress?: string | null;
+}
+
+export function useUpdateHomeownerProfile() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ id, patch }: { id: string; patch: HomeownerProfilePatch }) => {
+      const dbPatch: {
+        full_name?: string; first_name?: string; last_name?: string;
+        email?: string; phone?: string | null;
+        street_address?: string | null; city?: string | null; state?: string | null; zip_code?: string | null;
+        monthly_amount?: number | null;
+      } = {};
+      if (patch.fullName !== undefined) {
+        dbPatch.full_name = patch.fullName;
+        const parts = patch.fullName.trim().split(/\s+/);
+        dbPatch.first_name = parts[0] ?? "";
+        dbPatch.last_name = parts.slice(1).join(" ") || "";
+      }
+      if (patch.email !== undefined) dbPatch.email = patch.email;
+      if (patch.phone !== undefined) dbPatch.phone = patch.phone;
+      if (patch.street !== undefined) dbPatch.street_address = patch.street;
+      if (patch.city !== undefined) dbPatch.city = patch.city;
+      if (patch.state !== undefined) dbPatch.state = patch.state;
+      if (patch.zip !== undefined) dbPatch.zip_code = patch.zip;
+      if (patch.monthlyAmount !== undefined) dbPatch.monthly_amount = patch.monthlyAmount;
+
+      if (Object.keys(dbPatch).length > 0) {
+        const { error } = await supabase.from("profiles").update(dbPatch).eq("id", id);
+        if (error) throw error;
+      }
+
+      if (patch.poolId && (patch.poolSize !== undefined || patch.poolAddress !== undefined)) {
+        const poolPatch: { pool_size?: string | null; address?: string } = {};
+        if (patch.poolSize !== undefined) poolPatch.pool_size = patch.poolSize;
+        if (patch.poolAddress !== undefined && patch.poolAddress) poolPatch.address = patch.poolAddress;
+        if (Object.keys(poolPatch).length > 0) {
+          const { error } = await supabase.from("pools").update(poolPatch).eq("id", patch.poolId);
+          if (error) throw error;
+        }
+      }
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["admin-homeowners"] });
+    },
+  });
+}

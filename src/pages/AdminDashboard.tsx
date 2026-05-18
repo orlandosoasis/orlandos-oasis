@@ -860,10 +860,11 @@ const AdminDashboard = () => {
                     const pool = h.pools?.[0];
                     const isGF = Boolean((h as { isGrandfathered?: boolean }).isGrandfathered);
                     const isPlaceholder = Boolean((h as { isPlaceholder?: boolean }).isPlaceholder);
+                    const isFreds = Boolean((h as { isFreds?: boolean }).isFreds);
                     return (
                       <TableRow key={h.id}>
                         <TableCell>
-                          <div className="flex items-center gap-1.5">
+                          <div className="flex items-center gap-1.5 flex-wrap">
                             <span className="font-medium">{h.name}</span>
                             {isPlaceholder && (
                               <span className="inline-flex px-1.5 py-0.5 rounded-full text-[9px] font-bold bg-slate-100 text-slate-600 border border-slate-200">
@@ -873,6 +874,11 @@ const AdminDashboard = () => {
                             {isGF && (
                               <span className="inline-flex px-1.5 py-0.5 rounded-full text-[9px] font-bold bg-amber-100 text-amber-700 border border-amber-200">
                                 GF
+                              </span>
+                            )}
+                            {isFreds && (
+                              <span title="Fred's account — notifications suppressed" className="inline-flex px-1.5 py-0.5 rounded-full text-[9px] font-bold bg-violet-100 text-violet-700 border border-violet-200">
+                                Fred's
                               </span>
                             )}
                           </div>
@@ -894,6 +900,30 @@ const AdminDashboard = () => {
                               onClick={() => { setEditingHomeowner(h); setEditHomeownerOpen(true); }}
                             >
                               <Pencil className="h-3.5 w-3.5" /> Edit
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              className={`gap-1.5 ${isFreds ? "border-violet-300 text-violet-700 hover:bg-violet-50" : ""}`}
+                              onClick={() =>
+                                toggleFredsTag.mutate(
+                                  { id: h.id, isFreds: !isFreds },
+                                  {
+                                    onSuccess: () =>
+                                      toast({
+                                        title: isFreds ? "Removed Fred's tag" : "Tagged as Fred's",
+                                        description: isFreds
+                                          ? "Notifications re-enabled for this account."
+                                          : "Notifications and emails will be suppressed.",
+                                        variant: "success",
+                                      }),
+                                    onError: (e) =>
+                                      toast({ title: "Tag update failed", description: e instanceof Error ? e.message : String(e), variant: "destructive" }),
+                                  },
+                                )
+                              }
+                            >
+                              {isFreds ? "Untag Fred's" : "Tag Fred's"}
                             </Button>
                             <Button
                               size="sm"

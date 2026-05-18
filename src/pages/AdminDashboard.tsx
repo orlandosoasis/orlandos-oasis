@@ -1184,50 +1184,173 @@ const AdminDashboard = () => {
     setTimeout(() => setHomeownerEditSuccess(false), 4000);
   };
 
-  const HomeownersPage = () => (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <p className="text-sm text-muted-foreground">{homeowners.length} total homeowners</p>
-        <Button onClick={() => setAddHomeownerOpen(true)} className="gap-1.5">
-          <Plus className="h-4 w-4" /> Add Homeowner
-        </Button>
-      </div>
-      {homeownerSuccess && (
-        <div className="flex items-center gap-2 p-3 rounded-md bg-emerald-50 border border-emerald-200 text-emerald-700 text-sm">
-          <Check className="h-4 w-4" /> Homeowner added successfully
-        </div>
-      )}
-      <Card>
-        <CardContent className="p-0">
-          <Table>
-            <TableHeader><TableRow>
-              <TableHead>Name</TableHead><TableHead>Email</TableHead><TableHead>Phone</TableHead><TableHead>Pools</TableHead><TableHead>Status</TableHead>
-            </TableRow></TableHeader>
-            <TableBody>
-              {homeowners.map(h => (
-                <TableRow
-                  key={h.id}
-                  onClick={() => nav("homeDetail", h.id)}
-                  className="cursor-pointer hover:bg-muted/50 active:bg-muted transition-colors"
+  const HomeownersPage = () => {
+    const counts = {
+      all: homeowners.length,
+      standard: homeowners.filter((h) => {
+        const x = h as { isGrandfathered?: boolean; isFreds?: boolean };
+        return !x.isGrandfathered && !x.isFreds;
+      }).length,
+      grandfathered: homeowners.filter((h) => (h as { isGrandfathered?: boolean }).isGrandfathered).length,
+      freds: homeowners.filter((h) => (h as { isFreds?: boolean }).isFreds).length,
+      placeholder: homeowners.filter((h) => (h as { isPlaceholder?: boolean }).isPlaceholder).length,
+    };
+    const filtered = homeowners.filter((h) => {
+      const x = h as { isGrandfathered?: boolean; isFreds?: boolean; isPlaceholder?: boolean };
+      switch (homeownerFilter) {
+        case "standard": return !x.isGrandfathered && !x.isFreds;
+        case "grandfathered": return Boolean(x.isGrandfathered);
+        case "freds": return Boolean(x.isFreds);
+        case "placeholder": return Boolean(x.isPlaceholder);
+        default: return true;
+      }
+    });
+    const tabs: { key: typeof homeownerFilter; label: string }[] = [
+      { key: "all", label: "All" },
+      { key: "standard", label: "Standard" },
+      { key: "grandfathered", label: "Grandfathered" },
+      { key: "freds", label: "Fred's" },
+      { key: "placeholder", label: "Placeholder" },
+    ];
+    return (
+      <div className="space-y-4">
+        <div className="flex items-center justify-between gap-3 flex-wrap">
+          <div className="flex items-center gap-3 flex-wrap">
+            <p className="text-sm text-muted-foreground">{filtered.length} of {homeowners.length} homeowners</p>
+            <div className="flex items-center gap-1 rounded-md bg-muted p-0.5">
+              {tabs.map((t) => (
+                <button
+                  key={t.key}
+                  onClick={() => setHomeownerFilter(t.key)}
+                  className={`px-3 py-1 text-xs font-semibold rounded ${homeownerFilter === t.key ? "bg-background shadow-sm text-foreground" : "text-muted-foreground"}`}
                 >
-                  <TableCell className="font-semibold">
-                    <div className="flex items-center gap-2">
-                      {h.name}
-                      {h.manuallyAdded && (
-                        <span className="text-[10px] font-medium px-1.5 py-0.5 rounded bg-muted text-muted-foreground border border-border">Manually Added</span>
-                      )}
-                    </div>
-                  </TableCell>
-                  <TableCell>{h.email}</TableCell><TableCell>{h.phone}</TableCell>
-                  <TableCell>{h.pools.length}</TableCell><TableCell><StatusBadge status={h.status || "Active"} /></TableCell>
-                </TableRow>
+                  {t.label} ({counts[t.key]})
+                </button>
               ))}
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
-    </div>
-  );
+            </div>
+          </div>
+          <Button onClick={() => setAddHomeownerOpen(true)} className="gap-1.5">
+            <Plus className="h-4 w-4" /> Add Homeowner
+          </Button>
+        </div>
+        {homeownerSuccess && (
+          <div className="flex items-center gap-2 p-3 rounded-md bg-emerald-50 border border-emerald-200 text-emerald-700 text-sm">
+            <Check className="h-4 w-4" /> Homeowner added successfully
+          </div>
+        )}
+        <Card>
+          <CardContent className="p-0">
+            <div className="overflow-x-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Name</TableHead>
+                    <TableHead>Email</TableHead>
+                    <TableHead>Phone</TableHead>
+                    <TableHead>Address</TableHead>
+                    <TableHead>Pool Size</TableHead>
+                    <TableHead>Technician</TableHead>
+                    <TableHead className="text-right">Monthly</TableHead>
+                    <TableHead className="text-right">Actions</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {filtered.length === 0 ? (
+                    <TableRow>
+                      <TableCell colSpan={8} className="text-center text-muted-foreground text-xs py-8">
+                        No homeowners in this view.
+                      </TableCell>
+                    </TableRow>
+                  ) : filtered.map((h) => {
+                    const pool = h.pools?.[0];
+                    const isGF = Boolean((h as { isGrandfathered?: boolean }).isGrandfathered);
+                    const isPlaceholder = Boolean((h as { isPlaceholder?: boolean }).isPlaceholder);
+                    const isFreds = Boolean((h as { isFreds?: boolean }).isFreds);
+                    return (
+                      <TableRow key={h.id}>
+                        <TableCell>
+                          <div className="flex items-center gap-1.5 flex-wrap">
+                            <span className="font-medium">{h.name}</span>
+                            {isPlaceholder && (
+                              <span className="inline-flex px-1.5 py-0.5 rounded-full text-[9px] font-bold bg-slate-100 text-slate-600 border border-slate-200">
+                                Placeholder
+                              </span>
+                            )}
+                            {isGF && (
+                              <span className="inline-flex px-1.5 py-0.5 rounded-full text-[9px] font-bold bg-amber-100 text-amber-700 border border-amber-200">
+                                GF
+                              </span>
+                            )}
+                            {isFreds && (
+                              <span title="Fred's account — notifications suppressed" className="inline-flex px-1.5 py-0.5 rounded-full text-[9px] font-bold bg-violet-100 text-violet-700 border border-violet-200">
+                                Fred's
+                              </span>
+                            )}
+                          </div>
+                        </TableCell>
+                        <TableCell className="text-xs text-muted-foreground">{h.email}</TableCell>
+                        <TableCell className="text-xs text-muted-foreground whitespace-nowrap">{h.phone || "—"}</TableCell>
+                        <TableCell className="text-xs text-muted-foreground">{h.address}</TableCell>
+                        <TableCell className="text-xs">{pool?.size ?? "—"}</TableCell>
+                        <TableCell className="text-xs">{pool?.technician ?? "Unassigned"}</TableCell>
+                        <TableCell className="text-right font-semibold text-xs">
+                          {h.monthlyAmount ? fmtMoney(h.monthlyAmount) : "—"}
+                        </TableCell>
+                        <TableCell className="text-right">
+                          <div className="flex justify-end gap-1.5">
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              className="gap-1.5"
+                              onClick={() => { setEditingHomeowner(h); setEditHomeownerOpen(true); }}
+                            >
+                              <Pencil className="h-3.5 w-3.5" /> Edit
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              className={`gap-1.5 ${isFreds ? "border-violet-300 text-violet-700 hover:bg-violet-50" : ""}`}
+                              onClick={() =>
+                                toggleFredsTag.mutate(
+                                  { id: h.id, isFreds: !isFreds },
+                                  {
+                                    onSuccess: () =>
+                                      toast({
+                                        title: isFreds ? "Removed Fred's tag" : "Tagged as Fred's",
+                                        description: isFreds
+                                          ? "Notifications re-enabled for this account."
+                                          : "Notifications and emails will be suppressed.",
+                                        variant: "success",
+                                      }),
+                                    onError: (e) =>
+                                      toast({ title: "Tag update failed", description: e instanceof Error ? e.message : String(e), variant: "destructive" }),
+                                  },
+                                )
+                              }
+                            >
+                              {isFreds ? "Untag Fred's" : "Tag Fred's"}
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              onClick={() => nav("homeDetail", h.id)}
+                            >
+                              Details
+                            </Button>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
+                </TableBody>
+              </Table>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  };
+
 
   const HomeDetailPage = () => {
     const ho = homeowners.find(h => h.id === detailId);

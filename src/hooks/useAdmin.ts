@@ -107,7 +107,7 @@ export function useAdminTechnicians() {
     queryFn: async (): Promise<AdminTechnicianAggregate[]> => {
       const { data: techs, error } = await supabase
         .from("profiles")
-        .select("id, full_name, email, phone, is_active")
+        .select("id, full_name, email, phone, is_active, payout_per_pool")
         .eq("role", "technician")
         .order("full_name", { ascending: true });
       if (error) throw error;

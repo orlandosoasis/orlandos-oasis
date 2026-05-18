@@ -1018,7 +1018,7 @@ const AdminDashboard = () => {
                   {REVENUE_KEYS.map((k) => (
                     <div key={k} className="flex items-center gap-1.5">
                       <span className="inline-block h-2.5 w-2.5 rounded-sm" style={{ background: REVENUE_COLORS[k] }} />
-                      <span className="text-foreground">{REVENUE_LABELS[k]}</span>
+                      <span className="text-foreground">{REVENUE_LABELS[k]} ({categoryCount[k]})</span>
                       <span>· {fmtMoney(categoryMRR[k])}/mo</span>
                     </div>
                   ))}

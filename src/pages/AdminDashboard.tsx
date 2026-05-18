@@ -648,23 +648,6 @@ const AdminDashboard = () => {
   type FinTech = { id: string; name: string; assignedPools: number; payoutPerPool?: number };
   type FinHome = { pools: { size: string }[] };
 
-  const CHEMICAL_COSTS: { name: string; perPool: number }[] = [
-    { name: "Chlorine tablets (3\")", perPool: 18 },
-    { name: "Liquid shock", perPool: 6 },
-    { name: "Muriatic acid", perPool: 4 },
-    { name: "Algaecide", perPool: 3 },
-    { name: "Cyanuric acid stabilizer", perPool: 2 },
-    { name: "pH increaser / decreaser", perPool: 2.5 },
-    { name: "Calcium hardness", perPool: 2 },
-    { name: "Clarifier & enzyme", perPool: 2.5 },
-  ];
-  const EQUIPMENT_COSTS: { name: string; perPool: number }[] = [
-    { name: "Skimmer nets & brushes (amortized)", perPool: 3 },
-    { name: "Test strips & reagents", perPool: 1.5 },
-    { name: "Vacuum hose / pole wear", perPool: 2 },
-    { name: "Filter cleaner & lube", perPool: 1.5 },
-  ];
-
   const FinancialsCard = ({
     revenueRows, totalMRR, totalPools, technicians, homeowners,
   }: {
@@ -676,6 +659,23 @@ const AdminDashboard = () => {
   }) => {
     const [tab, setTab] = useState<"revenue" | "payouts" | "supplies" | "profit">("revenue");
     const now = new Date();
+
+    // ── Editable supplies (from DB) ──
+    const expenseItemsQuery = useExpenseItems();
+    const createExpense = useCreateExpenseItem();
+    const updateExpense = useUpdateExpenseItem();
+    const deleteExpense = useDeleteExpenseItem();
+    const expenseItems = expenseItemsQuery.data ?? [];
+    const chemicals = expenseItems.filter((e) => e.category === "chemical");
+    const equipment = expenseItems.filter((e) => e.category === "equipment");
+
+    const [editingExpenseId, setEditingExpenseId] = useState<string | null>(null);
+    const [editName, setEditName] = useState("");
+    const [editCost, setEditCost] = useState("");
+    const [newChemName, setNewChemName] = useState("");
+    const [newChemCost, setNewChemCost] = useState("");
+    const [newEquipName, setNewEquipName] = useState("");
+    const [newEquipCost, setNewEquipCost] = useState("");
 
     // Tech payouts = assignedPools × payoutPerPool
     const payoutRows = technicians
@@ -689,16 +689,79 @@ const AdminDashboard = () => {
       .sort((a, b) => b.total - a.total);
     const totalPayouts = payoutRows.reduce((a, r) => a + r.total, 0);
 
-    // Supplies = (chemicals + equipment) × pools (one full set per pool per month)
+    // Last 6 months payout trend (using current totals as the recurring monthly figure).
+    const monthlyPayoutTrend = (() => {
+      const out: { month: string; total: number }[] = [];
+      for (let i = 5; i >= 0; i--) {
+        const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+        out.push({
+          month: d.toLocaleString("en-US", { month: "short" }),
+          total: totalPayouts,
+        });
+      }
+      return out;
+    })();
+
+    // Supplies
     const allPoolsCount = homeowners.reduce((a, h) => a + h.pools.length, 0);
-    const chemTotalPerPool = CHEMICAL_COSTS.reduce((a, c) => a + c.perPool, 0);
-    const equipTotalPerPool = EQUIPMENT_COSTS.reduce((a, c) => a + c.perPool, 0);
+    const chemTotalPerPool = chemicals.reduce((a, c) => a + c.perPoolCost, 0);
+    const equipTotalPerPool = equipment.reduce((a, c) => a + c.perPoolCost, 0);
     const chemMonthly = chemTotalPerPool * allPoolsCount;
     const equipMonthly = equipTotalPerPool * allPoolsCount;
     const suppliesTotal = chemMonthly + equipMonthly;
 
     const netProfit = totalMRR - totalPayouts - suppliesTotal;
     const yearlyProfit = netProfit * 12;
+    const margin = totalMRR > 0 ? (netProfit / totalMRR) * 100 : 0;
+
+    const profitPie = [
+      { name: "Net Profit", value: Math.max(netProfit, 0), color: "hsl(160 84% 39%)" },
+      { name: "Tech Payouts", value: totalPayouts, color: "hsl(38 92% 50%)" },
+      { name: "Supplies", value: suppliesTotal, color: "hsl(0 84% 60%)" },
+    ];
+
+    const startEditExpense = (item: typeof expenseItems[number]) => {
+      setEditingExpenseId(item.id);
+      setEditName(item.name);
+      setEditCost(String(item.perPoolCost));
+    };
+    const saveEditExpense = async () => {
+      if (!editingExpenseId) return;
+      const cost = Number(editCost);
+      if (!editName.trim() || !Number.isFinite(cost) || cost < 0) {
+        toast({ title: "Invalid item", description: "Name and a non-negative cost are required.", variant: "destructive" });
+        return;
+      }
+      try {
+        await updateExpense.mutateAsync({ id: editingExpenseId, name: editName.trim(), perPoolCost: cost });
+        toast({ title: "Item updated", variant: "success" });
+        setEditingExpenseId(null);
+      } catch (e) {
+        toast({ title: "Update failed", description: e instanceof Error ? e.message : String(e), variant: "destructive" });
+      }
+    };
+    const addExpenseRow = async (category: "chemical" | "equipment", name: string, cost: string, reset: () => void) => {
+      const num = Number(cost);
+      if (!name.trim() || !Number.isFinite(num) || num < 0) {
+        toast({ title: "Add a name and cost", description: "Both fields are required.", variant: "destructive" });
+        return;
+      }
+      try {
+        await createExpense.mutateAsync({ name: name.trim(), category, perPoolCost: num });
+        toast({ title: "Item added", variant: "success" });
+        reset();
+      } catch (e) {
+        toast({ title: "Create failed", description: e instanceof Error ? e.message : String(e), variant: "destructive" });
+      }
+    };
+    const removeExpense = async (id: string) => {
+      try {
+        await deleteExpense.mutateAsync(id);
+        toast({ title: "Item removed", variant: "success" });
+      } catch (e) {
+        toast({ title: "Delete failed", description: e instanceof Error ? e.message : String(e), variant: "destructive" });
+      }
+    };
 
     const TAB_BTN = (key: typeof tab, label: string) => (
       <button
@@ -708,6 +771,108 @@ const AdminDashboard = () => {
       >
         {label}
       </button>
+    );
+
+    const renderSupplySection = (
+      title: string,
+      rows: typeof chemicals,
+      perPool: number,
+      monthly: number,
+      category: "chemical" | "equipment",
+      newName: string,
+      setNewName: (v: string) => void,
+      newCost: string,
+      setNewCost: (v: string) => void,
+    ) => (
+      <div>
+        <div className="flex items-center justify-between mb-2 flex-wrap gap-2">
+          <div className="text-xs font-bold text-foreground">{title} · {allPoolsCount} pools</div>
+          <div className="text-xs text-muted-foreground">
+            Per pool <span className="text-foreground font-semibold">{fmtMoney(perPool)}</span> · Monthly <span className="text-foreground font-semibold">{fmtMoney(monthly)}</span>
+          </div>
+        </div>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Item</TableHead>
+              <TableHead className="text-right w-[140px]">Cost / Pool</TableHead>
+              <TableHead className="text-right w-[140px]">Monthly Total</TableHead>
+              <TableHead className="text-right w-[150px]">Actions</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {rows.length === 0 ? (
+              <TableRow><TableCell colSpan={4} className="text-center text-muted-foreground text-xs py-6">No items yet.</TableCell></TableRow>
+            ) : rows.map((c) => {
+              const isEditing = editingExpenseId === c.id;
+              return (
+                <TableRow key={c.id}>
+                  <TableCell>
+                    {isEditing ? (
+                      <Input value={editName} onChange={(e) => setEditName(e.target.value)} className="h-8" />
+                    ) : c.name}
+                  </TableCell>
+                  <TableCell className="text-right">
+                    {isEditing ? (
+                      <Input type="number" min="0" step="0.01" value={editCost} onChange={(e) => setEditCost(e.target.value)} className="h-8 text-right" />
+                    ) : fmtMoney(c.perPoolCost)}
+                  </TableCell>
+                  <TableCell className="text-right font-semibold">{fmtMoney(c.perPoolCost * allPoolsCount)}</TableCell>
+                  <TableCell className="text-right">
+                    {isEditing ? (
+                      <div className="flex justify-end gap-1">
+                        <Button size="sm" variant="outline" onClick={() => setEditingExpenseId(null)}>Cancel</Button>
+                        <Button size="sm" onClick={saveEditExpense} disabled={updateExpense.isPending}>Save</Button>
+                      </div>
+                    ) : (
+                      <div className="flex justify-end gap-1">
+                        <Button size="sm" variant="outline" onClick={() => startEditExpense(c)}>
+                          <Pencil className="h-3.5 w-3.5" />
+                        </Button>
+                        <Button size="sm" variant="outline" onClick={() => removeExpense(c.id)} disabled={deleteExpense.isPending}>
+                          <Trash2 className="h-3.5 w-3.5" />
+                        </Button>
+                      </div>
+                    )}
+                  </TableCell>
+                </TableRow>
+              );
+            })}
+            <TableRow className="bg-muted/30">
+              <TableCell>
+                <Input
+                  placeholder={`Add ${category === "chemical" ? "chemical" : "item"}…`}
+                  value={newName}
+                  onChange={(e) => setNewName(e.target.value)}
+                  className="h-8"
+                />
+              </TableCell>
+              <TableCell className="text-right">
+                <Input
+                  type="number"
+                  min="0"
+                  step="0.01"
+                  placeholder="0.00"
+                  value={newCost}
+                  onChange={(e) => setNewCost(e.target.value)}
+                  className="h-8 text-right"
+                />
+              </TableCell>
+              <TableCell></TableCell>
+              <TableCell className="text-right">
+                <Button
+                  size="sm"
+                  className="gap-1.5"
+                  onClick={() => addExpenseRow(category, newName, newCost, () => { setNewName(""); setNewCost(""); })}
+                  disabled={createExpense.isPending}
+                >
+                  <Plus className="h-3.5 w-3.5" /> Add
+                </Button>
+              </TableCell>
+            </TableRow>
+          </TableBody>
+        </Table>
+      </div>
     );
 
     return (
@@ -726,7 +891,7 @@ const AdminDashboard = () => {
           </div>
           <div className="text-xs text-muted-foreground">
             {tab === "revenue" && <>Total <span className="ml-1 text-foreground font-bold">{fmtMoney(totalMRR)}</span> · {totalPools} pools</>}
-            {tab === "payouts" && <>Total <span className="ml-1 text-foreground font-bold">{fmtMoney(totalPayouts)}</span></>}
+            {tab === "payouts" && <>Total <span className="ml-1 text-foreground font-bold">{fmtMoney(totalPayouts)}</span>/mo</>}
             {tab === "supplies" && <>Total <span className="ml-1 text-foreground font-bold">{fmtMoney(suppliesTotal)}</span> · {allPoolsCount} pools</>}
             {tab === "profit" && <>Net <span className={`ml-1 font-bold ${netProfit >= 0 ? "text-emerald-600" : "text-red-600"}`}>{fmtMoney(netProfit)}</span>/mo</>}
           </div>
@@ -760,125 +925,153 @@ const AdminDashboard = () => {
           )}
 
           {tab === "payouts" && (
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Technician</TableHead>
-                  <TableHead className="text-right">Assigned Pools</TableHead>
-                  <TableHead className="text-right">Rate / Pool</TableHead>
-                  <TableHead className="text-right">Monthly Payout</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {payoutRows.length === 0 ? (
-                  <TableRow><TableCell colSpan={4} className="text-center text-muted-foreground text-xs py-6">No technicians.</TableCell></TableRow>
-                ) : payoutRows.map((r) => (
-                  <TableRow key={r.id}>
-                    <TableCell className="font-medium">{r.name}</TableCell>
-                    <TableCell className="text-right">{r.pools}</TableCell>
-                    <TableCell className="text-right">{fmtMoney(r.rate)}</TableCell>
-                    <TableCell className="text-right font-semibold">{fmtMoney(r.total)}</TableCell>
+            <div className="space-y-6">
+              <div>
+                <div className="flex items-center justify-between mb-2 flex-wrap gap-2">
+                  <div className="text-xs font-bold text-foreground">Payouts by Month · last 6 months</div>
+                  <div className="text-xs text-muted-foreground">Recurring monthly <span className="text-foreground font-semibold">{fmtMoney(totalPayouts)}</span></div>
+                </div>
+                <div className="h-[240px] w-full">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart data={monthlyPayoutTrend} margin={{ top: 24, right: 16, left: 8, bottom: 8 }}>
+                      <XAxis dataKey="month" tick={{ fontSize: 12 }} axisLine={false} tickLine={false} />
+                      <YAxis tickFormatter={(v) => `$${v}`} tick={{ fontSize: 11 }} axisLine={false} tickLine={false} width={56} />
+                      <ReTooltip
+                        cursor={{ fill: "hsl(var(--muted))", opacity: 0.4 }}
+                        formatter={(value: number) => [fmtMoney(value), "Tech payouts"]}
+                        contentStyle={{ borderRadius: 8, fontSize: 12 }}
+                      />
+                      <Bar dataKey="total" radius={[8, 8, 0, 0]} fill="hsl(38 92% 50%)">
+                        <LabelList dataKey="total" position="top" formatter={(v: number) => (v > 0 ? fmtMoney(v) : "")} style={{ fontSize: 11, fontWeight: 600, fill: "hsl(var(--foreground))" }} />
+                      </Bar>
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+              </div>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Technician</TableHead>
+                    <TableHead className="text-right">Assigned Pools</TableHead>
+                    <TableHead className="text-right">Rate / Pool</TableHead>
+                    <TableHead className="text-right">Monthly Payout</TableHead>
                   </TableRow>
-                ))}
-                <TableRow className="bg-muted/40">
-                  <TableCell className="font-bold">Total</TableCell>
-                  <TableCell className="text-right font-bold">{payoutRows.reduce((a, r) => a + r.pools, 0)}</TableCell>
-                  <TableCell></TableCell>
-                  <TableCell className="text-right font-extrabold text-foreground">{fmtMoney(totalPayouts)}</TableCell>
-                </TableRow>
-              </TableBody>
-            </Table>
+                </TableHeader>
+                <TableBody>
+                  {payoutRows.length === 0 ? (
+                    <TableRow><TableCell colSpan={4} className="text-center text-muted-foreground text-xs py-6">No technicians.</TableCell></TableRow>
+                  ) : payoutRows.map((r) => (
+                    <TableRow key={r.id}>
+                      <TableCell className="font-medium">{r.name}</TableCell>
+                      <TableCell className="text-right">{r.pools}</TableCell>
+                      <TableCell className="text-right">{fmtMoney(r.rate)}</TableCell>
+                      <TableCell className="text-right font-semibold">{fmtMoney(r.total)}</TableCell>
+                    </TableRow>
+                  ))}
+                  <TableRow className="bg-muted/40">
+                    <TableCell className="font-bold">Total</TableCell>
+                    <TableCell className="text-right font-bold">{payoutRows.reduce((a, r) => a + r.pools, 0)}</TableCell>
+                    <TableCell></TableCell>
+                    <TableCell className="text-right font-extrabold text-foreground">{fmtMoney(totalPayouts)}</TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
+            </div>
           )}
 
           {tab === "supplies" && (
-            <div className="space-y-6">
-              <div>
-                <div className="flex items-center justify-between mb-2">
-                  <div className="text-xs font-bold text-foreground">Chemicals · {allPoolsCount} pools</div>
-                  <div className="text-xs text-muted-foreground">Per pool <span className="text-foreground font-semibold">{fmtMoney(chemTotalPerPool)}</span> · Monthly <span className="text-foreground font-semibold">{fmtMoney(chemMonthly)}</span></div>
+            expenseItemsQuery.isLoading ? (
+              <div className="text-center text-muted-foreground text-xs py-10">Loading…</div>
+            ) : (
+              <div className="space-y-6">
+                {renderSupplySection("Chemicals", chemicals, chemTotalPerPool, chemMonthly, "chemical", newChemName, setNewChemName, newChemCost, setNewChemCost)}
+                {renderSupplySection("Equipment & Consumables", equipment, equipTotalPerPool, equipMonthly, "equipment", newEquipName, setNewEquipName, newEquipCost, setNewEquipCost)}
+                <div className="rounded-lg border bg-muted/30 p-4 flex items-center justify-between">
+                  <div className="text-xs font-bold text-foreground">Supplies Total · Monthly</div>
+                  <div className="text-xl font-extrabold text-foreground">{fmtMoney(suppliesTotal)}</div>
                 </div>
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Chemical</TableHead>
-                      <TableHead className="text-right">Cost / Pool</TableHead>
-                      <TableHead className="text-right">Monthly Total</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {CHEMICAL_COSTS.map((c) => (
-                      <TableRow key={c.name}>
-                        <TableCell>{c.name}</TableCell>
-                        <TableCell className="text-right">{fmtMoney(c.perPool)}</TableCell>
-                        <TableCell className="text-right font-semibold">{fmtMoney(c.perPool * allPoolsCount)}</TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
               </div>
-              <div>
-                <div className="flex items-center justify-between mb-2">
-                  <div className="text-xs font-bold text-foreground">Equipment & Consumables</div>
-                  <div className="text-xs text-muted-foreground">Per pool <span className="text-foreground font-semibold">{fmtMoney(equipTotalPerPool)}</span> · Monthly <span className="text-foreground font-semibold">{fmtMoney(equipMonthly)}</span></div>
-                </div>
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Item</TableHead>
-                      <TableHead className="text-right">Cost / Pool</TableHead>
-                      <TableHead className="text-right">Monthly Total</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {EQUIPMENT_COSTS.map((c) => (
-                      <TableRow key={c.name}>
-                        <TableCell>{c.name}</TableCell>
-                        <TableCell className="text-right">{fmtMoney(c.perPool)}</TableCell>
-                        <TableCell className="text-right font-semibold">{fmtMoney(c.perPool * allPoolsCount)}</TableCell>
-                      </TableRow>
-                    ))}
-                    <TableRow className="bg-muted/40">
-                      <TableCell className="font-bold">Supplies Total</TableCell>
-                      <TableCell></TableCell>
-                      <TableCell className="text-right font-extrabold text-foreground">{fmtMoney(suppliesTotal)}</TableCell>
-                    </TableRow>
-                  </TableBody>
-                </Table>
-              </div>
-            </div>
+            )
           )}
 
           {tab === "profit" && (
             <div className="space-y-6">
+              {/* Hero net profit */}
+              <div className={`rounded-xl p-6 ${netProfit >= 0 ? "bg-gradient-to-br from-emerald-50 to-emerald-100/50 border border-emerald-200" : "bg-gradient-to-br from-rose-50 to-rose-100/50 border border-rose-200"}`}>
+                <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6">
+                  <div>
+                    <div className="text-[11px] font-bold uppercase tracking-wide text-muted-foreground">Net Profit · This Month</div>
+                    <div className={`text-5xl font-extrabold mt-2 ${netProfit >= 0 ? "text-emerald-700" : "text-red-700"}`}>{fmtMoney(netProfit)}</div>
+                    <div className="text-xs text-muted-foreground mt-2">
+                      {fmtMoney(totalMRR)} revenue − {fmtMoney(totalPayouts)} payouts − {fmtMoney(suppliesTotal)} supplies
+                    </div>
+                    <div className="flex items-center gap-4 mt-3">
+                      <div className="text-xs">
+                        <span className="font-bold text-foreground">{margin.toFixed(1)}%</span>
+                        <span className="text-muted-foreground"> margin</span>
+                      </div>
+                      <div className="text-xs">
+                        <span className="font-bold text-foreground">{fmtMoney(yearlyProfit)}</span>
+                        <span className="text-muted-foreground"> annualized</span>
+                      </div>
+                    </div>
+                  </div>
+                  {totalMRR > 0 && (
+                    <div className="h-[200px] w-full md:w-[260px]">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <PieChart>
+                          <Pie
+                            data={profitPie}
+                            dataKey="value"
+                            nameKey="name"
+                            innerRadius={50}
+                            outerRadius={85}
+                            paddingAngle={2}
+                            stroke="hsl(var(--background))"
+                            strokeWidth={2}
+                          >
+                            {profitPie.map((s, i) => <Cell key={i} fill={s.color} />)}
+                          </Pie>
+                          <ReTooltip
+                            formatter={(value: number, name: string) => [fmtMoney(value), name]}
+                            contentStyle={{ borderRadius: 8, fontSize: 12 }}
+                          />
+                        </PieChart>
+                      </ResponsiveContainer>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* KPI breakdown */}
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <div className="rounded-lg border bg-emerald-50/50 p-4">
-                  <div className="text-[11px] font-bold uppercase tracking-wide text-emerald-700">Revenue</div>
-                  <div className="text-2xl font-extrabold text-foreground mt-1">{fmtMoney(totalMRR)}</div>
+                  <div className="flex items-center gap-2">
+                    <span className="inline-block w-2.5 h-2.5 rounded-full bg-emerald-500" />
+                    <div className="text-[11px] font-bold uppercase tracking-wide text-emerald-700">Revenue</div>
+                  </div>
+                  <div className="text-2xl font-extrabold text-foreground mt-2">{fmtMoney(totalMRR)}</div>
                   <div className="text-[11px] text-muted-foreground mt-1">{totalPools} pools · this month</div>
                 </div>
                 <div className="rounded-lg border bg-amber-50/50 p-4">
-                  <div className="text-[11px] font-bold uppercase tracking-wide text-amber-700">Tech Payouts</div>
-                  <div className="text-2xl font-extrabold text-foreground mt-1">−{fmtMoney(totalPayouts)}</div>
-                  <div className="text-[11px] text-muted-foreground mt-1">{payoutRows.reduce((a, r) => a + r.pools, 0)} pool services</div>
-                </div>
-                <div className="rounded-lg border bg-rose-50/50 p-4">
-                  <div className="text-[11px] font-bold uppercase tracking-wide text-rose-700">Supplies</div>
-                  <div className="text-2xl font-extrabold text-foreground mt-1">−{fmtMoney(suppliesTotal)}</div>
-                  <div className="text-[11px] text-muted-foreground mt-1">Chemicals + equipment</div>
-                </div>
-              </div>
-              <div className="rounded-lg border-2 border-foreground/10 bg-muted/30 p-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-                <div>
-                  <div className="text-[11px] font-bold uppercase tracking-wide text-muted-foreground">Net Profit · This Month</div>
-                  <div className={`text-3xl font-extrabold mt-1 ${netProfit >= 0 ? "text-emerald-600" : "text-red-600"}`}>{fmtMoney(netProfit)}</div>
+                  <div className="flex items-center gap-2">
+                    <span className="inline-block w-2.5 h-2.5 rounded-full" style={{ background: "hsl(38 92% 50%)" }} />
+                    <div className="text-[11px] font-bold uppercase tracking-wide text-amber-700">Tech Payouts</div>
+                  </div>
+                  <div className="text-2xl font-extrabold text-foreground mt-2">−{fmtMoney(totalPayouts)}</div>
                   <div className="text-[11px] text-muted-foreground mt-1">
-                    {fmtMoney(totalMRR)} − {fmtMoney(totalPayouts)} − {fmtMoney(suppliesTotal)}
+                    {totalMRR > 0 ? `${((totalPayouts / totalMRR) * 100).toFixed(1)}% of revenue` : "—"}
                   </div>
                 </div>
-                <div className="sm:text-right">
-                  <div className="text-[11px] font-bold uppercase tracking-wide text-muted-foreground">Annualized Profit</div>
-                  <div className={`text-2xl font-extrabold mt-1 ${yearlyProfit >= 0 ? "text-emerald-600" : "text-red-600"}`}>{fmtMoney(yearlyProfit)}</div>
-                  <div className="text-[11px] text-muted-foreground mt-1">Net × 12 months</div>
+                <div className="rounded-lg border bg-rose-50/50 p-4">
+                  <div className="flex items-center gap-2">
+                    <span className="inline-block w-2.5 h-2.5 rounded-full bg-rose-500" />
+                    <div className="text-[11px] font-bold uppercase tracking-wide text-rose-700">Supplies</div>
+                  </div>
+                  <div className="text-2xl font-extrabold text-foreground mt-2">−{fmtMoney(suppliesTotal)}</div>
+                  <div className="text-[11px] text-muted-foreground mt-1">
+                    {totalMRR > 0 ? `${((suppliesTotal / totalMRR) * 100).toFixed(1)}% of revenue` : "—"}
+                  </div>
                 </div>
               </div>
             </div>
@@ -887,6 +1080,8 @@ const AdminDashboard = () => {
       </Card>
     );
   };
+
+
 
   // ═══════════ DASHBOARD PAGE ═══════════
   const DashboardPage = () => {

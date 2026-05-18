@@ -36,6 +36,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import {
   useAdminTechnicians, useAdminHomeowners, useAdminIssues,
   useTechnicianApplications, useUpdateIssueStatus, useUpdateApplicationStatus,
+  useUpdateTechnicianActive,
 } from "@/hooks/useAdmin";
 import { useReviews, useUpdateReviewStatus } from "@/hooks/useReviews";
 import { useService, useUpdateService } from "@/hooks/useServices";

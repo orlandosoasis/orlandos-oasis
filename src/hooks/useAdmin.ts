@@ -387,3 +387,17 @@ export function useUpdateApplicationStatus() {
     onSuccess: () => qc.invalidateQueries({ queryKey: ["technician-applications"] }),
   });
 }
+
+export function useUpdateTechnicianActive() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ id, isActive }: { id: string; isActive: boolean }) => {
+      const { error } = await supabase
+        .from("profiles")
+        .update({ is_active: isActive })
+        .eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["admin-technicians"] }),
+  });
+}

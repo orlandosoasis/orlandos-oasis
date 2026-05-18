@@ -833,7 +833,7 @@ const AdminDashboard = () => {
       <button
         key={key}
         onClick={() => setTab(key)}
-        className={`px-3 py-1 text-xs font-semibold rounded ${tab === key ? "bg-background shadow-sm text-foreground" : "text-muted-foreground"}`}
+        className={`px-3 py-1 text-xs font-semibold rounded transition-colors ${tab === key ? "bg-sky-100 text-sky-800 shadow-sm" : "text-muted-foreground hover:text-foreground"}`}
       >
         {label}
       </button>

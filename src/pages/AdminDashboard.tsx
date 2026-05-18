@@ -153,7 +153,7 @@ const AdminDashboard = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  const [seeding, setSeeding] = useState(false);
+  
 
   // Live data from Supabase
   const techniciansQuery = useAdminTechnicians();

@@ -37,7 +37,7 @@ export interface AdminHomeownerAggregate {
   startDate: string;
   monthlyAmount: number;
   pools: { id: string; address: string; size: string; technicianName: string; technicianId: string | null; nextService: string }[];
-  services: { id: string; date: string; serviceDate: string; type: string; technicianName: string; status: "Completed" | "Scheduled"; poolId: string }[];
+  services: { id: string; date: string; serviceDate: string; type: string; technicianName: string; technicianId: string | null; status: "Completed" | "Scheduled"; poolId: string }[];
 }
 
 export type IssueStatusDb = "open" | "in_progress" | "resolved";

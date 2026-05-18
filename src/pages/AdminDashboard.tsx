@@ -2639,6 +2639,61 @@ const AdminDashboard = () => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* Edit Day Off Request */}
+      <Dialog open={!!editDayOffTechId} onOpenChange={(o) => !o && setEditDayOffTechId(null)}>
+        <DialogContent className="pt-10 sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Edit Day Off Request</DialogTitle>
+            <DialogDescription>Update the dates, reason, or status for this request.</DialogDescription>
+          </DialogHeader>
+          <div className="space-y-3">
+            <div className="space-y-1">
+              <label className="text-xs font-semibold text-foreground">Dates</label>
+              <Input
+                value={editDayOffDraft.dates}
+                onChange={(e) => setEditDayOffDraft((d) => ({ ...d, dates: e.target.value }))}
+                placeholder="e.g. Jun 14 – Jun 16, 2026"
+              />
+            </div>
+            <div className="space-y-1">
+              <label className="text-xs font-semibold text-foreground">Reason</label>
+              <Textarea
+                value={editDayOffDraft.reason}
+                onChange={(e) => setEditDayOffDraft((d) => ({ ...d, reason: e.target.value }))}
+                rows={2}
+              />
+            </div>
+            <div className="space-y-1">
+              <label className="text-xs font-semibold text-foreground">Status</label>
+              <Select
+                value={editDayOffDraft.status}
+                onValueChange={(v) => setEditDayOffDraft((d) => ({ ...d, status: v as DayOffStatus }))}
+              >
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Pending">Pending</SelectItem>
+                  <SelectItem value="Approved">Approved</SelectItem>
+                  <SelectItem value="Denied">Denied</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setEditDayOffTechId(null)}>Cancel</Button>
+            <Button
+              onClick={() => {
+                if (!editDayOffTechId) return;
+                setDayOffByTech((prev) => ({ ...prev, [editDayOffTechId]: editDayOffDraft }));
+                toast({ title: "Request updated", variant: "success" });
+                setEditDayOffTechId(null);
+              }}
+            >
+              Save
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

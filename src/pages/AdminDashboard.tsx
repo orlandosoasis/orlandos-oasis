@@ -199,7 +199,7 @@ const AdminDashboard = () => {
     })),
   }));
 
-  const fetchedHomeowners: AdminHomeowner[] = (homeownersQuery.data ?? []).map((h) => ({
+  const fetchedHomeowners: (AdminHomeowner & { isGrandfathered?: boolean; grandfatheredNote?: string | null; isPlaceholder?: boolean })[] = (homeownersQuery.data ?? []).map((h) => ({
     id: h.id,
     name: h.name,
     email: h.email,
@@ -208,6 +208,9 @@ const AdminDashboard = () => {
     plan: h.plan,
     startDate: h.startDate,
     monthlyAmount: h.monthlyAmount,
+    isGrandfathered: h.isGrandfathered,
+    isPlaceholder: h.isPlaceholder,
+    grandfatheredNote: h.grandfatheredNote,
     pools: h.pools.map((p) => ({
       id: p.id,
       address: p.address,

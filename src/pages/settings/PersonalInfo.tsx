@@ -7,6 +7,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import { useBooking } from "@/contexts/BookingContext";
 import { formatUsPhone } from "@/lib/phone";
+import { FORM_LIMITS } from "@/lib/form-limits";
 
 const PersonalInfo = () => {
   const { user, updateUser } = useAuth();
@@ -32,20 +33,20 @@ const PersonalInfo = () => {
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="firstName">First Name</Label>
-              <Input id="firstName" name="given-name" autoComplete="given-name" value={firstName} onChange={(e) => setFirstName(e.target.value)} />
+              <Input id="firstName" name="given-name" autoComplete="given-name" maxLength={FORM_LIMITS.firstName} value={firstName} onChange={(e) => setFirstName(e.target.value)} />
             </div>
             <div className="space-y-2">
               <Label htmlFor="lastName">Last Name</Label>
-              <Input id="lastName" name="family-name" autoComplete="family-name" value={lastName} onChange={(e) => setLastName(e.target.value)} />
+              <Input id="lastName" name="family-name" autoComplete="family-name" maxLength={FORM_LIMITS.lastName} value={lastName} onChange={(e) => setLastName(e.target.value)} />
             </div>
           </div>
           <div className="space-y-2">
             <Label htmlFor="email">Email</Label>
-            <Input id="email" name="email" type="email" inputMode="email" autoComplete="email" autoCapitalize="none" autoCorrect="off" spellCheck={false} value={email} onChange={(e) => setEmail(e.target.value)} />
+            <Input id="email" name="email" type="email" inputMode="email" autoComplete="email" autoCapitalize="none" autoCorrect="off" spellCheck={false} maxLength={FORM_LIMITS.email} value={email} onChange={(e) => setEmail(e.target.value)} />
           </div>
           <div className="space-y-2">
             <Label htmlFor="phone">Phone Number</Label>
-            <Input id="phone" name="phone" type="tel" inputMode="tel" autoComplete="tel" value={phone} onChange={(e) => setPhone(e.target.value)} onBlur={(e) => setPhone(formatUsPhone(e.target.value))} placeholder="(407) 555-1234" />
+            <Input id="phone" name="phone" type="tel" inputMode="tel" autoComplete="tel" maxLength={FORM_LIMITS.phone} value={phone} onChange={(e) => setPhone(e.target.value)} onBlur={(e) => setPhone(formatUsPhone(e.target.value))} placeholder="(407) 555-1234" />
           </div>
           <Button onClick={handleSave} className="mt-2">Save Changes</Button>
         </div>

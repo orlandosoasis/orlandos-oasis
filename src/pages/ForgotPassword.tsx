@@ -7,9 +7,12 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import TurnstileWidget from "@/components/TurnstileWidget";
+import { FORM_LIMITS } from "@/lib/form-limits";
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState("");
+  const [captchaToken, setCaptchaToken] = useState<string | undefined>(undefined);
   const [isLoading, setIsLoading] = useState(false);
   const [sent, setSent] = useState(false);
   const { toast } = useToast();
@@ -19,6 +22,7 @@ const ForgotPassword = () => {
     setIsLoading(true);
     const { error } = await supabase.auth.resetPasswordForEmail(email.toLowerCase().trim(), {
       redirectTo: `${window.location.origin}/reset-password`,
+      captchaToken,
     });
     setIsLoading(false);
     if (error) {
@@ -61,7 +65,14 @@ const ForgotPassword = () => {
                   <Label htmlFor="email">Email</Label>
                   <Input
                     id="email"
+                    name="email"
                     type="email"
+                    inputMode="email"
+                    autoComplete="email"
+                    autoCapitalize="none"
+                    autoCorrect="off"
+                    spellCheck={false}
+                    maxLength={FORM_LIMITS.email}
                     placeholder="you@example.com"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
@@ -69,6 +80,7 @@ const ForgotPassword = () => {
                     className="h-12"
                   />
                 </div>
+                <TurnstileWidget onVerify={setCaptchaToken} />
                 <Button type="submit" className="w-full h-12 text-lg font-semibold" disabled={isLoading}>
                   {isLoading ? (
                     <>

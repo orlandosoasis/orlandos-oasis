@@ -9,6 +9,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import oasisLogo from "@/assets/oo-logo.png";
 import { supabase } from "@/integrations/supabase/client";
 import { formatUsPhone } from "@/lib/phone";
+import { FORM_LIMITS } from "@/lib/form-limits";
+import TurnstileWidget from "@/components/TurnstileWidget";
 import { useToast } from "@/hooks/use-toast";
 
 /* ── Types ── */
@@ -97,6 +99,7 @@ const TechnicianApplication = () => {
   const [resume, setResume] = useState<File | null>(null);
   const [certifications, setCertifications] = useState<Certification[]>([emptyCert()]);
   const [agreed, setAgreed] = useState(false);
+  const [captchaToken, setCaptchaToken] = useState<string | undefined>(undefined);
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -130,6 +133,11 @@ const TechnicianApplication = () => {
   };
 
   const handleSubmit = async () => {
+    if (import.meta.env.VITE_TURNSTILE_SITE_KEY && !captchaToken) {
+      // CAPTCHA required only when site key configured (prod). Skip in dev.
+      alert("Please complete the CAPTCHA before submitting.");
+      return;
+    }
     setIsProcessing(true);
     try {
       let resumePath: string | null = null;
@@ -248,20 +256,20 @@ const TechnicianApplication = () => {
               <div className="grid grid-cols-2 gap-3 mb-3">
                 <div className="space-y-1.5">
                   <Label className="text-xs font-medium text-muted-foreground">First Name</Label>
-                  <Input name="given-name" autoComplete="given-name" placeholder="John" value={firstName} onChange={(e) => setFirstName(e.target.value)} className="h-10 rounded-[10px] border-2 border-border bg-muted/30 text-sm" />
+                  <Input name="given-name" autoComplete="given-name" maxLength={FORM_LIMITS.firstName} placeholder="John" value={firstName} onChange={(e) => setFirstName(e.target.value)} className="h-10 rounded-[10px] border-2 border-border bg-muted/30 text-sm" />
                 </div>
                 <div className="space-y-1.5">
                   <Label className="text-xs font-medium text-muted-foreground">Last Name</Label>
-                  <Input name="family-name" autoComplete="family-name" placeholder="Doe" value={lastName} onChange={(e) => setLastName(e.target.value)} className="h-10 rounded-[10px] border-2 border-border bg-muted/30 text-sm" />
+                  <Input name="family-name" autoComplete="family-name" maxLength={FORM_LIMITS.lastName} placeholder="Doe" value={lastName} onChange={(e) => setLastName(e.target.value)} className="h-10 rounded-[10px] border-2 border-border bg-muted/30 text-sm" />
                 </div>
               </div>
               <div className="space-y-1.5 mb-3">
                 <Label className="text-xs font-medium text-muted-foreground">Email Address</Label>
-                <Input name="email" type="email" inputMode="email" autoComplete="email" autoCapitalize="none" autoCorrect="off" spellCheck={false} placeholder="john.doe@email.com" value={email} onChange={(e) => setEmail(e.target.value)} className="h-10 rounded-[10px] border-2 border-border bg-muted/30 text-sm" />
+                <Input name="email" type="email" inputMode="email" autoComplete="email" autoCapitalize="none" autoCorrect="off" spellCheck={false} maxLength={FORM_LIMITS.email} placeholder="john.doe@email.com" value={email} onChange={(e) => setEmail(e.target.value)} className="h-10 rounded-[10px] border-2 border-border bg-muted/30 text-sm" />
               </div>
               <div className="space-y-1.5">
                 <Label className="text-xs font-medium text-muted-foreground">Phone Number</Label>
-                <Input name="phone" type="tel" inputMode="tel" autoComplete="tel" placeholder="(407) 555-0100" value={phone} onChange={(e) => setPhone(e.target.value)} onBlur={(e) => setPhone(formatUsPhone(e.target.value))} className="h-10 rounded-[10px] border-2 border-border bg-muted/30 text-sm" />
+                <Input name="phone" type="tel" inputMode="tel" autoComplete="tel" maxLength={FORM_LIMITS.phone} placeholder="(407) 555-0100" value={phone} onChange={(e) => setPhone(e.target.value)} onBlur={(e) => setPhone(formatUsPhone(e.target.value))} className="h-10 rounded-[10px] border-2 border-border bg-muted/30 text-sm" />
               </div>
             </div>
 
@@ -271,7 +279,7 @@ const TechnicianApplication = () => {
               <div className="grid grid-cols-3 gap-3 mb-3">
                 <div className="space-y-1.5">
                   <Label className="text-xs font-medium text-muted-foreground">City</Label>
-                  <Input name="city" autoComplete="address-level2" placeholder="Orlando" value={city} onChange={(e) => setCity(e.target.value)} className="h-10 rounded-[10px] border-2 border-border bg-muted/30 text-sm" />
+                  <Input name="city" autoComplete="address-level2" maxLength={FORM_LIMITS.city} placeholder="Orlando" value={city} onChange={(e) => setCity(e.target.value)} className="h-10 rounded-[10px] border-2 border-border bg-muted/30 text-sm" />
                 </div>
                 <div className="space-y-1.5">
                   <Label className="text-xs font-medium text-muted-foreground">State</Label>
@@ -397,6 +405,9 @@ const TechnicianApplication = () => {
                 <span className="text-sm text-muted-foreground leading-relaxed">
                   I confirm that the information provided is accurate and I agree to be contacted by Orlando's Oasis regarding this application.
                 </span>
+              </div>
+              <div className="mt-4">
+                <TurnstileWidget onVerify={setCaptchaToken} />
               </div>
             </div>
           </div>

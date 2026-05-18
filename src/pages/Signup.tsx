@@ -9,6 +9,8 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import GoogleSignInButton from "@/components/GoogleSignInButton";
 import PasswordStrength from "@/components/PasswordStrength";
+import TurnstileWidget from "@/components/TurnstileWidget";
+import { FORM_LIMITS } from "@/lib/form-limits";
 
 const Signup = () => {
   const [fullName, setFullName] = useState("");
@@ -21,6 +23,7 @@ const Signup = () => {
   const [zipCode, setZipCode] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [captchaToken, setCaptchaToken] = useState<string | undefined>(undefined);
   const [isLoading, setIsLoading] = useState(false);
   const { signup } = useAuth();
   const navigate = useNavigate();
@@ -49,7 +52,7 @@ const Signup = () => {
 
     setIsLoading(true);
 
-    const result = await signup(email, password, fullName, "homeowner", { streetAddress, city, state, zipCode, contractLocked: true });
+    const result = await signup(email, password, fullName, "homeowner", { streetAddress, city, state, zipCode, contractLocked: true, captchaToken });
 
     if (result.success) {
       toast({
@@ -108,6 +111,7 @@ const Signup = () => {
                   name="name"
                   type="text"
                   autoComplete="name"
+                  maxLength={FORM_LIMITS.fullName}
                   placeholder="John Smith"
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
@@ -127,6 +131,7 @@ const Signup = () => {
                   autoCapitalize="none"
                   autoCorrect="off"
                   spellCheck={false}
+                  maxLength={FORM_LIMITS.email}
                   placeholder="you@example.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
@@ -143,6 +148,7 @@ const Signup = () => {
                     name="new-password"
                     type={showPassword ? "text" : "password"}
                     autoComplete="new-password"
+                    maxLength={FORM_LIMITS.password}
                     placeholder="At least 8 characters"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
@@ -170,6 +176,7 @@ const Signup = () => {
                     name="confirm-password"
                     type={showConfirmPassword ? "text" : "password"}
                     autoComplete="new-password"
+                    maxLength={FORM_LIMITS.password}
                     placeholder="Re-enter password"
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
@@ -200,6 +207,7 @@ const Signup = () => {
                   id="streetAddress"
                   name="street-address"
                   autoComplete="street-address"
+                  maxLength={FORM_LIMITS.streetAddress}
                   placeholder="1234 Sunshine Blvd"
                   value={streetAddress}
                   onChange={(e) => setStreetAddress(e.target.value)}
@@ -210,7 +218,7 @@ const Signup = () => {
               <div className="grid grid-cols-3 gap-3">
                 <div className="space-y-2">
                   <Label htmlFor="city">City</Label>
-                  <Input id="city" name="city" autoComplete="address-level2" placeholder="Orlando" value={city} onChange={(e) => setCity(e.target.value)} className="h-12" />
+                  <Input id="city" name="city" autoComplete="address-level2" maxLength={FORM_LIMITS.city} placeholder="Orlando" value={city} onChange={(e) => setCity(e.target.value)} className="h-12" />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="state">State</Label>
@@ -221,6 +229,8 @@ const Signup = () => {
                   <Input id="zipCode" name="postal-code" inputMode="numeric" autoComplete="postal-code" maxLength={5} pattern="\d{5}" placeholder="32801" value={zipCode} onChange={(e) => setZipCode(e.target.value.replace(/\D/g, ""))} className="h-12" />
                 </div>
               </div>
+
+              <TurnstileWidget onVerify={setCaptchaToken} />
 
               <Button type="submit" className="w-full h-12 text-lg font-semibold" disabled={isLoading}>
                 {isLoading ? (

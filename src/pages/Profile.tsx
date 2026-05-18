@@ -10,6 +10,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useBooking } from "@/contexts/BookingContext";
 import { supabase } from "@/integrations/supabase/client";
 import { formatUsPhone } from "@/lib/phone";
+import { FORM_LIMITS } from "@/lib/form-limits";
 
 const Profile = () => {
   const { user, updateUser, isAuthenticated, isLoading } = useAuth();
@@ -133,6 +134,7 @@ const Profile = () => {
             autoCapitalize="none"
             autoCorrect="off"
             spellCheck={false}
+            maxLength={FORM_LIMITS.email}
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
@@ -145,6 +147,7 @@ const Profile = () => {
             type="tel"
             inputMode="tel"
             autoComplete="tel"
+            maxLength={FORM_LIMITS.phone}
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
             onBlur={(e) => setPhone(formatUsPhone(e.target.value))}

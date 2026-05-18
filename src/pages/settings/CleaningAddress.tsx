@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
+import { FORM_LIMITS } from "@/lib/form-limits";
 
 const CleaningAddress = () => {
   const { user, updateUser } = useAuth();
@@ -29,16 +30,16 @@ const CleaningAddress = () => {
         <div className="bg-card rounded-2xl border border-border shadow-sm p-6 space-y-5">
           <div className="space-y-2">
             <Label htmlFor="streetAddress">Street Address</Label>
-            <Input id="streetAddress" name="street-address" autoComplete="street-address" value={streetAddress} onChange={(e) => setStreetAddress(e.target.value)} placeholder="1234 Sunshine Blvd" />
+            <Input id="streetAddress" name="street-address" autoComplete="street-address" maxLength={FORM_LIMITS.streetAddress} value={streetAddress} onChange={(e) => setStreetAddress(e.target.value)} placeholder="1234 Sunshine Blvd" />
           </div>
           <div className="space-y-2">
             <Label htmlFor="unitInfo">Unit / Access Information (Optional)</Label>
-            <Input id="unitInfo" name="address-line2" autoComplete="address-line2" value={unitInfo} onChange={(e) => setUnitInfo(e.target.value)} placeholder="Apt 2B, Gate code: 1234" />
+            <Input id="unitInfo" name="address-line2" autoComplete="address-line2" maxLength={FORM_LIMITS.addressLine2} value={unitInfo} onChange={(e) => setUnitInfo(e.target.value)} placeholder="Apt 2B, Gate code: 1234" />
           </div>
           <div className="grid grid-cols-3 gap-4">
             <div className="space-y-2">
               <Label htmlFor="city">City</Label>
-              <Input id="city" name="city" autoComplete="address-level2" value={city} onChange={(e) => setCity(e.target.value)} placeholder="Orlando" />
+              <Input id="city" name="city" autoComplete="address-level2" maxLength={FORM_LIMITS.city} value={city} onChange={(e) => setCity(e.target.value)} placeholder="Orlando" />
             </div>
             <div className="space-y-2">
               <Label htmlFor="state">State</Label>

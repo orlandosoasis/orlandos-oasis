@@ -22,13 +22,19 @@ export interface User {
 interface AuthContextType {
   user: User | null;
   isLoading: boolean;
-  login: (email: string, password: string) => Promise<{ success: boolean; error?: string; role?: UserRole }>;
+  /**
+   * captchaToken is optional but required in production once Supabase Auth
+   * has CAPTCHA enforcement turned on. Pass the Turnstile token from
+   * <TurnstileWidget>; pass undefined in dev / preview if the widget didn't
+   * render (no site key configured).
+   */
+  login: (email: string, password: string, captchaToken?: string) => Promise<{ success: boolean; error?: string; role?: UserRole }>;
   signup: (
     email: string,
     password: string,
     fullName: string,
     role?: UserRole,
-    extra?: { streetAddress?: string; city?: string; state?: string; zipCode?: string; phone?: string; firstName?: string; lastName?: string; contractLocked?: boolean }
+    extra?: { streetAddress?: string; city?: string; state?: string; zipCode?: string; phone?: string; firstName?: string; lastName?: string; contractLocked?: boolean; captchaToken?: string }
   ) => Promise<{ success: boolean; error?: string }>;
   /**
    * Start the Google OAuth flow. Browser redirects to Google, then back to
@@ -118,10 +124,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     };
   }, []);
 
-  const login = async (email: string, password: string) => {
+  const login = async (email: string, password: string, captchaToken?: string) => {
     const { data, error } = await supabase.auth.signInWithPassword({
       email: email.toLowerCase().trim(),
       password,
+      options: captchaToken ? { captchaToken } : undefined,
     });
     if (error) return { success: false, error: error.message };
     // Fetch profile immediately so caller can route by role without race.
@@ -154,7 +161,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       email: normalizedEmail,
       password,
       options: {
-        emailRedirectTo: `${window.location.origin}/`,
+        emailRedirectTo: `${window.location.origin}/login`,
+        captchaToken: extra?.captchaToken,
         data: {
           full_name: fullName,
           first_name: firstName,

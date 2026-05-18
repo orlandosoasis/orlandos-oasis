@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
+import { FORM_LIMITS } from "@/lib/form-limits";
 
 const CleaningNotes = () => {
   const navigate = useNavigate();
@@ -26,11 +27,14 @@ const CleaningNotes = () => {
             <Label htmlFor="notes">Notes for Technician</Label>
             <Textarea
               id="notes"
+              name="cleaning-notes"
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
+              maxLength={FORM_LIMITS.cleaningNotes}
               placeholder="e.g., Gate code is 1234. Pool pump is located behind the garage. Please avoid using chemicals near the garden area."
               className="min-h-[150px]"
             />
+            <div className="text-right text-xs text-muted-foreground">{notes.length} / {FORM_LIMITS.cleaningNotes}</div>
           </div>
           <Button onClick={handleSave} className="mt-2">Save Changes</Button>
         </div>

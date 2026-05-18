@@ -7,6 +7,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { BookingProvider } from "@/contexts/BookingContext";
 import ErrorBoundary from "@/components/ErrorBoundary";
+import EmailVerificationBanner from "@/components/EmailVerificationBanner";
 
 // Eagerly preload logo assets so they render instantly on navigation
 import ooLogo from "@/assets/oo-logo.png";
@@ -92,6 +93,7 @@ const App = () => (
             <Toaster />
             <Sonner />
             <BrowserRouter>
+              <EmailVerificationBanner />
               <Suspense fallback={<RouteFallback />}>
                 <Routes>
                   <Route path="/" element={<Index />} />

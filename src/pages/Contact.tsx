@@ -10,6 +10,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
 import contactHeroBg from "@/assets/contact-pool-lanes.webp";
+import TurnstileWidget from "@/components/TurnstileWidget";
+import { FORM_LIMITS } from "@/lib/form-limits";
 
 const contactSchema = z.object({
   firstName: z.string().trim().min(1, "First name is required").max(100),
@@ -64,6 +66,7 @@ const Contact = () => {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [captchaToken, setCaptchaToken] = useState<string | undefined>(undefined);
   const location = useLocation();
 
   useEffect(() => {
@@ -93,6 +96,16 @@ const Contact = () => {
         fieldErrors[issue.path[0] as string] = issue.message;
       });
       setErrors(fieldErrors);
+      return;
+    }
+
+    // CAPTCHA required only when a Turnstile site key is configured (prod).
+    if (import.meta.env.VITE_TURNSTILE_SITE_KEY && !captchaToken) {
+      toast({
+        title: "Please complete the CAPTCHA",
+        description: "Verify you're human before sending.",
+        variant: "destructive",
+      });
       return;
     }
 
@@ -192,6 +205,7 @@ const Contact = () => {
                     id="contact-first-name"
                     name="given-name"
                     autoComplete="given-name"
+                    maxLength={FORM_LIMITS.firstName}
                     placeholder="First Name"
                     value={formData.firstName}
                     onChange={(e) => update("firstName", e.target.value)}
@@ -205,6 +219,7 @@ const Contact = () => {
                     id="contact-last-name"
                     name="family-name"
                     autoComplete="family-name"
+                    maxLength={FORM_LIMITS.lastName}
                     placeholder="Last Name"
                     value={formData.lastName}
                     onChange={(e) => update("lastName", e.target.value)}
@@ -227,6 +242,7 @@ const Contact = () => {
                     autoCapitalize="none"
                     autoCorrect="off"
                     spellCheck={false}
+                    maxLength={FORM_LIMITS.email}
                     placeholder="Email"
                     value={formData.email}
                     onChange={(e) => update("email", e.target.value)}
@@ -242,6 +258,7 @@ const Contact = () => {
                     type="tel"
                     inputMode="tel"
                     autoComplete="tel"
+                    maxLength={FORM_LIMITS.phone}
                     placeholder="(561) 000-0000"
                     value={formData.phone}
                     onChange={(e) => update("phone", e.target.value)}
@@ -266,16 +283,26 @@ const Contact = () => {
 
               {/* Message */}
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-navy mb-1.5">Message</label>
+                <label htmlFor="contact-message" className="block text-xs font-bold uppercase tracking-wider text-navy mb-1.5">Message</label>
                 <Textarea
+                  id="contact-message"
+                  name="message"
                   placeholder="Tell us about your pool and how we can help..."
                   rows={5}
+                  maxLength={FORM_LIMITS.contactMessage}
                   value={formData.message}
                   onChange={(e) => update("message", e.target.value)}
                   className={errors.message ? "border-destructive" : ""}
                 />
-                {errors.message && <p className="text-sm text-destructive mt-1">{errors.message}</p>}
+                <div className="flex items-center justify-between mt-1">
+                  {errors.message ? (
+                    <p className="text-sm text-destructive">{errors.message}</p>
+                  ) : <span />}
+                  <span className="text-xs text-muted-foreground">{formData.message.length} / {FORM_LIMITS.contactMessage}</span>
+                </div>
               </div>
+
+              <TurnstileWidget onVerify={setCaptchaToken} />
 
               <Button type="submit" disabled={isSubmitting} className="mt-2">
                 {isSubmitting ? "Sending..." : "Submit →"}

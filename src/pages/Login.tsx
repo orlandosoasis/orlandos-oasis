@@ -9,12 +9,15 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import GoogleSignInButton from "@/components/GoogleSignInButton";
+import TurnstileWidget from "@/components/TurnstileWidget";
+import { FORM_LIMITS } from "@/lib/form-limits";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(true);
+  const [captchaToken, setCaptchaToken] = useState<string | undefined>(undefined);
   const [isLoading, setIsLoading] = useState(false);
   const { login, user, isAuthenticated } = useAuth();
   const navigate = useNavigate();
@@ -32,7 +35,7 @@ const Login = () => {
     e.preventDefault();
     setIsLoading(true);
 
-    const result = await login(email, password);
+    const result = await login(email, password, captchaToken);
 
     if (result.success) {
       toast({
@@ -95,6 +98,7 @@ const Login = () => {
                   autoCapitalize="none"
                   autoCorrect="off"
                   spellCheck={false}
+                  maxLength={FORM_LIMITS.email}
                   placeholder="you@example.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
@@ -111,6 +115,7 @@ const Login = () => {
                     name="password"
                     type={showPassword ? "text" : "password"}
                     autoComplete="current-password"
+                    maxLength={FORM_LIMITS.password}
                     placeholder="Enter your password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
@@ -142,6 +147,8 @@ const Login = () => {
                   Forgot password?
                 </Link>
               </div>
+
+              <TurnstileWidget onVerify={setCaptchaToken} />
 
               <Button type="submit" className="w-full h-12 text-lg font-semibold" disabled={isLoading}>
                 {isLoading ? (

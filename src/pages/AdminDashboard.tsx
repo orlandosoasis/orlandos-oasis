@@ -970,35 +970,50 @@ const AdminDashboard = () => {
               <div className="space-y-3">
                 <div className="flex items-center justify-between flex-wrap gap-2">
                   <div className="text-xs font-bold text-foreground">Revenue by Month · {revenueYear}</div>
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-3">
                     <div className="text-xs text-muted-foreground">
                       Year total <span className="text-foreground font-semibold">{fmtMoney(revenueYearTotal)}</span>
                     </div>
-                    <div className="flex items-center gap-1 rounded-md bg-muted p-0.5">
-                      <button
-                        onClick={() => setRevenueYear(currentYear - 1)}
-                        className={`px-2 py-0.5 text-xs font-semibold rounded ${revenueYear === currentYear - 1 ? "bg-background shadow-sm text-foreground" : "text-muted-foreground"}`}
-                      >{currentYear - 1}</button>
-                      <button
-                        onClick={() => setRevenueYear(currentYear)}
-                        className={`px-2 py-0.5 text-xs font-semibold rounded ${revenueYear === currentYear ? "bg-background shadow-sm text-foreground" : "text-muted-foreground"}`}
-                      >{currentYear}</button>
-                    </div>
+                    <Select value={String(revenueYear)} onValueChange={(v) => setRevenueYear(Number(v))}>
+                      <SelectTrigger className="h-8 w-[110px] text-xs"><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        {availableYears.map((y) => (
+                          <SelectItem key={y} value={String(y)}>{y}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   </div>
                 </div>
                 <div className="h-[280px] w-full">
                   <ResponsiveContainer width="100%" height="100%">
-                    <BarChart data={revenueMonthly} margin={{ top: 24, right: 16, left: 8, bottom: 8 }}>
+                    <BarChart data={revenueMonthly} margin={{ top: 16, right: 16, left: 8, bottom: 8 }}>
                       <XAxis dataKey="month" tick={{ fontSize: 12 }} axisLine={false} tickLine={false} />
                       <YAxis tickFormatter={(v) => `$${v}`} tick={{ fontSize: 11 }} axisLine={false} tickLine={false} width={56} />
                       <ReTooltip
                         cursor={{ fill: "hsl(var(--muted))", opacity: 0.4 }}
-                        formatter={(value: number) => [fmtMoney(value), "Revenue"]}
+                        formatter={(value: number, name) => [fmtMoney(value), REVENUE_LABELS[name as typeof REVENUE_KEYS[number]] ?? String(name)]}
                         contentStyle={{ borderRadius: 8, fontSize: 12 }}
                       />
-                      <Bar dataKey="total" radius={[8, 8, 0, 0]} fill="hsl(var(--primary))" />
+                      {REVENUE_KEYS.map((k, idx) => (
+                        <Bar
+                          key={k}
+                          dataKey={k}
+                          stackId="rev"
+                          fill={REVENUE_COLORS[k]}
+                          radius={idx === REVENUE_KEYS.length - 1 ? [8, 8, 0, 0] : [0, 0, 0, 0]}
+                        />
+                      ))}
                     </BarChart>
                   </ResponsiveContainer>
+                </div>
+                <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted-foreground pt-1">
+                  {REVENUE_KEYS.map((k) => (
+                    <div key={k} className="flex items-center gap-1.5">
+                      <span className="inline-block h-2.5 w-2.5 rounded-sm" style={{ background: REVENUE_COLORS[k] }} />
+                      <span className="text-foreground">{REVENUE_LABELS[k]}</span>
+                      <span>· {fmtMoney(categoryMRR[k])}/mo</span>
+                    </div>
+                  ))}
                 </div>
               </div>
             )

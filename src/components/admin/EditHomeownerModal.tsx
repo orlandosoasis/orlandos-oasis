@@ -90,6 +90,10 @@ const EditHomeownerModal = ({ open, onClose, homeowner, onSave }: EditHomeownerM
   const [autoRecurring, setAutoRecurring] = useState(true);
   const [paymentOption, setPaymentOption] = useState("offline");
 
+  const [isGrandfathered, setIsGrandfathered] = useState(false);
+  const [grandfatheredNote, setGrandfatheredNote] = useState("");
+  const [isFreds, setIsFreds] = useState(false);
+
   const [errors, setErrors] = useState<Record<string, boolean>>({});
 
   // Pre-fill whenever homeowner changes / modal opens

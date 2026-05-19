@@ -107,7 +107,7 @@ const About = () => {
                     </span>
                   </div>
                   <h2
-                    className="text-3xl md:text-4xl font-extrabold leading-tight mb-2"
+                    className="text-3xl md:text-4xl font-extrabold leading-tight mb-2 text-white"
                     style={{ color: "#ffffff" }}
                   >
                     Have questions about your pool?

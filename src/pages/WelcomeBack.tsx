@@ -135,7 +135,7 @@ const WelcomeBack = () => {
         {/* Reviews */}
         <section className="py-12 md:py-16 lg:py-20 px-4 md:px-6 bg-white">
           <div className="container max-w-6xl mx-auto">
-            <h2 className="font-extrabold text-foreground text-center mb-2 text-4xl">
+            <h2 className="font-extrabold text-foreground text-left mb-2 text-4xl">
               Verified Customer Reviews
             </h2>
             <div className="flex items-center flex-wrap gap-x-2 gap-y-1 text-sm text-muted-foreground mb-10 md:mb-12">

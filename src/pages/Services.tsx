@@ -2,7 +2,7 @@ import { Star, Check, Clock, Sparkles, Wrench, Droplets, FlaskConical, Shield, A
 import { Link } from "react-router-dom";
 import FloatingNav from "@/components/FloatingNav";
 import Footer from "@/components/Footer";
-import NewsletterSection from "@/components/NewsletterSection";
+
 import { Button } from "@/components/ui/button";
 import BlogStyleHero from "@/components/BlogStyleHero";
 import servicesWeekly from "@/assets/services-weekly.webp";

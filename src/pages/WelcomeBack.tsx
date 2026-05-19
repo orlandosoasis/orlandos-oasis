@@ -87,7 +87,7 @@ const WelcomeBack = () => {
                   <span className="text-lg font-bold text-foreground">Orlando's Oasis</span>
                 </Link>
                 <h1 className="font-extrabold text-foreground text-center mb-2 text-4xl">Set up your account</h1>
-                <p className="text-sm text-muted-foreground">
+                <p className="text-muted-foreground">
                   Track and manage your maintenance services all in one place.
                 </p>
               </div>

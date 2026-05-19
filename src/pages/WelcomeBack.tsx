@@ -27,16 +27,38 @@ const WelcomeBack = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
 
+  const [errors, setErrors] = useState<Record<string, string>>({});
+
+  const validate = () => {
+    const e: Record<string, string> = {};
+    if (!fullName.trim()) e.fullName = "Full name is required";
+    if (!email.trim()) e.email = "Email address is required";
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) e.email = "Please enter a valid email address";
+    if (!password) e.password = "Password is required";
+    else if (password.length < 6) e.password = "Password must be at least 6 characters";
+    if (!confirmPassword) e.confirmPassword = "Please confirm your password";
+    else if (password !== confirmPassword) e.confirmPassword = "Passwords do not match";
+    if (!streetAddress.trim()) e.streetAddress = "Street address is required";
+    if (!city.trim()) e.city = "City is required";
+    if (!state.trim()) e.state = "State is required";
+    if (!zipCode.trim()) e.zipCode = "ZIP code is required";
+    return e;
+  };
+
+  const clearError = (key: string) => {
+    setErrors((prev) => {
+      if (!prev[key]) return prev;
+      const { [key]: _, ...rest } = prev;
+      return rest;
+    });
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (password !== confirmPassword) {
-      toast({ title: "Passwords don't match", description: "Please make sure your passwords match.", variant: "destructive" });
-      return;
-    }
-    if (password.length < 6) {
-      toast({ title: "Password too short", description: "Password must be at least 6 characters.", variant: "destructive" });
-      return;
-    }
+    const v = validate();
+    setErrors(v);
+    if (Object.keys(v).length > 0) return;
+
     setIsLoading(true);
     const result = await signup(email, password, fullName, "homeowner", { streetAddress, city, state, zipCode, contractLocked: false });
     if (result.success) {
@@ -47,6 +69,9 @@ const WelcomeBack = () => {
     }
     setIsLoading(false);
   };
+
+  const errorInputClass = "border-destructive focus-visible:border-destructive";
+  const inputCls = (key: string) => `h-12 ${errors[key] ? errorInputClass : ""}`;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-oasis via-oasis-teal to-navy flex flex-col">
@@ -67,55 +92,75 @@ const WelcomeBack = () => {
                 </p>
               </div>
 
-              <form onSubmit={handleSubmit} className="space-y-5">
+              <form onSubmit={handleSubmit} noValidate className="space-y-5">
                 <div className="space-y-2">
                   <Label htmlFor="fullName">Full Name</Label>
-                  <Input id="fullName" type="text" placeholder="John Smith" value={fullName}
-                    onChange={(e) => setFullName(e.target.value)} required className="h-12" />
+                  <Input id="fullName" type="text" placeholder="Enter your full name" value={fullName}
+                    aria-invalid={!!errors.fullName}
+                    onChange={(e) => { setFullName(e.target.value); clearError("fullName"); }} className={inputCls("fullName")} />
+                  {errors.fullName && <p className="text-xs text-destructive" role="alert">{errors.fullName}</p>}
                 </div>
 
                 <div className="space-y-2">
                   <Label htmlFor="email">Email</Label>
-                  <Input id="email" type="email" placeholder="you@example.com" value={email}
-                    onChange={(e) => setEmail(e.target.value)} required className="h-12" />
+                  <Input id="email" type="email" placeholder="Enter your email address" value={email}
+                    aria-invalid={!!errors.email}
+                    onChange={(e) => { setEmail(e.target.value); clearError("email"); }} className={inputCls("email")} />
+                  {errors.email && <p className="text-xs text-destructive" role="alert">{errors.email}</p>}
                 </div>
 
                 <div className="space-y-2">
                   <Label htmlFor="password">Password</Label>
                   <div className="relative">
-                    <Input id="password" type={showPassword ? "text" : "password"} placeholder="••••••••"
-                      value={password} onChange={(e) => setPassword(e.target.value)} required className="h-12 pr-12" />
+                    <Input id="password" type={showPassword ? "text" : "password"} placeholder="Create a password"
+                      aria-invalid={!!errors.password}
+                      value={password} onChange={(e) => { setPassword(e.target.value); clearError("password"); }}
+                      className={`${inputCls("password")} pr-12`} />
                     <button type="button" onClick={() => setShowPassword(!showPassword)}
                       className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors">
                       {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
                     </button>
                   </div>
+                  {errors.password && <p className="text-xs text-destructive" role="alert">{errors.password}</p>}
                 </div>
 
                 <div className="space-y-2">
                   <Label htmlFor="confirmPassword">Confirm Password</Label>
-                  <Input id="confirmPassword" type={showPassword ? "text" : "password"} placeholder="••••••••"
-                    value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required className="h-12" />
+                  <Input id="confirmPassword" type={showPassword ? "text" : "password"} placeholder="Re-enter your password"
+                    aria-invalid={!!errors.confirmPassword}
+                    value={confirmPassword} onChange={(e) => { setConfirmPassword(e.target.value); clearError("confirmPassword"); }} className={inputCls("confirmPassword")} />
+                  {errors.confirmPassword && <p className="text-xs text-destructive" role="alert">{errors.confirmPassword}</p>}
                 </div>
 
                 <div className="space-y-2">
                   <Label htmlFor="streetAddress">Street Address</Label>
-                  <Input id="streetAddress" placeholder="1234 Sunshine Blvd" value={streetAddress}
-                    onChange={(e) => setStreetAddress(e.target.value)} className="h-12" />
+                  <Input id="streetAddress" placeholder="Enter your street address" value={streetAddress}
+                    aria-invalid={!!errors.streetAddress}
+                    onChange={(e) => { setStreetAddress(e.target.value); clearError("streetAddress"); }} className={inputCls("streetAddress")} />
+                  {errors.streetAddress && <p className="text-xs text-destructive" role="alert">{errors.streetAddress}</p>}
                 </div>
 
                 <div className="grid grid-cols-3 gap-3">
                   <div className="space-y-2">
                     <Label htmlFor="city">City</Label>
-                    <Input id="city" placeholder="Orlando" value={city} onChange={(e) => setCity(e.target.value)} className="h-12" />
+                    <Input id="city" placeholder="City" value={city}
+                      aria-invalid={!!errors.city}
+                      onChange={(e) => { setCity(e.target.value); clearError("city"); }} className={inputCls("city")} />
+                    {errors.city && <p className="text-xs text-destructive" role="alert">{errors.city}</p>}
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="state">State</Label>
-                    <Input id="state" placeholder="FL" value={state} onChange={(e) => setState(e.target.value)} className="h-12" />
+                    <Input id="state" placeholder="State" value={state}
+                      aria-invalid={!!errors.state}
+                      onChange={(e) => { setState(e.target.value); clearError("state"); }} className={inputCls("state")} />
+                    {errors.state && <p className="text-xs text-destructive" role="alert">{errors.state}</p>}
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="zipCode">Zip</Label>
-                    <Input id="zipCode" placeholder="32801" value={zipCode} onChange={(e) => setZipCode(e.target.value)} className="h-12" />
+                    <Input id="zipCode" placeholder="ZIP code" value={zipCode}
+                      aria-invalid={!!errors.zipCode}
+                      onChange={(e) => { setZipCode(e.target.value); clearError("zipCode"); }} className={inputCls("zipCode")} />
+                    {errors.zipCode && <p className="text-xs text-destructive" role="alert">{errors.zipCode}</p>}
                   </div>
                 </div>
 

@@ -71,9 +71,13 @@ const BlogStyleHero = ({
           <div className="lg:col-span-4">
             <p
               className={`hero-subtitle max-w-sm ${
-                isDark ? "text-white/95" : "text-foreground/70"
+                isDark ? "text-white" : "text-foreground/70"
               }`}
-              style={isDark ? { textShadow: "0 1px 8px rgba(0,0,0,0.5)" } : undefined}
+              style={
+                isDark
+                  ? { textShadow: "0 2px 12px rgba(0,0,0,0.65), 0 1px 4px rgba(0,0,0,0.5)" }
+                  : undefined
+              }
             >
               {description}
             </p>

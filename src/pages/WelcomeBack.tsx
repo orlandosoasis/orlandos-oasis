@@ -136,9 +136,74 @@ const WelcomeBack = () => {
         </section>
 
         {/* Reviews */}
-        <section className="py-10 md:py-14 lg:py-16 px-4 md:px-6 bg-white">
+        <section className="py-12 md:py-16 lg:py-20 px-4 md:px-6 bg-white">
           <div className="container max-w-6xl mx-auto">
-            <ReviewsSection />
+            <h2 className="text-3xl md:text-4xl font-extrabold text-navy mb-3 max-w-2xl">
+              Verified Customer Reviews
+            </h2>
+            <div className="flex items-center flex-wrap gap-x-2 gap-y-1 text-sm text-muted-foreground mb-10 md:mb-12">
+              <span className="font-semibold text-navy">4.8</span>
+              <span className="flex gap-0.5">
+                {[...Array(5)].map((_, i) => (
+                  <Star key={i} className="h-4 w-4 fill-primary text-primary" />
+                ))}
+              </span>
+              <span>·</span>
+              <span>2,847 reviews</span>
+              <span>·</span>
+              <span className="text-trust font-medium">100% verified</span>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-5 md:gap-6">
+              {[
+                {
+                  initials: "PS",
+                  name: "Paula S.",
+                  location: "Orlando, FL",
+                  text: "Carlos was amazing! My pool went from green to crystal clear in one visit. He explained everything he did and even gave me tips for maintaining the pH levels. Highly recommend!",
+                },
+                {
+                  initials: "BG",
+                  name: "Brad G.",
+                  location: "Winter Park, FL",
+                  text: "Best pool service in Orlando. The technician arrived on time, was super professional, and my pool has never looked this clean. The chemicals are perfectly balanced now.",
+                },
+                {
+                  initials: "MR",
+                  name: "Maria R.",
+                  location: "Kissimmee, FL",
+                  text: "Professional, thorough, and so friendly! He went above and beyond, even cleaning the pool deck. The $49 intro deal is amazing for the quality of service.",
+                },
+              ].map((review, index) => (
+                <article
+                  key={index}
+                  className="flex flex-col rounded-lg border border-border bg-card p-6 shadow-sm animate-fade-in"
+                  style={{ animationDelay: `${index * 100}ms` }}
+                >
+                  <div className="flex gap-0.5 mb-4">
+                    {[...Array(5)].map((_, i) => (
+                      <Star key={i} className="h-4 w-4 fill-primary text-primary" />
+                    ))}
+                  </div>
+                  <p className="text-sm leading-relaxed text-muted-foreground flex-1">
+                    {review.text}
+                  </p>
+                  <div className="flex items-center gap-3 mt-6 pt-6 border-t border-border">
+                    <div className="w-10 h-10 rounded-full flex items-center justify-center text-navy text-xs font-semibold shrink-0 bg-slate-300">
+                      {review.initials}
+                    </div>
+                    <div className="min-w-0">
+                      <h4 className="text-sm font-semibold text-navy leading-tight">
+                        {review.name}
+                      </h4>
+                      <p className="text-xs text-muted-foreground mt-0.5">
+                        {review.location}
+                      </p>
+                    </div>
+                  </div>
+                </article>
+              ))}
+            </div>
           </div>
         </section>
 

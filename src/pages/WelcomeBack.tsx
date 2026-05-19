@@ -210,7 +210,7 @@ const WelcomeBack = () => {
         <FAQSection />
 
         {/* The Fine Print */}
-        <section className="py-10 md:py-14 lg:py-16 px-4 md:px-6 bg-white">
+        <section className="py-10 md:py-14 lg:py-16 px-4 md:px-6 bg-muted">
           <div className="max-w-4xl mx-auto">
             <h4 className="text-lg font-semibold text-foreground mb-4 text-center">The Fine Print</h4>
             <ul className="space-y-1 text-sm text-muted-foreground max-w-2xl mx-auto">

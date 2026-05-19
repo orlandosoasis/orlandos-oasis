@@ -210,7 +210,7 @@ small { font-size: 14px; font-weight: 400; }
 .hp-theme section h2.font-black { font-weight: 900 !important; }
 
 /* Allow white headings on dark sections */
-.hp-theme section h2.text-white,
+.hp-theme section h2.newsletter-heading-white,
 section.bg-navy h2,
 section .text-white {
   color: hsl(0 0% 100%) !important;

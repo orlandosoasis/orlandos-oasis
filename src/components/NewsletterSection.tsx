@@ -90,7 +90,7 @@ const NewsletterSection = () => {
                   </div>
                   <Button
                     type="submit"
-                    className="h-12 px-6 whitespace-nowrap bg-navy text-white hover:bg-navy/90 transition-transform duration-200 hover:scale-[1.02]"
+                    className="h-12 px-6 whitespace-nowrap bg-white text-primary hover:bg-white/90 transition-transform duration-200 hover:scale-[1.02]"
                   >
                     Subscribe
                   </Button>

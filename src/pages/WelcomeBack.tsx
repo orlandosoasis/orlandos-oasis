@@ -51,25 +51,22 @@ const WelcomeBack = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-oasis via-oasis-teal to-navy flex flex-col">
       {/* Top branding */}
-      <header className="px-6 py-4 flex justify-center">
-        <Link to="/" className="flex items-center gap-2 bg-white rounded-full px-4 py-2">
-          <img src={oasisLogo} alt="Orlando's Oasis" className="h-8 w-8 object-contain" />
-          <span className="text-lg font-bold text-foreground">Orlando's Oasis</span>
-        </Link>
-      </header>
-
       <main className="flex-1">
         {/* Welcome / signup section */}
         <section className="py-10 md:py-16 px-4 md:px-6">
           <div className="container max-w-3xl mx-auto">
-            <div className="text-center mb-8">
-              <h1 className="text-3xl md:text-4xl font-bold text-white mb-3">Set up your account</h1>
-              <p className="text-white/80">
-                Track and manage your maintenance services all in one place.
-              </p>
-            </div>
-
             <div className="bg-card rounded-2xl shadow-lg border border-border p-6 md:p-8">
+              <div className="mb-6 text-left">
+                <Link to="/" className="inline-flex items-center gap-2 mb-5">
+                  <img src={oasisLogo} alt="Orlando's Oasis" className="h-9 w-9 object-contain" />
+                  <span className="text-lg font-bold text-foreground">Orlando's Oasis</span>
+                </Link>
+                <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-2">Set up your account</h1>
+                <p className="text-sm text-muted-foreground">
+                  Track and manage your maintenance services all in one place.
+                </p>
+              </div>
+
               <form onSubmit={handleSubmit} className="space-y-5">
                 <div className="space-y-2">
                   <Label htmlFor="fullName">Full Name</Label>

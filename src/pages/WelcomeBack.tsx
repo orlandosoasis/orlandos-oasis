@@ -61,7 +61,7 @@ const WelcomeBack = () => {
                   <img src={oasisLogo} alt="Orlando's Oasis" className="h-9 w-9 object-contain" />
                   <span className="text-lg font-bold text-foreground">Orlando's Oasis</span>
                 </Link>
-                <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-2">Set up your account</h1>
+                <h1 className="text-2xl font-bold text-foreground mb-2 md:text-4xl">Set up your account</h1>
                 <p className="text-sm text-muted-foreground">
                   Track and manage your maintenance services all in one place.
                 </p>

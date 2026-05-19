@@ -56,7 +56,7 @@ const WelcomeBack = () => {
         <section className="py-10 md:py-16 px-4 md:px-6">
           <div className="container max-w-3xl mx-auto">
             <div className="bg-card rounded-2xl shadow-lg border border-border p-6 md:p-8">
-              <div className="mb-6 text-left">
+              <div className="mb-6 text-center">
                 <Link to="/" className="inline-flex items-center gap-2 mb-5">
                   <img src={oasisLogo} alt="Orlando's Oasis" className="h-9 w-9 object-contain" />
                   <span className="text-lg font-bold text-foreground">Orlando's Oasis</span>

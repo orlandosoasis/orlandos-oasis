@@ -57,7 +57,7 @@ const NewsletterSection = () => {
                     Newsletter
                   </span>
                 </div>
-                <h2 className="text-3xl md:text-4xl font-extrabold leading-tight mb-2 text-white">
+                <h2 className="newsletter-heading-white text-3xl md:text-4xl font-extrabold leading-tight mb-2 text-white">
                   Stay in the Loop
                 </h2>
                 <p className="text-white/80 max-w-md">

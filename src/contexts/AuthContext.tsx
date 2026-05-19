@@ -157,7 +157,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     password: string,
     fullName: string,
     role: UserRole = "homeowner",
-    extra?: { streetAddress?: string; city?: string; state?: string; zipCode?: string; phone?: string; firstName?: string; lastName?: string; contractLocked?: boolean }
+    extra?: { streetAddress?: string; city?: string; state?: string; zipCode?: string; phone?: string; firstName?: string; lastName?: string; contractLocked?: boolean; captchaToken?: string }
   ) => {
     const normalizedEmail = email.toLowerCase().trim();
     const firstName = extra?.firstName || fullName.split(" ")[0];

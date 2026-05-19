@@ -56,7 +56,7 @@ export function CookieConsent() {
       role="dialog"
       aria-live="polite"
       aria-label="Cookie consent"
-      className="fixed inset-x-4 bottom-4 z-50 mx-auto max-w-3xl rounded-2xl border border-border bg-card p-4 shadow-2xl sm:p-5"
+      className="fixed inset-x-4 bottom-24 z-50 mx-auto max-w-3xl rounded-2xl border border-border bg-card p-4 shadow-2xl sm:p-5 md:bottom-4"
     >
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-5">
         <div className="flex items-start gap-3 flex-1">

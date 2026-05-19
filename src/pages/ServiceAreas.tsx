@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { MapPin, CheckCircle2, ArrowRight, Shield, Clock, Sparkles, Wrench, FlaskConical } from "lucide-react";
 import FloatingNav from "@/components/FloatingNav";
 import Footer from "@/components/Footer";
-import NewsletterSection from "@/components/NewsletterSection";
+
 import BlogStyleHero from "@/components/BlogStyleHero";
 import { Button } from "@/components/ui/button";
 import serviceAreasHeroBg from "@/assets/service-areas-pool-steps.webp";

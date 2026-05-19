@@ -2,6 +2,7 @@ import { Star, Calendar, MessageSquare, FlaskConical, Handshake, CheckCircle2 } 
 import { Link } from "react-router-dom";
 import FloatingNav from "@/components/FloatingNav";
 import Footer from "@/components/Footer";
+import NewsletterSection from "@/components/NewsletterSection";
 import { Button } from "@/components/ui/button";
 import BlogStyleHero from "@/components/BlogStyleHero";
 import poolWaterBg from "@/assets/pool-water-bg.webp";
@@ -104,6 +105,7 @@ const About = () => {
           </div>
         </section>
 
+        <NewsletterSection />
       </main>
       <Footer />
     </div>

@@ -5,6 +5,7 @@ import { Phone, Mail, MapPin } from "lucide-react";
 import FloatingNav from "@/components/FloatingNav";
 import BlogStyleHero from "@/components/BlogStyleHero";
 import Footer from "@/components/Footer";
+import NewsletterSection from "@/components/NewsletterSection";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
@@ -381,6 +382,7 @@ const Contact = () => {
         </div>
       </section>
 
+      <NewsletterSection />
       <Footer />
     </div>
   );

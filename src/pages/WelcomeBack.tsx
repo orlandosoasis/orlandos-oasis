@@ -61,7 +61,7 @@ const WelcomeBack = () => {
                   <img src={oasisLogo} alt="Orlando's Oasis" className="h-9 w-9 object-contain" />
                   <span className="text-lg font-bold text-foreground">Orlando's Oasis</span>
                 </Link>
-                <h1 className="text-2xl font-bold text-foreground mb-2 md:text-4xl">Set up your account</h1>
+                <h1 className="font-extrabold text-foreground text-center mb-2 text-4xl">Set up your account</h1>
                 <p className="text-sm text-muted-foreground">
                   Track and manage your maintenance services all in one place.
                 </p>
@@ -135,7 +135,7 @@ const WelcomeBack = () => {
         {/* Reviews */}
         <section className="py-12 md:py-16 lg:py-20 px-4 md:px-6 bg-white">
           <div className="container max-w-6xl mx-auto">
-            <h2 className="text-3xl md:text-4xl font-extrabold text-navy mb-3 max-w-2xl">
+            <h2 className="font-extrabold text-foreground text-center mb-2 text-4xl">
               Verified Customer Reviews
             </h2>
             <div className="flex items-center flex-wrap gap-x-2 gap-y-1 text-sm text-muted-foreground mb-10 md:mb-12">

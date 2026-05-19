@@ -82,32 +82,47 @@ const ServiceAreas = () => {
           </div>
         </section>
 
-        {/* CTA */}
-        <section className="py-16 md:py-20 px-4 bg-gradient-to-r from-primary to-oasis-dark text-center text-white">
-          <div className="container max-w-6xl mx-auto" style={{ textShadow: '0 2px 8px rgba(0,0,0,0.3)' }}>
-            <div className="flex items-center justify-center gap-2 mb-4">
-              <Shield className="h-5 w-5 text-white" />
-              <span className="text-xs font-bold tracking-widest uppercase text-white">100% Satisfaction Guarantee</span>
-            </div>
-            <h2 className="section-title text-white mb-3">Ready for Crystal Clear Water?</h2>
-            <p className="hero-subtitle text-white max-w-[560px] mx-auto mb-8">
-              Save $25 on your first month. Book online in under 60 seconds.
-            </p>
-            <div className="flex gap-3 justify-center flex-wrap">
-              <Button variant="outline" className="h-12 px-6 whitespace-nowrap border-white/30 text-white bg-transparent hover:bg-white hover:!text-navy hover:border-white" asChild>
-                <Link to="/contact#get-in-touch">Contact Us</Link>
-              </Button>
-              <Button className="h-12 px-6 whitespace-nowrap bg-white text-navy hover:bg-white/90" asChild>
-                <Link to="/#discount-voucher">
-                  Get a Discount Voucher
-                  <ArrowRight className="h-4 w-4 ml-1" />
-                </Link>
-              </Button>
+        {/* CTA — using newsletter card layout (matches Services page) */}
+        <section
+          className="px-4 md:px-6 pt-10 md:pt-14 lg:pt-16 pb-0"
+          style={{ background: "hsl(210 60% 12%)" }}
+        >
+          <div className="container max-w-6xl mx-auto">
+            <div className="rounded-3xl bg-primary p-6 md:p-10 lg:p-12 shadow-lg animate-fade-in transition-transform duration-300 hover:-translate-y-0.5 text-center">
+              <div className="flex items-center justify-center gap-2 mb-4">
+                <Shield className="h-5 w-5 text-white" />
+                <span className="text-xs font-bold tracking-widest uppercase text-white">
+                  100% Satisfaction Guarantee
+                </span>
+              </div>
+              <h2 className="text-3xl md:text-4xl font-extrabold leading-tight mb-3 text-white">
+                Ready for Crystal Clear Water?
+              </h2>
+              <p className="text-white/80 max-w-[560px] mx-auto mb-8">
+                Save $25 on your first month. Book online in under 60 seconds.
+              </p>
+              <div className="flex gap-3 justify-center flex-wrap">
+                <Button
+                  variant="outline"
+                  className="h-12 px-6 whitespace-nowrap border-white/30 text-white bg-transparent hover:bg-white hover:!text-primary hover:border-white"
+                  asChild
+                >
+                  <Link to="/contact#get-in-touch">Contact Us</Link>
+                </Button>
+                <Button
+                  className="h-12 px-6 whitespace-nowrap bg-white text-primary hover:bg-white/90 font-semibold transition-transform duration-200 hover:scale-[1.02]"
+                  asChild
+                >
+                  <Link to="/#discount-voucher">
+                    Get a Discount Voucher
+                    <ArrowRight className="h-4 w-4 ml-1" />
+                  </Link>
+                </Button>
+              </div>
             </div>
           </div>
         </section>
 
-        <NewsletterSection />
       </main>
       <Footer />
     </div>

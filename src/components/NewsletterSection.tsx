@@ -52,8 +52,7 @@ const NewsletterSection = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10 items-center">
               {/* Left: title + description */}
               <div>
-                <div className="flex items-center gap-2 mb-3">
-                  <Mail className="h-6 w-6 text-white" />
+                <div className="mb-3">
                   <span className="text-xs uppercase tracking-wider text-white/70 font-semibold">
                     Newsletter
                   </span>

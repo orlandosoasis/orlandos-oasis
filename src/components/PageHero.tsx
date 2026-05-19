@@ -22,7 +22,10 @@ const PageHero = ({ imageSrc, imageAlt, title, description, flipImage }: PageHer
         <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-white leading-tight mb-5">
           {title}
         </h1>
-        <p className="text-base md:text-lg max-w-xl leading-relaxed font-normal text-primary-foreground">
+        <p
+          className="text-base md:text-lg max-w-xl leading-relaxed font-normal text-white/95"
+          style={{ textShadow: '0 1px 8px rgba(0,0,0,0.5)' }}
+        >
           {description}
         </p>
       </div>

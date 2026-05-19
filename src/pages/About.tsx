@@ -2,7 +2,7 @@ import { Star, Calendar, MessageSquare, FlaskConical, Handshake, CheckCircle2 } 
 import { Link } from "react-router-dom";
 import FloatingNav from "@/components/FloatingNav";
 import Footer from "@/components/Footer";
-import NewsletterSection from "@/components/NewsletterSection";
+
 import { Button } from "@/components/ui/button";
 import BlogStyleHero from "@/components/BlogStyleHero";
 import poolWaterBg from "@/assets/pool-water-bg.webp";
@@ -92,20 +92,43 @@ const About = () => {
           </div>
         </section>
 
-        {/* Talk CTA */}
-        <section className="py-16 md:py-20 px-4 bg-gradient-to-r from-primary to-oasis-dark text-center text-white">
+        {/* Talk CTA — using newsletter card layout */}
+        <section
+          className="px-4 md:px-6 pt-10 md:pt-14 lg:pt-16 pb-0"
+          style={{ background: "hsl(210 60% 12%)" }}
+        >
           <div className="container max-w-6xl mx-auto">
-            <h2 className="section-title text-white mb-3 text-3xl">Have questions about your pool?</h2>
-            <p className="hero-subtitle text-white max-w-[560px] mx-auto mb-8">
-              Speak with a pool professional and get clear, straightforward guidance. No pressure, no sales pitch.
-            </p>
-            <Button className="h-12 px-6 whitespace-nowrap bg-white text-navy hover:bg-white/90 font-semibold" asChild>
-              <Link to="/contact#get-in-touch">Contact Us Today</Link>
-            </Button>
+            <div className="rounded-3xl bg-primary p-6 md:p-10 lg:p-12 shadow-lg animate-fade-in transition-transform duration-300 hover:-translate-y-0.5">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10 items-center">
+                <div>
+                  <div className="mb-3">
+                    <span className="text-xs uppercase tracking-wider text-white/70 font-semibold">
+                      Get in touch
+                    </span>
+                  </div>
+                  <h2
+                    className="text-3xl md:text-4xl font-extrabold leading-tight mb-2"
+                    style={{ color: "#ffffff" }}
+                  >
+                    Have questions about your pool?
+                  </h2>
+                  <p className="text-white/80 max-w-md">
+                    Speak with a pool professional and get clear, straightforward guidance. No pressure, no sales pitch.
+                  </p>
+                </div>
+                <div className="flex md:justify-end">
+                  <Button
+                    className="h-12 px-6 whitespace-nowrap bg-white text-primary hover:bg-white/90 font-semibold transition-transform duration-200 hover:scale-[1.02]"
+                    asChild
+                  >
+                    <Link to="/contact#get-in-touch">Contact Us Today</Link>
+                  </Button>
+                </div>
+              </div>
+            </div>
           </div>
         </section>
 
-        <NewsletterSection />
       </main>
       <Footer />
     </div>

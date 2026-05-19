@@ -192,6 +192,7 @@ const TechnicianApplication = () => {
           zip,
           experience: yearsExp,
           resume_url: resumePath,
+          status: "pending",
         })
         .select("id")
         .single();

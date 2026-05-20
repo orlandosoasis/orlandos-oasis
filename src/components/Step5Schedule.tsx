@@ -275,20 +275,20 @@ const Step5Schedule = ({ selectedPass, onChangePass, passOptions, onConfirm }: S
         <div className="flex flex-col gap-3 mb-5">
           <div className="flex flex-col gap-1.5">
             <label className="text-xs font-medium text-muted-foreground">Address</label>
-            <Input readOnly placeholder="Street address" defaultValue="123 Main Street" className="h-10 rounded-[10px] border-2 border-border bg-muted/30 text-sm cursor-default" />
+            <Input readOnly placeholder="Street address" defaultValue="123 Main Street" className="h-10 rounded-lg border border-border bg-muted/30 text-sm cursor-default" />
           </div>
           <div className="grid grid-cols-3 gap-3">
             <div className="flex flex-col gap-1.5">
               <label className="text-xs font-medium text-muted-foreground">City</label>
-              <Input readOnly placeholder="City" defaultValue="Miami" className="h-10 rounded-[10px] border-2 border-border bg-muted/30 text-sm cursor-default" />
+              <Input readOnly placeholder="City" defaultValue="Miami" className="h-10 rounded-lg border border-border bg-muted/30 text-sm cursor-default" />
             </div>
             <div className="flex flex-col gap-1.5">
               <label className="text-xs font-medium text-muted-foreground">State / Province</label>
-              <Input readOnly placeholder="State" defaultValue="FL" className="h-10 rounded-[10px] border-2 border-border bg-muted/30 text-sm cursor-default" />
+              <Input readOnly placeholder="State" defaultValue="FL" className="h-10 rounded-lg border border-border bg-muted/30 text-sm cursor-default" />
             </div>
             <div className="flex flex-col gap-1.5">
               <label className="text-xs font-medium text-muted-foreground">ZIP / Postal Code</label>
-              <Input readOnly placeholder="ZIP" defaultValue="33101" className="h-10 rounded-[10px] border-2 border-border bg-muted/30 text-sm cursor-default" />
+              <Input readOnly placeholder="ZIP" defaultValue="33101" className="h-10 rounded-lg border border-border bg-muted/30 text-sm cursor-default" />
             </div>
           </div>
         </div>
@@ -303,7 +303,7 @@ const Step5Schedule = ({ selectedPass, onChangePass, passOptions, onConfirm }: S
             <select
               value={poolType}
               onChange={(e) => setPoolType(e.target.value)}
-              className="h-10 rounded-[10px] border-2 border-border bg-muted/30 px-3 text-sm text-foreground outline-none focus:border-primary/40 focus:bg-background transition-colors appearance-none">
+              className="h-10 rounded-lg border border-border bg-muted/30 px-3 text-sm text-foreground outline-none focus:border-primary/40 focus:bg-background transition-colors appearance-none">
 
               <option>Inground</option>
               <option>Above Ground</option>
@@ -316,7 +316,7 @@ const Step5Schedule = ({ selectedPass, onChangePass, passOptions, onConfirm }: S
             <select
               value={poolSize}
               onChange={(e) => setPoolSize(e.target.value)}
-              className="h-10 rounded-[10px] border-2 border-border bg-muted/30 px-3 text-sm text-foreground outline-none focus:border-primary/40 focus:bg-background transition-colors appearance-none">
+              className="h-10 rounded-lg border border-border bg-muted/30 px-3 text-sm text-foreground outline-none focus:border-primary/40 focus:bg-background transition-colors appearance-none">
 
               <option>Small (&lt;10k gal)</option>
               <option>Medium (10–20k)</option>
@@ -357,11 +357,11 @@ const Step5Schedule = ({ selectedPass, onChangePass, passOptions, onConfirm }: S
           <div className="mt-3.5 flex flex-col gap-2.5 animate-fade-in">
               <div className="flex flex-col gap-1.5">
                 <label className="text-xs font-medium text-muted-foreground">Gate Code <span className="text-destructive">*</span></label>
-                <Input placeholder="e.g. 4821" value={gateCode} onChange={(e) => setGateCode(e.target.value)} maxLength={12} className="h-10 rounded-[10px] border-2 border-border bg-muted/30 text-sm" />
+                <Input placeholder="e.g. 4821" value={gateCode} onChange={(e) => setGateCode(e.target.value)} maxLength={12} className="h-10 rounded-lg border border-border bg-muted/30 text-sm" />
               </div>
               <div className="flex flex-col gap-1.5">
                 <label className="text-xs font-medium text-muted-foreground">Additional gate notes (optional)</label>
-                <Input placeholder="e.g. Blue door on left side of house" value={gateNotes} onChange={(e) => setGateNotes(e.target.value)} className="h-10 rounded-[10px] border-2 border-border bg-muted/30 text-sm" />
+                <Input placeholder="e.g. Blue door on left side of house" value={gateNotes} onChange={(e) => setGateNotes(e.target.value)} className="h-10 rounded-lg border border-border bg-muted/30 text-sm" />
               </div>
             </div>
           }
@@ -371,7 +371,7 @@ const Step5Schedule = ({ selectedPass, onChangePass, passOptions, onConfirm }: S
           <div className="mt-3.5 animate-fade-in">
               <div className="flex flex-col gap-1.5">
                 <label className="text-xs font-medium text-muted-foreground">Where is the key located? <span className="text-destructive">*</span></label>
-                <Input placeholder="e.g. Under the welcome mat, front door" value={keyLocation} onChange={(e) => setKeyLocation(e.target.value)} className="h-10 rounded-[10px] border-2 border-border bg-muted/30 text-sm" />
+                <Input placeholder="e.g. Under the welcome mat, front door" value={keyLocation} onChange={(e) => setKeyLocation(e.target.value)} className="h-10 rounded-lg border border-border bg-muted/30 text-sm" />
               </div>
             </div>
           }
@@ -381,7 +381,7 @@ const Step5Schedule = ({ selectedPass, onChangePass, passOptions, onConfirm }: S
           <div className="mt-3.5 animate-fade-in">
               <div className="flex flex-col gap-1.5">
                 <label className="text-xs font-medium text-muted-foreground">Access Instructions <span className="text-destructive">*</span></label>
-                <Textarea placeholder="Describe how our technician should access the pool…" value={otherInstructions} onChange={(e) => setOtherInstructions(e.target.value)} rows={3} className="rounded-[10px] border-2 border-border bg-muted/30 text-sm resize-y min-h-[72px]" />
+                <Textarea placeholder="Describe how our technician should access the pool…" value={otherInstructions} onChange={(e) => setOtherInstructions(e.target.value)} rows={3} className="rounded-lg border border-border bg-muted/30 text-sm resize-y min-h-[72px]" />
               </div>
             </div>
           }
@@ -391,7 +391,7 @@ const Step5Schedule = ({ selectedPass, onChangePass, passOptions, onConfirm }: S
         <div className="mt-5 pt-[18px] border-t border-border">
           <div className="flex flex-col gap-1.5">
             <label className="text-xs font-medium text-muted-foreground">Special Instructions (optional)</label>
-            <Textarea placeholder="Anything else your technician should know…" value={specialNotes} onChange={(e) => setSpecialNotes(e.target.value)} rows={2} className="rounded-[10px] border-2 border-border bg-muted/30 text-sm resize-y min-h-[60px]" />
+            <Textarea placeholder="Anything else your technician should know…" value={specialNotes} onChange={(e) => setSpecialNotes(e.target.value)} rows={2} className="rounded-lg border border-border bg-muted/30 text-sm resize-y min-h-[60px]" />
           </div>
         </div>
       </div>

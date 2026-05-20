@@ -25,16 +25,15 @@ const Index = () => {
         <section className="py-10 md:py-14 lg:py-16 px-4 md:px-6 bg-white">
           <div className="container max-w-6xl mx-auto">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8 lg:h-[min(820px,calc(100vh-8rem))]">
-              {/* Reviews - second on mobile, left on desktop */}
+              {/* Reviews - second on mobile, left on desktop. Scrolls independently on desktop. */}
               <div className="order-2 lg:order-1 lg:h-full lg:min-h-0 lg:overflow-y-auto lg:pr-2 lg:[scrollbar-width:thin] lg:[scrollbar-color:hsl(var(--border))_transparent] lg:[&::-webkit-scrollbar]:w-1.5 lg:[&::-webkit-scrollbar-track]:bg-transparent lg:[&::-webkit-scrollbar-thumb]:bg-border lg:[&::-webkit-scrollbar-thumb]:rounded-full">
                 <ReviewsSection />
               </div>
 
-              {/* Voucher/Services - first on mobile, right on desktop.
-                  On desktop, height is constrained and content scrolls internally. */}
-              <div className="order-1 lg:order-2 lg:h-full lg:min-h-0">
+              {/* Voucher/Services - bordered card on desktop with scrollable body and pinned CTA */}
+              <div className="order-1 lg:order-2 lg:h-full lg:min-h-0 lg:rounded-lg lg:border lg:bg-card lg:text-card-foreground lg:shadow-sm lg:flex lg:flex-col lg:overflow-hidden">
                 <div
-                  className="lg:h-full lg:overflow-y-auto lg:pr-2 lg:[scrollbar-width:thin] lg:[scrollbar-color:hsl(var(--border))_transparent] lg:[&::-webkit-scrollbar]:w-1.5 lg:[&::-webkit-scrollbar-track]:bg-transparent lg:[&::-webkit-scrollbar-thumb]:bg-border lg:[&::-webkit-scrollbar-thumb]:rounded-full"
+                  className="lg:flex-1 lg:min-h-0 lg:overflow-y-auto lg:p-6 lg:[scrollbar-width:thin] lg:[scrollbar-color:hsl(var(--border))_transparent] lg:[&::-webkit-scrollbar]:w-1.5 lg:[&::-webkit-scrollbar-track]:bg-transparent lg:[&::-webkit-scrollbar-thumb]:bg-border lg:[&::-webkit-scrollbar-thumb]:rounded-full"
                 >
                   <ServicesSection />
                 </div>

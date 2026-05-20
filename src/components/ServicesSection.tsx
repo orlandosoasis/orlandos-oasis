@@ -157,7 +157,7 @@ const ServicesSection = () => {
       className="scroll-mt-8 lg:flex lg:flex-col lg:h-full lg:min-h-0"
       ref={sectionRef}
     >
-      <div className="lg:flex-1 lg:min-h-0 lg:overflow-y-auto lg:p-6 lg:bg-slate-50 lg:[scrollbar-width:thin] lg:[scrollbar-color:hsl(var(--border))_transparent] lg:[&::-webkit-scrollbar]:w-1.5 lg:[&::-webkit-scrollbar-track]:bg-transparent lg:[&::-webkit-scrollbar-thumb]:bg-border lg:[&::-webkit-scrollbar-thumb]:rounded-full">
+      <div ref={scrollableRef} className="lg:flex-1 lg:min-h-0 lg:overflow-y-auto lg:p-6 lg:bg-slate-50 lg:[scrollbar-width:thin] lg:[scrollbar-color:hsl(var(--border))_transparent] lg:[&::-webkit-scrollbar]:w-1.5 lg:[&::-webkit-scrollbar-track]:bg-transparent lg:[&::-webkit-scrollbar-thumb]:bg-border lg:[&::-webkit-scrollbar-thumb]:rounded-full">
         {currentStep >= 2 && (
           <BookingStepper currentStep={currentStep} steps={STEPS} onStepClick={goToStep} />
         )}

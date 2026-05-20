@@ -438,23 +438,23 @@ const BookingFlow = ({ onClose, onComplete, selectedService: selectedServiceProp
                 <div className="flex flex-col gap-3">
                   <div className="flex flex-col gap-1">
                     <label className="text-xs font-medium text-muted-foreground">Street Address <span className="text-destructive">*</span></label>
-                    <Input placeholder="Street address" value={address} onChange={(e) => setAddress(e.target.value)} onBlur={() => markTouched("address")} className={`h-10 rounded-[10px] border-2 bg-muted/30 text-sm ${fieldError("address", address) ? "border-destructive" : "border-border"}`} />
+                    <Input placeholder="Street address" value={address} onChange={(e) => setAddress(e.target.value)} onBlur={() => markTouched("address")} className={`h-10 rounded-lg border bg-muted/30 text-sm ${fieldError("address", address) ? "border-destructive" : "border-border"}`} />
                     {fieldError("address", address) && <p className="text-[11px] text-destructive">This field is required</p>}
                   </div>
                   <div className="grid grid-cols-3 gap-3">
                     <div className="flex flex-col gap-1">
                       <label className="text-xs font-medium text-muted-foreground">City <span className="text-destructive">*</span></label>
-                      <Input placeholder="City" value={city} onChange={(e) => setCity(e.target.value)} onBlur={() => markTouched("city")} className={`h-10 rounded-[10px] border-2 bg-muted/30 text-sm ${fieldError("city", city) ? "border-destructive" : "border-border"}`} />
+                      <Input placeholder="City" value={city} onChange={(e) => setCity(e.target.value)} onBlur={() => markTouched("city")} className={`h-10 rounded-lg border bg-muted/30 text-sm ${fieldError("city", city) ? "border-destructive" : "border-border"}`} />
                       {fieldError("city", city) && <p className="text-[11px] text-destructive">This field is required</p>}
                     </div>
                     <div className="flex flex-col gap-1">
                       <label className="text-xs font-medium text-muted-foreground">State <span className="text-destructive">*</span></label>
-                      <Input placeholder="State" value={state} onChange={(e) => setState(e.target.value)} onBlur={() => markTouched("state")} className={`h-10 rounded-[10px] border-2 bg-muted/30 text-sm ${fieldError("state", state) ? "border-destructive" : "border-border"}`} />
+                      <Input placeholder="State" value={state} onChange={(e) => setState(e.target.value)} onBlur={() => markTouched("state")} className={`h-10 rounded-lg border bg-muted/30 text-sm ${fieldError("state", state) ? "border-destructive" : "border-border"}`} />
                       {fieldError("state", state) && <p className="text-[11px] text-destructive">This field is required</p>}
                     </div>
                     <div className="flex flex-col gap-1">
                       <label className="text-xs font-medium text-muted-foreground">ZIP <span className="text-destructive">*</span></label>
-                      <Input placeholder="ZIP" value={zip} onChange={(e) => setZip(e.target.value)} onBlur={() => markTouched("zip")} className={`h-10 rounded-[10px] border-2 bg-muted/30 text-sm ${fieldError("zip", zip) ? "border-destructive" : "border-border"}`} />
+                      <Input placeholder="ZIP" value={zip} onChange={(e) => setZip(e.target.value)} onBlur={() => markTouched("zip")} className={`h-10 rounded-lg border bg-muted/30 text-sm ${fieldError("zip", zip) ? "border-destructive" : "border-border"}`} />
                       {fieldError("zip", zip) && <p className="text-[11px] text-destructive">This field is required</p>}
                     </div>
                   </div>
@@ -471,7 +471,7 @@ const BookingFlow = ({ onClose, onComplete, selectedService: selectedServiceProp
                       aria-disabled="true"
                       aria-readonly="true"
                       tabIndex={-1}
-                      className="h-auto min-h-12 rounded-[10px] border-2 border-border bg-muted/40 px-3 py-2 text-sm flex items-center justify-between gap-2 cursor-not-allowed opacity-90"
+                      className="h-auto min-h-12 rounded-lg border border-border bg-muted/40 px-3 py-2 text-sm flex items-center justify-between gap-2 cursor-not-allowed opacity-90"
                     >
                       <div className="flex flex-col leading-tight">
                         <span className="font-semibold text-foreground">{poolSizeOption.title}</span>
@@ -508,12 +508,12 @@ const BookingFlow = ({ onClose, onComplete, selectedService: selectedServiceProp
                 <div className="mt-3.5 flex flex-col gap-2.5 animate-fade-in">
                       <div className="flex flex-col gap-1">
                         <label className="text-xs font-medium text-muted-foreground">Gate Code <span className="text-destructive">*</span></label>
-                        <Input placeholder="e.g. 4821" value={gateCode} onChange={(e) => setGateCode(e.target.value)} onBlur={() => markTouched("gateCode")} maxLength={12} className={`h-10 rounded-[10px] border-2 bg-muted/30 text-sm ${fieldError("gateCode", gateCode) ? "border-destructive" : "border-border"}`} />
+                        <Input placeholder="e.g. 4821" value={gateCode} onChange={(e) => setGateCode(e.target.value)} onBlur={() => markTouched("gateCode")} maxLength={12} className={`h-10 rounded-lg border bg-muted/30 text-sm ${fieldError("gateCode", gateCode) ? "border-destructive" : "border-border"}`} />
                         {fieldError("gateCode", gateCode) && <p className="text-[11px] text-destructive">This field is required</p>}
                       </div>
                       <div className="flex flex-col gap-1.5">
                         <label className="text-xs font-medium text-muted-foreground">Additional gate notes (optional)</label>
-                        <Input placeholder="e.g. Blue door on left side" value={gateNotes} onChange={(e) => setGateNotes(e.target.value)} className="h-10 rounded-[10px] border-2 border-border bg-muted/30 text-sm" />
+                        <Input placeholder="e.g. Blue door on left side" value={gateNotes} onChange={(e) => setGateNotes(e.target.value)} className="h-10 rounded-lg border border-border bg-muted/30 text-sm" />
                       </div>
                     </div>
                 }
@@ -521,7 +521,7 @@ const BookingFlow = ({ onClose, onComplete, selectedService: selectedServiceProp
                 <div className="mt-3.5 animate-fade-in">
                       <div className="flex flex-col gap-1">
                         <label className="text-xs font-medium text-muted-foreground">Where is the key? <span className="text-destructive">*</span></label>
-                        <Input placeholder="e.g. Under the welcome mat" value={keyLocation} onChange={(e) => setKeyLocation(e.target.value)} onBlur={() => markTouched("keyLocation")} className={`h-10 rounded-[10px] border-2 bg-muted/30 text-sm ${fieldError("keyLocation", keyLocation) ? "border-destructive" : "border-border"}`} />
+                        <Input placeholder="e.g. Under the welcome mat" value={keyLocation} onChange={(e) => setKeyLocation(e.target.value)} onBlur={() => markTouched("keyLocation")} className={`h-10 rounded-lg border bg-muted/30 text-sm ${fieldError("keyLocation", keyLocation) ? "border-destructive" : "border-border"}`} />
                         {fieldError("keyLocation", keyLocation) && <p className="text-[11px] text-destructive">This field is required</p>}
                       </div>
                     </div>
@@ -530,7 +530,7 @@ const BookingFlow = ({ onClose, onComplete, selectedService: selectedServiceProp
                 <div className="mt-3.5 animate-fade-in">
                       <div className="flex flex-col gap-1">
                         <label className="text-xs font-medium text-muted-foreground">Access Instructions <span className="text-destructive">*</span></label>
-                        <Textarea placeholder="Describe how to access the pool…" value={otherInstructions} onChange={(e) => setOtherInstructions(e.target.value)} onBlur={() => markTouched("otherInstructions")} rows={3} className={`rounded-[10px] border-2 bg-muted/30 text-sm resize-y min-h-[72px] ${fieldError("otherInstructions", otherInstructions) ? "border-destructive" : "border-border"}`} />
+                        <Textarea placeholder="Describe how to access the pool…" value={otherInstructions} onChange={(e) => setOtherInstructions(e.target.value)} onBlur={() => markTouched("otherInstructions")} rows={3} className={`rounded-lg border bg-muted/30 text-sm resize-y min-h-[72px] ${fieldError("otherInstructions", otherInstructions) ? "border-destructive" : "border-border"}`} />
                         {fieldError("otherInstructions", otherInstructions) && <p className="text-[11px] text-destructive">This field is required</p>}
                       </div>
                     </div>
@@ -556,7 +556,7 @@ const BookingFlow = ({ onClose, onComplete, selectedService: selectedServiceProp
                   value={specialNotes}
                   onChange={(e) => setSpecialNotes(e.target.value)}
                   rows={3}
-                  className="rounded-[10px] border-2 border-border bg-muted/30 text-sm resize-y min-h-[72px]" />
+                  className="rounded-lg border border-border bg-muted/30 text-sm resize-y min-h-[72px]" />
                 
                 </div>
               </div>

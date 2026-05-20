@@ -273,7 +273,7 @@ const Contact = () => {
                 <select
                   value={formData.service}
                   onChange={(e) => update("service", e.target.value)}
-                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground focus-visible:outline-none focus-visible:border-ring"
+                  className="flex h-10 w-full rounded-lg border border-input bg-background px-3 py-2 text-sm text-foreground focus-visible:outline-none focus-visible:border-ring"
                 >
                   <option value="">Select a service...</option>
                   {SERVICE_OPTIONS.map((s) => (

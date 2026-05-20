@@ -241,14 +241,24 @@ const Dashboard = () => {
   }, [isLoading, isAuthenticated, isPostCheckout, navigate, searchParams]);
 
   useEffect(() => {
-    const demoServices = generateDemoServices(checkoutData);
+    const upcoming = generateUpcomingServices(checkoutData, user);
+    // Completed services come from real data only — no demo past services.
+    const completed: ServiceInstance[] = [];
     if (booking) {
-      setServices([{ id: "svc-custom", booking: { ...booking, status: "scheduled" } }, ...demoServices]);
+      // Ensure custom booking from the booking flow always uses an unassigned tech
+      // until the platform assigns one.
+      const customBooking = {
+        ...booking,
+        status: "scheduled" as const,
+        technician: booking.technician?.isAssigned ? booking.technician : UNASSIGNED_TECH,
+      };
+      setServices([{ id: "svc-custom", booking: customBooking }, ...upcoming, ...completed]);
     } else {
-      setServices(demoServices);
+      setServices([...upcoming, ...completed]);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user?.email, booking, checkoutData]);
+  }, [user?.email, user?.streetAddress, user?.city, user?.state, user?.zipCode, booking, checkoutData]);
+
 
   // Log real services availability - render integration kept minimal to preserve existing UI behavior
   useEffect(() => {

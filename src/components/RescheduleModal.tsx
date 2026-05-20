@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
-import { CalendarClock, ArrowLeft, CheckCircle2, Clock, MapPin, Star, AlertCircle } from "lucide-react";
+import { CalendarClock, ArrowLeft, CheckCircle2, Clock, MapPin, Star, AlertCircle, Info } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { cn } from "@/lib/utils";
 import type { BookingData, TimeWindow } from "@/contexts/BookingContext";
@@ -157,6 +157,14 @@ export default function RescheduleModal({ open, onOpenChange, booking, onResched
               </DialogDescription>
             </DialogHeader>
 
+            <div className="flex items-start gap-2.5 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3">
+              <Info className="h-4 w-4 text-amber-500 shrink-1 mt-0.5" />
+              <p className="text-[13px] text-amber-700 leading-relaxed">
+                Arrival time cannot be guaranteed. Our team will do their best to arrive as close to the selected time window as possible.
+              </p>
+            </div>
+
+
             <div className="space-y-2.5">
               {TIME_SLOTS.map((slot) => (
                 <button
@@ -178,17 +186,9 @@ export default function RescheduleModal({ open, onOpenChange, booking, onResched
               ))}
             </div>
 
-            {selectedTime && (
-              <div className="flex items-start gap-2 text-muted-foreground">
-                <AlertCircle className="h-4 w-4 mt-0.5 shrink-0" />
-                <p className="text-xs">
-                  Arrival time cannot be guaranteed. Our team will do their best to arrive as close to the selected time window as possible.
-                </p>
-              </div>
-            )}
-
             <div className="flex gap-2.5">
               <Button variant="outline" className="flex-1 hover:text-primary hover:border-primary hover:bg-transparent" onClick={() => setStep(2)}>
+
                 <ArrowLeft className="h-4 w-4 mr-1" />
                 Back
               </Button>

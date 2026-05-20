@@ -100,7 +100,31 @@ function getPreviousDate(startDate: Date, frequency: string): Date {
 const INITIAL_VISIBLE_COUNT = 3;
 const LOAD_MORE_COUNT = 10;
 
-function generateDemoServices(checkoutData?: import("@/contexts/BookingContext").CheckoutData | null): ServiceInstance[] {
+const POOL_SIZE_LABELS: Record<string, string> = {
+  small: "Small (under 15k gallons)",
+  medium: "Medium (15k–25k gallons)",
+  large: "Large (over 25k gallons)",
+};
+
+const UNASSIGNED_TECH = {
+  name: "Pool Technician to be assigned",
+  initials: "?",
+  rating: 0,
+  isAssigned: false,
+};
+
+interface UserLike {
+  streetAddress?: string;
+  city?: string;
+  state?: string;
+  zipCode?: string;
+  fullName?: string;
+}
+
+function generateUpcomingServices(
+  checkoutData?: import("@/contexts/BookingContext").CheckoutData | null,
+  user?: UserLike | null,
+): ServiceInstance[] {
   const serviceLabel = checkoutData?.serviceName || "Deep Clean";
   const servicePrice = checkoutData?.discountPrice || 149;
   const serviceOriginalPrice = checkoutData?.originalPrice || 189;
@@ -113,39 +137,33 @@ function generateDemoServices(checkoutData?: import("@/contexts/BookingContext")
     isMostPopular: true,
   };
   const sharedPool = {
-    address: "123 Main Street", city: "Miami", state: "FL", zip: checkoutData?.customerZipcode || "33101",
-    poolType: "In-ground", poolSize: "Medium (15k–25k gallons)",
-    accessMethod: "gate" as const, accessDetail: "Code: 4521", hasPets: false,
+    address: user?.streetAddress || "Address on file",
+    city: user?.city || "",
+    state: user?.state || "",
+    zip: user?.zipCode || checkoutData?.customerZipcode || "",
+    poolType: "In-ground",
+    poolSize: POOL_SIZE_LABELS[checkoutData?.poolSize || "medium"] || POOL_SIZE_LABELS.medium,
+    accessMethod: "gate" as const,
+    accessDetail: "",
+    hasPets: false,
   };
-  const tech = { name: "Carlos M.", initials: "CM", rating: 4.9, isAssigned: true };
   const baseSchedule = {
     timeWindow: "morning" as const, accessMethod: "gate" as const,
-    accessDetail: "Code: 4521", addons: [] as { id: string; name: string; price: number }[], addonsTotal: 0,
+    accessDetail: "", addons: [] as { id: string; name: string; price: number }[], addonsTotal: 0,
   };
 
   const frequency = checkoutData?.frequency || "monthly";
   const today = new Date();
   const services: ServiceInstance[] = [];
 
-  // 1 past service (most recent interval before today)
-  const pastDate = getPreviousDate(today, frequency);
-  services.push({
-    id: "svc-past-1",
-    booking: {
-      frequency: "monthly", selectedPass: sharedPass, pool: sharedPool, technician: tech, status: "completed",
-      scheduleData: { ...baseSchedule, selectedDate: pastDate },
-    },
-  });
-
-  // Future services - generate a generous batch; UI controls how many are shown
-  const unassignedTech = { name: "Pool Technician to be assigned", initials: "?", rating: 0, isAssigned: false };
-  const futureDates = generateFutureDates(today, frequency, 52); // up to ~1 year
+  // Pre-generate ≥6 months of upcoming visits (52 covers ~1 year of monthly/weekly cadence)
+  const futureDates = generateFutureDates(today, frequency, 52);
   futureDates.forEach((date, i) => {
     services.push({
       id: `svc-upcoming-${i}`,
       booking: {
         frequency: "monthly", selectedPass: sharedPass, pool: sharedPool,
-        technician: i === 0 ? tech : unassignedTech, status: "scheduled",
+        technician: UNASSIGNED_TECH, status: "scheduled",
         scheduleData: { ...baseSchedule, selectedDate: date },
       },
     });
@@ -153,6 +171,7 @@ function generateDemoServices(checkoutData?: import("@/contexts/BookingContext")
 
   return services;
 }
+
 
 function formatGreetingDate(): string {
   const now = new Date();

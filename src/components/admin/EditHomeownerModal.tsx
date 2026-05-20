@@ -290,7 +290,7 @@ const EditHomeownerModal = ({ open, onClose, homeowner, onSave }: EditHomeownerM
                         <button
                           type="button"
                           className={cn(
-                            "flex h-12 w-full items-center justify-between rounded-md border border-input bg-white px-3 py-2 text-base md:text-sm text-left transition-colors hover:border-ring focus-visible:outline-none focus-visible:border-primary",
+                            "flex h-12 w-full items-center justify-between rounded-lg border border-input bg-white px-3 py-2 text-base md:text-sm text-left transition-colors hover:border-ring focus-visible:outline-none focus-visible:border-primary",
                             !startDate && "text-muted-foreground"
                           )}
                         >

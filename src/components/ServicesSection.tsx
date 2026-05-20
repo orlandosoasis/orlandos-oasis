@@ -78,7 +78,6 @@ const ServicesSection = () => {
 
   const scrollToTop = useCallback(() => {
     scrollableRef.current?.scrollTo({ top: 0, behavior: "smooth" });
-    sectionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   }, []);
 
   const goToStep = (step: number) => {

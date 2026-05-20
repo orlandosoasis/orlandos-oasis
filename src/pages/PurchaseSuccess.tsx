@@ -15,7 +15,7 @@ const PurchaseSuccess = () => {
   const serviceName = searchParams.get("service") || checkoutData?.serviceName || "Pool Service";
   const serviceDescription = searchParams.get("description") || checkoutData?.serviceDescription || "";
 
-  const [showBooking, setShowBooking] = useState(false);
+  const [showBooking, setShowBooking] = useState(true);
   const [showSuccess, setShowSuccess] = useState(false);
 
   const handleBookingComplete = async () => {

@@ -281,10 +281,6 @@ const BookingFlow = ({ onClose, onComplete, selectedService: selectedServiceProp
               <span className="font-medium text-foreground text-right max-w-[60%]">{[address, city, state, zip].filter(Boolean).join(", ")}</span>
             </div>
             <div className="flex justify-between text-sm">
-              <span className="text-muted-foreground">Pool Type</span>
-              <span className="font-medium text-foreground">{poolType}</span>
-            </div>
-            <div className="flex justify-between text-sm">
               <span className="text-muted-foreground">Pool Size</span>
               <span className="font-medium text-foreground">{poolSize}</span>
             </div>

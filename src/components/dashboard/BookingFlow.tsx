@@ -274,6 +274,13 @@ const BookingFlow = ({ onClose, onComplete, selectedService: selectedServiceProp
               <span className="text-muted-foreground">Arrival Window</span>
               <span className="font-medium text-foreground">{TIME_LABELS[timeWindow]}</span>
             </div>
+            <div className="flex items-start gap-2 rounded-lg bg-muted/50 border border-border px-3 py-2">
+              <Info className="h-4 w-4 text-muted-foreground shrink-0 mt-0.5" />
+              <p className="text-xs text-muted-foreground leading-snug">
+                Arrival time cannot be guaranteed, but we will do our best to arrive as close to the scheduled window as possible.
+              </p>
+            </div>
+
             <div className="border-t border-border pt-3" />
             <h3 className="text-sm font-semibold text-foreground mb-3">Pool Details</h3>
             <div className="flex justify-between text-sm">

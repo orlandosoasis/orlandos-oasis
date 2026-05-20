@@ -120,7 +120,7 @@ const ServicesSection = () => {
           <ServiceConfigStep config={serviceConfig} onConfigChange={setServiceConfig} />
           <Button
             onClick={() => goToStep(2)}
-            className="w-full h-14 text-[17px] font-bold rounded-full shadow-md hover:shadow-lg mt-6"
+            className="w-full h-14 text-[17px] font-bold rounded-full shadow-md hover:shadow-lg mt-6 lg:sticky lg:bottom-0 lg:z-10"
           >
             Continue
           </Button>
@@ -152,7 +152,7 @@ const ServicesSection = () => {
           />
            <Button
              onClick={() => goToStep(4)}
-             className="w-full h-14 text-[17px] font-bold rounded-full shadow-md hover:shadow-lg mt-6"
+             className="w-full h-14 text-[17px] font-bold rounded-full shadow-md hover:shadow-lg mt-6 lg:sticky lg:bottom-0 lg:z-10"
            >
              {selectedAddons.length > 0
                ? `Continue with ${selectedAddons.length} add-on${selectedAddons.length > 1 ? "s" : ""}`
@@ -167,7 +167,7 @@ const ServicesSection = () => {
           <VoucherConfirmationStep plan={selectedPlan} serviceConfig={serviceConfig} selectedAddons={selectedAddons} timeLeft={timeLeft} />
           <Button
             onClick={() => goToStep(5)}
-            className="w-full h-14 text-[17px] font-bold rounded-full shadow-md hover:shadow-lg mt-6"
+            className="w-full h-14 text-[17px] font-bold rounded-full shadow-md hover:shadow-lg mt-6 lg:sticky lg:bottom-0 lg:z-10"
           >
             Continue
           </Button>

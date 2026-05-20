@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
-import { CalendarClock, ArrowLeft, CheckCircle2, Clock, MapPin, Star, AlertCircle } from "lucide-react";
+import { CalendarClock, ArrowLeft, CheckCircle2, Clock, MapPin, Star, AlertCircle, Info } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { cn } from "@/lib/utils";
 import type { BookingData, TimeWindow } from "@/contexts/BookingContext";

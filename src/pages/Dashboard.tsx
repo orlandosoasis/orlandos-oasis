@@ -448,7 +448,7 @@ const UpcomingRow = ({ service, canReschedule, onReschedule }: { service: Servic
   const d = booking.scheduleData.selectedDate;
   const month = SHORT_MONTHS[d.getMonth()].toUpperCase();
   const day = d.getDate();
-  const isPendingReschedule = booking.status === "reschedule_requested" || booking.status === "technician_to_be_assigned";
+  const isTechnicianPending = !booking.technician.isAssigned;
 
   return (
     <div className="flex items-center gap-4 px-5 py-4">
@@ -459,11 +459,11 @@ const UpcomingRow = ({ service, canReschedule, onReschedule }: { service: Servic
       <div className="flex-1 min-w-0">
         <p className="text-sm font-semibold text-foreground">{booking.selectedPass.label}</p>
         <p className="text-xs text-muted-foreground truncate">
-          {booking.technician.isAssigned ? booking.technician.name : "Pool Technician to be assigned"} · {TIME_LABELS[booking.scheduleData.timeWindow]}
+          {isTechnicianPending ? "Technician pending" : booking.technician.name} · {TIME_LABELS[booking.scheduleData.timeWindow]}
         </p>
       </div>
 
-      {isPendingReschedule ? (
+      {isTechnicianPending ? (
         <div className="flex flex-col items-end gap-1 shrink-0">
           <StatusBadge status="technician_to_be_assigned" className="text-[10px] px-2 py-1" />
         </div>

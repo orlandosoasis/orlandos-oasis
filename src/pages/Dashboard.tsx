@@ -6,6 +6,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import PageContainer from "@/components/PageContainer";
 import { useBooking, type BookingData, type TimeWindow } from "@/contexts/BookingContext";
 import { useServices } from "@/hooks/useServices";
+import { useProfilesByIds } from "@/hooks/useProfiles";
 import PoolSceneHero from "@/components/dashboard/PoolSceneHero";
 import BookingFlow from "@/components/dashboard/BookingFlow";
 import StatusBadge from "@/components/StatusBadge";
@@ -233,8 +234,33 @@ const Dashboard = () => {
   const [rescheduleConfirmed, setRescheduleConfirmed] = useState(false);
   const isPostCheckout = fromCheckout || showBooking || searchParams.get("openBooking") === "true";
 
-  // Fetch real services from Supabase for this homeowner
+  // Fetch real services from Supabase for this homeowner so admin assignments
+  // surface automatically here.
   const { data: realServices = [] } = useServices({ homeownerId: user?.id });
+  const assignedTechIds = useMemo(
+    () => realServices.map((s) => s.technicianId).filter((id): id is string => !!id),
+    [realServices],
+  );
+  const { data: techProfiles = {} } = useProfilesByIds(assignedTechIds);
+
+  // Most recent scheduled service that has a technician assigned (admin action).
+  const assignedTechnician = useMemo(() => {
+    const now = Date.now();
+    const upcomingAssigned = realServices
+      .filter((s) => s.technicianId && s.date.getTime() >= now - 86_400_000)
+      .sort((a, b) => a.date.getTime() - b.date.getTime())[0];
+    if (!upcomingAssigned?.technicianId) return null;
+    const profile = techProfiles[upcomingAssigned.technicianId];
+    if (!profile) return null;
+    const name = profile.fullName || `${profile.firstName ?? ""} ${profile.lastName ?? ""}`.trim() || "Pool Technician";
+    const initials = (name
+      .split(" ")
+      .map((p) => p[0])
+      .filter(Boolean)
+      .slice(0, 2)
+      .join("") || "PT").toUpperCase();
+    return { name, initials, rating: 5.0, isAssigned: true };
+  }, [realServices, techProfiles]);
 
   useEffect(() => {
     if (!isLoading && !isAuthenticated && !isPostCheckout) navigate("/login", { replace: true });
@@ -242,30 +268,28 @@ const Dashboard = () => {
 
   useEffect(() => {
     const upcoming = generateUpcomingServices(checkoutData, user);
-    // Completed services come from real data only — no demo past services.
+    // When admin has assigned a technician (via real services data), reflect it
+    // on the next upcoming visit so the homeowner sees the assignment.
+    if (assignedTechnician && upcoming.length > 0) {
+      upcoming[0] = {
+        ...upcoming[0],
+        booking: { ...upcoming[0].booking, technician: assignedTechnician },
+      };
+    }
     const completed: ServiceInstance[] = [];
     if (booking) {
-      // Ensure custom booking from the booking flow always uses an unassigned tech
-      // until the platform assigns one.
       const customBooking = {
         ...booking,
         status: "scheduled" as const,
-        technician: booking.technician?.isAssigned ? booking.technician : UNASSIGNED_TECH,
+        technician: assignedTechnician || (booking.technician?.isAssigned ? booking.technician : UNASSIGNED_TECH),
       };
       setServices([{ id: "svc-custom", booking: customBooking }, ...upcoming, ...completed]);
     } else {
       setServices([...upcoming, ...completed]);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user?.email, user?.streetAddress, user?.city, user?.state, user?.zipCode, booking, checkoutData]);
+  }, [user?.email, user?.streetAddress, user?.city, user?.state, user?.zipCode, booking, checkoutData, assignedTechnician]);
 
-
-  // Log real services availability - render integration kept minimal to preserve existing UI behavior
-  useEffect(() => {
-    if (realServices.length > 0) {
-      // realServices is fetched live from Supabase; UI rendering stays driven by demo+booking flow.
-    }
-  }, [realServices]);
 
   const handleLogout = () => { logout(); navigate("/login", { replace: true }); };
 

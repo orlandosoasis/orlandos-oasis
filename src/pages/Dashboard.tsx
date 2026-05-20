@@ -405,22 +405,21 @@ const NextServiceCard = ({ service, onViewDetails }: { service: ServiceInstance;
         <div className="absolute top-3 left-3">
           <StatusBadge status={booking.status === "technician_to_be_assigned" ? "technician_to_be_assigned" : "scheduled"} />
         </div>
-        <div className="absolute top-3 right-3 bg-card/90 backdrop-blur-sm rounded-xl px-2.5 py-1.5 flex items-center gap-2 shadow-md border border-border">
-          <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-primary to-oasis-aqua flex items-center justify-center text-primary-foreground text-sm font-bold">
-            {technician.isAssigned ? technician.initials : "?"}
-          </div>
-          <div className="flex flex-col leading-tight">
-            <span className="text-[0.8rem] font-semibold text-foreground">{technician.name}</span>
-            {technician.isAssigned ? (
+        {technician.isAssigned && (
+          <div className="absolute top-3 right-3 bg-card/90 backdrop-blur-sm rounded-xl px-2.5 py-1.5 flex items-center gap-2 shadow-md border border-border">
+            <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-primary to-oasis-aqua flex items-center justify-center text-primary-foreground text-sm font-bold">
+              {technician.initials}
+            </div>
+            <div className="flex flex-col leading-tight">
+              <span className="text-[0.8rem] font-semibold text-foreground">{technician.name}</span>
               <span className="text-[0.72rem] text-muted-foreground flex items-center gap-1">
                 <Star className="h-3 w-3 fill-cta-yellow text-cta-yellow" />
                 {technician.rating}
               </span>
-            ) : (
-              <span className="text-[0.72rem] text-muted-foreground">Assigned 24h before visit</span>
-            )}
+            </div>
           </div>
-        </div>
+        )}
+
 
       </div>
       <div className="px-5 py-4 flex items-center gap-4">

@@ -158,7 +158,7 @@ export default function RescheduleModal({ open, onOpenChange, booking, onResched
             </DialogHeader>
 
             <div className="flex items-start gap-2.5 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3">
-              <Info className="text-amber-500 shrink-1 mt-0.5 w-[28px] h-[28px] my-0" />
+              <Info className="text-amber-500 shrink-1 w-[28px] h-[28px]" />
               <p className="text-[13px] text-amber-700 leading-relaxed">
                 Arrival time cannot be guaranteed. Our team will do their best to arrive as close to the selected time window as possible.
               </p>

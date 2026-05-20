@@ -173,7 +173,8 @@ const Dashboard = () => {
   // State for selected service info from checkout
   const [selectedServiceInfo, setSelectedServiceInfo] = useState<{ title: string; description: string } | null>(null);
 
-  // Auto-open booking flow when redirected from checkout
+  // Auto-open booking flow when redirected from checkout OR when the user
+  // abandoned the scheduling flow before completing it (resume on next login).
   useEffect(() => {
     if (searchParams.get("openBooking") === "true") {
       const title = searchParams.get("serviceTitle");
@@ -184,7 +185,21 @@ const Dashboard = () => {
       setShowBooking(true);
       setFromCheckout(true);
       setSearchParams({}, { replace: true });
+      return;
     }
+    try {
+      const pending = localStorage.getItem("orlandos_oasis_pending_schedule");
+      if (pending && !booking) {
+        if (checkoutData?.serviceName) {
+          setSelectedServiceInfo({
+            title: checkoutData.serviceName,
+            description: checkoutData.serviceDescription || "",
+          });
+        }
+        setShowBooking(true);
+      }
+    } catch { /* storage may be unavailable */ }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams, setSearchParams]);
   // Listen for header "Book Service" button
   const openBooking = useCallback(() => setShowBooking(true), []);

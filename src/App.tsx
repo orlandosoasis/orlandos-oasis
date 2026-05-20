@@ -126,8 +126,10 @@ const App = () => (
                     <Route path="/account-settings/cleaning-notes" element={<CleaningNotes />} />
                     <Route path="/account-settings/preferences" element={<Preferences />} />
                     <Route path="/account-settings/experience-level" element={<ExperienceLevel />} />
-                    <Route path="/purchase-success" element={<PurchaseSuccess />} />
                   </Route>
+
+                  {/* Purchase success self-handles account creation, so it must be public */}
+                  <Route path="/purchase-success" element={<PurchaseSuccess />} />
 
                   {/* Public pages */}
                   <Route path="/about" element={<About />} />

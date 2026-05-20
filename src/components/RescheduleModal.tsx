@@ -157,6 +157,14 @@ export default function RescheduleModal({ open, onOpenChange, booking, onResched
               </DialogDescription>
             </DialogHeader>
 
+            <div className="flex items-start gap-2.5 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3">
+              <Info className="h-4 w-4 text-amber-500 shrink-1 mt-0.5" />
+              <p className="text-[13px] text-amber-700 leading-relaxed">
+                Arrival time cannot be guaranteed. Our team will do their best to arrive as close to the selected time window as possible.
+              </p>
+            </div>
+
+
             <div className="space-y-2.5">
               {TIME_SLOTS.map((slot) => (
                 <button

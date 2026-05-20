@@ -100,7 +100,31 @@ function getPreviousDate(startDate: Date, frequency: string): Date {
 const INITIAL_VISIBLE_COUNT = 3;
 const LOAD_MORE_COUNT = 10;
 
-function generateDemoServices(checkoutData?: import("@/contexts/BookingContext").CheckoutData | null): ServiceInstance[] {
+const POOL_SIZE_LABELS: Record<string, string> = {
+  small: "Small (under 15k gallons)",
+  medium: "Medium (15k–25k gallons)",
+  large: "Large (over 25k gallons)",
+};
+
+const UNASSIGNED_TECH = {
+  name: "Pool Technician to be assigned",
+  initials: "?",
+  rating: 0,
+  isAssigned: false,
+};
+
+interface UserLike {
+  streetAddress?: string;
+  city?: string;
+  state?: string;
+  zipCode?: string;
+  fullName?: string;
+}
+
+function generateUpcomingServices(
+  checkoutData?: import("@/contexts/BookingContext").CheckoutData | null,
+  user?: UserLike | null,
+): ServiceInstance[] {
   const serviceLabel = checkoutData?.serviceName || "Deep Clean";
   const servicePrice = checkoutData?.discountPrice || 149;
   const serviceOriginalPrice = checkoutData?.originalPrice || 189;
@@ -113,39 +137,33 @@ function generateDemoServices(checkoutData?: import("@/contexts/BookingContext")
     isMostPopular: true,
   };
   const sharedPool = {
-    address: "123 Main Street", city: "Miami", state: "FL", zip: checkoutData?.customerZipcode || "33101",
-    poolType: "In-ground", poolSize: "Medium (15k–25k gallons)",
-    accessMethod: "gate" as const, accessDetail: "Code: 4521", hasPets: false,
+    address: user?.streetAddress || "Address on file",
+    city: user?.city || "",
+    state: user?.state || "",
+    zip: user?.zipCode || checkoutData?.customerZipcode || "",
+    poolType: "In-ground",
+    poolSize: POOL_SIZE_LABELS[checkoutData?.poolSize || "medium"] || POOL_SIZE_LABELS.medium,
+    accessMethod: "gate" as const,
+    accessDetail: "",
+    hasPets: false,
   };
-  const tech = { name: "Carlos M.", initials: "CM", rating: 4.9, isAssigned: true };
   const baseSchedule = {
     timeWindow: "morning" as const, accessMethod: "gate" as const,
-    accessDetail: "Code: 4521", addons: [] as { id: string; name: string; price: number }[], addonsTotal: 0,
+    accessDetail: "", addons: [] as { id: string; name: string; price: number }[], addonsTotal: 0,
   };
 
   const frequency = checkoutData?.frequency || "monthly";
   const today = new Date();
   const services: ServiceInstance[] = [];
 
-  // 1 past service (most recent interval before today)
-  const pastDate = getPreviousDate(today, frequency);
-  services.push({
-    id: "svc-past-1",
-    booking: {
-      frequency: "monthly", selectedPass: sharedPass, pool: sharedPool, technician: tech, status: "completed",
-      scheduleData: { ...baseSchedule, selectedDate: pastDate },
-    },
-  });
-
-  // Future services - generate a generous batch; UI controls how many are shown
-  const unassignedTech = { name: "Pool Technician to be assigned", initials: "?", rating: 0, isAssigned: false };
-  const futureDates = generateFutureDates(today, frequency, 52); // up to ~1 year
+  // Pre-generate ≥6 months of upcoming visits (52 covers ~1 year of monthly/weekly cadence)
+  const futureDates = generateFutureDates(today, frequency, 52);
   futureDates.forEach((date, i) => {
     services.push({
       id: `svc-upcoming-${i}`,
       booking: {
         frequency: "monthly", selectedPass: sharedPass, pool: sharedPool,
-        technician: i === 0 ? tech : unassignedTech, status: "scheduled",
+        technician: UNASSIGNED_TECH, status: "scheduled",
         scheduleData: { ...baseSchedule, selectedDate: date },
       },
     });
@@ -153,6 +171,7 @@ function generateDemoServices(checkoutData?: import("@/contexts/BookingContext")
 
   return services;
 }
+
 
 function formatGreetingDate(): string {
   const now = new Date();
@@ -222,14 +241,24 @@ const Dashboard = () => {
   }, [isLoading, isAuthenticated, isPostCheckout, navigate, searchParams]);
 
   useEffect(() => {
-    const demoServices = generateDemoServices(checkoutData);
+    const upcoming = generateUpcomingServices(checkoutData, user);
+    // Completed services come from real data only — no demo past services.
+    const completed: ServiceInstance[] = [];
     if (booking) {
-      setServices([{ id: "svc-custom", booking: { ...booking, status: "scheduled" } }, ...demoServices]);
+      // Ensure custom booking from the booking flow always uses an unassigned tech
+      // until the platform assigns one.
+      const customBooking = {
+        ...booking,
+        status: "scheduled" as const,
+        technician: booking.technician?.isAssigned ? booking.technician : UNASSIGNED_TECH,
+      };
+      setServices([{ id: "svc-custom", booking: customBooking }, ...upcoming, ...completed]);
     } else {
-      setServices(demoServices);
+      setServices([...upcoming, ...completed]);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user?.email, booking, checkoutData]);
+  }, [user?.email, user?.streetAddress, user?.city, user?.state, user?.zipCode, booking, checkoutData]);
+
 
   // Log real services availability - render integration kept minimal to preserve existing UI behavior
   useEffect(() => {
@@ -378,16 +407,21 @@ const NextServiceCard = ({ service, onViewDetails }: { service: ServiceInstance;
         </div>
         <div className="absolute top-3 right-3 bg-card/90 backdrop-blur-sm rounded-xl px-2.5 py-1.5 flex items-center gap-2 shadow-md border border-border">
           <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-primary to-oasis-aqua flex items-center justify-center text-primary-foreground text-sm font-bold">
-            {technician.initials}
+            {technician.isAssigned ? technician.initials : "?"}
           </div>
           <div className="flex flex-col leading-tight">
             <span className="text-[0.8rem] font-semibold text-foreground">{technician.name}</span>
-            <span className="text-[0.72rem] text-muted-foreground flex items-center gap-1">
-              <Star className="h-3 w-3 fill-cta-yellow text-cta-yellow" />
-              {technician.rating}
-            </span>
+            {technician.isAssigned ? (
+              <span className="text-[0.72rem] text-muted-foreground flex items-center gap-1">
+                <Star className="h-3 w-3 fill-cta-yellow text-cta-yellow" />
+                {technician.rating}
+              </span>
+            ) : (
+              <span className="text-[0.72rem] text-muted-foreground">Assigned 24h before visit</span>
+            )}
           </div>
         </div>
+
       </div>
       <div className="px-5 py-4 flex items-center gap-4">
         <div className="w-12 text-center shrink-0">
@@ -426,9 +460,10 @@ const UpcomingRow = ({ service, canReschedule, onReschedule }: { service: Servic
       <div className="flex-1 min-w-0">
         <p className="text-sm font-semibold text-foreground">{booking.selectedPass.label}</p>
         <p className="text-xs text-muted-foreground truncate">
-          {isPendingReschedule ? "Pool Technician to Be Assigned" : "Pool Technician to be assigned"} · {TIME_LABELS[booking.scheduleData.timeWindow]}
+          {booking.technician.isAssigned ? booking.technician.name : "Pool Technician to be assigned"} · {TIME_LABELS[booking.scheduleData.timeWindow]}
         </p>
       </div>
+
       {isPendingReschedule ? (
         <div className="flex flex-col items-end gap-1 shrink-0">
           <StatusBadge status="technician_to_be_assigned" className="text-[10px] px-2 py-1" />

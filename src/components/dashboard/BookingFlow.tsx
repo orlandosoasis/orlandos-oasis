@@ -206,6 +206,11 @@ const BookingFlow = ({ onClose, onComplete, selectedService: selectedServiceProp
         },
       });
 
+      // Scheduling complete — drop the saved partial-progress snapshot.
+      try { localStorage.removeItem(PENDING_KEY); } catch { /* ignore */ }
+
+
+
       if (standalone) {
         // In standalone mode, skip the success screen and call onComplete directly.
         onComplete();

@@ -349,6 +349,14 @@ const BookingFlow = ({ onClose, onComplete, selectedService: selectedServiceProp
               </div>
             </div>
 
+            {/* Arrival estimate notice */}
+            <div className="flex items-start gap-2.5 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3">
+              <Info className="h-4 w-4 text-amber-500 shrink-0 mt-0.5" />
+              <p className="text-[13px] text-amber-700 leading-relaxed">
+                Arrival time cannot be guaranteed. Our team will do their best to arrive as close to the selected time window as possible.
+              </p>
+            </div>
+
             <div className="grid grid-cols-1 md:grid-cols-[1fr_240px] gap-4">
               {/* Date picker - compressed */}
               <div className="bg-card rounded-2xl border border-border p-4 shadow-sm">
@@ -404,12 +412,6 @@ const BookingFlow = ({ onClose, onComplete, selectedService: selectedServiceProp
                     </div>
                   </button>
                 )}
-                </div>
-                <div className="flex items-start gap-1.5 mt-2.5 bg-primary/10 rounded-lg px-3 py-2">
-                  <Info className="h-3 w-3 text-primary shrink-0 mt-0.5" />
-                  <p className="text-[10px] text-primary leading-tight">
-                    Arrival time cannot be guaranteed. Our team will do their best to arrive as close to the selected time window as possible.
-                  </p>
                 </div>
               </div>
             </div>

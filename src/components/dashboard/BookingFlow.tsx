@@ -402,7 +402,7 @@ const BookingFlow = ({ onClose, onComplete, selectedService: selectedServiceProp
                 { value: "evening" as const, icon: "🌤️", title: "Evening", label: "4pm–6pm" }].
                 map((opt) =>
                 <button key={opt.value} type="button" onClick={() => setTimeWindow(opt.value)}
-                className={`flex items-center rounded-xl border-2 py-[12px] transition-all text-left px-[12px] gap-[8px] ${
+                className={`flex items-center rounded-xl border-2 transition-all text-left px-[12px] gap-[8px] py-[16px] ${
                 timeWindow === opt.value ? "border-primary bg-primary/[0.07] text-primary" : "border-border hover:border-primary/40 hover:bg-primary/5"}`
                 }>
                     <span className="text-lg">{opt.icon}</span>

@@ -110,39 +110,72 @@ const ServicesSection = () => {
     );
   };
 
+  const renderFooterCta = () => {
+    if (currentStep === 1) {
+      return (
+        <Button
+          onClick={() => goToStep(2)}
+          className="w-full h-14 text-[17px] font-bold rounded-full shadow-md hover:shadow-lg"
+        >
+          Continue
+        </Button>
+      );
+    }
+    if (currentStep === 3) {
+      return (
+        <Button
+          onClick={() => goToStep(4)}
+          className="w-full h-14 text-[17px] font-bold rounded-full shadow-md hover:shadow-lg"
+        >
+          {selectedAddons.length > 0
+            ? `Continue with ${selectedAddons.length} add-on${selectedAddons.length > 1 ? "s" : ""}`
+            : "Continue"}
+        </Button>
+      );
+    }
+    if (currentStep === 4) {
+      return (
+        <Button
+          onClick={() => goToStep(5)}
+          className="w-full h-14 text-[17px] font-bold rounded-full shadow-md hover:shadow-lg"
+        >
+          Continue
+        </Button>
+      );
+    }
+    return null;
+  };
+
+  const footer = renderFooterCta();
+
   return (
-    <div id="discount-voucher" className="scroll-mt-8" ref={sectionRef}>
-      {currentStep >= 2 && <BookingStepper currentStep={currentStep} steps={STEPS} onStepClick={goToStep} />}
+    <div
+      id="discount-voucher"
+      className="scroll-mt-8 lg:flex lg:flex-col lg:h-full lg:min-h-0"
+      ref={sectionRef}
+    >
+      <div className="lg:flex-1 lg:min-h-0 lg:overflow-y-auto lg:p-6 lg:bg-slate-50 lg:[scrollbar-width:thin] lg:[scrollbar-color:hsl(var(--border))_transparent] lg:[&::-webkit-scrollbar]:w-1.5 lg:[&::-webkit-scrollbar-track]:bg-transparent lg:[&::-webkit-scrollbar-thumb]:bg-border lg:[&::-webkit-scrollbar-thumb]:rounded-full">
+        {currentStep >= 2 && (
+          <BookingStepper currentStep={currentStep} steps={STEPS} onStepClick={goToStep} />
+        )}
 
-      {/* Step 1: Configure Pool Size + Frequency */}
-      {currentStep === 1 && (
-        <>
+        {currentStep === 1 && (
           <ServiceConfigStep config={serviceConfig} onConfigChange={setServiceConfig} />
-          <Button
-            onClick={() => goToStep(2)}
-            className="w-full h-14 text-[17px] font-bold rounded-full shadow-md hover:shadow-lg mt-6 lg:sticky lg:bottom-0 lg:z-10"
-          >
-            Continue
-          </Button>
-        </>
-      )}
+        )}
 
-      {/* Step 2: Your Details */}
-      {currentStep === 2 && (
-        <LandingContactStep
-          selectedPlan={selectedPlan}
-          serviceConfig={serviceConfig}
-          timeLeft={timeLeft}
-          formData={formData}
-          onFormDataChange={setFormData}
-          onSubmit={() => goToStep(3)}
-          onChangePlan={() => goToStep(1)}
-        />
-      )}
+        {currentStep === 2 && (
+          <LandingContactStep
+            selectedPlan={selectedPlan}
+            serviceConfig={serviceConfig}
+            timeLeft={timeLeft}
+            formData={formData}
+            onFormDataChange={setFormData}
+            onSubmit={() => goToStep(3)}
+            onChangePlan={() => goToStep(1)}
+          />
+        )}
 
-      {/* Step 3: Add-ons */}
-      {currentStep === 3 && (
-        <>
+        {currentStep === 3 && (
           <AddonsStep
             selectedAddons={selectedAddons}
             onToggleAddon={handleToggleAddon}
@@ -150,40 +183,37 @@ const ServicesSection = () => {
             timeLeft={timeLeft}
             onChangePlan={() => goToStep(1)}
           />
-           <Button
-             onClick={() => goToStep(4)}
-             className="w-full h-14 text-[17px] font-bold rounded-full shadow-md hover:shadow-lg mt-6 lg:sticky lg:bottom-0 lg:z-10"
-           >
-             {selectedAddons.length > 0
-               ? `Continue with ${selectedAddons.length} add-on${selectedAddons.length > 1 ? "s" : ""}`
-               : "Continue"}
-           </Button>
-        </>
-      )}
+        )}
 
-      {/* Step 4: Confirmation */}
-      {currentStep === 4 && (
-        <>
-          <VoucherConfirmationStep plan={selectedPlan} serviceConfig={serviceConfig} selectedAddons={selectedAddons} timeLeft={timeLeft} />
-          <Button
-            onClick={() => goToStep(5)}
-            className="w-full h-14 text-[17px] font-bold rounded-full shadow-md hover:shadow-lg mt-6 lg:sticky lg:bottom-0 lg:z-10"
-          >
-            Continue
-          </Button>
-        </>
-      )}
+        {currentStep === 4 && (
+          <VoucherConfirmationStep
+            plan={selectedPlan}
+            serviceConfig={serviceConfig}
+            selectedAddons={selectedAddons}
+            timeLeft={timeLeft}
+          />
+        )}
 
-      {/* Step 5: Payment */}
-      {currentStep === 5 && (
-        <LandingPaymentStep
-          selectedPlan={selectedPlan}
-          timeLeft={timeLeft}
-          email={formData.email}
-          onChangePlan={() => goToStep(1)}
-          onContinue={handlePaymentSubmit}
-          selectedAddons={selectedAddons}
-        />
+        {currentStep === 5 && (
+          <LandingPaymentStep
+            selectedPlan={selectedPlan}
+            timeLeft={timeLeft}
+            email={formData.email}
+            onChangePlan={() => goToStep(1)}
+            onContinue={handlePaymentSubmit}
+            selectedAddons={selectedAddons}
+          />
+        )}
+
+        {/* Mobile CTA: inline at bottom of content */}
+        {footer && <div className="mt-6 lg:hidden">{footer}</div>}
+      </div>
+
+      {/* Desktop CTA: pinned footer inside card */}
+      {footer && (
+        <div className="hidden lg:block lg:shrink-0 lg:border-t lg:border-border lg:bg-card lg:p-4">
+          {footer}
+        </div>
       )}
     </div>
   );

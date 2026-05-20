@@ -403,7 +403,7 @@ const NextServiceCard = ({ service, onViewDetails }: { service: ServiceInstance;
       <div className="relative h-[190px] overflow-hidden">
         <PoolSceneHero />
         <div className="absolute top-3 left-3">
-          <StatusBadge status={booking.status === "technician_to_be_assigned" ? "technician_to_be_assigned" : "scheduled"} />
+          <StatusBadge status={!technician.isAssigned ? "technician_to_be_assigned" : "scheduled"} />
         </div>
         {technician.isAssigned && (
           <div className="absolute top-3 right-3 bg-card/90 backdrop-blur-sm rounded-xl px-2.5 py-1.5 flex items-center gap-2 shadow-md border border-border">

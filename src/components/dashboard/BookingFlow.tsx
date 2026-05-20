@@ -33,10 +33,42 @@ interface BookingFlowProps {
 
 const TOTAL_STEPS = 2;
 
+const PENDING_KEY = "orlandos_oasis_pending_schedule";
+
+type PendingState = {
+  step?: number;
+  selectedDate?: string;
+  calYear?: number;
+  calMonth?: number;
+  timeWindow?: TimeWindow;
+  address?: string;
+  city?: string;
+  state?: string;
+  zip?: string;
+  poolType?: string;
+  accessMethod?: AccessMethod;
+  gateCode?: string;
+  gateNotes?: string;
+  keyLocation?: string;
+  otherInstructions?: string;
+  specialNotes?: string;
+  hasPets?: boolean;
+};
+
+function loadPending(): PendingState {
+  try {
+    const raw = localStorage.getItem(PENDING_KEY);
+    return raw ? (JSON.parse(raw) as PendingState) : {};
+  } catch {
+    return {};
+  }
+}
+
 const BookingFlow = ({ onClose, onComplete, selectedService: selectedServiceProp, standalone }: BookingFlowProps) => {
   const { setBooking, checkoutData } = useBooking();
   const { user, updateUser } = useAuth();
-  const [step, setStep] = useState(0);
+  const pending = useMemo(() => loadPending(), []);
+  const [step, setStep] = useState<number>(pending.step ?? 0);
 
   const selectedPlanId = "weekly";
   const selectedVoucherPlan = useMemo(() => VOUCHER_PLANS.find((p) => p.id === selectedPlanId)!, [selectedPlanId]);
@@ -60,31 +92,45 @@ const BookingFlow = ({ onClose, onComplete, selectedService: selectedServiceProp
   // Step 0 - Schedule
   const [frequency] = useState<CleaningFrequency>("monthly");
   const today = useMemo(() => {const d = new Date();d.setHours(0, 0, 0, 0);return d;}, []);
-  const [selectedDate, setSelectedDate] = useState<Date>(today);
-  const [calYear, setCalYear] = useState(today.getFullYear());
-  const [calMonth, setCalMonth] = useState(today.getMonth());
-  const [timeWindow, setTimeWindow] = useState<TimeWindow>("morning");
+  const initialDate = pending.selectedDate ? new Date(pending.selectedDate) : today;
+  const [selectedDate, setSelectedDate] = useState<Date>(isNaN(initialDate.getTime()) ? today : initialDate);
+  const [calYear, setCalYear] = useState(pending.calYear ?? today.getFullYear());
+  const [calMonth, setCalMonth] = useState(pending.calMonth ?? today.getMonth());
+  const [timeWindow, setTimeWindow] = useState<TimeWindow>(pending.timeWindow ?? "morning");
 
   // Step 1 - Pool / Property
-  const [address, setAddress] = useState(user?.streetAddress || "");
-  const [city, setCity] = useState(user?.city || "");
-  const [state, setState] = useState(user?.state || "");
-  const [zip, setZip] = useState(user?.zipCode || "");
-  const [poolType, setPoolType] = useState("Inground");
+  const [address, setAddress] = useState(pending.address ?? user?.streetAddress ?? "");
+  const [city, setCity] = useState(pending.city ?? user?.city ?? "");
+  const [state, setState] = useState(pending.state ?? user?.state ?? "");
+  const [zip, setZip] = useState(pending.zip ?? user?.zipCode ?? "");
+  const [poolType, setPoolType] = useState(pending.poolType ?? "Inground");
   const POOL_SIZE_DISPLAY: Record<string, string> = { small: "Small (<10k gal)", medium: "Medium (10–20k)", large: "Large (20k+)" };
   const poolSize = POOL_SIZE_DISPLAY[checkoutData?.poolSize || "small"] || "Small (<10k gal)";
-  const [accessMethod, setAccessMethod] = useState<AccessMethod>("home");
-  const [gateCode, setGateCode] = useState("");
-  const [gateNotes, setGateNotes] = useState("");
-  const [keyLocation, setKeyLocation] = useState("");
-  const [otherInstructions, setOtherInstructions] = useState("");
-  const [specialNotes, setSpecialNotes] = useState("");
-  const [hasPets, setHasPets] = useState(false);
+  const [accessMethod, setAccessMethod] = useState<AccessMethod>(pending.accessMethod ?? "home");
+  const [gateCode, setGateCode] = useState(pending.gateCode ?? "");
+  const [gateNotes, setGateNotes] = useState(pending.gateNotes ?? "");
+  const [keyLocation, setKeyLocation] = useState(pending.keyLocation ?? "");
+  const [otherInstructions, setOtherInstructions] = useState(pending.otherInstructions ?? "");
+  const [specialNotes, setSpecialNotes] = useState(pending.specialNotes ?? "");
+  const [hasPets, setHasPets] = useState(pending.hasPets ?? false);
   const [touched, setTouched] = useState<Record<string, boolean>>({});
 
   const [isProcessing, setIsProcessing] = useState(false);
   const [bookingSuccess, setBookingSuccess] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+
+  // Persist partial state so the flow can resume on next login if abandoned.
+  useEffect(() => {
+    if (bookingSuccess) return;
+    try {
+      const snapshot: PendingState = {
+        step, selectedDate: selectedDate.toISOString(), calYear, calMonth, timeWindow,
+        address, city, state, zip, poolType, accessMethod,
+        gateCode, gateNotes, keyLocation, otherInstructions, specialNotes, hasPets,
+      };
+      localStorage.setItem(PENDING_KEY, JSON.stringify(snapshot));
+    } catch { /* storage may be unavailable */ }
+  }, [bookingSuccess, step, selectedDate, calYear, calMonth, timeWindow, address, city, state, zip, poolType, accessMethod, gateCode, gateNotes, keyLocation, otherInstructions, specialNotes, hasPets]);
 
   const markTouched = (field: string) => setTouched((p) => ({ ...p, [field]: true }));
   const fieldError = (field: string, value: string) => touched[field] && !value.trim();
@@ -159,6 +205,11 @@ const BookingFlow = ({ onClose, onComplete, selectedService: selectedServiceProp
           accessDetail: getAccessDetail(), hasPets,
         },
       });
+
+      // Scheduling complete — drop the saved partial-progress snapshot.
+      try { localStorage.removeItem(PENDING_KEY); } catch { /* ignore */ }
+
+
 
       if (standalone) {
         // In standalone mode, skip the success screen and call onComplete directly.

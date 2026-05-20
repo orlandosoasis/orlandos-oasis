@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { Check, CheckCircle2 } from "lucide-react";
+import { Check, CheckCircle2, Calendar } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useBooking } from "@/contexts/BookingContext";
 import { useAuth } from "@/contexts/AuthContext";
@@ -15,15 +15,21 @@ const PurchaseSuccess = () => {
   const serviceName = searchParams.get("service") || checkoutData?.serviceName || "Pool Service";
   const serviceDescription = searchParams.get("description") || checkoutData?.serviceDescription || "";
 
-  const [showBooking, setShowBooking] = useState(true);
+  const [showBooking, setShowBooking] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
+  const [accountReady, setAccountReady] = useState(isAuthenticated);
 
-  const handleBookingComplete = async () => {
-    // Auto-create account and login using checkout data
-    if (!isAuthenticated && checkoutData?.customerEmail) {
+  // Auto-create the homeowner account immediately after payment so the
+  // scheduling flow that follows is performed as an authenticated user.
+  useEffect(() => {
+    let cancelled = false;
+    const ensureAccount = async () => {
+      if (isAuthenticated || !checkoutData?.customerEmail) {
+        setAccountReady(true);
+        return;
+      }
       const tempPassword = `Oasis${Date.now()}!`;
       const fullName = `${checkoutData.customerFirstName} ${checkoutData.customerLastName}`.trim();
-
       const signupResult = await signup(
         checkoutData.customerEmail,
         tempPassword,
@@ -37,13 +43,18 @@ const PurchaseSuccess = () => {
           contractLocked: true,
         }
       );
-
       if (!signupResult.success) {
         await login(checkoutData.customerEmail, tempPassword);
       }
-    }
+      if (!cancelled) setAccountReady(true);
+    };
+    ensureAccount();
+    return () => { cancelled = true; };
+  }, [isAuthenticated, checkoutData, signup, login]);
 
-    // Show success animation before redirecting
+  const handleBookingComplete = () => {
+    // Scheduling flow finished — clear any saved partial progress and head to dashboard.
+    try { localStorage.removeItem("orlandos_oasis_pending_schedule"); } catch { /* ignore */ }
     setShowBooking(false);
     setShowSuccess(true);
     setTimeout(() => navigate("/dashboard"), 2200);
@@ -82,22 +93,29 @@ const PurchaseSuccess = () => {
     );
   }
 
+  // Purchase Successful screen with the mandatory scheduling CTA.
   return (
     <div className="fixed inset-0 z-50 bg-background flex items-center justify-center">
       <div className="text-center space-y-5 px-6 max-w-md">
         <div className="mx-auto h-20 w-20 rounded-full bg-green-100 flex items-center justify-center">
           <Check className="h-10 w-10 text-green-600" />
         </div>
-        <h2 className="text-2xl font-bold text-foreground">Payment Successful</h2>
+        <h2 className="text-2xl font-bold text-foreground">Purchase Successful</h2>
         <p className="text-muted-foreground">
-          Your {serviceName} is confirmed. Schedule your first service.
+          Your <span className="font-semibold text-foreground">{serviceName}</span> plan is confirmed.
+          Next, schedule your first service so we can match you with a technician.
         </p>
         <Button
           onClick={() => setShowBooking(true)}
+          disabled={!accountReady}
           className="mt-2 w-full h-14 text-[17px] font-bold rounded-full shadow-md hover:shadow-lg"
         >
-          Book My First Service
+          <Calendar className="h-5 w-5 mr-2" />
+          {accountReady ? "Schedule My Pool Service" : "Setting up your account…"}
         </Button>
+        <p className="text-xs text-muted-foreground">
+          Scheduling is required to activate your service. You can pause and resume — we'll save your progress.
+        </p>
       </div>
     </div>
   );

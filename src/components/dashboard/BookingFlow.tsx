@@ -466,11 +466,22 @@ const BookingFlow = ({ onClose, onComplete, selectedService: selectedServiceProp
                 <div className="grid grid-cols-1 gap-3 mb-5">
                   <div className="flex flex-col gap-1.5">
                     <label className="text-xs font-medium text-muted-foreground">Pool Size</label>
-                    <div className="h-10 rounded-[10px] border-2 border-border bg-muted/40 px-3 text-sm text-foreground flex items-center">
-                      {poolSize}
+                    <div
+                      role="combobox"
+                      aria-disabled="true"
+                      aria-readonly="true"
+                      tabIndex={-1}
+                      className="h-auto min-h-12 rounded-[10px] border-2 border-border bg-muted/40 px-3 py-2 text-sm flex items-center justify-between gap-2 cursor-not-allowed opacity-90"
+                    >
+                      <div className="flex flex-col leading-tight">
+                        <span className="font-semibold text-foreground">{poolSizeOption.title}</span>
+                        <span className="text-xs text-muted-foreground">{poolSizeOption.subtitle}</span>
+                      </div>
+                      <ChevronDown className="h-4 w-4 text-muted-foreground opacity-50 shrink-0" />
                     </div>
                   </div>
                 </div>
+
 
                 <div className="border-t border-border pt-4">
                   <p className="text-[11px] font-semibold tracking-[0.8px] uppercase text-muted-foreground mb-2.5">POOL ACCESS</p>

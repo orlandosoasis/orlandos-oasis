@@ -395,14 +395,14 @@ const BookingFlow = ({ onClose, onComplete, selectedService: selectedServiceProp
               {/* Arrival window - compressed */}
               <div className="bg-card rounded-2xl border border-border p-3 shadow-sm flex flex-col">
                 <p className="text-[10px] font-semibold tracking-[0.6px] uppercase text-muted-foreground mb-1.5">ARRIVAL WINDOW</p>
-                <div className="flex flex-col gap-1.5 flex-1">
+                <div className="flex flex-col gap-1.5">
                   {[
                 { value: "morning" as const, icon: "🌅", title: "Morning", label: "8am–12pm" },
                 { value: "afternoon" as const, icon: "☀️", title: "Afternoon", label: "12pm–4pm" },
                 { value: "evening" as const, icon: "🌤️", title: "Evening", label: "4pm–6pm" }].
                 map((opt) =>
                 <button key={opt.value} type="button" onClick={() => setTimeWindow(opt.value)}
-                className={`flex items-center rounded-xl border-2 py-1.5 transition-all text-left flex-1 px-[12px] gap-[8px] ${
+                className={`flex items-center rounded-xl border-2 py-[12px] transition-all text-left px-[12px] gap-[8px] ${
                 timeWindow === opt.value ? "border-primary bg-primary/[0.07] text-primary" : "border-border hover:border-primary/40 hover:bg-primary/5"}`
                 }>
                     <span className="text-lg">{opt.icon}</span>

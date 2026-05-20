@@ -117,20 +117,29 @@ const BookingFlow = ({ onClose, onComplete, selectedService: selectedServiceProp
 
   const [isProcessing, setIsProcessing] = useState(false);
   const [bookingSuccess, setBookingSuccess] = useState(false);
+  const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved">("idle");
   const containerRef = useRef<HTMLDivElement>(null);
+  const isFirstSaveRef = useRef(true);
 
   // Persist partial state so the flow can resume on next login if abandoned.
   useEffect(() => {
     if (bookingSuccess) return;
-    try {
-      const snapshot: PendingState = {
-        step, selectedDate: selectedDate.toISOString(), calYear, calMonth, timeWindow,
-        address, city, state, zip, poolType, accessMethod,
-        gateCode, gateNotes, keyLocation, otherInstructions, specialNotes, hasPets,
-      };
-      localStorage.setItem(PENDING_KEY, JSON.stringify(snapshot));
-    } catch { /* storage may be unavailable */ }
+    setSaveStatus("saving");
+    const t = setTimeout(() => {
+      try {
+        const snapshot: PendingState = {
+          step, selectedDate: selectedDate.toISOString(), calYear, calMonth, timeWindow,
+          address, city, state, zip, poolType, accessMethod,
+          gateCode, gateNotes, keyLocation, otherInstructions, specialNotes, hasPets,
+        };
+        localStorage.setItem(PENDING_KEY, JSON.stringify(snapshot));
+      } catch { /* storage may be unavailable */ }
+      setSaveStatus("saved");
+      isFirstSaveRef.current = false;
+    }, 400);
+    return () => clearTimeout(t);
   }, [bookingSuccess, step, selectedDate, calYear, calMonth, timeWindow, address, city, state, zip, poolType, accessMethod, gateCode, gateNotes, keyLocation, otherInstructions, specialNotes, hasPets]);
+
 
   const markTouched = (field: string) => setTouched((p) => ({ ...p, [field]: true }));
   const fieldError = (field: string, value: string) => touched[field] && !value.trim();
@@ -301,6 +310,24 @@ const BookingFlow = ({ onClose, onComplete, selectedService: selectedServiceProp
             <ArrowLeft className="h-4 w-4 text-foreground" />
           </button>
           <span className="text-sm font-semibold text-foreground flex-1">Book a Service</span>
+          {!bookingSuccess && saveStatus !== "idle" && (
+            <span
+              className="hidden sm:inline-flex items-center gap-1.5 text-xs text-muted-foreground"
+              aria-live="polite"
+            >
+              {saveStatus === "saving" ? (
+                <>
+                  <Loader2 className="h-3 w-3 animate-spin" />
+                  Saving your progress…
+                </>
+              ) : (
+                <>
+                  <CheckCircle2 className="h-3 w-3 text-primary" />
+                  Progress saved
+                </>
+              )}
+            </span>
+          )}
           <span className="text-xs text-muted-foreground">Step {displayStep} of {TOTAL_STEPS}</span>
         </div>
         <div className="h-1 bg-muted">

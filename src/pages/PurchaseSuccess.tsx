@@ -137,6 +137,9 @@ const PurchaseSuccess = () => {
         <p className="text-xs text-muted-foreground">
           Scheduling is required to activate your service. You can pause and resume — we'll save your progress.
         </p>
+        {signupError && (
+          <p className="text-xs text-destructive">{signupError}</p>
+        )}
       </div>
     </div>
   );

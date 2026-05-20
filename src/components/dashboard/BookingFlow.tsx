@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect, useRef } from "react";
-import { ChevronLeft, ChevronRight, Check, ArrowLeft, CheckCircle2, Loader2, Info } from "lucide-react";
+import { ChevronLeft, ChevronRight, ChevronDown, Check, ArrowLeft, CheckCircle2, Loader2, Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -104,8 +104,14 @@ const BookingFlow = ({ onClose, onComplete, selectedService: selectedServiceProp
   const [state, setState] = useState(pending.state ?? user?.state ?? "");
   const [zip, setZip] = useState(pending.zip ?? user?.zipCode ?? "");
   const [poolType, setPoolType] = useState(pending.poolType ?? "Inground");
-  const POOL_SIZE_DISPLAY: Record<string, string> = { small: "Small (<10k gal)", medium: "Medium (10–20k)", large: "Large (20k+)" };
-  const poolSize = POOL_SIZE_DISPLAY[checkoutData?.poolSize || "small"] || "Small (<10k gal)";
+  const POOL_SIZE_OPTIONS: Record<string, { title: string; subtitle: string }> = {
+    small: { title: "Small Pool", subtitle: "Standard residential" },
+    medium: { title: "Medium Pool", subtitle: "Mid-size residential" },
+    large: { title: "Large Pool", subtitle: "Large or custom" },
+  };
+  const poolSizeKey = (checkoutData?.poolSize as keyof typeof POOL_SIZE_OPTIONS) || "small";
+  const poolSizeOption = POOL_SIZE_OPTIONS[poolSizeKey] || POOL_SIZE_OPTIONS.small;
+  const poolSize = poolSizeOption.title;
   const [accessMethod, setAccessMethod] = useState<AccessMethod>(pending.accessMethod ?? "home");
   const [gateCode, setGateCode] = useState(pending.gateCode ?? "");
   const [gateNotes, setGateNotes] = useState(pending.gateNotes ?? "");
@@ -460,11 +466,22 @@ const BookingFlow = ({ onClose, onComplete, selectedService: selectedServiceProp
                 <div className="grid grid-cols-1 gap-3 mb-5">
                   <div className="flex flex-col gap-1.5">
                     <label className="text-xs font-medium text-muted-foreground">Pool Size</label>
-                    <div className="h-10 rounded-[10px] border-2 border-border bg-muted/40 px-3 text-sm text-foreground flex items-center">
-                      {poolSize}
+                    <div
+                      role="combobox"
+                      aria-disabled="true"
+                      aria-readonly="true"
+                      tabIndex={-1}
+                      className="h-auto min-h-12 rounded-[10px] border-2 border-border bg-muted/40 px-3 py-2 text-sm flex items-center justify-between gap-2 cursor-not-allowed opacity-90"
+                    >
+                      <div className="flex flex-col leading-tight">
+                        <span className="font-semibold text-foreground">{poolSizeOption.title}</span>
+                        <span className="text-xs text-muted-foreground">{poolSizeOption.subtitle}</span>
+                      </div>
+                      <ChevronDown className="h-4 w-4 text-muted-foreground opacity-50 shrink-0" />
                     </div>
                   </div>
                 </div>
+
 
                 <div className="border-t border-border pt-4">
                   <p className="text-[11px] font-semibold tracking-[0.8px] uppercase text-muted-foreground mb-2.5">POOL ACCESS</p>

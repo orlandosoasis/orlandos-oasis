@@ -59,6 +59,7 @@ const ServicesSection = () => {
   });
   const [timeLeft, setTimeLeft] = useState({ minutes: 9, seconds: 53 });
   const sectionRef = useRef<HTMLDivElement>(null);
+  const scrollableRef = useRef<HTMLDivElement>(null);
 
   const selectedPlan = configToPlan(serviceConfig);
   const serviceName = selectedPlan.label;
@@ -76,7 +77,9 @@ const ServicesSection = () => {
   }, [currentStep]);
 
   const scrollToTop = useCallback(() => {
+    scrollableRef.current?.scrollTo({ top: 0, behavior: "smooth" });
     sectionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    window.scrollTo({ top: 1, behavior: "smooth" });
   }, []);
 
   const goToStep = (step: number) => {

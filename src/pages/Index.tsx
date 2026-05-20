@@ -33,7 +33,7 @@ const Index = () => {
               {/* Voucher/Services - bordered card on desktop with scrollable body and pinned CTA */}
               <div className="order-1 lg:order-2 lg:h-full lg:min-h-0 lg:rounded-lg lg:border-0 lg:bg-card lg:text-card-foreground lg:shadow-sm lg:flex lg:flex-col lg:overflow-hidden">
                 <div
-                  className="lg:flex-1 lg:min-h-0 lg:overflow-y-auto lg:p-6 lg:[scrollbar-width:thin] lg:[scrollbar-color:hsl(var(--border))_transparent] lg:[&::-webkit-scrollbar]:w-1.5 lg:[&::-webkit-scrollbar-track]:bg-transparent lg:[&::-webkit-scrollbar-thumb]:bg-border lg:[&::-webkit-scrollbar-thumb]:rounded-full"
+                  className="lg:flex-1 lg:min-h-0 lg:overflow-y-auto lg:p-6 lg:[scrollbar-width:thin] lg:[scrollbar-color:hsl(var(--border))_transparent] lg:[&::-webkit-scrollbar]:w-1.5 lg:[&::-webkit-scrollbar-track]:bg-transparent lg:[&::-webkit-scrollbar-thumb]:bg-border lg:[&::-webkit-scrollbar-thumb]:rounded-full bg-slate-50"
                 >
                   <ServicesSection />
                 </div>

@@ -10,22 +10,30 @@ const PurchaseSuccess = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { checkoutData } = useBooking();
-  const { signup, login, isAuthenticated } = useAuth();
+  const { signup, login, isAuthenticated, user, isLoading } = useAuth();
 
   const serviceName = searchParams.get("service") || checkoutData?.serviceName || "Pool Service";
   const serviceDescription = searchParams.get("description") || checkoutData?.serviceDescription || "";
 
   const [showBooking, setShowBooking] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
-  const [accountReady, setAccountReady] = useState(isAuthenticated);
+  const [signupAttempted, setSignupAttempted] = useState(false);
+  const [signupError, setSignupError] = useState<string | null>(null);
 
   // Auto-create the homeowner account immediately after payment so the
-  // scheduling flow that follows is performed as an authenticated user.
+  // scheduling flow that follows is performed as an authenticated user
+  // with the latest checkout data already merged into their profile.
   useEffect(() => {
+    if (isLoading || signupAttempted) return;
     let cancelled = false;
     const ensureAccount = async () => {
-      if (isAuthenticated || !checkoutData?.customerEmail) {
-        setAccountReady(true);
+      // Already signed in (e.g. existing customer) — nothing to do.
+      if (isAuthenticated) {
+        setSignupAttempted(true);
+        return;
+      }
+      if (!checkoutData?.customerEmail) {
+        setSignupAttempted(true);
         return;
       }
       const tempPassword = `Oasis${Date.now()}!`;
@@ -43,14 +51,27 @@ const PurchaseSuccess = () => {
           contractLocked: true,
         }
       );
+      // If the account already exists, fall back to login with the same temp password.
+      // (For pre-existing accounts the user will continue as a guest; the scheduling
+      // flow still resumes from the locally persisted checkout data.)
       if (!signupResult.success) {
-        await login(checkoutData.customerEmail, tempPassword);
+        const loginResult = await login(checkoutData.customerEmail, tempPassword);
+        if (!loginResult.success && !cancelled) {
+          setSignupError(signupResult.error || null);
+        }
       }
-      if (!cancelled) setAccountReady(true);
+      if (!cancelled) setSignupAttempted(true);
     };
     ensureAccount();
     return () => { cancelled = true; };
-  }, [isAuthenticated, checkoutData, signup, login]);
+  }, [isAuthenticated, isLoading, signupAttempted, checkoutData, signup, login]);
+
+  // Account is "ready" once we have a hydrated user OR we've already
+  // attempted signup (covers the email-confirmation case where the
+  // session isn't established yet — booking flow can still resume from
+  // the persisted checkoutData).
+  const accountReady = !isLoading && (!!user || signupAttempted);
+
 
   const handleBookingComplete = () => {
     // Scheduling flow finished — clear any saved partial progress and head to dashboard.

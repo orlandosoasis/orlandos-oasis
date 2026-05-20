@@ -186,16 +186,6 @@ export default function RescheduleModal({ open, onOpenChange, booking, onResched
               ))}
             </div>
 
-            {selectedTime && (
-              <div className="flex items-start gap-2 text-muted-foreground">
-                <AlertCircle className="h-4 w-4 mt-0.5 shrink-0" />
-                <p className="text-xs">
-                  Arrival time cannot be guaranteed. Our team will do their best to arrive as close to the selected time window as possible.
-                </p>
-              </div>
-            )}
-
-            <div className="flex gap-2.5">
               <Button variant="outline" className="flex-1 hover:text-primary hover:border-primary hover:bg-transparent" onClick={() => setStep(2)}>
                 <ArrowLeft className="h-4 w-4 mr-1" />
                 Back

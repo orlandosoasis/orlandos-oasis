@@ -104,8 +104,14 @@ const BookingFlow = ({ onClose, onComplete, selectedService: selectedServiceProp
   const [state, setState] = useState(pending.state ?? user?.state ?? "");
   const [zip, setZip] = useState(pending.zip ?? user?.zipCode ?? "");
   const [poolType, setPoolType] = useState(pending.poolType ?? "Inground");
-  const POOL_SIZE_DISPLAY: Record<string, string> = { small: "Small (<10k gal)", medium: "Medium (10–20k)", large: "Large (20k+)" };
-  const poolSize = POOL_SIZE_DISPLAY[checkoutData?.poolSize || "small"] || "Small (<10k gal)";
+  const POOL_SIZE_OPTIONS: Record<string, { title: string; subtitle: string }> = {
+    small: { title: "Small Pool", subtitle: "Standard residential" },
+    medium: { title: "Medium Pool", subtitle: "Mid-size residential" },
+    large: { title: "Large Pool", subtitle: "Large or custom" },
+  };
+  const poolSizeKey = (checkoutData?.poolSize as keyof typeof POOL_SIZE_OPTIONS) || "small";
+  const poolSizeOption = POOL_SIZE_OPTIONS[poolSizeKey] || POOL_SIZE_OPTIONS.small;
+  const poolSize = poolSizeOption.title;
   const [accessMethod, setAccessMethod] = useState<AccessMethod>(pending.accessMethod ?? "home");
   const [gateCode, setGateCode] = useState(pending.gateCode ?? "");
   const [gateNotes, setGateNotes] = useState(pending.gateNotes ?? "");

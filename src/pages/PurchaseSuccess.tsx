@@ -72,6 +72,16 @@ const PurchaseSuccess = () => {
   // the persisted checkoutData).
   const accountReady = !isLoading && (!!user || signupAttempted);
 
+  // Auto-open the scheduling flow as soon as the account is ready, so the
+  // user lands directly on the booking step for their purchased service
+  // (no extra click, no detour through /login).
+  useEffect(() => {
+    if (accountReady && !showBooking && !showSuccess) {
+      setShowBooking(true);
+    }
+  }, [accountReady, showBooking, showSuccess]);
+
+
 
   const handleBookingComplete = () => {
     // Scheduling flow finished — clear any saved partial progress and head to dashboard.

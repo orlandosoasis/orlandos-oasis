@@ -310,6 +310,24 @@ const BookingFlow = ({ onClose, onComplete, selectedService: selectedServiceProp
             <ArrowLeft className="h-4 w-4 text-foreground" />
           </button>
           <span className="text-sm font-semibold text-foreground flex-1">Book a Service</span>
+          {!bookingSuccess && saveStatus !== "idle" && (
+            <span
+              className="hidden sm:inline-flex items-center gap-1.5 text-xs text-muted-foreground"
+              aria-live="polite"
+            >
+              {saveStatus === "saving" ? (
+                <>
+                  <Loader2 className="h-3 w-3 animate-spin" />
+                  Saving your progress…
+                </>
+              ) : (
+                <>
+                  <CheckCircle2 className="h-3 w-3 text-primary" />
+                  Progress saved
+                </>
+              )}
+            </span>
+          )}
           <span className="text-xs text-muted-foreground">Step {displayStep} of {TOTAL_STEPS}</span>
         </div>
         <div className="h-1 bg-muted">

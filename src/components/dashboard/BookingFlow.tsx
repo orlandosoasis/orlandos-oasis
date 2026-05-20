@@ -393,22 +393,22 @@ const BookingFlow = ({ onClose, onComplete, selectedService: selectedServiceProp
               </div>
 
               {/* Arrival window - compressed */}
-              <div className="bg-card rounded-2xl border border-border p-4 shadow-sm flex flex-col">
-                <p className="text-[10px] font-semibold tracking-[0.6px] uppercase text-muted-foreground mb-2">ARRIVAL WINDOW</p>
-                <div className="flex flex-col gap-2 flex-1">
+              <div className="bg-card rounded-2xl border border-border p-3 shadow-sm flex flex-col">
+                <p className="text-[10px] font-semibold tracking-[0.6px] uppercase text-muted-foreground mb-1.5">ARRIVAL WINDOW</p>
+                <div className="flex flex-col gap-1.5 flex-1">
                   {[
                 { value: "morning" as const, icon: "🌅", title: "Morning", label: "8am–12pm" },
                 { value: "afternoon" as const, icon: "☀️", title: "Afternoon", label: "12pm–4pm" },
                 { value: "evening" as const, icon: "🌤️", title: "Evening", label: "4pm–6pm" }].
                 map((opt) =>
                 <button key={opt.value} type="button" onClick={() => setTimeWindow(opt.value)}
-                className={`flex items-center gap-2.5 rounded-xl border-2 py-2 px-3 transition-all text-left flex-1 ${
+                className={`flex items-center gap-2 rounded-xl border-2 py-1.5 px-3 transition-all text-left flex-1 ${
                 timeWindow === opt.value ? "border-primary bg-primary/[0.07] text-primary" : "border-border hover:border-primary/40 hover:bg-primary/5"}`
                 }>
                     <span className="text-lg">{opt.icon}</span>
-                    <div>
-                      <span className="font-semibold text-[13px] block leading-tight">{opt.title}</span>
-                      <span className="text-[11px] font-medium">{opt.label}</span>
+                    <div className="flex flex-col justify-center gap-0.5">
+                      <span className="font-semibold text-[13px] leading-none">{opt.title}</span>
+                      <span className="text-[11px] font-medium leading-none">{opt.label}</span>
                     </div>
                   </button>
                 )}

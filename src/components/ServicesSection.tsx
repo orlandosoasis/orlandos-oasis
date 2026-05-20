@@ -120,7 +120,7 @@ const ServicesSection = () => {
           <ServiceConfigStep config={serviceConfig} onConfigChange={setServiceConfig} />
           <Button
             onClick={() => goToStep(2)}
-            className="w-full h-14 text-[17px] font-bold rounded-full shadow-md hover:shadow-lg mt-6"
+            className="w-full h-14 text-[17px] font-bold rounded-full shadow-md hover:shadow-lg mt-6 lg:sticky lg:bottom-0 lg:z-10"
           >
             Continue
           </Button>

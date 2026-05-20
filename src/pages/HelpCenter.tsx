@@ -76,7 +76,6 @@ const HelpCenter = () => {
   const [search, setSearch] = useState("");
   const q = search.trim().toLowerCase();
 
-  /** Match in title OR body OR category label so users can type anything. */
   const articleMatches = (a: { title: string; body: string }, catLabel: string) =>
     !q ||
     a.title.toLowerCase().includes(q) ||
@@ -112,58 +111,53 @@ const HelpCenter = () => {
           />
         </div>
         {q ? (
-          <p className="mb-4 text-xs text-muted-foreground" role="status" aria-live="polite">
+          <p className="mb-6 text-xs text-muted-foreground" role="status" aria-live="polite">
             {totalMatches === 0
               ? "No matches"
               : `${totalMatches} match${totalMatches === 1 ? "" : "es"} for "${search.trim()}"`}
           </p>
         ) : (
-          <div className="mb-4" />
+          <div className="mb-6" />
         )}
 
-        {/* Full Accordion Layout */}
-        <Accordion type="single" collapsible className="space-y-2" defaultValue={q && filteredCategories[0] ? filteredCategories[0].id : undefined}>
+        {/* Category Cards with Flat Question Lists */}
+        <div className="space-y-5">
           {filteredCategories.map((cat) => {
             const Icon = cat.icon;
             return (
-              <AccordionItem
-                key={cat.id}
-                value={cat.id}
-                className="bg-card border border-border rounded-2xl overflow-hidden px-4"
-              >
-                <AccordionTrigger className="text-sm font-semibold text-foreground text-left py-4 hover:no-underline">
-                  <div className="flex items-center gap-3">
-                    <Icon className="h-5 w-5 text-primary shrink-0" />
-                    <span>{cat.label}</span>
-                    {q ? (
-                      <span className="ml-auto text-xs font-normal text-muted-foreground">
-                        {cat.articles.length}
-                      </span>
-                    ) : null}
-                  </div>
-                </AccordionTrigger>
-                <AccordionContent className="pb-4">
-                  <Accordion type="single" collapsible className="space-y-1.5">
-                    {cat.articles.map((article, idx) => (
-                      <AccordionItem
-                        key={idx}
-                        value={`${cat.id}-${idx}`}
-                        className="border border-border rounded-xl overflow-hidden px-3 bg-muted/30"
-                      >
-                        <AccordionTrigger className="text-sm font-medium text-foreground text-left py-3 hover:no-underline">
-                          {article.title}
-                        </AccordionTrigger>
-                        <AccordionContent className="text-sm text-muted-foreground leading-relaxed pb-3">
-                          {article.body}
-                        </AccordionContent>
-                      </AccordionItem>
-                    ))}
-                  </Accordion>
-                </AccordionContent>
-              </AccordionItem>
+              <section key={cat.id} className="bg-card border border-border rounded-2xl overflow-hidden">
+                {/* Category Header — static, always visible */}
+                <div className="flex items-center gap-3 px-5 py-4 border-b border-border bg-muted/20">
+                  <Icon className="h-5 w-5 text-primary shrink-0" />
+                  <h2 className="text-sm font-semibold text-foreground flex-1">{cat.label}</h2>
+                  {q ? (
+                    <span className="text-xs font-normal text-muted-foreground">
+                      {cat.articles.length}
+                    </span>
+                  ) : null}
+                </div>
+
+                {/* Questions — single-level accordion */}
+                <Accordion type="single" collapsible className="divide-y divide-border/60">
+                  {cat.articles.map((article, idx) => (
+                    <AccordionItem
+                      key={`${cat.id}-${idx}`}
+                      value={`${cat.id}-${idx}`}
+                      className="px-5"
+                    >
+                      <AccordionTrigger className="text-sm font-medium text-foreground text-left py-3.5 hover:no-underline leading-snug">
+                        {article.title}
+                      </AccordionTrigger>
+                      <AccordionContent className="text-sm text-muted-foreground leading-relaxed pb-4">
+                        {article.body}
+                      </AccordionContent>
+                    </AccordionItem>
+                  ))}
+                </Accordion>
+              </section>
             );
           })}
-        </Accordion>
+        </div>
 
         {filteredCategories.length === 0 && (
           <div className="rounded-2xl border border-border bg-card py-10 px-6 text-center">

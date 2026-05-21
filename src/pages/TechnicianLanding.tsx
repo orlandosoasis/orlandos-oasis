@@ -22,7 +22,7 @@ import {
 import Header from "@/components/Header";
 const MinimalHeader = () => <Header minimal />;
 import Footer from "@/components/Footer";
-import techHero from "@/assets/tech-hero.webp";
+import techHero from "@/assets/tech-hero-pool.webp";
 
 const BENEFITS = [
   {
@@ -151,7 +151,12 @@ const TechnicianLanding = () => {
                 <div className="relative rounded-3xl overflow-hidden border border-white/10 bg-white/[0.04] backdrop-blur p-2">
                   <img
                     src={techHero}
-                    alt="Pool service professional at work"
+                    alt="Pool service professional vacuuming an outdoor swimming pool"
+                    loading="eager"
+                    decoding="async"
+                    fetchPriority="high"
+                    width={900}
+                    height={1350}
                     className="w-full h-[380px] md:h-[520px] lg:h-[600px] object-cover rounded-2xl"
                   />
                   <div className="absolute bottom-5 left-5 right-5 flex flex-col sm:flex-row gap-3">

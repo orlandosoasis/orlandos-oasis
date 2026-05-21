@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
+import { useHomeownerRealtime } from "@/hooks/useHomeownerRealtime";
 
 const BACK_TARGETS: Record<string, string> = {
   "/account-settings": "/dashboard",

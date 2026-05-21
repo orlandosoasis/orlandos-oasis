@@ -20,6 +20,7 @@ export interface TechPool {
   equipment: string;
   accessMethod: string;
   accessDetail: string;
+  frequency?: string;
 }
 
 export type TechServiceStatus = "scheduled" | "in_progress" | "completed";

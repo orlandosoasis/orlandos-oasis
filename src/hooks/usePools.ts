@@ -15,6 +15,7 @@ type PoolRow = {
   equipment: string | null;
   access_method: string | null;
   access_detail: string | null;
+  frequency?: string | null;
 };
 
 function rowToPool(r: PoolRow): TechPool {
@@ -31,6 +32,7 @@ function rowToPool(r: PoolRow): TechPool {
     equipment: r.equipment ?? "",
     accessMethod: r.access_method ?? "",
     accessDetail: r.access_detail ?? "",
+    frequency: r.frequency ?? undefined,
   };
 }
 

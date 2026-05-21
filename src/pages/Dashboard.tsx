@@ -4,9 +4,12 @@ import { Calendar, ChevronRight, Star, CalendarClock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
 import PageContainer from "@/components/PageContainer";
-import { useBooking, type BookingData, type TimeWindow } from "@/contexts/BookingContext";
-import { useServices } from "@/hooks/useServices";
+import { useBooking, type BookingData, type TimeWindow, type AccessMethod } from "@/contexts/BookingContext";
+import { useServices, useUpdateService } from "@/hooks/useServices";
+import { usePools } from "@/hooks/usePools";
 import { useProfilesByIds } from "@/hooks/useProfiles";
+import { useEnsureHomeownerData } from "@/hooks/useEnsureHomeownerData";
+import { VOUCHER_PLANS } from "@/components/dashboard/VoucherSelectionStep";
 import PoolSceneHero from "@/components/dashboard/PoolSceneHero";
 import BookingFlow from "@/components/dashboard/BookingFlow";
 import StatusBadge from "@/components/StatusBadge";
@@ -28,84 +31,8 @@ interface ServiceInstance {
   booking: BookingData;
 }
 
-/* ── Helpers ── */
-
-/**
- * Generate future visit dates based on frequency, anchored to a start date.
- * - weekly: every 7 days
- * - twice-weekly: 2x/week with 3-4 day spacing (e.g., Mon/Thu)
- * - three-weekly: 3x/week with ~2-3 day spacing (e.g., Mon/Wed/Fri)
- * - biweekly: every 14 days
- * - monthly: every 30 days
- */
-function generateFutureDates(startDate: Date, frequency: string, count: number): Date[] {
-  const dates: Date[] = [];
-  const endOfYear = new Date(startDate.getFullYear(), 11, 31);
-
-  if (frequency === "twice-weekly") {
-    // Pattern: +3, +4, +3, +4... (e.g., Mon→Thu→Mon)
-    let current = new Date(startDate);
-    let toggle = true; // true = +3, false = +4
-    while (dates.length < count) {
-      current = new Date(current);
-      current.setDate(current.getDate() + (toggle ? 3 : 4));
-      toggle = !toggle;
-      if (current > endOfYear) break;
-      dates.push(new Date(current));
-    }
-  } else if (frequency === "three-weekly") {
-    // Pattern: +2, +2, +3, repeating (e.g., Mon→Wed→Fri→Mon)
-    const gaps = [2, 2, 3];
-    let current = new Date(startDate);
-    let gapIdx = 0;
-    while (dates.length < count) {
-      current = new Date(current);
-      current.setDate(current.getDate() + gaps[gapIdx % 3]);
-      gapIdx++;
-      if (current > endOfYear) break;
-      dates.push(new Date(current));
-    }
-  } else {
-    const intervalDays = frequency === "weekly" ? 7
-      : frequency === "biweekly" ? 14
-      : 30; // monthly
-    let current = new Date(startDate);
-    while (dates.length < count) {
-      current = new Date(current);
-      current.setDate(current.getDate() + intervalDays);
-      if (current > endOfYear) break;
-      dates.push(new Date(current));
-    }
-  }
-
-  return dates;
-}
-
-/** Get the most recent past visit date (one interval back from start). */
-function getPreviousDate(startDate: Date, frequency: string): Date {
-  const prev = new Date(startDate);
-  if (frequency === "twice-weekly") {
-    prev.setDate(prev.getDate() - 3);
-  } else if (frequency === "three-weekly") {
-    prev.setDate(prev.getDate() - 2);
-  } else if (frequency === "weekly") {
-    prev.setDate(prev.getDate() - 7);
-  } else if (frequency === "biweekly") {
-    prev.setDate(prev.getDate() - 14);
-  } else {
-    prev.setDate(prev.getDate() - 30);
-  }
-  return prev;
-}
-
 const INITIAL_VISIBLE_COUNT = 3;
 const LOAD_MORE_COUNT = 10;
-
-const POOL_SIZE_LABELS: Record<string, string> = {
-  small: "Small (under 15k gallons)",
-  medium: "Medium (15k–25k gallons)",
-  large: "Large (over 25k gallons)",
-};
 
 const UNASSIGNED_TECH = {
   name: "Pool Technician to be assigned",
@@ -114,65 +41,21 @@ const UNASSIGNED_TECH = {
   isAssigned: false,
 };
 
-interface UserLike {
-  streetAddress?: string;
-  city?: string;
-  state?: string;
-  zipCode?: string;
-  fullName?: string;
+function passFromServiceType(label: string) {
+  const plan = VOUCHER_PLANS.find((p) => p.label === label || `Most Popular – ${p.label}` === label);
+  const originalPrice = plan?.originalPrice ?? 120;
+  const discountPrice = plan?.discountPrice ?? 95;
+  return {
+    id: plan?.id ?? "weekly",
+    hours: 2,
+    label,
+    description: plan?.description ?? "",
+    originalPrice,
+    discountPrice,
+    percentOff: Math.round(((originalPrice - discountPrice) / originalPrice) * 100),
+    isMostPopular: !!plan?.isMostPopular,
+  };
 }
-
-function generateUpcomingServices(
-  checkoutData?: import("@/contexts/BookingContext").CheckoutData | null,
-  user?: UserLike | null,
-): ServiceInstance[] {
-  const serviceLabel = checkoutData?.serviceName || "Deep Clean";
-  const servicePrice = checkoutData?.discountPrice || 149;
-  const serviceOriginalPrice = checkoutData?.originalPrice || 189;
-
-  const sharedPass = {
-    id: "pass-checkout", hours: 1, label: serviceLabel,
-    description: checkoutData?.serviceDescription || "Full cleaning, chemical balance, filter check",
-    originalPrice: serviceOriginalPrice, discountPrice: servicePrice,
-    percentOff: Math.round(((serviceOriginalPrice - servicePrice) / serviceOriginalPrice) * 100),
-    isMostPopular: true,
-  };
-  const sharedPool = {
-    address: user?.streetAddress || "Address on file",
-    city: user?.city || "",
-    state: user?.state || "",
-    zip: user?.zipCode || checkoutData?.customerZipcode || "",
-    poolType: "In-ground",
-    poolSize: POOL_SIZE_LABELS[checkoutData?.poolSize || "medium"] || POOL_SIZE_LABELS.medium,
-    accessMethod: "gate" as const,
-    accessDetail: "",
-    hasPets: false,
-  };
-  const baseSchedule = {
-    timeWindow: "morning" as const, accessMethod: "gate" as const,
-    accessDetail: "", addons: [] as { id: string; name: string; price: number }[], addonsTotal: 0,
-  };
-
-  const frequency = checkoutData?.frequency || "monthly";
-  const today = new Date();
-  const services: ServiceInstance[] = [];
-
-  // Pre-generate ≥6 months of upcoming visits (52 covers ~1 year of monthly/weekly cadence)
-  const futureDates = generateFutureDates(today, frequency, 52);
-  futureDates.forEach((date, i) => {
-    services.push({
-      id: `svc-upcoming-${i}`,
-      booking: {
-        frequency: "monthly", selectedPass: sharedPass, pool: sharedPool,
-        technician: UNASSIGNED_TECH, status: "scheduled",
-        scheduleData: { ...baseSchedule, selectedDate: date },
-      },
-    });
-  });
-
-  return services;
-}
-
 
 function formatGreetingDate(): string {
   const now = new Date();
@@ -184,7 +67,7 @@ function formatGreetingDate(): string {
    ══════════════════════════════════════════════ */
 const Dashboard = () => {
   const { user, logout, isAuthenticated, isLoading } = useAuth();
-  const { booking, setBooking, checkoutData } = useBooking();
+  const { booking, checkoutData } = useBooking();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const [showBooking, setShowBooking] = useState(false);
@@ -193,8 +76,9 @@ const Dashboard = () => {
   // State for selected service info from checkout
   const [selectedServiceInfo, setSelectedServiceInfo] = useState<{ title: string; description: string } | null>(null);
 
-  // Auto-open booking flow when redirected from checkout OR when the user
-  // abandoned the scheduling flow before completing it (resume on next login).
+  // Migrate any client-only onboarding data into Supabase exactly once.
+  useEnsureHomeownerData();
+
   useEffect(() => {
     if (searchParams.get("openBooking") === "true") {
       const title = searchParams.get("serviceTitle");
@@ -221,7 +105,6 @@ const Dashboard = () => {
     } catch { /* storage may be unavailable */ }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams, setSearchParams]);
-  // Listen for header "Book Service" button
   const openBooking = useCallback(() => setShowBooking(true), []);
   useEffect(() => {
     window.addEventListener("open-booking", openBooking);
@@ -229,72 +112,109 @@ const Dashboard = () => {
   }, [openBooking]);
 
   const [visibleCount, setVisibleCount] = useState(INITIAL_VISIBLE_COUNT);
-  const [services, setServices] = useState<ServiceInstance[]>([]);
   const [rescheduleService, setRescheduleService] = useState<ServiceInstance | null>(null);
   const [rescheduleConfirmed, setRescheduleConfirmed] = useState(false);
   const isPostCheckout = fromCheckout || showBooking || searchParams.get("openBooking") === "true";
 
-  // Fetch real services from Supabase for this homeowner so admin assignments
-  // surface automatically here.
-  const { data: realServices = [] } = useServices({ homeownerId: user?.id });
+  // Live data sources
+  const { data: realServices = [], isLoading: servicesLoading } = useServices({ homeownerId: user?.id });
+  const { data: pools = [] } = usePools(user?.id);
+  const pool = pools[0] || null;
+
   const assignedTechIds = useMemo(
     () => realServices.map((s) => s.technicianId).filter((id): id is string => !!id),
     [realServices],
   );
   const { data: techProfiles = {} } = useProfilesByIds(assignedTechIds);
 
-  // Most recent scheduled service that has a technician assigned (admin action).
-  const assignedTechnician = useMemo(() => {
-    const now = Date.now();
-    const upcomingAssigned = realServices
-      .filter((s) => s.technicianId && s.date.getTime() >= now - 86_400_000)
-      .sort((a, b) => a.date.getTime() - b.date.getTime())[0];
-    if (!upcomingAssigned?.technicianId) return null;
-    const profile = techProfiles[upcomingAssigned.technicianId];
-    if (!profile) return null;
-    const name = profile.fullName || `${profile.firstName ?? ""} ${profile.lastName ?? ""}`.trim() || "Pool Technician";
-    const initials = (name
-      .split(" ")
-      .map((p) => p[0])
-      .filter(Boolean)
-      .slice(0, 2)
-      .join("") || "PT").toUpperCase();
-    return { name, initials, rating: 5.0, isAssigned: true };
-  }, [realServices, techProfiles]);
+  const updateService = useUpdateService();
 
   useEffect(() => {
     if (!isLoading && !isAuthenticated && !isPostCheckout) navigate("/login", { replace: true });
   }, [isLoading, isAuthenticated, isPostCheckout, navigate, searchParams]);
 
-  useEffect(() => {
-    const upcoming = generateUpcomingServices(checkoutData, user);
-    // When admin has assigned a technician (via real services data), reflect it
-    // on the next upcoming visit so the homeowner sees the assignment.
-    if (assignedTechnician && upcoming.length > 0) {
-      upcoming[0] = {
-        ...upcoming[0],
-        booking: { ...upcoming[0].booking, technician: assignedTechnician },
-      };
-    }
-    const completed: ServiceInstance[] = [];
-    if (booking) {
-      const customBooking = {
-        ...booking,
-        status: "scheduled" as const,
-        technician: assignedTechnician || (booking.technician?.isAssigned ? booking.technician : UNASSIGNED_TECH),
-      };
-      setServices([{ id: "svc-custom", booking: customBooking }, ...upcoming, ...completed]);
-    } else {
-      setServices([...upcoming, ...completed]);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user?.email, user?.streetAddress, user?.city, user?.state, user?.zipCode, booking, checkoutData, assignedTechnician]);
+  // Build display services from DB rows.
+  const services = useMemo<ServiceInstance[]>(() => {
+    if (!user?.id) return [];
+    return realServices.map((s) => {
+      const techProfile = s.technicianId ? techProfiles[s.technicianId] : null;
+      const techName = techProfile
+        ? techProfile.fullName ||
+          `${techProfile.firstName ?? ""} ${techProfile.lastName ?? ""}`.trim() ||
+          "Pool Technician"
+        : null;
+      const initials = (techName ?? "")
+        .split(" ")
+        .map((p) => p[0])
+        .filter(Boolean)
+        .slice(0, 2)
+        .join("")
+        .toUpperCase();
+      const technician = techName
+        ? { name: techName, initials: initials || "PT", rating: 5.0, isAssigned: true }
+        : UNASSIGNED_TECH;
 
+      const frequency = (pool?.frequency || "monthly") as BookingData["frequency"];
+      const recurrence =
+        pool?.frequency === "weekly" || pool?.frequency === "biweekly" || pool?.frequency === "monthly"
+          ? (pool!.frequency as BookingData["recurrence"])
+          : undefined;
+
+      return {
+        id: s.id,
+        booking: {
+          frequency: (frequency === "once" ? "once" : "monthly") as BookingData["frequency"],
+          recurrence,
+          selectedPass: passFromServiceType(s.serviceType),
+          scheduleData: {
+            selectedDate: s.date,
+            timeWindow: s.timeWindow as TimeWindow,
+            accessMethod: (pool?.accessMethod || "home") as AccessMethod,
+            accessDetail: pool?.accessDetail || "",
+            addons: [],
+            addonsTotal: 0,
+          },
+          technician,
+          pool: pool
+            ? {
+                address: pool.address,
+                city: pool.city,
+                state: pool.state,
+                zip: pool.zip,
+                poolType: pool.poolType,
+                poolSize: pool.poolSize,
+                accessMethod: (pool.accessMethod || "home") as AccessMethod,
+                accessDetail: pool.accessDetail || "",
+                hasPets: false,
+              }
+            : {
+                address: user.streetAddress || "",
+                city: user.city || "",
+                state: user.state || "",
+                zip: user.zipCode || "",
+                poolType: "",
+                poolSize: "",
+                accessMethod: "home" as AccessMethod,
+                accessDetail: "",
+                hasPets: false,
+              },
+          status: s.status === "completed"
+            ? "completed"
+            : !technician.isAssigned
+            ? "technician_to_be_assigned"
+            : "scheduled",
+        },
+      };
+    });
+  }, [realServices, techProfiles, pool, user]);
 
   const handleLogout = () => { logout(); navigate("/login", { replace: true }); };
 
-  const upcomingServices = useMemo(() => services.filter(s => s.booking.status === "scheduled" || s.booking.status === "reschedule_requested" || s.booking.status === "technician_to_be_assigned"), [services]);
-  const pastServices = useMemo(() => services.filter(s => s.booking.status === "completed"), [services]);
+  const upcomingServices = useMemo(
+    () => services.filter((s) => s.booking.status === "scheduled" || s.booking.status === "reschedule_requested" || s.booking.status === "technician_to_be_assigned"),
+    [services],
+  );
+  const pastServices = useMemo(() => services.filter((s) => s.booking.status === "completed"), [services]);
 
   const nextService = upcomingServices[0] || null;
   const remainingUpcoming = upcomingServices.slice(1);
@@ -302,19 +222,19 @@ const Dashboard = () => {
   const hasMoreUpcoming = visibleCount < remainingUpcoming.length;
 
   const handleViewDetails = (svc: ServiceInstance) => {
-    setBooking(svc.booking);
     navigate(`/service/${svc.id}`);
   };
 
-  const handleReschedule = (newDate: Date, newTimeWindow: TimeWindow) => {
+  const handleReschedule = async (newDate: Date, newTimeWindow: TimeWindow) => {
     if (!rescheduleService) return;
-    setServices(prev =>
-      prev.map(s =>
-        s.id === rescheduleService.id
-          ? { ...s, booking: { ...s.booking, status: "technician_to_be_assigned" as const, scheduleData: { ...s.booking.scheduleData, selectedDate: newDate, timeWindow: newTimeWindow } } }
-          : s
-      )
-    );
+    try {
+      await updateService.mutateAsync({
+        id: rescheduleService.id,
+        patch: { serviceDate: newDate, timeWindow: newTimeWindow },
+      });
+    } catch (err) {
+      console.warn("Reschedule failed", err);
+    }
     setRescheduleConfirmed(true);
   };
 
@@ -326,6 +246,7 @@ const Dashboard = () => {
   };
 
   const firstName = user?.fullName?.split(" ")[0] || "there";
+
 
   return (
     <>
@@ -384,8 +305,15 @@ const Dashboard = () => {
           </section>
         )}
 
+        {/* Loading state */}
+        {services.length === 0 && servicesLoading && (
+          <div className="bg-card rounded-2xl p-8 text-center">
+            <p className="text-muted-foreground">Loading your services…</p>
+          </div>
+        )}
+
         {/* Empty state */}
-        {services.length === 0 && !isLoading && (
+        {services.length === 0 && !servicesLoading && !isLoading && (
           <div className="bg-card rounded-2xl p-8 text-center">
             <p className="text-muted-foreground">No services yet.</p>
             <button className="mt-4 text-primary font-bold text-sm hover:underline" onClick={() => setShowBooking(true)}>Book Your First Service</button>

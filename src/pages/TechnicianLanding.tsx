@@ -138,7 +138,7 @@ const TechnicianLanding = () => {
 
                 <div className="mt-8 flex flex-wrap items-center gap-3">
                   <Link to="/technician/apply">
-                    <Button className="rounded-full h-12 px-7 text-base font-semibold bg-[hsl(var(--hp-sky))] hover:bg-[hsl(var(--hp-sky-hover))] text-[#0a1628] shadow-lg shadow-[hsl(var(--hp-sky))]/20" style={{ fontFamily: "'Manrope', sans-serif" }}>
+                    <Button className="rounded-full h-12 px-7 text-base font-semibold bg-white hover:bg-white/90 text-[#0a1628] shadow-lg shadow-black/10" style={{ fontFamily: "'Manrope', sans-serif" }}>
                       Apply as a Pool Technician
                       <ArrowRight className="ml-1 h-4 w-4" />
                     </Button>

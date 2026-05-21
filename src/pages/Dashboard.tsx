@@ -354,8 +354,9 @@ const NextServiceCard = ({ service, onViewDetails }: { service: ServiceInstance;
     <div onClick={onViewDetails} className="bg-card rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer group">
       <div className="relative h-[190px] overflow-hidden">
         <PoolSceneHero />
-        <div className="absolute top-3 left-3">
-          <StatusBadge status={!technician.isAssigned ? "technician_to_be_assigned" : "scheduled"} />
+        <div className="absolute top-3 left-3 flex flex-wrap gap-2">
+          <StatusBadge status="scheduled" />
+          {!technician.isAssigned && <StatusBadge status="technician_to_be_assigned" />}
         </div>
         {technician.isAssigned && (
           <div className="absolute top-3 right-3 bg-card/90 backdrop-blur-sm rounded-xl px-2.5 py-1.5 flex items-center gap-2 shadow-md border border-border">

@@ -283,7 +283,7 @@ const ServiceDetails = () => {
         {!isCompleted && (
           <div className="bg-card rounded-2xl border border-border p-6 shadow-sm">
             <h2 className="text-[17px] font-bold text-foreground mb-4">Your Pool</h2>
-            <div className="space-y-2.5">
+            <div className="space-y-2.5 py-[24px] pt-0">
               <div className="flex items-center gap-2 text-sm text-foreground">
                 <MapPin className="h-4 w-4 text-muted-foreground" />
                 <span>{fullAddress}</span>

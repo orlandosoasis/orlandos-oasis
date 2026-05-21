@@ -202,7 +202,7 @@ const TechnicianLanding = () => {
                     <div className="relative z-10 mx-auto h-14 w-14 rounded-full bg-[hsl(var(--hp-ocean))] text-white text-lg font-bold flex items-center justify-center shadow-lg ring-8 ring-white">
                       {s.num}
                     </div>
-                    <h3 className="mt-5 font-bold text-[#111827]">{s.title}</h3>
+                    <h3 className="mt-5 font-bold text-[#111827] text-xl">{s.title}</h3>
                     <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{s.desc}</p>
                   </div>
                 ))}
@@ -349,7 +349,7 @@ const TechnicianLanding = () => {
                     <r.icon className="h-5 w-5" strokeWidth={2} />
                   </div>
                   <div>
-                    <h3 className="font-bold text-[#111827] mb-1">{r.title}</h3>
+                    <h3 className="font-bold text-[#111827] mb-1 text-xl">{r.title}</h3>
                     <p className="text-sm text-muted-foreground leading-relaxed">{r.desc}</p>
                   </div>
                 </div>

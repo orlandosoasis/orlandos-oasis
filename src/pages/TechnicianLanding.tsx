@@ -241,7 +241,7 @@ const TechnicianLanding = () => {
         </section>
 
         {/* TESTIMONIALS */}
-        <section className="py-20 md:py-[80px] px-4 bg-white">
+        <section className="py-20 md:py-[80px] px-4 bg-[#F8F9FB]">
           <div className="container max-w-6xl mx-auto">
             <div className="text-center max-w-2xl mx-auto mb-12">
               <h2 className="text-3xl md:text-4xl font-bold text-[#111827]">
@@ -255,7 +255,7 @@ const TechnicianLanding = () => {
               {TESTIMONIALS.map((t) => (
                 <div
                   key={t.name}
-                  className="bg-white rounded-2xl p-6 border border-border shadow-sm hover:shadow-md transition"
+                  className="bg-white rounded-2xl p-6 shadow-sm"
                 >
                   <div className="flex items-center gap-3 mb-4">
                     <img

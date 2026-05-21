@@ -49,7 +49,7 @@ const CleaningNotes = ({ notes }: { notes: string }) => {
 
 const ServiceDetails = () => {
   const navigate = useNavigate();
-  const { booking, setBooking } = useBooking();
+  const { booking, setBooking, checkoutData } = useBooking();
   const [showReschedule, setShowReschedule] = useState(false);
   const [reviewOpen, setReviewOpen] = useState(false);
   const [reviewSubmitted, setReviewSubmitted] = useState(false);
@@ -101,6 +101,8 @@ const ServiceDetails = () => {
   }
 
   const { selectedPass, scheduleData, technician, frequency, pool } = booking;
+  const POOL_SIZE_LABELS: Record<string, string> = { small: "Small Pool", medium: "Medium Pool", large: "Large Pool" };
+  const selectedPoolSizeLabel = checkoutData?.poolSize ? POOL_SIZE_LABELS[checkoutData.poolSize] : pool?.poolSize || null;
   const status = booking.status || "scheduled";
   const isCompleted = status === "completed";
   const isMonthly = frequency === "monthly";
@@ -281,10 +283,13 @@ const ServiceDetails = () => {
                 <MapPin className="h-4 w-4 text-muted-foreground" />
                 <span>{fullAddress}</span>
               </div>
-              {pool?.poolType && (
+              {(pool?.poolType || selectedPoolSizeLabel) && (
                 <div className="flex items-center gap-2 text-sm text-foreground">
                   <Droplets className="h-4 w-4 text-muted-foreground" />
-                  <span>{pool.poolType} · {pool.poolSize}</span>
+                  <span>
+                    {[pool?.poolType, selectedPoolSizeLabel].filter(Boolean).join(" · ") ||
+                      <span className="text-muted-foreground italic">Pool details unavailable</span>}
+                  </span>
                 </div>
               )}
               <div className="flex items-center gap-2 text-sm text-foreground">

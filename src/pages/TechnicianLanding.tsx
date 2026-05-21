@@ -152,7 +152,7 @@ const TechnicianLanding = () => {
                   <img
                     src={techHero}
                     alt="Pool service professional at work"
-                    className="w-full h-[300px] md:h-[360px] object-cover rounded-2xl"
+                    className="w-full h-[380px] md:h-[520px] lg:h-[600px] object-cover rounded-2xl"
                   />
                   <div className="absolute bottom-5 left-5 right-5 flex flex-col sm:flex-row gap-3">
                     <div className="flex-1 rounded-2xl bg-white/95 backdrop-blur px-4 py-3 flex items-center gap-3 shadow-xl">

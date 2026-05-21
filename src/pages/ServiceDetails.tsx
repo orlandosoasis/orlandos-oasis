@@ -186,10 +186,11 @@ const ServiceDetails = () => {
   const isCompleted = status === "completed";
   const isMonthly = frequency === "monthly";
 
-  // For completed services, display Feb 25, 2026
-  const d = isCompleted ? new Date(2026, 1, 25) : scheduleData.selectedDate;
+  // Use real service date for both upcoming and completed services.
+  const d = scheduleData.selectedDate;
   const formattedDate = `${FULL_DAYS[d.getDay()]}, ${SHORT_MONTHS[d.getMonth()]} ${d.getDate()}`;
   const formattedDateFull = `${formattedDate}, ${d.getFullYear()}`;
+  const completedAtLabel = dbService?.completedAt || null;
 
   const totalPaid = selectedPass.discountPrice + scheduleData.addonsTotal;
   const fullAddress = pool ? [pool.address, pool.city, pool.state, pool.zip].filter(Boolean).join(", ") : "Address not provided";
@@ -237,10 +238,10 @@ const ServiceDetails = () => {
                 <Calendar className="h-4 w-4 text-muted-foreground" />
                 <span>{isCompleted ? formattedDateFull : formattedDate}</span>
               </div>
-              {isCompleted && (
+              {isCompleted && completedAtLabel && (
                 <div className="flex items-center gap-2 text-sm text-foreground">
                   <CheckCircle2 className="h-4 w-4 text-muted-foreground" />
-                  <span>Completed at 11:42 AM</span>
+                  <span>Completed at {completedAtLabel}</span>
                 </div>
               )}
               <div className="flex items-center gap-2 text-sm text-foreground">

@@ -43,7 +43,7 @@ const STATUS_CONFIG: Record<
     borderClass: "border border-[#FAE5C5]",
   },
   technician_to_be_assigned: {
-    label: "Technician pending",
+    label: "Pool Technician to be assigned",
     icon: Clock,
     bgClass: "bg-[#DBECFF]",
     textClass: "text-[#05204a]",

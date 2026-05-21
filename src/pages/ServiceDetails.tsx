@@ -283,10 +283,13 @@ const ServiceDetails = () => {
                 <MapPin className="h-4 w-4 text-muted-foreground" />
                 <span>{fullAddress}</span>
               </div>
-              {pool?.poolType && (
+              {(pool?.poolType || selectedPoolSizeLabel) && (
                 <div className="flex items-center gap-2 text-sm text-foreground">
                   <Droplets className="h-4 w-4 text-muted-foreground" />
-                  <span>{pool.poolType} · {pool.poolSize}</span>
+                  <span>
+                    {[pool?.poolType, selectedPoolSizeLabel].filter(Boolean).join(" · ") ||
+                      <span className="text-muted-foreground italic">Pool details unavailable</span>}
+                  </span>
                 </div>
               )}
               <div className="flex items-center gap-2 text-sm text-foreground">

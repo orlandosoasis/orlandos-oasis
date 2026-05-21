@@ -1,12 +1,8 @@
 import { Link } from "react-router-dom";
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { Star, ShieldCheck, Sparkles } from "lucide-react";
 import logo from "@/assets/oo-logo.png";
-import heroVideo1080 from "@/assets/hero-villa-1080p.mp4";
-import heroVideo720 from "@/assets/hero-villa-720p.mp4";
-import heroVideo480 from "@/assets/hero-villa-480p.mp4";
-import heroVideo720Webm from "@/assets/hero-villa-720p.webm";
-import heroPoster from "@/assets/hero-villa-poster.jpg";
+import heroImage from "@/assets/pool-cleaning-hero.jpg";
 import MobileNavMenu from "@/components/MobileNavMenu";
 
 const NAV_ITEMS = [
@@ -18,52 +14,23 @@ const NAV_ITEMS = [
 ];
 
 const HeroSection = () => {
-  const [videoReady, setVideoReady] = useState(false);
-
   const handleGetVoucher = () => {
     const el = document.getElementById("discount-voucher");
     el?.scrollIntoView({ behavior: "smooth" });
   };
 
   return (
-    <section className="relative w-full h-screen min-h-[640px] overflow-hidden bg-background">
-      {/* Background Video - full bleed, on all viewports */}
-      <video
-        autoPlay
-        muted
-        loop
-        playsInline
-        preload="auto"
-        poster={heroPoster}
-        // @ts-expect-error - fetchpriority is a valid HTML attr not yet in React types
-        fetchpriority="high"
-        aria-hidden="true"
-        onCanPlay={() => setVideoReady(true)}
-        onPlaying={() => setVideoReady(true)}
-        className={`absolute inset-0 w-full h-full object-cover object-center transition-opacity duration-500 ${videoReady ? "opacity-100" : "opacity-0"}`}
-      >
-        {/* Mobile: smallest file first for fastest start */}
-        <source src={heroVideo480} type="video/mp4" media="(max-width: 640px)" />
-        {/* Tablet: 720p WebM (VP9) preferred, MP4 fallback */}
-        <source src={heroVideo720Webm} type="video/webm" media="(max-width: 1280px)" />
-        <source src={heroVideo720} type="video/mp4" media="(max-width: 1280px)" />
-        {/* Desktop: 1080p */}
-        <source src={heroVideo1080} type="video/mp4" />
-      </video>
-
-
-      {/* Subtle overlay for legibility */}
-      <div className="absolute inset-0 bg-black/20" />
-      <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-transparent to-black/35" />
-
-      {/* Full-width header */}
-      <div className="fixed top-0 left-0 right-0 z-50 bg-card/95 backdrop-blur-md shadow-lg hero-nav-enter motion-reduce:animate-none motion-reduce:opacity-100">
+    <section className="relative w-full bg-background overflow-hidden">
+      {/* Fixed header */}
+      <div className="fixed top-0 left-0 right-0 z-50 bg-card/95 backdrop-blur-md shadow-lg">
         <div className="w-full px-4 md:px-6 lg:px-12 py-2 md:py-3 flex items-center justify-between gap-3 md:gap-6">
           <div className="flex items-center gap-1 min-w-0">
             <MobileNavMenu items={NAV_ITEMS} />
             <Link to="/" className="flex items-center gap-2 min-w-0">
               <img src={logo} alt="Orlando's Oasis" className="h-7 w-7 object-contain shrink-0" />
-              <span className="text-base md:text-lg font-bold text-foreground truncate">Orlando's Oasis</span>
+              <span className="text-base md:text-lg font-bold text-foreground truncate">
+                Orlando's Oasis
+              </span>
             </Link>
           </div>
 
@@ -89,30 +56,111 @@ const HeroSection = () => {
         </div>
       </div>
 
-      {/* Centered headline + supporting copy + CTA */}
-      <div className="relative z-10 h-full flex items-center justify-center px-4 md:px-6">
-        <div className="max-w-3xl mx-auto text-center" style={{ textShadow: '0 2px 24px rgba(0,0,0,0.4)' }}>
-          <h1 className="font-extrabold text-white leading-[1.05] md:leading-[0.95] tracking-tight text-4xl sm:text-5xl md:text-7xl lg:text-8xl hero-rise motion-reduce:animate-none motion-reduce:opacity-100" style={{ animationDelay: '100ms' }}>
-            <span className="block md:whitespace-nowrap">Crystal Clear Pools.</span>
-            <span className="block">Zero Hassle.</span>
-          </h1>
+      {/* Split hero */}
+      <div className="container max-w-6xl mx-auto px-4 md:px-6 lg:px-8 pt-28 md:pt-36 pb-12 md:pb-20">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-12 items-center">
+          {/* Left: copy */}
+          <div className="order-2 lg:order-1">
+            {/* Trust pill */}
+            <div className="inline-flex items-center gap-2 rounded-full border border-border bg-secondary px-3 py-1.5 mb-6">
+              <Star className="h-3.5 w-3.5 fill-primary text-primary" />
+              <span className="text-xs font-semibold text-foreground">
+                5,000+ Happy Pool Owners
+              </span>
+            </div>
 
-          <p
-            className="mt-3 md:mt-4 max-w-xl mx-auto text-sm md:text-base text-white/95 leading-relaxed hero-rise motion-reduce:animate-none motion-reduce:opacity-100"
-            style={{ textShadow: '0 1px 8px rgba(0,0,0,0.5)', animationDelay: '250ms' }}
-          >
-            Professional pool maintenance across Tampa, Orlando &amp; Fort Lauderdale.
-            Weekly service, transparent reports, and pros you can trust.
-          </p>
+            <h1 className="font-extrabold text-foreground leading-[1.05] tracking-tight text-4xl sm:text-5xl lg:text-6xl xl:text-7xl">
+              <span className="block">Crystal Clear Pools.</span>
+              <span className="block text-primary">Zero Hassle.</span>
+            </h1>
 
-          <div className="mt-5 md:mt-6 flex justify-center hero-rise motion-reduce:animate-none motion-reduce:opacity-100" style={{ animationDelay: '400ms' }}>
-            <Button
-              onClick={handleGetVoucher}
-              className="h-12 px-8 rounded-full text-base font-semibold shadow-xl"
-              style={{ backgroundColor: 'hsl(var(--primary))', color: 'hsl(var(--primary-foreground))' }}
-            >
-              Get a Discount Voucher
-            </Button>
+            <p className="mt-5 md:mt-6 max-w-xl text-base md:text-lg text-muted-foreground leading-relaxed">
+              Professional pool maintenance across Tampa, Orlando &amp; Fort Lauderdale.
+              Weekly service, transparent reports, and pros you can trust.
+            </p>
+
+            {/* CTAs */}
+            <div className="mt-7 md:mt-8 flex flex-wrap items-center gap-3">
+              <Button
+                onClick={handleGetVoucher}
+                className="h-12 px-7 rounded-full text-base font-semibold shadow-xl"
+              >
+                Get a Discount Voucher
+              </Button>
+              <Link to="/services">
+                <Button
+                  variant="outline"
+                  className="h-12 px-7 rounded-full text-base font-semibold"
+                >
+                  View Services
+                </Button>
+              </Link>
+            </div>
+
+            {/* Stats / trust */}
+            <div className="mt-9 md:mt-10 grid grid-cols-3 gap-4 sm:gap-6 max-w-lg border-t border-border pt-6">
+              <div>
+                <p className="text-2xl md:text-3xl font-extrabold text-foreground leading-none">
+                  5,000+
+                </p>
+                <p className="mt-1.5 text-xs md:text-sm text-muted-foreground">
+                  Pools Serviced
+                </p>
+              </div>
+              <div>
+                <p className="text-2xl md:text-3xl font-extrabold text-foreground leading-none flex items-center gap-1">
+                  4.9
+                  <Star className="h-4 w-4 md:h-5 md:w-5 fill-primary text-primary" />
+                </p>
+                <p className="mt-1.5 text-xs md:text-sm text-muted-foreground">
+                  Average Rating
+                </p>
+              </div>
+              <div>
+                <p className="text-2xl md:text-3xl font-extrabold text-foreground leading-none">
+                  100%
+                </p>
+                <p className="mt-1.5 text-xs md:text-sm text-muted-foreground">
+                  Insured Techs
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Right: image */}
+          <div className="order-1 lg:order-2 relative">
+            <div className="relative rounded-3xl overflow-hidden shadow-2xl aspect-[4/5] sm:aspect-[5/4] lg:aspect-[4/5]">
+              <img
+                src={heroImage}
+                alt="Pool technician servicing a residential swimming pool"
+                className="w-full h-full object-cover"
+                loading="eager"
+                // @ts-expect-error - fetchpriority valid HTML attr
+                fetchpriority="high"
+              />
+              <div className="absolute inset-0 bg-gradient-to-tr from-black/20 via-transparent to-transparent pointer-events-none" />
+
+              {/* Floating trust badge */}
+              <div className="absolute bottom-5 left-5 right-5 sm:right-auto bg-card/95 backdrop-blur-md rounded-2xl px-4 py-3 flex items-center gap-3 shadow-xl border border-border">
+                <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
+                  <ShieldCheck className="h-5 w-5 text-primary" />
+                </div>
+                <div className="min-w-0">
+                  <p className="text-sm font-semibold text-card-foreground truncate">
+                    Background-checked techs
+                  </p>
+                  <p className="text-xs text-muted-foreground truncate">
+                    Verified, insured &amp; trained
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Decorative accent */}
+            <div className="hidden lg:block absolute -top-4 -right-4 w-24 h-24 rounded-full bg-primary/10 -z-10" />
+            <div className="hidden lg:flex absolute -bottom-4 -left-4 w-16 h-16 rounded-2xl bg-secondary items-center justify-center shadow-md">
+              <Sparkles className="h-6 w-6 text-primary" />
+            </div>
           </div>
         </div>
       </div>
@@ -121,4 +169,3 @@ const HeroSection = () => {
 };
 
 export default HeroSection;
-

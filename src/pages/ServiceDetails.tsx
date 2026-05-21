@@ -441,7 +441,7 @@ const ServiceDetails = () => {
         <LeaveReviewModal
           open={reviewOpen}
           onOpenChange={setReviewOpen}
-          technicianName={technician.isAssigned ? technician.name : "Carlos M."}
+          technicianName={technician.isAssigned ? technician.name : "Your Technician"}
           onSubmit={() => {
             setReviewSubmitted(true);
             setReviewOpen(false);

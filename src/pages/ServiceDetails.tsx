@@ -238,9 +238,9 @@ const ServiceDetails = () => {
                     <UserRoundCog className="h-6 w-6 text-muted-foreground" aria-hidden="true" />
                   </div>
                   <div className="space-y-1.5 min-w-0">
-                    <StatusBadge status="technician_to_be_assigned" />
+                    <p className="text-base font-bold text-foreground">Technician Assignment Pending</p>
                     <p className="text-[13px] text-muted-foreground leading-relaxed">
-                      A technician will be assigned by admin soon. You'll be notified once confirmed.
+                      A pool technician will be assigned before your scheduled service.
                     </p>
                   </div>
                 </div>

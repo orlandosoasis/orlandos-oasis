@@ -43,11 +43,11 @@ const STATUS_CONFIG: Record<
     borderClass: "border border-[#FAE5C5]",
   },
   technician_to_be_assigned: {
-    label: "Pool Technician Assignment Pending",
+    label: "Technician Pending",
     icon: Clock,
-    bgClass: "bg-[#DBECFF]",
-    textClass: "text-[#05204a]",
-    borderClass: "border border-[#C5DFFA]",
+    bgClass: "bg-[#F1F5F9]",
+    textClass: "text-[#475569]",
+    borderClass: "border border-[#E2E8F0]",
   },
 };
 

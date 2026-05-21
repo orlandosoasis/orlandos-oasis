@@ -118,6 +118,13 @@ export default function RescheduleModal({ open, onOpenChange, booking, onResched
               </DialogDescription>
             </DialogHeader>
 
+            {selectedDate && (
+              <div className="bg-muted/50 rounded-xl px-4 py-3 border border-border flex items-center gap-2">
+                <CalendarClock className="h-4 w-4 text-primary" />
+                <span className="text-sm font-medium text-foreground">{formatDate(selectedDate)}</span>
+              </div>
+            )}
+
             <div className="flex justify-center">
               <Calendar
                 mode="single"
@@ -127,13 +134,6 @@ export default function RescheduleModal({ open, onOpenChange, booking, onResched
                 className="p-3 pointer-events-auto"
               />
             </div>
-
-            {selectedDate && (
-              <div className="bg-muted/50 rounded-xl px-4 py-3 border border-border flex items-center gap-2">
-                <CalendarClock className="h-4 w-4 text-primary" />
-                <span className="text-sm font-medium text-foreground">{formatDate(selectedDate)}</span>
-              </div>
-            )}
 
             <div className="flex gap-2.5">
               <Button variant="outline" className="flex-1 hover:text-primary hover:border-primary hover:bg-transparent" onClick={() => setStep(1)}>

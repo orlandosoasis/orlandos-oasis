@@ -232,6 +232,7 @@ export type Database = {
           city: string | null
           created_at: string
           equipment: string | null
+          frequency: string
           homeowner_id: string
           id: string
           pool_size: string | null
@@ -249,6 +250,7 @@ export type Database = {
           city?: string | null
           created_at?: string
           equipment?: string | null
+          frequency?: string
           homeowner_id: string
           id?: string
           pool_size?: string | null
@@ -266,6 +268,7 @@ export type Database = {
           city?: string | null
           created_at?: string
           equipment?: string | null
+          frequency?: string
           homeowner_id?: string
           id?: string
           pool_size?: string | null

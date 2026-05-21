@@ -120,45 +120,38 @@ const TechnicianLanding = () => {
                   <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
                   Now hiring pool technicians in Central Florida
                 </span>
-                <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold uppercase leading-[0.95] tracking-tight">
-                  Build your <br className="hidden sm:block" />
-                  <span className="text-[hsl(var(--hp-sky))]">pool route</span> with us
+                <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold leading-[1.05] tracking-tight" style={{ fontFamily: "'Manrope', sans-serif" }}>
+                  Apply to become an <span className="text-[hsl(var(--hp-sky))]">Orlando's Oasis</span> Pool Technician
                 </h1>
-                <p className="mt-6 text-base md:text-lg text-white/75 max-w-lg leading-relaxed">
-                  Join Orlando's Oasis and turn your pool expertise into steady weekly income with recurring routes, reliable payouts, and a schedule that fits your life.
-                </p>
+                <div className="mt-6 space-y-3 max-w-lg">
+                  {[
+                    "Submit your professional and contact information",
+                    "Upload your certifications, licenses, or training credentials",
+                    "Provide your resume and relevant work experience",
+                    "Our team reviews your application before approval",
+                  ].map((item) => (
+                    <div key={item} className="flex items-start gap-3 text-white/85 text-[15px] leading-snug" style={{ fontFamily: "'Manrope', sans-serif" }}>
+                      <CheckCircle className="h-5 w-5 text-emerald-400 shrink-0 mt-0.5" />
+                      <span>{item}</span>
+                    </div>
+                  ))}
+                </div>
 
                 <div className="mt-8 flex flex-wrap items-center gap-3">
                   <Link to="/technician/apply">
-                    <Button className="rounded-full h-12 px-7 text-base font-semibold bg-[hsl(var(--hp-sky))] hover:bg-[hsl(var(--hp-sky-hover))] text-[#0a1628] shadow-lg shadow-[hsl(var(--hp-sky))]/20">
-                      Apply as a Pool Pro
+                    <Button className="rounded-full h-12 px-7 text-base font-semibold bg-[hsl(var(--hp-sky))] hover:bg-[hsl(var(--hp-sky-hover))] text-[#0a1628] shadow-lg shadow-[hsl(var(--hp-sky))]/20" style={{ fontFamily: "'Manrope', sans-serif" }}>
+                      Apply as a Pool Technician
                       <ArrowRight className="ml-1 h-4 w-4" />
                     </Button>
                   </Link>
                   <a
                     href="#how-it-works"
                     className="inline-flex items-center gap-2 rounded-full h-12 px-5 text-sm font-semibold text-white border border-white/20 hover:bg-white/10 transition"
+                    style={{ fontFamily: "'Manrope', sans-serif" }}
                   >
                     <PlayCircle className="h-5 w-5" />
                     How it works
                   </a>
-                </div>
-
-                <div className="mt-10">
-                  <p className="text-xs uppercase tracking-widest text-white/50 mb-3">
-                    Trusted by pool pros across Central Florida
-                  </p>
-                  <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-white/80">
-                    <span className="flex items-center gap-1.5">
-                      <CheckCircle className="h-4 w-4 text-emerald-400" /> Secure payouts
-                    </span>
-                    <span className="flex items-center gap-1.5">
-                      <CheckCircle className="h-4 w-4 text-emerald-400" /> Flexible scheduling
-                    </span>
-                    <span className="flex items-center gap-1.5">
-                      <CheckCircle className="h-4 w-4 text-emerald-400" /> Fast onboarding
-                    </span>
-                  </div>
                 </div>
               </div>
 

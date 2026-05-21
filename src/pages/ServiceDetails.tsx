@@ -134,8 +134,8 @@ const ServiceDetails = () => {
         },
         status: dbService.status === "completed"
           ? "completed"
-          : !technician.isAssigned
-          ? "technician_to_be_assigned"
+          : dbService.status === "in_progress"
+          ? "in_progress"
           : "scheduled",
       };
     }

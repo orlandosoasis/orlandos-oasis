@@ -21,6 +21,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import Header from "@/components/Header";
+const MinimalHeader = () => <Header minimal />;
 import Footer from "@/components/Footer";
 import techHero from "@/assets/tech-hero.webp";
 
@@ -90,7 +91,7 @@ const FAQS = [
 const TechnicianLanding = () => {
   return (
     <div className="min-h-screen flex flex-col bg-background">
-      <Header />
+      <MinimalHeader />
 
       <main className="flex-1">
         {/* HERO */}

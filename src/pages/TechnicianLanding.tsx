@@ -203,8 +203,39 @@ const TechnicianLanding = () => {
           </div>
         </section>
 
+        {/* HOW IT WORKS */}
+        <section id="how-it-works" className="py-20 md:py-[80px] px-4 bg-white">
+          <div className="container max-w-6xl mx-auto">
+            <div className="text-center max-w-2xl mx-auto mb-14">
+              <h2 className="text-3xl md:text-4xl font-bold text-[#111827]">How to Get Started</h2>
+              <p className="mt-3 text-base text-muted-foreground">
+                Four simple steps from application to your first payout.
+              </p>
+            </div>
+
+            <div className="relative">
+              {/* connector line */}
+              <div
+                aria-hidden
+                className="hidden md:block absolute top-7 left-[12.5%] right-[12.5%] h-0.5 bg-gradient-to-r from-[hsl(var(--hp-ocean))]/30 via-[hsl(var(--hp-ocean))]/30 to-[hsl(var(--hp-ocean))]/30"
+              />
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-8 md:gap-4 relative">
+                {PROCESS.map((s) => (
+                  <div key={s.num} className="text-center px-2">
+                    <div className="relative z-10 mx-auto h-14 w-14 rounded-full bg-[hsl(var(--hp-ocean))] text-white text-lg font-bold flex items-center justify-center shadow-lg ring-8 ring-white">
+                      {s.num}
+                    </div>
+                    <h3 className="mt-5 font-bold text-[#111827]">{s.title}</h3>
+                    <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{s.desc}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* WHY JOIN */}
-        <section className="py-20 md:py-[80px] px-4 bg-white">
+        <section className="py-20 md:py-[80px] px-4 bg-[hsl(210_25%_98%)]">
           <div className="container max-w-6xl mx-auto">
             <div className="text-center max-w-2xl mx-auto mb-12">
               <h2 className="text-3xl md:text-4xl font-bold text-[#111827]">
@@ -232,7 +263,7 @@ const TechnicianLanding = () => {
         </section>
 
         {/* TESTIMONIALS */}
-        <section className="py-20 md:py-[80px] px-4 bg-[hsl(210_25%_98%)]">
+        <section className="py-20 md:py-[80px] px-4 bg-white">
           <div className="container max-w-6xl mx-auto">
             <div className="text-center max-w-2xl mx-auto mb-12">
               <h2 className="text-3xl md:text-4xl font-bold text-[#111827]">
@@ -276,7 +307,7 @@ const TechnicianLanding = () => {
         </section>
 
         {/* EARNINGS */}
-        <section className="py-20 md:py-[80px] px-4 bg-white">
+        <section className="py-20 md:py-[80px] px-4 bg-[hsl(210_25%_98%)]">
           <div className="container max-w-6xl mx-auto">
             <div className="text-center max-w-2xl mx-auto mb-12">
               <h2 className="text-3xl md:text-4xl font-bold text-[#111827]">
@@ -324,7 +355,7 @@ const TechnicianLanding = () => {
         </section>
 
         {/* REQUIREMENTS */}
-        <section className="py-20 md:py-[80px] px-4 bg-[hsl(210_25%_98%)]">
+        <section className="py-20 md:py-[80px] px-4 bg-white">
           <div className="container max-w-5xl mx-auto">
             <div className="text-center max-w-2xl mx-auto mb-12">
               <h2 className="text-3xl md:text-4xl font-bold text-[#111827]">
@@ -350,37 +381,6 @@ const TechnicianLanding = () => {
             <p className="text-center text-sm text-muted-foreground mt-8">
               We'll guide you through every step of onboarding.
             </p>
-          </div>
-        </section>
-
-        {/* HOW IT WORKS */}
-        <section id="how-it-works" className="py-20 md:py-[80px] px-4 bg-white">
-          <div className="container max-w-6xl mx-auto">
-            <div className="text-center max-w-2xl mx-auto mb-14">
-              <h2 className="text-3xl md:text-4xl font-bold text-[#111827]">How to Get Started</h2>
-              <p className="mt-3 text-base text-muted-foreground">
-                Four simple steps from application to your first payout.
-              </p>
-            </div>
-
-            <div className="relative">
-              {/* connector line */}
-              <div
-                aria-hidden
-                className="hidden md:block absolute top-7 left-[12.5%] right-[12.5%] h-0.5 bg-gradient-to-r from-[hsl(var(--hp-ocean))]/30 via-[hsl(var(--hp-ocean))]/30 to-[hsl(var(--hp-ocean))]/30"
-              />
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-8 md:gap-4 relative">
-                {PROCESS.map((s) => (
-                  <div key={s.num} className="text-center px-2">
-                    <div className="relative z-10 mx-auto h-14 w-14 rounded-full bg-[hsl(var(--hp-ocean))] text-white text-lg font-bold flex items-center justify-center shadow-lg ring-8 ring-white">
-                      {s.num}
-                    </div>
-                    <h3 className="mt-5 font-bold text-[#111827]">{s.title}</h3>
-                    <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{s.desc}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
           </div>
         </section>
 

@@ -22,7 +22,7 @@ import {
 import Header from "@/components/Header";
 const MinimalHeader = () => <Header minimal />;
 import Footer from "@/components/Footer";
-import techHero from "@/assets/tech-hero.webp";
+import techHero from "@/assets/tech-hero-pool.webp";
 
 const BENEFITS = [
   {

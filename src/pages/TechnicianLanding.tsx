@@ -10,7 +10,6 @@ import {
   MessageSquare,
   GraduationCap,
   ArrowRight,
-  PlayCircle,
   TrendingUp,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -144,14 +143,6 @@ const TechnicianLanding = () => {
                       <ArrowRight className="ml-1 h-4 w-4" />
                     </Button>
                   </Link>
-                  <a
-                    href="#how-it-works"
-                    className="inline-flex items-center gap-2 rounded-full h-12 px-5 text-sm font-semibold text-white border border-white/20 hover:bg-white/10 transition"
-                    style={{ fontFamily: "'Manrope', sans-serif" }}
-                  >
-                    <PlayCircle className="h-5 w-5" />
-                    How it works
-                  </a>
                 </div>
               </div>
 

@@ -30,24 +30,26 @@ const Header = memo(function Header({ minimal = false }: HeaderProps) {
       </a>
       <div className="w-full px-4 md:px-6 lg:px-12 py-2 md:py-3 flex items-center justify-between gap-3 md:gap-6">
         <div className="flex items-center gap-1 min-w-0">
-          <MobileNavMenu items={NAV_ITEMS} />
+          {!minimal && <MobileNavMenu items={NAV_ITEMS} />}
           <Link to="/" className="flex items-center gap-2 min-w-0" aria-label="Orlando's Oasis - Home">
             <img src={logo} alt="Orlando's Oasis" className="h-7 w-7 object-contain shrink-0" />
             <span className="text-base md:text-lg font-bold text-foreground truncate">Orlando's Oasis</span>
           </Link>
         </div>
 
-        <nav aria-label="Primary" className="hidden md:flex items-center gap-7">
-          {NAV_ITEMS.map((item) => (
-            <Link
-              key={item.label}
-              to={item.href}
-              className="text-sm font-medium text-foreground hover:text-primary transition-colors whitespace-nowrap"
-            >
-              {item.label}
-            </Link>
-          ))}
-        </nav>
+        {!minimal && (
+          <nav aria-label="Primary" className="hidden md:flex items-center gap-7">
+            {NAV_ITEMS.map((item) => (
+              <Link
+                key={item.label}
+                to={item.href}
+                className="text-sm font-medium text-foreground hover:text-primary transition-colors whitespace-nowrap"
+              >
+                {item.label}
+              </Link>
+            ))}
+          </nav>
+        )}
 
         <div className="flex items-center gap-1 shrink-0">
           <Link to="/login">

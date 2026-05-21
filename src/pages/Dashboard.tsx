@@ -305,8 +305,15 @@ const Dashboard = () => {
           </section>
         )}
 
+        {/* Loading state */}
+        {services.length === 0 && servicesLoading && (
+          <div className="bg-card rounded-2xl p-8 text-center">
+            <p className="text-muted-foreground">Loading your services…</p>
+          </div>
+        )}
+
         {/* Empty state */}
-        {services.length === 0 && !isLoading && (
+        {services.length === 0 && !servicesLoading && !isLoading && (
           <div className="bg-card rounded-2xl p-8 text-center">
             <p className="text-muted-foreground">No services yet.</p>
             <button className="mt-4 text-primary font-bold text-sm hover:underline" onClick={() => setShowBooking(true)}>Book Your First Service</button>

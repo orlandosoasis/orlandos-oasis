@@ -411,39 +411,6 @@ const TechnicianLanding = () => {
           </div>
         </section>
 
-        {/* FINAL CTA */}
-        <section
-          className="py-20 md:py-[80px] px-4"
-          style={{
-            background:
-              "radial-gradient(800px 400px at 20% 50%, hsl(203 87% 30% / 0.5), transparent 70%), linear-gradient(135deg, #0a1628 0%, #103b6e 100%)",
-          }}
-        >
-          <div className="container max-w-4xl mx-auto text-center text-white">
-            <h2 className="text-3xl md:text-5xl font-extrabold tracking-tight">
-              Ready to Build Your Pool Route?
-            </h2>
-            <p className="mt-4 text-base md:text-lg text-white/75 max-w-2xl mx-auto">
-              Apply today and start receiving recurring service opportunities in your area.
-            </p>
-            <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-              <Link to="/technician/apply">
-                <Button className="rounded-full h-12 px-7 text-base font-semibold bg-[hsl(var(--hp-sky))] hover:bg-[hsl(var(--hp-sky-hover))] text-[#0a1628] shadow-lg">
-                  Apply as a Pool Pro
-                  <ArrowRight className="ml-1 h-4 w-4" />
-                </Button>
-              </Link>
-              <Link to="/contact">
-                <Button
-                  variant="outline"
-                  className="rounded-full h-12 px-7 text-base font-semibold bg-transparent border-white/30 text-white hover:bg-white/10 hover:text-white"
-                >
-                  Contact our team
-                </Button>
-              </Link>
-            </div>
-          </div>
-        </section>
       </main>
 
       <Footer />

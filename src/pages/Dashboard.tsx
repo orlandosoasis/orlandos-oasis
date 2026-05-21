@@ -248,44 +248,6 @@ const Dashboard = () => {
   const firstName = user?.fullName?.split(" ")[0] || "there";
 
 
-
-
-  const handleLogout = () => { logout(); navigate("/login", { replace: true }); };
-
-  const upcomingServices = useMemo(() => services.filter(s => s.booking.status === "scheduled" || s.booking.status === "reschedule_requested" || s.booking.status === "technician_to_be_assigned"), [services]);
-  const pastServices = useMemo(() => services.filter(s => s.booking.status === "completed"), [services]);
-
-  const nextService = upcomingServices[0] || null;
-  const remainingUpcoming = upcomingServices.slice(1);
-  const visibleUpcoming = remainingUpcoming.slice(0, visibleCount);
-  const hasMoreUpcoming = visibleCount < remainingUpcoming.length;
-
-  const handleViewDetails = (svc: ServiceInstance) => {
-    setBooking(svc.booking);
-    navigate(`/service/${svc.id}`);
-  };
-
-  const handleReschedule = (newDate: Date, newTimeWindow: TimeWindow) => {
-    if (!rescheduleService) return;
-    setServices(prev =>
-      prev.map(s =>
-        s.id === rescheduleService.id
-          ? { ...s, booking: { ...s.booking, status: "technician_to_be_assigned" as const, scheduleData: { ...s.booking.scheduleData, selectedDate: newDate, timeWindow: newTimeWindow } } }
-          : s
-      )
-    );
-    setRescheduleConfirmed(true);
-  };
-
-  const handleRescheduleModalClose = (open: boolean) => {
-    if (!open) {
-      setRescheduleService(null);
-      setRescheduleConfirmed(false);
-    }
-  };
-
-  const firstName = user?.fullName?.split(" ")[0] || "there";
-
   return (
     <>
       <PageContainer>

@@ -213,7 +213,7 @@ const BookingFlow = ({ onClose, onComplete, selectedService: selectedServiceProp
         selectedPass,
         recurrence: "monthly",
         scheduleData,
-        technician: matchTechnician(),
+        technician: { name: "Pool Technician to be assigned", initials: "?", rating: 0, isAssigned: false },
         specialNotes: specialNotes || undefined,
         pool: {
           address, city, state, zip, poolType, poolSize, accessMethod,

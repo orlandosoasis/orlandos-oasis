@@ -387,22 +387,25 @@ const TechnicianLanding = () => {
         {/* FAQ */}
         <section
           className="faq-section py-20 md:py-[80px] px-4"
-          style={{ background: "linear-gradient(135deg, #0a1628 0%, #0f2547 100%)" }}
+          style={{ background: "linear-gradient(135deg, #0D7DC2 0%, #1453a8 60%, #0a3d8f 100%)" }}
         >
           <div className="container max-w-3xl mx-auto">
             <div className="text-center mb-12">
-              <h2 className="text-3xl md:text-4xl font-bold text-white">Pool Pro FAQ</h2>
-              <p className="mt-3 text-base text-white/70">
-                Answers to the questions technicians ask most.
-              </p>
+              <h2 className="font-extrabold text-white tracking-tight text-4xl md:text-5xl" style={{ fontFamily: "'Manrope', sans-serif" }}>
+                Pool Pro FAQ
+              </h2>
             </div>
-            <Accordion type="single" collapsible className="divide-y divide-white/10 border-y border-white/10">
+            <Accordion type="single" collapsible className="space-y-4">
               {FAQS.map((faq, i) => (
-                <AccordionItem key={i} value={`faq-${i}`} className="border-0">
-                  <AccordionTrigger className="text-white hover:no-underline text-left py-5 text-base font-semibold">
+                <AccordionItem
+                  key={i}
+                  value={`faq-${i}`}
+                  className="border-0 rounded-xl bg-white/10 backdrop-blur-sm border border-white/15 px-5"
+                >
+                  <AccordionTrigger className="text-white hover:no-underline text-left py-4 text-base font-semibold" style={{ fontFamily: "'Manrope', sans-serif" }}>
                     {faq.q}
                   </AccordionTrigger>
-                  <AccordionContent className="text-white/75 pb-5 text-[15px] leading-relaxed">
+                  <AccordionContent className="text-white/85 pb-5 text-[15px] leading-relaxed">
                     {faq.a}
                   </AccordionContent>
                 </AccordionItem>
@@ -413,7 +416,17 @@ const TechnicianLanding = () => {
 
       </main>
 
-      <Footer />
+      {/* Minimal footer */}
+      <footer className="py-6 px-6" style={{ background: "#0a1628", fontFamily: "'Manrope', sans-serif" }}>
+        <div className="container max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-3">
+          <div className="flex items-center gap-6 text-sm text-white/85">
+            <span className="font-semibold">Orlando's Oasis</span>
+            <Link to="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link>
+            <Link to="/terms" className="hover:text-white transition-colors">Terms</Link>
+          </div>
+          <span className="text-sm text-white/70">© 2026 Orlando's Oasis. All rights reserved.</span>
+        </div>
+      </footer>
     </div>
   );
 };

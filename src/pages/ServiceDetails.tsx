@@ -266,20 +266,10 @@ const ServiceDetails = () => {
 
             {!isCompleted && (
               <div className="mt-auto space-y-1.5">
-                {(status === "reschedule_requested" || status === "technician_to_be_assigned") ? (
-                  <>
-                    <p className="text-xs text-muted-foreground text-center mb-1.5">Pool Technician to Be Assigned</p>
-                    <Button variant="outline" className="w-full gap-1.5 opacity-60 cursor-not-allowed" disabled>
-                      <CalendarClock className="h-4 w-4" />
-                      Pending Assignment
-                    </Button>
-                  </>
-                ) : (
-                  <Button variant="outline" className="w-full gap-1.5 hover:bg-primary hover:text-white hover:border-transparent" onClick={() => setShowReschedule(true)}>
-                    <CalendarClock className="h-4 w-4" />
-                    Reschedule
-                  </Button>
-                )}
+                <Button variant="outline" className="w-full gap-1.5 hover:bg-primary hover:text-white hover:border-transparent" onClick={() => setShowReschedule(true)}>
+                  <CalendarClock className="h-4 w-4" />
+                  Reschedule Appointment
+                </Button>
               </div>
             )}
           </div>

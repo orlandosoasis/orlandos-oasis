@@ -21,6 +21,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import Header from "@/components/Header";
+const MinimalHeader = () => <Header minimal />;
 import Footer from "@/components/Footer";
 import techHero from "@/assets/tech-hero.webp";
 

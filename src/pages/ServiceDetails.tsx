@@ -183,7 +183,7 @@ const ServiceDetails = () => {
             </div>
 
             {!isCompleted && (
-              <div className="mt-4 space-y-1.5">
+              <div className="mt-auto space-y-1.5">
                 {(status === "reschedule_requested" || status === "technician_to_be_assigned") ? (
                   <>
                     <p className="text-xs text-muted-foreground text-center mb-1.5">Pool Technician to Be Assigned</p>
@@ -241,7 +241,7 @@ const ServiceDetails = () => {
             )}
 
             {/* CTA Row */}
-            <div className="flex gap-3 mt-4 w-full">
+            <div className="flex gap-3 mt-auto w-full">
               {technician.isAssigned ? (
                 <Button variant="outline" className="flex-1 gap-1.5 hover:bg-primary hover:text-white hover:border-transparent" onClick={() => navigate("/messages")}>
                   <MessagesSquare className="h-4 w-4" />

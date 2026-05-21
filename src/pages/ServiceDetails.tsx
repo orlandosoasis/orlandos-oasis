@@ -228,10 +228,17 @@ const ServiceDetails = () => {
 
             {/* CTA Row */}
             <div className="flex gap-3 mt-4 w-full">
-              <Button variant="outline" className="flex-1 gap-1.5 hover:bg-primary hover:text-white hover:border-transparent" onClick={() => navigate("/messages")}>
-                <MessagesSquare className="h-4 w-4" />
-                Message
-              </Button>
+              {technician.isAssigned ? (
+                <Button variant="outline" className="flex-1 gap-1.5 hover:bg-primary hover:text-white hover:border-transparent" onClick={() => navigate("/messages")}>
+                  <MessagesSquare className="h-4 w-4" />
+                  Message
+                </Button>
+              ) : (
+                <Button variant="outline" className="flex-1 gap-1.5 opacity-60 cursor-not-allowed" disabled>
+                  <MessagesSquare className="h-4 w-4" />
+                  Message Unavailable
+                </Button>
+              )}
               {isCompleted && (
                 reviewSubmitted ? (
                   <Button variant="outline" className="flex-1 gap-1.5 opacity-60 cursor-default" disabled>

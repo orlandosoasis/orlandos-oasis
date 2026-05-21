@@ -163,8 +163,22 @@ const ServiceDetails = () => {
                 </div>
               )}
               <div className="flex items-center gap-2 text-sm text-foreground">
+                <Droplets className="h-4 w-4 text-muted-foreground" />
+                <span>{selectedPass?.label || <span className="text-muted-foreground italic">Service unavailable</span>}</span>
+              </div>
+              <div className="flex items-center gap-2 text-sm text-foreground">
                 <Wrench className="h-4 w-4 text-muted-foreground" />
-                <span>Monthly service</span>
+                <span>
+                  {(() => {
+                    const rec = booking.recurrence;
+                    const freq = booking.frequency;
+                    if (freq === "once") return "One-time service";
+                    if (rec === "weekly") return "Weekly service";
+                    if (rec === "biweekly") return "Bi-weekly service";
+                    if (rec === "monthly" || freq === "monthly") return "Monthly service";
+                    return <span className="text-muted-foreground italic">Frequency unavailable</span>;
+                  })()}
+                </span>
               </div>
             </div>
 

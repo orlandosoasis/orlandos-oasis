@@ -211,18 +211,15 @@ const ServiceDetails = () => {
               </>
             ) : (
               <>
-                <h2 className="text-[17px] font-bold text-foreground mb-4">Pool Technician</h2>
-                <div className="flex flex-col items-center text-center gap-3">
-                  <div className="w-[72px] h-[72px] rounded-xl bg-muted flex items-center justify-center shrink-0">
-                    <Droplets className="h-8 w-8 text-muted-foreground" />
+                <h2 className="text-[17px] font-bold text-foreground mb-4">Your Technician</h2>
+                <div className="flex gap-3.5 items-start w-full">
+                  <div className="w-[56px] h-[56px] rounded-xl bg-muted border border-border flex items-center justify-center shrink-0">
+                    <UserRoundCog className="h-6 w-6 text-muted-foreground" aria-hidden="true" />
                   </div>
-                  <div>
-                    <p className="text-base font-bold text-foreground mb-1">Assignment Pending</p>
+                  <div className="space-y-1.5 min-w-0">
+                    <StatusBadge status="technician_to_be_assigned" />
                     <p className="text-[13px] text-muted-foreground leading-relaxed">
-                      A licensed pool specialist will be assigned before your service.
-                    </p>
-                    <p className="text-[13px] text-muted-foreground leading-relaxed mt-1">
-                      You'll be notified once confirmed.
+                      A technician will be assigned by admin soon. You'll be notified once confirmed.
                     </p>
                   </div>
                 </div>

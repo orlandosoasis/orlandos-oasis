@@ -1,5 +1,6 @@
 import { useState, useMemo, useEffect, useRef } from "react";
 import { ChevronLeft, ChevronRight, ChevronDown, Check, ArrowLeft, CheckCircle2, Loader2, Info } from "lucide-react";
+import { useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -8,6 +9,7 @@ import { useBooking, matchTechnician } from "@/contexts/BookingContext";
 import { useAuth } from "@/contexts/AuthContext";
 import type { PassOption, CleaningFrequency, TimeWindow, AccessMethod, ScheduleData } from "@/contexts/BookingContext";
 import { VOUCHER_PLANS } from "./VoucherSelectionStep";
+import { seedHomeownerData } from "@/lib/seedHomeownerData";
 
 const DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 const MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
@@ -67,6 +69,7 @@ function loadPending(): PendingState {
 const BookingFlow = ({ onClose, onComplete, selectedService: selectedServiceProp, standalone }: BookingFlowProps) => {
   const { setBooking, checkoutData } = useBooking();
   const { user, updateUser } = useAuth();
+  const qc = useQueryClient();
   const pending = useMemo(() => loadPending(), []);
   const [step, setStep] = useState<number>(pending.step ?? 0);
 
@@ -184,16 +187,9 @@ const BookingFlow = ({ onClose, onComplete, selectedService: selectedServiceProp
 
   const handleConfirmBooking = async () => {
     // Idempotency guard: ignore extra clicks once submission is in flight.
-    // Prevents accidental double-bookings if the user mashes the button.
     if (isProcessing) return;
     setIsProcessing(true);
     try {
-      // TODO(backend-wire-up): replace the simulated delay with a real
-      // supabase.from('services').insert(...) once the booking-to-DB wiring
-      // is in place. Until then, the booking lives only in BookingContext +
-      // localStorage and won't appear in the technician's queue.
-      await new Promise((r) => setTimeout(r, 1200));
-
       // Persist address to user profile (only if logged in)
       if (user) {
         updateUser({ streetAddress: address, city, state, zipCode: zip });
@@ -208,10 +204,10 @@ const BookingFlow = ({ onClose, onComplete, selectedService: selectedServiceProp
         addonsTotal: 0,
       };
 
-      setBooking({
+      const bookingData = {
         frequency,
         selectedPass,
-        recurrence: "monthly",
+        recurrence: "monthly" as const,
         scheduleData,
         technician: { name: "Pool Technician to be assigned", initials: "?", rating: 0, isAssigned: false },
         specialNotes: specialNotes || undefined,
@@ -219,25 +215,39 @@ const BookingFlow = ({ onClose, onComplete, selectedService: selectedServiceProp
           address, city, state, zip, poolType, poolSize, accessMethod,
           accessDetail: getAccessDetail(), hasPets,
         },
-      });
+      };
+
+      setBooking(bookingData);
+
+      // Persist pool + recurring services to Supabase so the dashboard,
+      // admin views, and technician queue all see this booking.
+      if (user?.id) {
+        try {
+          await seedHomeownerData({
+            userId: user.id,
+            booking: bookingData,
+            checkoutData,
+            profile: {
+              streetAddress: address,
+              city, state, zipCode: zip,
+            },
+          });
+          qc.invalidateQueries({ queryKey: ["services"] });
+          qc.invalidateQueries({ queryKey: ["pools"] });
+        } catch (err) {
+          console.warn("Failed to persist booking to backend:", err);
+        }
+      }
 
       // Scheduling complete — drop the saved partial-progress snapshot.
       try { localStorage.removeItem(PENDING_KEY); } catch { /* ignore */ }
 
-
-
       if (standalone) {
-        // In standalone mode, skip the success screen and call onComplete directly.
         onComplete();
       } else {
         setBookingSuccess(true);
       }
-      // Intentionally do NOT reset isProcessing on success — the success
-      // screen replaces this form, and re-enabling the button here would
-      // briefly expose it during the React re-render.
     } catch (err) {
-      // Reset so user can retry. Toast intentionally left to the wired-up
-      // Supabase version; the simulated delay can't fail today.
       setIsProcessing(false);
       throw err;
     }

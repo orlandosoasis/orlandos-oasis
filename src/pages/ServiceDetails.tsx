@@ -101,6 +101,9 @@ const ServiceDetails = () => {
   }
 
   const { selectedPass, scheduleData, technician, frequency, pool } = booking;
+  const { checkoutData } = useBooking();
+  const POOL_SIZE_LABELS: Record<string, string> = { small: "Small Pool", medium: "Medium Pool", large: "Large Pool" };
+  const selectedPoolSizeLabel = checkoutData?.poolSize ? POOL_SIZE_LABELS[checkoutData.poolSize] : null;
   const status = booking.status || "scheduled";
   const isCompleted = status === "completed";
   const isMonthly = frequency === "monthly";

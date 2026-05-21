@@ -159,6 +159,8 @@ const PersistentHeader = memo(function PersistentHeader() {
 });
 
 export default function CustomerLayout() {
+  const { user } = useAuth();
+  useHomeownerRealtime(user?.id);
   return (
     <div className="min-h-screen bg-background">
       <PersistentHeader />

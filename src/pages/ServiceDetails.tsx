@@ -214,7 +214,7 @@ const ServiceDetails = () => {
           ) : (
             <>
               <p className="text-sm font-semibold text-white/90 mt-1">{formattedDate}</p>
-              <p className="text-sm text-white/80">Expected arrival {TIME_LABELS[scheduleData.timeWindow]}</p>
+              <p className="text-sm text-white/80 pb-[16px]">Expected arrival {TIME_LABELS[scheduleData.timeWindow]}</p>
             </>
           )}
           <StatusBadge status={status} className="mt-1" />

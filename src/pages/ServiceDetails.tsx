@@ -1,10 +1,15 @@
-import { useState, useCallback } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useState, useCallback, useMemo } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { Clock, Calendar, MapPin, Star, Key, Droplets, Wrench, Camera, FileText, RefreshCw, CreditCard, MessagesSquare, CalendarClock, CheckCircle2, UserRoundCog, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import StatusBadge from "@/components/StatusBadge";
-import { useBooking, type TimeWindow, type TechnicianInfo, matchTechnician } from "@/contexts/BookingContext";
+import { useBooking, type TimeWindow, type AccessMethod, type BookingData } from "@/contexts/BookingContext";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/contexts/AuthContext";
+import { useService, useUpdateService } from "@/hooks/useServices";
+import { usePool } from "@/hooks/usePools";
+import { useProfile } from "@/hooks/useProfiles";
+import { VOUCHER_PLANS } from "@/components/dashboard/VoucherSelectionStep";
 import PoolSceneHero from "@/components/dashboard/PoolSceneHero";
 import RescheduleModal from "@/components/RescheduleModal";
 import LeaveReviewModal from "@/components/LeaveReviewModal";
@@ -47,42 +52,107 @@ const CleaningNotes = ({ notes }: { notes: string }) => {
   );
 };
 
+const POOL_SIZE_OPTIONS: Record<string, { title: string; subtitle: string }> = {
+  small: { title: "Small Pool", subtitle: "Standard residential" },
+  medium: { title: "Medium Pool", subtitle: "Mid-size residential" },
+  large: { title: "Large Pool", subtitle: "Large or custom" },
+};
+
+function passFromServiceType(label: string) {
+  const plan = VOUCHER_PLANS.find((p) => p.label === label);
+  return {
+    id: plan?.id ?? "weekly",
+    hours: 2,
+    label,
+    description: plan?.description ?? "",
+    originalPrice: plan?.originalPrice ?? 120,
+    discountPrice: plan?.discountPrice ?? 95,
+    percentOff: 0,
+    isMostPopular: !!plan?.isMostPopular,
+  };
+}
+
 const ServiceDetails = () => {
   const navigate = useNavigate();
-  const { booking, setBooking, checkoutData } = useBooking();
+  const { serviceId } = useParams<{ serviceId: string }>();
+  const { user } = useAuth();
+  const { booking: ctxBooking, setBooking, checkoutData } = useBooking();
   const [showReschedule, setShowReschedule] = useState(false);
   const [reviewOpen, setReviewOpen] = useState(false);
   const [reviewSubmitted, setReviewSubmitted] = useState(false);
-  const [changingCleaner, setChangingCleaner] = useState(false);
   const [reportIssueOpen, setReportIssueOpen] = useState(false);
   const { toast } = useToast();
 
-  const handleChangeCleaner = useCallback(async () => {
-    if (!booking) return;
-    setChangingCleaner(true);
-    // Simulate network delay
-    await new Promise((resolve) => setTimeout(resolve, 1500));
+  // DB-driven path: fetch this service + its pool + assigned technician profile.
+  const isUuid = !!serviceId && /^[0-9a-f-]{36}$/i.test(serviceId);
+  const { data: dbService, isLoading: serviceLoading } = useService(isUuid ? serviceId : undefined);
+  const { data: dbPool } = usePool(dbService?.poolId);
+  const { data: dbTech } = useProfile(dbService?.technicianId ?? undefined);
+  const updateService = useUpdateService();
 
-    let newTech: TechnicianInfo;
-    let attempts = 0;
-    do {
-      newTech = matchTechnician();
-      attempts++;
-    } while (newTech.name === booking.technician.name && attempts < 10);
+  // Build a BookingData view from the DB rows (when present), otherwise
+  // fall back to the BookingContext set by the dashboard / booking flow.
+  const booking: BookingData | null = useMemo(() => {
+    if (dbService) {
+      const techName = dbTech
+        ? dbTech.fullName || `${dbTech.firstName ?? ""} ${dbTech.lastName ?? ""}`.trim() || "Pool Technician"
+        : null;
+      const initials = (techName ?? "")
+        .split(" ")
+        .map((p) => p[0])
+        .filter(Boolean)
+        .slice(0, 2)
+        .join("")
+        .toUpperCase();
+      const technician = techName
+        ? { name: techName, initials: initials || "PT", rating: 5.0, isAssigned: true }
+        : { name: "Pool Technician to be assigned", initials: "?", rating: 0, isAssigned: false };
 
-    if (newTech.name === booking.technician.name) {
-      toast({ title: "No other cleaners available at the moment.", variant: "destructive" });
-      setChangingCleaner(false);
-      return;
+      return {
+        frequency: "monthly",
+        recurrence: (dbPool?.frequency as BookingData["recurrence"]) || "monthly",
+        selectedPass: passFromServiceType(dbService.serviceType),
+        scheduleData: {
+          selectedDate: dbService.date,
+          timeWindow: dbService.timeWindow as TimeWindow,
+          accessMethod: (dbPool?.accessMethod || "home") as AccessMethod,
+          accessDetail: dbPool?.accessDetail || "",
+          addons: [],
+          addonsTotal: 0,
+        },
+        technician,
+        pool: {
+          address: dbPool?.address || "",
+          city: dbPool?.city || "",
+          state: dbPool?.state || "",
+          zip: dbPool?.zip || "",
+          poolType: dbPool?.poolType || "",
+          poolSize: dbPool?.poolSize || "",
+          accessMethod: (dbPool?.accessMethod || "home") as AccessMethod,
+          accessDetail: dbPool?.accessDetail || "",
+          hasPets: false,
+        },
+        status: dbService.status === "completed"
+          ? "completed"
+          : !technician.isAssigned
+          ? "technician_to_be_assigned"
+          : "scheduled",
+      };
     }
+    return ctxBooking;
+  }, [dbService, dbPool, dbTech, ctxBooking]);
 
-    setBooking({ ...booking, technician: newTech });
-    setChangingCleaner(false);
-    toast({ title: "Success! Cleaner updated.", variant: "success" as any });
-  }, [booking, setBooking, toast]);
-
-  const handleReschedule = (newDate: Date, newTimeWindow: TimeWindow) => {
-    if (booking) {
+  const handleReschedule = async (newDate: Date, newTimeWindow: TimeWindow) => {
+    if (dbService) {
+      try {
+        await updateService.mutateAsync({
+          id: dbService.id,
+          patch: { serviceDate: newDate, timeWindow: newTimeWindow },
+        });
+      } catch (err) {
+        toast({ title: "Reschedule failed. Please try again.", variant: "destructive" });
+      }
+    } else if (booking) {
       setBooking({
         ...booking,
         scheduleData: { ...booking.scheduleData, selectedDate: newDate, timeWindow: newTimeWindow },
@@ -90,6 +160,15 @@ const ServiceDetails = () => {
       });
     }
   };
+
+  if (isUuid && serviceLoading && !booking) {
+    return (
+      <div className="min-h-screen bg-background flex flex-col items-center justify-center gap-4">
+        <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
+        <p className="text-muted-foreground text-sm">Loading service…</p>
+      </div>
+    );
+  }
 
   if (!booking) {
     return (
@@ -101,12 +180,7 @@ const ServiceDetails = () => {
   }
 
   const { selectedPass, scheduleData, technician, frequency, pool } = booking;
-  const POOL_SIZE_OPTIONS: Record<string, { title: string; subtitle: string }> = {
-    small: { title: "Small Pool", subtitle: "Standard residential" },
-    medium: { title: "Medium Pool", subtitle: "Mid-size residential" },
-    large: { title: "Large Pool", subtitle: "Large or custom" },
-  };
-  const poolSizeKey = (checkoutData?.poolSize as keyof typeof POOL_SIZE_OPTIONS) || pool?.poolSize || null;
+  const poolSizeKey = (pool?.poolSize || checkoutData?.poolSize) as keyof typeof POOL_SIZE_OPTIONS | undefined;
   const selectedPoolSize = poolSizeKey ? POOL_SIZE_OPTIONS[poolSizeKey] : null;
   const status = booking.status || "scheduled";
   const isCompleted = status === "completed";

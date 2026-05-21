@@ -353,14 +353,14 @@ const ServiceDetails = () => {
                 <MapPin className="h-4 w-4 text-muted-foreground" />
                 <span>{fullAddress}</span>
               </div>
-              {selectedPoolSize && (
-                <div className="flex items-center gap-2 text-sm text-foreground">
-                  <Droplets className="h-4 w-4 text-muted-foreground" />
-                  <span>
-                    {selectedPoolSize.title} — {selectedPoolSize.subtitle}
-                  </span>
-                </div>
-              )}
+              <div className="flex items-center gap-2 text-sm text-foreground">
+                <Droplets className="h-4 w-4 text-muted-foreground" />
+                <span>
+                  {selectedPoolSize
+                    ? `${selectedPoolSize.title} — ${selectedPoolSize.subtitle}`
+                    : "Pool size not selected"}
+                </span>
+              </div>
               <div className="flex items-center gap-2 text-sm text-foreground">
                 <Key className="h-4 w-4 text-muted-foreground" />
                 <span>{ACCESS_LABELS[pool?.accessMethod || scheduleData.accessMethod]}</span>

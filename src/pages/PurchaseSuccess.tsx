@@ -10,7 +10,7 @@ const PurchaseSuccess = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { checkoutData } = useBooking();
-  const { signup, login, isAuthenticated, user, isLoading } = useAuth();
+  const { signup, login, logout, isAuthenticated, user, isLoading } = useAuth();
 
   const serviceName = searchParams.get("service") || checkoutData?.serviceName || "Pool Service";
   const serviceDescription = searchParams.get("description") || checkoutData?.serviceDescription || "";

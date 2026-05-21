@@ -12,7 +12,11 @@ const NAV_ITEMS = [
   { label: "Contact", href: "/contact" },
 ];
 
-const Header = memo(function Header() {
+interface HeaderProps {
+  minimal?: boolean;
+}
+
+const Header = memo(function Header({ minimal = false }: HeaderProps) {
   return (
     <header
       role="banner"

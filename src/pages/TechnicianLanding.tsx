@@ -148,37 +148,30 @@ const TechnicianLanding = () => {
 
               {/* Right */}
               <div className="relative">
-                <div className="grid grid-cols-2 gap-4 mb-4">
-                  <div className="rounded-2xl bg-white/[0.07] border border-white/10 backdrop-blur p-5">
-                    <div className="flex items-center gap-2">
-                      <span className="text-3xl font-extrabold text-white">4.9</span>
-                      <Star className="h-5 w-5 fill-amber-400 text-amber-400" />
-                    </div>
-                    <p className="text-xs text-white/70 mt-1">Avg. technician rating</p>
-                  </div>
-                  <div className="rounded-2xl bg-[hsl(var(--hp-sky))]/15 border border-[hsl(var(--hp-sky))]/30 backdrop-blur p-5">
-                    <p className="text-xs text-white/70">Active Routes</p>
-                    <div className="flex items-baseline gap-2">
-                      <span className="text-3xl font-extrabold text-white">2.4K+</span>
-                      <span className="inline-flex items-center text-xs font-semibold text-emerald-300">
-                        <TrendingUp className="h-3 w-3 mr-0.5" /> growing
-                      </span>
-                    </div>
-                  </div>
-                </div>
                 <div className="relative rounded-3xl overflow-hidden border border-white/10 bg-white/[0.04] backdrop-blur p-2">
                   <img
                     src={techHero}
                     alt="Pool service professional at work"
-                    className="w-full h-[360px] md:h-[420px] object-cover rounded-2xl"
+                    className="w-full h-[300px] md:h-[360px] object-cover rounded-2xl"
                   />
-                  <div className="absolute bottom-5 left-5 right-5 rounded-2xl bg-white/95 backdrop-blur px-4 py-3 flex items-center gap-3 shadow-xl">
-                    <div className="h-10 w-10 rounded-full bg-[hsl(var(--hp-ocean))] flex items-center justify-center text-white font-bold">
-                      $
+                  <div className="absolute bottom-5 left-5 right-5 flex flex-col sm:flex-row gap-3">
+                    <div className="flex-1 rounded-2xl bg-white/95 backdrop-blur px-4 py-3 flex items-center gap-3 shadow-xl">
+                      <div className="h-10 w-10 rounded-full bg-amber-400/20 flex items-center justify-center shrink-0">
+                        <Star className="h-5 w-5 fill-amber-400 text-amber-400" />
+                      </div>
+                      <div className="min-w-0">
+                        <p className="text-sm font-bold text-foreground">4.9 Rating</p>
+                        <p className="text-xs text-muted-foreground truncate">Avg. technician rating</p>
+                      </div>
                     </div>
-                    <div>
-                      <p className="text-sm font-bold text-foreground">Weekly payouts</p>
-                      <p className="text-xs text-muted-foreground">Direct deposit, every week</p>
+                    <div className="flex-1 rounded-2xl bg-white/95 backdrop-blur px-4 py-3 flex items-center gap-3 shadow-xl">
+                      <div className="h-10 w-10 rounded-full bg-[hsl(var(--hp-ocean))] flex items-center justify-center text-white font-bold shrink-0">
+                        $
+                      </div>
+                      <div className="min-w-0">
+                        <p className="text-sm font-bold text-foreground">Weekly payouts</p>
+                        <p className="text-xs text-muted-foreground truncate">Direct deposit, every week</p>
+                      </div>
                     </div>
                   </div>
                 </div>

@@ -343,7 +343,7 @@ const TechnicianLanding = () => {
               {REQUIREMENTS.map((r) => (
                 <div
                   key={r.title}
-                  className="flex flex-col items-start text-left p-6 rounded-2xl bg-[#F8F9FB] hover:shadow-md transition h-full"
+                  className="flex flex-col items-start text-left p-6 rounded-2xl bg-[#F8F9FB] h-full"
                 >
                   <div className="inline-flex items-center justify-center h-11 w-11 rounded-xl bg-[hsl(var(--hp-ocean))]/10 text-[hsl(var(--hp-ocean))] mb-3">
                     <r.icon className="h-5 w-5" strokeWidth={2} />

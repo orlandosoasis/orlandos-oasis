@@ -1725,6 +1725,11 @@ const AdminDashboard = () => {
   };
 
   const HomeownersPage = () => {
+    const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+    const [bulkTechId, setBulkTechId] = useState<string>("");
+    const [bulkApplying, setBulkApplying] = useState(false);
+    const activeTechsHo = technicians.filter((t) => t.status === "Active");
+
     const counts = {
       all: homeowners.length,
       standard: homeowners.filter((h) => {
@@ -1752,6 +1757,54 @@ const AdminDashboard = () => {
       { key: "freds", label: "Fred's" },
       { key: "placeholder", label: "Placeholder" },
     ];
+
+    const assignableSelected = filtered.filter((h) => selectedIds.has(h.id) && h.pools?.[0]?.id);
+    const allAssignableIds = filtered.filter((h) => h.pools?.[0]?.id).map((h) => h.id);
+    const allSelected = allAssignableIds.length > 0 && allAssignableIds.every((id) => selectedIds.has(id));
+    const someSelected = selectedIds.size > 0 && !allSelected;
+
+    const toggleOne = (id: string, checked: boolean) => {
+      setSelectedIds((prev) => {
+        const next = new Set(prev);
+        if (checked) next.add(id); else next.delete(id);
+        return next;
+      });
+    };
+    const toggleAll = (checked: boolean) => {
+      setSelectedIds(checked ? new Set(allAssignableIds) : new Set());
+    };
+
+    const assignRow = async (h: AdminHomeowner, techId: string | null) => {
+      const pool = h.pools?.[0];
+      if (!pool?.id) return;
+      try {
+        await assignPoolToTech.mutateAsync({ poolId: pool.id, technicianId: techId });
+        toast({ title: techId ? "Technician assigned" : "Technician unassigned", variant: "success" });
+      } catch (e) {
+        toast({ title: "Failed", description: e instanceof Error ? e.message : "", variant: "destructive" });
+      }
+    };
+
+    const bulkAssign = async () => {
+      if (!bulkTechId || assignableSelected.length === 0) return;
+      setBulkApplying(true);
+      const techId = bulkTechId === "none" ? null : bulkTechId;
+      let ok = 0, fail = 0;
+      for (const h of assignableSelected) {
+        try {
+          await assignPoolToTech.mutateAsync({ poolId: h.pools[0].id!, technicianId: techId });
+          ok++;
+        } catch { fail++; }
+      }
+      setBulkApplying(false);
+      setSelectedIds(new Set());
+      setBulkTechId("");
+      toast({
+        title: `Updated ${ok} homeowner${ok === 1 ? "" : "s"}${fail ? `, ${fail} failed` : ""}`,
+        variant: fail ? "destructive" : "success",
+      });
+    };
+
     return (
       <div className="space-y-4">
         <div className="flex items-center justify-between gap-3 flex-wrap">
@@ -1778,12 +1831,54 @@ const AdminDashboard = () => {
             <Check className="h-4 w-4" /> Homeowner added successfully
           </div>
         )}
+        {selectedIds.size > 0 && (
+          <div className="flex items-center justify-between gap-3 flex-wrap p-3 rounded-md border border-border bg-muted/40">
+            <p className="text-sm font-medium">
+              {selectedIds.size} selected
+              {assignableSelected.length !== selectedIds.size && (
+                <span className="ml-1 text-xs text-muted-foreground">
+                  ({assignableSelected.length} assignable)
+                </span>
+              )}
+            </p>
+            <div className="flex items-center gap-2">
+              <Select value={bulkTechId} onValueChange={setBulkTechId}>
+                <SelectTrigger className="h-9 w-56 text-xs">
+                  <SelectValue placeholder="Select technician" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="none">Unassigned</SelectItem>
+                  {activeTechsHo.map((t) => (
+                    <SelectItem key={t.id} value={t.id}>{t.name}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <Button
+                size="sm"
+                onClick={bulkAssign}
+                disabled={!bulkTechId || assignableSelected.length === 0 || bulkApplying}
+              >
+                {bulkApplying ? "Applying…" : "Apply to selected"}
+              </Button>
+              <Button size="sm" variant="ghost" onClick={() => setSelectedIds(new Set())}>
+                Clear
+              </Button>
+            </div>
+          </div>
+        )}
         <Card>
           <CardContent className="p-0">
             <div className="overflow-x-auto">
               <Table>
                 <TableHeader>
                   <TableRow>
+                    <TableHead className="w-10">
+                      <Checkbox
+                        checked={allSelected ? true : someSelected ? "indeterminate" : false}
+                        onCheckedChange={(v) => toggleAll(Boolean(v))}
+                        aria-label="Select all homeowners"
+                      />
+                    </TableHead>
                     <TableHead>Name</TableHead>
                     <TableHead>Email</TableHead>
                     <TableHead>Phone</TableHead>
@@ -1797,7 +1892,7 @@ const AdminDashboard = () => {
                 <TableBody>
                   {filtered.length === 0 ? (
                     <TableRow>
-                      <TableCell colSpan={8} className="text-center text-muted-foreground text-xs py-8">
+                      <TableCell colSpan={9} className="text-center text-muted-foreground text-xs py-8">
                         No homeowners in this view.
                       </TableCell>
                     </TableRow>
@@ -1806,8 +1901,23 @@ const AdminDashboard = () => {
                     const isGF = Boolean((h as { isGrandfathered?: boolean }).isGrandfathered);
                     const isPlaceholder = Boolean((h as { isPlaceholder?: boolean }).isPlaceholder);
                     const isFreds = Boolean((h as { isFreds?: boolean }).isFreds);
+                    const hasTech = Boolean(pool?.technicianId);
+                    const canAssign = Boolean(pool?.id);
+                    const stop = (e: React.MouseEvent) => e.stopPropagation();
                     return (
-                      <TableRow key={h.id}>
+                      <TableRow
+                        key={h.id}
+                        onClick={() => nav("homeDetail", h.id)}
+                        className="cursor-pointer transition-colors hover:bg-muted/50"
+                      >
+                        <TableCell onClick={stop} className="w-10">
+                          <Checkbox
+                            checked={selectedIds.has(h.id)}
+                            onCheckedChange={(v) => toggleOne(h.id, Boolean(v))}
+                            disabled={!canAssign}
+                            aria-label={`Select ${h.name}`}
+                          />
+                        </TableCell>
                         <TableCell>
                           <div className="flex items-center gap-1.5 flex-wrap">
                             <span className="font-medium">{h.name}</span>
@@ -1832,11 +1942,32 @@ const AdminDashboard = () => {
                         <TableCell className="text-xs text-muted-foreground whitespace-nowrap">{h.phone || "—"}</TableCell>
                         <TableCell className="text-xs text-muted-foreground">{h.address}</TableCell>
                         <TableCell className="text-xs">{pool?.size ?? "—"}</TableCell>
-                        <TableCell className="text-xs">{pool?.technician ?? "Unassigned"}</TableCell>
+                        <TableCell className="text-xs" onClick={stop}>
+                          {canAssign ? (
+                            <Select
+                              value={pool?.technicianId ?? "none"}
+                              onValueChange={(v) => assignRow(h, v === "none" ? null : v)}
+                            >
+                              <SelectTrigger className={`h-8 w-48 text-xs ${!hasTech ? "border-amber-300 bg-amber-50/50" : ""}`}>
+                                <SelectValue placeholder="Assign technician" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="none">
+                                  <span className="text-muted-foreground">Unassigned</span>
+                                </SelectItem>
+                                {activeTechsHo.map((t) => (
+                                  <SelectItem key={t.id} value={t.id}>{t.name}</SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                          ) : (
+                            <span className="text-muted-foreground">{pool?.technician ?? "—"}</span>
+                          )}
+                        </TableCell>
                         <TableCell className="text-right font-semibold text-xs">
                           {h.monthlyAmount ? fmtMoney(h.monthlyAmount) : "—"}
                         </TableCell>
-                        <TableCell className="text-right">
+                        <TableCell className="text-right" onClick={stop}>
                           <div className="flex justify-end gap-1.5">
                             <Button
                               size="sm"

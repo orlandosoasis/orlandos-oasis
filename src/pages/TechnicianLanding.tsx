@@ -343,15 +343,13 @@ const TechnicianLanding = () => {
               {REQUIREMENTS.map((r) => (
                 <div
                   key={r.title}
-                  className="flex gap-4 p-6 rounded-2xl bg-white border border-border hover:shadow-md transition"
+                  className="flex flex-col items-center text-center p-6 rounded-2xl bg-[#F8F9FB] border border-border hover:shadow-md transition h-full"
                 >
-                  <div className="shrink-0 inline-flex items-center justify-center h-11 w-11 rounded-xl bg-[hsl(var(--hp-ocean))]/10 text-[hsl(var(--hp-ocean))]">
+                  <div className="inline-flex items-center justify-center h-11 w-11 rounded-xl bg-[hsl(var(--hp-ocean))]/10 text-[hsl(var(--hp-ocean))] mb-3">
                     <r.icon className="h-5 w-5" strokeWidth={2} />
                   </div>
-                  <div>
-                    <h3 className="font-bold text-[#111827] mb-1 text-xl">{r.title}</h3>
-                    <p className="text-sm text-muted-foreground leading-relaxed">{r.desc}</p>
-                  </div>
+                  <h3 className="font-bold text-[#111827] mb-1 text-xl">{r.title}</h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed">{r.desc}</p>
                 </div>
               ))}
             </div>

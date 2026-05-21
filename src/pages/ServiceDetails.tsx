@@ -101,8 +101,13 @@ const ServiceDetails = () => {
   }
 
   const { selectedPass, scheduleData, technician, frequency, pool } = booking;
-  const POOL_SIZE_LABELS: Record<string, string> = { small: "Small Pool", medium: "Medium Pool", large: "Large Pool" };
-  const selectedPoolSizeLabel = checkoutData?.poolSize ? POOL_SIZE_LABELS[checkoutData.poolSize] : pool?.poolSize || null;
+  const POOL_SIZE_OPTIONS: Record<string, { title: string; subtitle: string }> = {
+    small: { title: "Small Pool", subtitle: "Standard residential" },
+    medium: { title: "Medium Pool", subtitle: "Mid-size residential" },
+    large: { title: "Large Pool", subtitle: "Large or custom" },
+  };
+  const poolSizeKey = (checkoutData?.poolSize as keyof typeof POOL_SIZE_OPTIONS) || pool?.poolSize || null;
+  const selectedPoolSize = poolSizeKey ? POOL_SIZE_OPTIONS[poolSizeKey] : null;
   const status = booking.status || "scheduled";
   const isCompleted = status === "completed";
   const isMonthly = frequency === "monthly";
@@ -283,12 +288,11 @@ const ServiceDetails = () => {
                 <MapPin className="h-4 w-4 text-muted-foreground" />
                 <span>{fullAddress}</span>
               </div>
-              {(pool?.poolType || selectedPoolSizeLabel) && (
+              {selectedPoolSize && (
                 <div className="flex items-center gap-2 text-sm text-foreground">
                   <Droplets className="h-4 w-4 text-muted-foreground" />
                   <span>
-                    {[pool?.poolType, selectedPoolSizeLabel].filter(Boolean).join(" · ") ||
-                      <span className="text-muted-foreground italic">Pool details unavailable</span>}
+                    {selectedPoolSize.title} — {selectedPoolSize.subtitle}
                   </span>
                 </div>
               )}

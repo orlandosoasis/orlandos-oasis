@@ -112,7 +112,7 @@ const TechnicianLanding = () => {
             }}
           />
           <div className="relative container max-w-6xl mx-auto px-4 md:px-8 py-20 md:py-28">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.15fr] gap-12 items-center">
               {/* Left */}
               <div className="text-white">
                 <span className="inline-flex items-center gap-2 rounded-full bg-white/10 backdrop-blur px-3 py-1 text-xs font-semibold tracking-wide text-white/90 border border-white/15 mb-6">
@@ -152,7 +152,7 @@ const TechnicianLanding = () => {
                   <img
                     src={techHero}
                     alt="Pool service professional at work"
-                    className="w-full h-[300px] md:h-[360px] object-cover rounded-2xl"
+                    className="w-full h-[380px] md:h-[520px] lg:h-[600px] object-cover rounded-2xl"
                   />
                   <div className="absolute bottom-5 left-5 right-5 flex flex-col sm:flex-row gap-3">
                     <div className="flex-1 rounded-2xl bg-white/95 backdrop-blur px-4 py-3 flex items-center gap-3 shadow-xl">

@@ -302,7 +302,8 @@ const ServiceDetails = () => {
                   <div className="w-[56px] h-[56px] rounded-xl bg-muted border border-border flex items-center justify-center shrink-0">
                     <UserRoundCog className="h-6 w-6 text-muted-foreground" aria-hidden="true" />
                   </div>
-                  <div className="space-y-1.5 min-w-0">
+                  <div className="space-y-1 min-w-0">
+                    <p className="text-base font-bold text-foreground">{technician.name}</p>
                     <p className="text-[13px] text-muted-foreground leading-relaxed">
                       A pool technician will be assigned before your scheduled service.
                     </p>

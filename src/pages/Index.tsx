@@ -24,14 +24,14 @@ const Index = () => {
         {/* Two-column layout: Reviews left, Pricing right */}
         <section className="py-10 md:py-14 lg:py-16 px-4 md:px-6 bg-white">
           <div className="container max-w-6xl mx-auto">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8 lg:h-[min(820px,calc(100vh-8rem))] lg:items-start">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8 lg:h-[min(820px,calc(100vh-8rem))] lg:items-stretch">
               {/* Reviews - second on mobile, left on desktop. Stays fixed while right column scrolls. */}
-              <div className="order-2 lg:order-1 lg:sticky lg:top-8 lg:self-start">
+              <div className="order-2 lg:order-1 lg:sticky lg:top-8 lg:self-start lg:max-h-[min(820px,calc(100vh-8rem))] lg:overflow-hidden">
                 <ReviewsSection />
               </div>
 
               {/* Voucher/Services - bordered card on desktop with scrollable body and pinned CTA */}
-              <div className="order-1 lg:order-2 lg:h-full lg:min-h-0 lg:rounded-lg lg:border lg:bg-card lg:text-card-foreground lg:shadow-sm lg:flex lg:flex-col lg:overflow-hidden">
+              <div className="order-1 lg:order-2 lg:h-full lg:min-h-0 lg:max-h-full lg:rounded-lg lg:border lg:bg-card lg:text-card-foreground lg:shadow-sm lg:flex lg:flex-col lg:overflow-hidden">
                 <ServicesSection />
               </div>
             </div>

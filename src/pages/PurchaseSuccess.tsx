@@ -27,10 +27,16 @@ const PurchaseSuccess = () => {
     if (isLoading || signupAttempted) return;
     let cancelled = false;
     const ensureAccount = async () => {
-      // Already signed in (e.g. existing customer) — nothing to do.
-      if (isAuthenticated) {
+      // Already signed in as a homeowner — nothing to do.
+      if (isAuthenticated && user?.role === "homeowner") {
         setSignupAttempted(true);
         return;
+      }
+      // Signed in as a different role (admin/technician testing the flow):
+      // sign them out so we can create / sign in the homeowner account tied
+      // to this checkout. Otherwise they'd be bounced to their role dashboard.
+      if (isAuthenticated && user && user.role !== "homeowner") {
+        await logout();
       }
       if (!checkoutData?.customerEmail) {
         setSignupAttempted(true);

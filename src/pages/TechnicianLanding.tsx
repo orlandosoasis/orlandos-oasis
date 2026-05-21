@@ -226,15 +226,16 @@ const TechnicianLanding = () => {
               {BENEFITS.map((b) => (
                 <div
                   key={b.title}
-                  className="group p-7 rounded-2xl border border-border bg-white transition hover:shadow-xl hover:-translate-y-1 hover:border-[hsl(var(--hp-ocean))]/30"
+                  className="flex flex-col items-start text-left p-6 rounded-2xl bg-[#F8F9FB] h-full"
                 >
-                  <div className="inline-flex items-center justify-center h-12 w-12 rounded-xl bg-[hsl(var(--hp-ocean))]/10 text-[hsl(var(--hp-ocean))] mb-5">
-                    <b.icon className="h-6 w-6" strokeWidth={1.75} />
+                  <div className="inline-flex items-center justify-center h-11 w-11 rounded-xl bg-[hsl(var(--hp-ocean))]/10 text-[hsl(var(--hp-ocean))] mb-6">
+                    <b.icon className="h-5 w-5" strokeWidth={1.75} />
                   </div>
-                  <h3 className="text-lg font-bold text-[#111827] mb-2">{b.title}</h3>
+                  <h3 className="font-bold text-[#111827] mb-2 text-lg">{b.title}</h3>
                   <p className="text-sm text-muted-foreground leading-relaxed">{b.desc}</p>
                 </div>
               ))}
+
             </div>
           </div>
         </section>

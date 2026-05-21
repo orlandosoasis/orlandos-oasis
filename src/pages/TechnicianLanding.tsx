@@ -302,10 +302,10 @@ const TechnicianLanding = () => {
                 return (
                   <div
                     key={e.label}
-                    className={`relative rounded-2xl p-8 border transition ${
+                    className={`relative rounded-2xl p-8 transition ${
                       popular
-                        ? "bg-[hsl(var(--hp-ocean))] text-white border-[hsl(var(--hp-ocean))] shadow-2xl md:scale-105 md:py-10"
-                        : "bg-white border-border hover:shadow-lg"
+                        ? "bg-[hsl(var(--hp-ocean))] text-white border border-[hsl(var(--hp-ocean))] shadow-2xl md:scale-105 md:py-10"
+                        : "bg-[hsl(var(--hp-ocean))]/10 hover:shadow-lg"
                     }`}
                   >
                     {popular && (

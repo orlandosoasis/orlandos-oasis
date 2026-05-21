@@ -10,7 +10,6 @@ import {
   MessageSquare,
   GraduationCap,
   ArrowRight,
-  PlayCircle,
   TrendingUp,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";

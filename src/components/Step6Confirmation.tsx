@@ -65,7 +65,7 @@ const Step6Confirmation = ({ selectedPass, scheduleData }: Step6Props) => {
   const totalCharged = selectedPass.discountPrice + scheduleData.addonsTotal;
 
   const handleDashboardClick = () => {
-    const technician = matchTechnician();
+    const technician = { name: "Pool Technician to be assigned", initials: "?", rating: 0, isAssigned: false };
     setBooking({ frequency: "once", selectedPass, scheduleData, technician, pool: { address: "", city: "", state: "", zip: "", poolType: "", poolSize: "", accessMethod: scheduleData.accessMethod, accessDetail: scheduleData.accessDetail, hasPets: false } });
     navigate("/dashboard");
   };

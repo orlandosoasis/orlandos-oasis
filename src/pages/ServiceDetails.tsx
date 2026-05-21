@@ -49,7 +49,7 @@ const CleaningNotes = ({ notes }: { notes: string }) => {
 
 const ServiceDetails = () => {
   const navigate = useNavigate();
-  const { booking, setBooking } = useBooking();
+  const { booking, setBooking, checkoutData } = useBooking();
   const [showReschedule, setShowReschedule] = useState(false);
   const [reviewOpen, setReviewOpen] = useState(false);
   const [reviewSubmitted, setReviewSubmitted] = useState(false);

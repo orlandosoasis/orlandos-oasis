@@ -212,7 +212,7 @@ const TechnicianLanding = () => {
         </section>
 
         {/* WHY JOIN */}
-        <section className="py-20 md:py-[80px] px-4 bg-[hsl(210_25%_98%)]">
+        <section className="py-20 md:py-[80px] px-4 bg-white">
           <div className="container max-w-6xl mx-auto">
             <div className="text-center max-w-2xl mx-auto mb-12">
               <h2 className="text-3xl md:text-4xl font-bold text-[#111827]">

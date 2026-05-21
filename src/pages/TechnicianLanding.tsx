@@ -1,22 +1,45 @@
 import { Link } from "react-router-dom";
-import { Star, CheckCircle, Calendar, DollarSign, Briefcase, ClipboardList, CreditCard, ArrowRight, ChevronDown } from "lucide-react";
+import {
+  Star,
+  CheckCircle,
+  Calendar,
+  Briefcase,
+  CreditCard,
+  Wrench,
+  Truck,
+  MessageSquare,
+  GraduationCap,
+  ArrowRight,
+  PlayCircle,
+  TrendingUp,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import logo from "@/assets/oo-logo.png";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 import techHero from "@/assets/tech-hero.webp";
 
 const BENEFITS = [
-  { icon: Calendar, title: "Control Your Schedule", desc: "Work full-time or part-time. Accept jobs only when you're available and build a routine that fits your life." },
-  { icon: Briefcase, title: "Build Recurring Accounts", desc: "Get matched with homeowners who need ongoing weekly or biweekly pool maintenance, giving you steady and predictable work." },
-  { icon: CreditCard, title: "Reliable Weekly Payouts", desc: "Track completed jobs and receive secure payouts directly to your account with full earnings visibility." },
-];
-
-const STEPS = [
-  { num: 1, icon: ClipboardList, title: "Register", desc: "Create your profile and set your service area." },
-  { num: 2, icon: Calendar, title: "Set Availability", desc: "Choose when and how often you want to accept jobs." },
-  { num: 3, icon: Briefcase, title: "Accept Pool Jobs", desc: "Receive service details matching your area and schedule." },
-  { num: 4, icon: CheckCircle, title: "Complete Service", desc: "Perform cleaning, report findings, and mark it complete." },
-  { num: 5, icon: DollarSign, title: "Get Paid", desc: "Receive weekly payouts with full earnings visibility." },
+  {
+    icon: Calendar,
+    title: "Control Your Schedule",
+    desc: "Work full-time or part-time. Accept jobs only when you're available and build a routine that fits your life.",
+  },
+  {
+    icon: Briefcase,
+    title: "Build Recurring Accounts",
+    desc: "Get matched with homeowners who need ongoing weekly or biweekly pool maintenance for steady, predictable work.",
+  },
+  {
+    icon: CreditCard,
+    title: "Reliable Weekly Payouts",
+    desc: "Track completed jobs and receive secure payouts directly to your account with full earnings visibility.",
+  },
 ];
 
 const EARNINGS = [
@@ -26,33 +49,34 @@ const EARNINGS = [
 ];
 
 const REQUIREMENTS = [
-  "Experience in pool maintenance or cleaning",
-  "Access to basic pool service equipment",
-  "Reliable transportation",
-  "Professional communication",
+  { icon: GraduationCap, title: "Experience in Pool Maintenance", desc: "Hands-on knowledge of cleaning, chemical balancing, and equipment care." },
+  { icon: Wrench, title: "Access to Equipment", desc: "Standard pool service tools, brushes, vacuums, and test kits." },
+  { icon: Truck, title: "Reliable Transportation", desc: "A vehicle capable of carrying your equipment between service stops." },
+  { icon: MessageSquare, title: "Professional Communication", desc: "Clear, friendly updates and timely responses to homeowners." },
+];
+
+const PROCESS = [
+  { num: 1, title: "Apply Online", desc: "Submit your profile, credentials, and service area in minutes." },
+  { num: 2, title: "Profile Reviewed", desc: "Our team verifies your experience and qualifications." },
+  { num: 3, title: "Get Matched", desc: "Receive recurring service routes that fit your schedule." },
+  { num: 4, title: "Start Earning", desc: "Complete services and receive reliable weekly payouts." },
 ];
 
 const TESTIMONIALS = [
   {
     name: "Daniel R.",
-    meta: "Verified Pool Pro",
     image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop",
     quote: "What I value most is the consistency. I've built a reliable weekly route, and I can clearly see my upcoming jobs and earnings.",
-    badge: "Verified Pool Pro · 112 Services Completed",
   },
   {
     name: "Marcus T.",
-    meta: "Verified Pool Pro",
     image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&h=200&fit=crop",
     quote: "The platform makes it easy to manage my schedule and grow my client base. Weekly payouts are always on time.",
-    badge: "Verified Pool Pro · 87 Services Completed",
   },
   {
     name: "James L.",
-    meta: "Verified Pool Pro",
     image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&h=200&fit=crop",
     quote: "I started part-time and now have a full route. The recurring accounts give me predictable income every week.",
-    badge: "Verified Pool Pro · 156 Services Completed",
   },
 ];
 
@@ -64,112 +88,181 @@ const FAQS = [
 ];
 
 const TechnicianLanding = () => {
-
   return (
     <div className="min-h-screen flex flex-col bg-background">
-      {/* Header */}
-      <header className="bg-card py-4 px-4 md:px-8">
-        <div className="flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-2">
-            <img src={logo} alt="Orlando's Oasis" className="h-8 w-8 object-contain" />
-            <span className="text-xl font-bold text-navy">Orlando's Oasis</span>
-          </Link>
-          <Link to="/login" className="text-sm font-semibold text-navy hover:text-primary transition-colors">
-            Sign In
-          </Link>
-        </div>
-      </header>
+      <Header />
 
       <main className="flex-1">
-        {/* Hero */}
-        <section className="bg-card">
-          <div className="container max-w-6xl mx-auto px-4 md:px-8 py-12 md:py-16">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-              <div>
-                
-                <h1 className="text-5xl font-extrabold text-navy leading-tight mb-4 md:text-4xl">
-                  Apply to become an Orlando's Oasis Pool Technician
+        {/* HERO */}
+        <section
+          className="relative overflow-hidden"
+          style={{
+            background:
+              "radial-gradient(1200px 600px at 80% 20%, hsl(203 87% 25% / 0.55), transparent 60%), linear-gradient(135deg, #0a1628 0%, #0f2547 60%, #103b6e 100%)",
+          }}
+        >
+          {/* subtle grid */}
+          <div
+            aria-hidden
+            className="absolute inset-0 opacity-[0.07]"
+            style={{
+              backgroundImage:
+                "linear-gradient(to right, #ffffff 1px, transparent 1px), linear-gradient(to bottom, #ffffff 1px, transparent 1px)",
+              backgroundSize: "48px 48px",
+            }}
+          />
+          <div className="relative container max-w-6xl mx-auto px-4 md:px-8 py-20 md:py-28">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+              {/* Left */}
+              <div className="text-white">
+                <span className="inline-flex items-center gap-2 rounded-full bg-white/10 backdrop-blur px-3 py-1 text-xs font-semibold tracking-wide text-white/90 border border-white/15 mb-6">
+                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
+                  Now hiring pool technicians in Central Florida
+                </span>
+                <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold uppercase leading-[0.95] tracking-tight">
+                  Build your <br className="hidden sm:block" />
+                  <span className="text-[hsl(var(--hp-sky))]">pool route</span> with us
                 </h1>
-                <ul className="space-y-2 mb-6">
-                  {["Submit your professional and contact information", "Upload your certifications, licenses, or training credentials", "Provide your resume and relevant work experience", "Our team reviews your application before approval"].map((item) => (
-                    <li key={item} className="flex items-start gap-2 text-sm text-foreground">
-                      <CheckCircle className="h-4 w-4 text-trust mt-0.5 shrink-0" />
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-                <div className="max-w-sm">
+                <p className="mt-6 text-base md:text-lg text-white/75 max-w-lg leading-relaxed">
+                  Join Orlando's Oasis and turn your pool expertise into steady weekly income with recurring routes, reliable payouts, and a schedule that fits your life.
+                </p>
+
+                <div className="mt-8 flex flex-wrap items-center gap-3">
                   <Link to="/technician/apply">
-                    <Button className="w-full h-12 text-base font-semibold">
-                      Apply as a Pool Technician
+                    <Button className="rounded-full h-12 px-7 text-base font-semibold bg-[hsl(var(--hp-sky))] hover:bg-[hsl(var(--hp-sky-hover))] text-[#0a1628] shadow-lg shadow-[hsl(var(--hp-sky))]/20">
+                      Apply as a Pool Pro
+                      <ArrowRight className="ml-1 h-4 w-4" />
                     </Button>
                   </Link>
+                  <a
+                    href="#how-it-works"
+                    className="inline-flex items-center gap-2 rounded-full h-12 px-5 text-sm font-semibold text-white border border-white/20 hover:bg-white/10 transition"
+                  >
+                    <PlayCircle className="h-5 w-5" />
+                    How it works
+                  </a>
+                </div>
+
+                <div className="mt-10">
+                  <p className="text-xs uppercase tracking-widest text-white/50 mb-3">
+                    Trusted by pool pros across Central Florida
+                  </p>
+                  <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-white/80">
+                    <span className="flex items-center gap-1.5">
+                      <CheckCircle className="h-4 w-4 text-emerald-400" /> Secure payouts
+                    </span>
+                    <span className="flex items-center gap-1.5">
+                      <CheckCircle className="h-4 w-4 text-emerald-400" /> Flexible scheduling
+                    </span>
+                    <span className="flex items-center gap-1.5">
+                      <CheckCircle className="h-4 w-4 text-emerald-400" /> Fast onboarding
+                    </span>
+                  </div>
                 </div>
               </div>
-              <div className="hidden md:block">
-                <img src={techHero} alt="Pool service professional" className="rounded-xl w-full max-w-md mx-auto shadow-lg" />
+
+              {/* Right */}
+              <div className="relative">
+                <div className="grid grid-cols-2 gap-4 mb-4">
+                  <div className="rounded-2xl bg-white/[0.07] border border-white/10 backdrop-blur p-5">
+                    <div className="flex items-center gap-2">
+                      <span className="text-3xl font-extrabold text-white">4.9</span>
+                      <Star className="h-5 w-5 fill-amber-400 text-amber-400" />
+                    </div>
+                    <p className="text-xs text-white/70 mt-1">Avg. technician rating</p>
+                  </div>
+                  <div className="rounded-2xl bg-[hsl(var(--hp-sky))]/15 border border-[hsl(var(--hp-sky))]/30 backdrop-blur p-5">
+                    <p className="text-xs text-white/70">Active Routes</p>
+                    <div className="flex items-baseline gap-2">
+                      <span className="text-3xl font-extrabold text-white">2.4K+</span>
+                      <span className="inline-flex items-center text-xs font-semibold text-emerald-300">
+                        <TrendingUp className="h-3 w-3 mr-0.5" /> growing
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                <div className="relative rounded-3xl overflow-hidden border border-white/10 bg-white/[0.04] backdrop-blur p-2">
+                  <img
+                    src={techHero}
+                    alt="Pool service professional at work"
+                    className="w-full h-[360px] md:h-[420px] object-cover rounded-2xl"
+                  />
+                  <div className="absolute bottom-5 left-5 right-5 rounded-2xl bg-white/95 backdrop-blur px-4 py-3 flex items-center gap-3 shadow-xl">
+                    <div className="h-10 w-10 rounded-full bg-[hsl(var(--hp-ocean))] flex items-center justify-center text-white font-bold">
+                      $
+                    </div>
+                    <div>
+                      <p className="text-sm font-bold text-foreground">Weekly payouts</p>
+                      <p className="text-xs text-muted-foreground">Direct deposit, every week</p>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         </section>
 
-        {/* Trust Bar */}
-        <section className="py-4 bg-primary/10">
-          <div className="container max-w-6xl mx-auto px-4 flex flex-wrap items-center justify-between gap-4">
-            <div className="flex items-center gap-2">
-              <span className="text-2xl font-bold text-navy">4.8</span>
-              <div className="flex">{[...Array(5)].map((_, i) => <Star key={i} className="h-4 w-4 fill-oasis text-oasis" />)}</div>
-              <span className="text-sm text-muted-foreground">based on technician reviews</span>
+        {/* WHY JOIN */}
+        <section className="py-20 md:py-[80px] px-4 bg-white">
+          <div className="container max-w-6xl mx-auto">
+            <div className="text-center max-w-2xl mx-auto mb-12">
+              <h2 className="text-3xl md:text-4xl font-bold text-[#111827]">
+                Why Pool Professionals Choose Orlando's Oasis
+              </h2>
+              <p className="mt-3 text-base text-muted-foreground">
+                We help pool pros grow predictable income with steady demand and recurring service opportunities.
+              </p>
             </div>
-            <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
-              <span className="flex items-center gap-1"><CheckCircle className="h-3.5 w-3.5 text-trust" /> Secure payouts</span>
-              <span className="flex items-center gap-1"><CheckCircle className="h-3.5 w-3.5 text-trust" /> Flexible scheduling</span>
-              <span className="flex items-center gap-1"><CheckCircle className="h-3.5 w-3.5 text-trust" /> Fast onboarding</span>
-            </div>
-          </div>
-        </section>
-
-        {/* Why Join */}
-        <section className="py-16 px-4 bg-white">
-          <div className="container max-w-6xl mx-auto text-center">
-            <h2 className="text-2xl md:text-3xl font-extrabold text-navy mb-2">Why Pool Technicians Join Orlando's Oasis</h2>
-            <p className="text-muted-foreground mb-10 max-w-xl mx-auto">We help pool professionals grow predictable income with steady demand and recurring service opportunities.</p>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {BENEFITS.map((b) => (
-                <div key={b.title} className="p-6 text-center flex flex-col items-center">
-                  <div className="inline-flex items-center justify-center h-12 w-12 rounded-xl bg-gradient-to-br from-primary to-primary/70 shadow-md mb-4">
-                    <b.icon className="h-6 w-6 text-white" strokeWidth={2} />
+                <div
+                  key={b.title}
+                  className="group p-7 rounded-2xl border border-border bg-white transition hover:shadow-xl hover:-translate-y-1 hover:border-[hsl(var(--hp-ocean))]/30"
+                >
+                  <div className="inline-flex items-center justify-center h-12 w-12 rounded-xl bg-[hsl(var(--hp-ocean))]/10 text-[hsl(var(--hp-ocean))] mb-5">
+                    <b.icon className="h-6 w-6" strokeWidth={1.75} />
                   </div>
-                  <h3 className="font-bold text-navy mb-2">{b.title}</h3>
-                  <p className="text-sm text-muted-foreground">{b.desc}</p>
+                  <h3 className="text-lg font-bold text-[#111827] mb-2">{b.title}</h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed">{b.desc}</p>
                 </div>
               ))}
             </div>
           </div>
         </section>
 
-        {/* Testimonials */}
-        <section className="py-20 px-6 bg-white">
-          <div className="container max-w-[1200px] mx-auto">
-            <h2 className="text-4xl md:text-5xl font-bold text-navy text-center mb-12 leading-tight">
-              What Pool Pros Are Saying
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {/* TESTIMONIALS */}
+        <section className="py-20 md:py-[80px] px-4 bg-[hsl(210_25%_98%)]">
+          <div className="container max-w-6xl mx-auto">
+            <div className="text-center max-w-2xl mx-auto mb-12">
+              <h2 className="text-3xl md:text-4xl font-bold text-[#111827]">
+                What Pool Pros Are Saying
+              </h2>
+              <p className="mt-3 text-base text-muted-foreground">
+                Real stories from technicians building recurring routes with us.
+              </p>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {TESTIMONIALS.map((t) => (
                 <div
                   key={t.name}
-                  className="bg-white rounded-2xl p-6 border border-border shadow-[0_4px_12px_rgba(0,0,0,0.04)]"
+                  className="bg-white rounded-2xl p-6 border border-border shadow-sm hover:shadow-md transition"
                 >
                   <div className="flex items-center gap-3 mb-4">
-                    <img src={t.image} alt={t.name} className="h-14 w-14 rounded-xl object-cover shrink-0" />
+                    <img
+                      src={t.image}
+                      alt={t.name}
+                      className="h-12 w-12 rounded-full object-cover shrink-0"
+                    />
                     <div>
-                      <p className="font-semibold text-navy text-base">{t.name}</p>
-                      <p className="text-sm text-muted-foreground">{t.meta}</p>
+                      <p className="font-semibold text-[#111827]">{t.name}</p>
+                      <span className="inline-flex items-center gap-1 text-xs font-semibold text-[hsl(var(--hp-ocean))] bg-[hsl(var(--hp-ocean))]/10 rounded-full px-2 py-0.5">
+                        <CheckCircle className="h-3 w-3" /> Verified Pool Pro
+                      </span>
                     </div>
                   </div>
                   <div className="flex mb-3">
                     {[...Array(5)].map((_, i) => (
-                      <Star key={i} className="h-4 w-4 fill-primary text-primary" />
+                      <Star key={i} className="h-4 w-4 fill-amber-400 text-amber-400" />
                     ))}
                   </div>
                   <blockquote className="text-[15px] leading-relaxed text-foreground/80">
@@ -181,71 +274,178 @@ const TechnicianLanding = () => {
           </div>
         </section>
 
-
-        {/* Earnings */}
-        <section className="py-16 px-4 bg-card">
-          <div className="container max-w-4xl mx-auto text-center">
-            <h2 className="text-2xl md:text-3xl font-extrabold text-navy mb-2">How Much Can You Earn?</h2>
-            <p className="text-muted-foreground mb-8 max-w-xl mx-auto">Earnings depend on availability, service type, and recurring accounts. Many pool pros build steady weekly income through consistent routes.</p>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              {EARNINGS.map((e) => (
-                <div key={e.label} className={`rounded-xl p-6 border ${e.popular ? 'border-primary ring-2 ring-primary/20' : 'border-border'} bg-background relative`}>
-                  {e.popular && <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground text-xs font-semibold px-3 py-1 rounded-full">Most Popular</span>}
-                  <h3 className="font-bold text-navy mb-2">{e.label}</h3>
-                  <p className="text-2xl font-extrabold text-primary mb-1">{e.range}</p>
-                  <p className="text-xs text-muted-foreground">{e.sub}</p>
-                </div>
-              ))}
+        {/* EARNINGS */}
+        <section className="py-20 md:py-[80px] px-4 bg-white">
+          <div className="container max-w-6xl mx-auto">
+            <div className="text-center max-w-2xl mx-auto mb-12">
+              <h2 className="text-3xl md:text-4xl font-bold text-[#111827]">
+                How Much Can You Earn?
+              </h2>
+              <p className="mt-3 text-base text-muted-foreground">
+                Earnings depend on availability and service type. Most technicians build steady weekly income through recurring routes.
+              </p>
             </div>
-            <p className="text-xs text-muted-foreground mt-4 italic">Add-ons such as filter cleaning, tile scrubbing, algae treatment, and acid washes may increase earnings.</p>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
+              {EARNINGS.map((e) => {
+                const popular = e.popular;
+                return (
+                  <div
+                    key={e.label}
+                    className={`relative rounded-2xl p-8 border transition ${
+                      popular
+                        ? "bg-[hsl(var(--hp-ocean))] text-white border-[hsl(var(--hp-ocean))] shadow-2xl md:scale-105 md:py-10"
+                        : "bg-white border-border hover:shadow-lg"
+                    }`}
+                  >
+                    {popular && (
+                      <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-amber-400 text-[#0a1628] text-xs font-bold px-3 py-1 rounded-full shadow">
+                        Most Popular
+                      </span>
+                    )}
+                    <h3 className={`text-lg font-bold mb-3 ${popular ? "text-white" : "text-[#111827]"}`}>
+                      {e.label}
+                    </h3>
+                    <p className={`text-4xl font-extrabold mb-2 ${popular ? "text-white" : "text-[hsl(var(--hp-ocean))]"}`}>
+                      {e.range}
+                    </p>
+                    <p className={`text-sm ${popular ? "text-white/80" : "text-muted-foreground"}`}>
+                      {e.sub}
+                    </p>
+                  </div>
+                );
+              })}
+            </div>
+            <p className="text-xs text-muted-foreground mt-6 text-center italic">
+              Add-ons such as filter cleaning, tile scrubbing, algae treatment, and acid washes may increase earnings.
+            </p>
           </div>
         </section>
 
-        {/* Requirements */}
-        <section className="py-16 px-4 bg-background">
-          <div className="container max-w-2xl mx-auto text-center">
-            <h2 className="text-2xl md:text-3xl font-extrabold text-navy mb-8">Requirements to Join</h2>
-            <ul className="space-y-4 text-left">
+        {/* REQUIREMENTS */}
+        <section className="py-20 md:py-[80px] px-4 bg-[hsl(210_25%_98%)]">
+          <div className="container max-w-5xl mx-auto">
+            <div className="text-center max-w-2xl mx-auto mb-12">
+              <h2 className="text-3xl md:text-4xl font-bold text-[#111827]">
+                Requirements to Join
+              </h2>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
               {REQUIREMENTS.map((r) => (
-                <li key={r} className="flex items-center gap-3 pb-4 border-b border-border last:border-0">
-                  <CheckCircle className="h-5 w-5 text-primary shrink-0" />
-                  <span className="text-foreground">{r}</span>
-                </li>
+                <div
+                  key={r.title}
+                  className="flex gap-4 p-6 rounded-2xl bg-white border border-border hover:shadow-md transition"
+                >
+                  <div className="shrink-0 inline-flex items-center justify-center h-11 w-11 rounded-xl bg-[hsl(var(--hp-ocean))]/10 text-[hsl(var(--hp-ocean))]">
+                    <r.icon className="h-5 w-5" strokeWidth={2} />
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-[#111827] mb-1">{r.title}</h3>
+                    <p className="text-sm text-muted-foreground leading-relaxed">{r.desc}</p>
+                  </div>
+                </div>
               ))}
-            </ul>
-            <p className="text-sm text-muted-foreground mt-6">We'll guide you through the onboarding process step by step.</p>
+            </div>
+            <p className="text-center text-sm text-muted-foreground mt-8">
+              We'll guide you through every step of onboarding.
+            </p>
+          </div>
+        </section>
+
+        {/* HOW IT WORKS */}
+        <section id="how-it-works" className="py-20 md:py-[80px] px-4 bg-white">
+          <div className="container max-w-6xl mx-auto">
+            <div className="text-center max-w-2xl mx-auto mb-14">
+              <h2 className="text-3xl md:text-4xl font-bold text-[#111827]">How to Get Started</h2>
+              <p className="mt-3 text-base text-muted-foreground">
+                Four simple steps from application to your first payout.
+              </p>
+            </div>
+
+            <div className="relative">
+              {/* connector line */}
+              <div
+                aria-hidden
+                className="hidden md:block absolute top-7 left-[12.5%] right-[12.5%] h-0.5 bg-gradient-to-r from-[hsl(var(--hp-ocean))]/30 via-[hsl(var(--hp-ocean))]/30 to-[hsl(var(--hp-ocean))]/30"
+              />
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-8 md:gap-4 relative">
+                {PROCESS.map((s) => (
+                  <div key={s.num} className="text-center px-2">
+                    <div className="relative z-10 mx-auto h-14 w-14 rounded-full bg-[hsl(var(--hp-ocean))] text-white text-lg font-bold flex items-center justify-center shadow-lg ring-8 ring-white">
+                      {s.num}
+                    </div>
+                    <h3 className="mt-5 font-bold text-[#111827]">{s.title}</h3>
+                    <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{s.desc}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         </section>
 
         {/* FAQ */}
-        <section className="faq-section py-16 px-4 bg-gradient-to-br from-navy via-oasis-navy-light to-primary">
-          <div className="container max-w-2xl mx-auto">
-            <h2 className="text-2xl md:text-3xl font-extrabold text-card text-center mb-8">Pool Pro FAQ</h2>
-            <Accordion type="single" collapsible className="space-y-3">
+        <section
+          className="faq-section py-20 md:py-[80px] px-4"
+          style={{ background: "linear-gradient(135deg, #0a1628 0%, #0f2547 100%)" }}
+        >
+          <div className="container max-w-3xl mx-auto">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl md:text-4xl font-bold text-white">Pool Pro FAQ</h2>
+              <p className="mt-3 text-base text-white/70">
+                Answers to the questions technicians ask most.
+              </p>
+            </div>
+            <Accordion type="single" collapsible className="divide-y divide-white/10 border-y border-white/10">
               {FAQS.map((faq, i) => (
-                <AccordionItem key={i} value={`faq-${i}`} className="bg-navy-light/50 border border-card/10 rounded-lg px-4">
-                  <AccordionTrigger className="text-card hover:no-underline">{faq.q}</AccordionTrigger>
-                  <AccordionContent className="text-card/70">{faq.a}</AccordionContent>
+                <AccordionItem key={i} value={`faq-${i}`} className="border-0">
+                  <AccordionTrigger className="text-white hover:no-underline text-left py-5 text-base font-semibold">
+                    {faq.q}
+                  </AccordionTrigger>
+                  <AccordionContent className="text-white/75 pb-5 text-[15px] leading-relaxed">
+                    {faq.a}
+                  </AccordionContent>
                 </AccordionItem>
               ))}
             </Accordion>
           </div>
         </section>
 
-
+        {/* FINAL CTA */}
+        <section
+          className="py-20 md:py-[80px] px-4"
+          style={{
+            background:
+              "radial-gradient(800px 400px at 20% 50%, hsl(203 87% 30% / 0.5), transparent 70%), linear-gradient(135deg, #0a1628 0%, #103b6e 100%)",
+          }}
+        >
+          <div className="container max-w-4xl mx-auto text-center text-white">
+            <h2 className="text-3xl md:text-5xl font-extrabold tracking-tight">
+              Ready to Build Your Pool Route?
+            </h2>
+            <p className="mt-4 text-base md:text-lg text-white/75 max-w-2xl mx-auto">
+              Apply today and start receiving recurring service opportunities in your area.
+            </p>
+            <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+              <Link to="/technician/apply">
+                <Button className="rounded-full h-12 px-7 text-base font-semibold bg-[hsl(var(--hp-sky))] hover:bg-[hsl(var(--hp-sky-hover))] text-[#0a1628] shadow-lg">
+                  Apply as a Pool Pro
+                  <ArrowRight className="ml-1 h-4 w-4" />
+                </Button>
+              </Link>
+              <Link to="/contact">
+                <Button
+                  variant="outline"
+                  className="rounded-full h-12 px-7 text-base font-semibold bg-transparent border-white/30 text-white hover:bg-white/10 hover:text-white"
+                >
+                  Contact our team
+                </Button>
+              </Link>
+            </div>
+          </div>
+        </section>
       </main>
 
-      {/* Footer */}
-      <footer className="py-8" style={{ backgroundColor: "hsl(215 100% 12%)" }}>
-        <div className="container max-w-6xl mx-auto px-4 flex flex-col md:flex-row items-center justify-between gap-4">
-          <div className="flex flex-wrap items-center gap-4 text-sm text-card/70">
-            <Link to="/" className="hover:text-card transition-colors">Orlando's Oasis</Link>
-            <Link to="/privacy" className="hover:text-card transition-colors">Privacy Policy</Link>
-            <Link to="/terms" className="hover:text-card transition-colors">Terms</Link>
-          </div>
-          <span className="text-sm text-card/70 shrink-0">© 2026 Orlando's Oasis. All rights reserved.</span>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 };

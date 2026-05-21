@@ -88,7 +88,9 @@ const PurchaseSuccess = () => {
     try { localStorage.removeItem("orlandos_oasis_pending_schedule"); } catch { /* ignore */ }
     setShowBooking(false);
     setShowSuccess(true);
-    setTimeout(() => navigate("/dashboard"), 2200);
+    // Always send the homeowner to their customer dashboard, even if the
+     // current session belongs to another role (e.g. admin testing the flow).
+     setTimeout(() => navigate("/dashboard", { replace: true, state: { forceHomeowner: true } }), 2200);
   };
 
   // Brief success screen after booking

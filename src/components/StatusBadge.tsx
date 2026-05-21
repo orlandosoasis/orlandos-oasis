@@ -15,7 +15,7 @@ const STATUS_CONFIG: Record<
     borderClass: "border border-[#C5DFFA]",
   },
   in_progress: {
-    label: "In Progress",
+    label: "Ongoing",
     icon: Loader2,
     bgClass: "bg-[#FFF4DB]",
     textClass: "text-[#4a3505]",

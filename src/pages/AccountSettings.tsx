@@ -42,6 +42,13 @@ const AccountSettings = () => {
   return (
     <>
       <PageContainer>
+        <button
+          onClick={() => navigate("/dashboard")}
+          className="mb-4 inline-flex items-center gap-2 text-foreground hover:text-primary transition-colors"
+        >
+          <ArrowLeft className="h-5 w-5" />
+          <span className="font-medium text-sm">Back</span>
+        </button>
         <h1 className="text-2xl font-bold text-foreground mb-6">Settings</h1>
 
         <div className="bg-card rounded-2xl border border-border shadow-sm divide-y divide-border overflow-hidden">

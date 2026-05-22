@@ -44,7 +44,8 @@ const PersistentHeader = memo(function PersistentHeader() {
   const { user, logout } = useAuth();
 
   const isDashboard = location.pathname === "/dashboard";
-  const isSubPage = !isDashboard;
+  const isSettingsHub = location.pathname === "/account-settings";
+  const isSubPage = !isDashboard && !isSettingsHub;
 
   let backTarget: string | null = null;
   if (isSubPage) {

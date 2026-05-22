@@ -807,14 +807,6 @@ const PaymentMethods = () => {
         </footer>
       </main>
 
-      <ManageMembershipModal
-        open={manageOpen}
-        onOpenChange={setManageOpen}
-        nextServiceDate={nextDateStr}
-        current={membership}
-        onCancelled={handleCancelled}
-        onSaved={handlePlanSaved}
-      />
 
       <PayNowModal
         open={payNowOpen}

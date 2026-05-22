@@ -500,21 +500,51 @@ const PaymentMethods = () => {
             {/* Top: status + price */}
             <div className="p-6">
               {isCancelled && (
-                <div className="bg-destructive/10 border border-destructive/20 rounded-xl p-4 text-sm mb-4">
-                  <p className="font-medium text-destructive">Your membership has been cancelled.</p>
-                  <p className="text-destructive/80 mt-1">No future recurring services will be scheduled.</p>
+                <div className="bg-destructive/5 border border-destructive/20 rounded-xl p-4 text-sm mb-4 space-y-1">
+                  <p className="font-semibold text-destructive">
+                    {subStatus === "pending_cancellation" ? "Cancellation scheduled" : "Subscription cancelled"}
+                  </p>
+                  <p className="text-destructive/80">
+                    {subStatus === "pending_cancellation"
+                      ? `You keep service through ${formatEndDate(subscription?.effectiveEndDate ?? null)}. No future visits will be scheduled after that date.`
+                      : `Ended on ${formatEndDate(subscription?.effectiveEndDate ?? null)}. No recurring service is scheduled.`}
+                  </p>
+                  {subscription?.cancellationReason && (
+                    <p className="text-xs text-muted-foreground pt-1">
+                      Reason: {subscription.cancellationReason}
+                    </p>
+                  )}
                 </div>
               )}
+
 
               <div className="flex items-start justify-between gap-4">
                 <div className="space-y-1.5">
                   <div className="flex items-center gap-2">
                     <span
-                      className={`h-2 w-2 rounded-full ${isCancelled ? "bg-destructive" : "bg-emerald-500"}`}
+                      className={`h-2 w-2 rounded-full ${
+                        subStatus === "cancelled"
+                          ? "bg-destructive"
+                          : subStatus === "pending_cancellation"
+                          ? "bg-amber-500"
+                          : "bg-emerald-500"
+                      }`}
                       aria-hidden
                     />
-                    <span className={`text-sm font-semibold ${isCancelled ? "text-destructive" : "text-emerald-700"}`}>
-                      {isCancelled ? "Cancelled" : "Active"}
+                    <span
+                      className={`text-sm font-semibold ${
+                        subStatus === "cancelled"
+                          ? "text-destructive"
+                          : subStatus === "pending_cancellation"
+                          ? "text-amber-700"
+                          : "text-emerald-700"
+                      }`}
+                    >
+                      {subStatus === "cancelled"
+                        ? "Cancelled"
+                        : subStatus === "pending_cancellation"
+                        ? "Pending cancellation"
+                        : "Active"}
                     </span>
                   </div>
                   <p className="text-[15px] font-semibold text-foreground">
@@ -526,6 +556,7 @@ const PaymentMethods = () => {
                     Auto-renew {isCancelled ? "Off" : "On"}
                   </p>
                 </div>
+
                 <div className="text-right">
                   <p className="text-3xl font-bold text-foreground tabular-nums leading-none">
                     ${monthlyTotal}

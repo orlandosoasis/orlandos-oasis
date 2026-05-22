@@ -23,6 +23,7 @@ const Preferences = () => {
   return (
     <>
       <main className="max-w-[760px] mx-auto px-5 py-8">
+        <BackLink />
         <h1 className="text-2xl font-bold text-foreground mb-6">Preferences</h1>
         <div className="bg-card rounded-2xl border border-border shadow-sm p-6 space-y-6">
           <div className="flex items-center justify-between">

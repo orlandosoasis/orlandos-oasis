@@ -14,7 +14,6 @@ import {
   getMembershipMonthlyPrice,
 } from "@/components/ManageMembershipModal";
 import CancelMembershipModal from "@/components/CancelMembershipModal";
-import { useToast as _ } from "@/hooks/use-toast";
 
 const FULL_DAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 const SHORT_MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];

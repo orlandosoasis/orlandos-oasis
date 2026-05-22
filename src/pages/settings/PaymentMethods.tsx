@@ -650,7 +650,7 @@ const PaymentMethods = () => {
                     variant="outline"
                     size="sm"
                     className="justify-start gap-2 hover:bg-primary hover:text-primary-foreground hover:border-transparent"
-                    onClick={() => setManageOpen(true)}
+                    onClick={() => navigate("/account-settings/manage-plan")}
                   >
                     <Repeat className="h-4 w-4" />
                     Change frequency
@@ -659,7 +659,7 @@ const PaymentMethods = () => {
                     variant="outline"
                     size="sm"
                     className="justify-start gap-2 hover:bg-primary hover:text-primary-foreground hover:border-transparent"
-                    onClick={() => setManageOpen(true)}
+                    onClick={() => navigate("/account-settings/manage-plan")}
                   >
                     <PlusCircle className="h-4 w-4" />
                     Add services
@@ -671,7 +671,7 @@ const PaymentMethods = () => {
 
             {/* Primary actions */}
             <div className="p-6 space-y-3">
-              <Button className="w-full" disabled={isCancelled} onClick={() => setManageOpen(true)}>
+              <Button className="w-full" disabled={isCancelled} onClick={() => navigate("/account-settings/manage-plan")}>
                 <Settings2 className="h-4 w-4 mr-2" />
                 {isCancelled ? "Membership Cancelled" : "Manage Plan"}
               </Button>

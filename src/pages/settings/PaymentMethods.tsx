@@ -286,7 +286,10 @@ const PaymentMethods = () => {
   return (
     <>
       <main className="max-w-[760px] mx-auto px-5 py-8 pb-16 space-y-8">
-        <h1 className="text-2xl font-bold text-foreground">Payment & Membership</h1>
+        <div>
+          <BackLink />
+          <h1 className="text-2xl font-bold text-foreground">Payment & Membership</h1>
+        </div>
 
         {/* A. Payment Status Banner */}
         {banner && (

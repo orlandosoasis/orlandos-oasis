@@ -36,6 +36,7 @@ const ExperienceLevel = () => {
   return (
     <>
       <main className="max-w-[760px] mx-auto px-5 py-8">
+        <BackLink />
         <h1 className="text-2xl font-bold text-foreground mb-2">Cleaner Experience Level</h1>
         <p className="text-sm text-muted-foreground mb-6">
           Choose your preferred technician experience level. Higher levels may affect pricing or availability.

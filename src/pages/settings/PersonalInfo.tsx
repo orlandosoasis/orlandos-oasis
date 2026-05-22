@@ -29,6 +29,7 @@ const PersonalInfo = () => {
   return (
     <>
       <main className="max-w-[760px] mx-auto px-5 py-8">
+        <BackLink />
         <h1 className="text-2xl font-bold text-foreground mb-6">Personal Information</h1>
         <div className="bg-card rounded-2xl border border-border shadow-sm p-6 space-y-5">
           <div className="grid grid-cols-2 gap-4">

@@ -38,6 +38,9 @@ import ManageMembershipModal, {
 } from "@/components/ManageMembershipModal";
 import PayNowModal from "@/components/PayNowModal";
 import CancelSubscriptionModal from "@/components/CancelSubscriptionModal";
+import { useSubscription, useReactivateSubscription, formatEndDate } from "@/hooks/useSubscription";
+
+
 
 interface SavedCard {
   id: string;
@@ -80,13 +83,20 @@ const PaymentMethods = () => {
   const [newCard, setNewCard] = useState({ number: "", expiry: "", cvc: "" });
 
   const [manageOpen, setManageOpen] = useState(false);
-  const [cancelled, setCancelled] = useState(false);
+
+  // Subscription state lives in the database; this card just reads it.
+  const { data: subscription } = useSubscription();
+  const reactivate = useReactivateSubscription();
+  const subStatus = subscription?.status ?? "active";
+  const isCancelled = subStatus === "cancelled" || subStatus === "pending_cancellation";
 
   // ===== Test / dev simulators =====
   const [paymentState, setPaymentState] = useState<PaymentState>("healthy");
   const [outstandingBalance, setOutstandingBalance] = useState<number>(0);
   const [payNowOpen, setPayNowOpen] = useState(false);
   const [cancelOpen, setCancelOpen] = useState(false);
+
+
 
   // ===== Single source of truth for membership config =====
   // Initialised from booking/checkout, then mutated via Manage Plan modal.
@@ -225,11 +235,21 @@ const PaymentMethods = () => {
   };
 
   const handleCancelled = () => {
-    setCancelled(true);
     toast({
-      title: "Membership cancelled successfully",
+      title: "Subscription cancelled",
       description: "Your recurring service will no longer renew.",
+      variant: "success",
     });
+  };
+
+  const handleReactivate = async () => {
+    try {
+      await reactivate.mutateAsync();
+      toast({ title: "Subscription reactivated", description: "Your plan is active again.", variant: "success" });
+    } catch (err: unknown) {
+      const m = err instanceof Error ? err.message : "Please try again.";
+      toast({ title: "Couldn't reactivate", description: m, variant: "destructive" });
+    }
   };
 
   const handlePaymentSuccess = () => {
@@ -243,8 +263,15 @@ const PaymentMethods = () => {
 
   const handlePlanSaved = (next: MembershipConfig, _plan: ServicePlan) => {
     setMembership(next);
-    setCancelled(false);
   };
+
+  // Effective end of the current billing cycle (used as cancellation effective date).
+  const effectiveEndIso = useMemo(() => {
+    const end = new Date(nextBilling);
+    end.setDate(end.getDate() - 1);
+    return `${end.getFullYear()}-${String(end.getMonth() + 1).padStart(2, "0")}-${String(end.getDate()).padStart(2, "0")}`;
+  }, [nextBilling]);
+
 
   // ===== Banner config - now amount-aware =====
   const banner: { tone: string; icon: any; title: string; subtitle?: string; cta?: string; onCta?: () => void } | null =

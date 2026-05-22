@@ -69,7 +69,7 @@ const AccountSettings = () => {
             </button>
           ))}
         </div>
-        <DangerZone />
+        
 
         <footer className="text-center text-xs text-muted-foreground mt-10 space-x-3">
           <Link to="/terms" className="text-primary hover:underline">Terms</Link>

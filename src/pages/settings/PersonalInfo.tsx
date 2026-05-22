@@ -9,6 +9,8 @@ import { useBooking } from "@/contexts/BookingContext";
 import { formatUsPhone } from "@/lib/phone";
 import { FORM_LIMITS } from "@/lib/form-limits";
 import BackLink from "@/components/BackLink";
+import DangerZone from "@/components/account/DangerZone";
+
 
 const PersonalInfo = () => {
   const { user, updateUser } = useAuth();

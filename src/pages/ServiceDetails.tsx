@@ -354,24 +354,32 @@ const ServiceDetails = () => {
                 <MapPin className="h-4 w-4 text-muted-foreground" />
                 <span>{fullAddress}</span>
               </div>
-              <div className="flex items-center gap-2 text-sm text-foreground">
-                <Droplets className="h-4 w-4 text-muted-foreground" />
-                <span>
-                  {selectedPoolSize
-                    ? `${selectedPoolSize.title} — ${selectedPoolSize.subtitle}`
-                    : "Pool size not selected"}
-                </span>
-              </div>
-              <div className="flex items-center gap-2 text-sm text-foreground">
-                <Key className="h-4 w-4 text-muted-foreground" />
-                <span>{ACCESS_LABELS[pool?.accessMethod || scheduleData.accessMethod]}</span>
-              </div>
-              {(pool?.accessDetail || scheduleData.accessDetail) && (
-                <div className="mt-3">
-                  <p className="font-bold text-foreground mb-1.5 text-xs">Access Notes</p>
-                  <p className="text-[13.5px] text-muted-foreground leading-relaxed">{pool?.accessDetail || scheduleData.accessDetail}</p>
+              {selectedPoolSize && (
+                <div className="flex items-center gap-2 text-sm text-foreground">
+                  <Droplets className="h-4 w-4 text-muted-foreground" />
+                  <span>{`${selectedPoolSize.title} — ${selectedPoolSize.subtitle}`}</span>
                 </div>
               )}
+              {(() => {
+                const accessMethod = dbPool?.accessMethod || ctxBooking?.pool?.accessMethod;
+                const accessDetail = dbPool?.accessDetail || ctxBooking?.pool?.accessDetail;
+                if (!accessMethod) return null;
+                if (accessMethod === "gate" && !accessDetail) return null;
+                return (
+                  <>
+                    <div className="flex items-center gap-2 text-sm text-foreground">
+                      <Key className="h-4 w-4 text-muted-foreground" />
+                      <span>{ACCESS_LABELS[accessMethod]}</span>
+                    </div>
+                    {accessDetail && (
+                      <div className="mt-3">
+                        <p className="font-bold text-foreground mb-1.5 text-xs">Access Notes</p>
+                        <p className="text-[13.5px] text-muted-foreground leading-relaxed">{accessDetail}</p>
+                      </div>
+                    )}
+                  </>
+                );
+              })()}
             </div>
             {booking.specialNotes && (
               <>

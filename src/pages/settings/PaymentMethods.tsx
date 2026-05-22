@@ -88,7 +88,7 @@ const PaymentMethods = () => {
   const { data: subscription } = useSubscription();
   const reactivate = useReactivateSubscription();
   const subStatus = subscription?.status ?? "active";
-  const isCancelled = subStatus === "isCancelled" || subStatus === "pending_cancellation";
+  const isCancelled = subStatus === "cancelled" || subStatus === "pending_cancellation";
 
   // ===== Test / dev simulators =====
   const [paymentState, setPaymentState] = useState<PaymentState>("healthy");
@@ -236,7 +236,7 @@ const PaymentMethods = () => {
 
   const handleCancelled = () => {
     toast({
-      title: "Subscription isCancelled",
+      title: "Subscription cancelled",
       description: "Your recurring service will no longer renew.",
       variant: "success",
     });
@@ -501,7 +501,7 @@ const PaymentMethods = () => {
             <div className="p-6">
               {isCancelled && (
                 <div className="bg-destructive/10 border border-destructive/20 rounded-xl p-4 text-sm mb-4">
-                  <p className="font-medium text-destructive">Your membership has been isCancelled.</p>
+                  <p className="font-medium text-destructive">Your membership has been cancelled.</p>
                   <p className="text-destructive/80 mt-1">No future recurring services will be scheduled.</p>
                 </div>
               )}

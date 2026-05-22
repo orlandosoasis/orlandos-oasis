@@ -642,32 +642,6 @@ const PaymentMethods = () => {
 
             <Separator />
 
-            {/* Quick actions */}
-            {!isCancelled && (
-              <>
-                <div className="p-6 grid grid-cols-2 gap-2">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="justify-start gap-2 hover:bg-primary hover:text-primary-foreground hover:border-transparent"
-                    onClick={() => navigate("/account-settings/manage-plan")}
-                  >
-                    <Repeat className="h-4 w-4" />
-                    Change frequency
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="justify-start gap-2 hover:bg-primary hover:text-primary-foreground hover:border-transparent"
-                    onClick={() => navigate("/account-settings/manage-plan")}
-                  >
-                    <PlusCircle className="h-4 w-4" />
-                    Add services
-                  </Button>
-                </div>
-                <Separator />
-              </>
-            )}
 
             {/* Primary actions */}
             <div className="p-6 space-y-3">

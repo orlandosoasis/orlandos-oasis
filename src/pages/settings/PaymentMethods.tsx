@@ -26,7 +26,7 @@ import { Separator } from "@/components/ui/separator";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { useBooking } from "@/contexts/BookingContext";
-import ManageMembershipModal, {
+import {
   type MembershipConfig,
   type ServicePlan,
   type PoolSize,
@@ -36,6 +36,7 @@ import ManageMembershipModal, {
   getFrequencyLabel,
   getPoolSizeLabel,
 } from "@/components/ManageMembershipModal";
+import { MEMBERSHIP_STORAGE_KEY } from "@/pages/settings/ManagePlan";
 import PayNowModal from "@/components/PayNowModal";
 import CancelSubscriptionModal from "@/components/CancelSubscriptionModal";
 import { useSubscription, useReactivateSubscription, formatEndDate } from "@/hooks/useSubscription";

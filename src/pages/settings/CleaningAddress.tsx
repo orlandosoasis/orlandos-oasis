@@ -27,6 +27,7 @@ const CleaningAddress = () => {
   return (
     <>
       <main className="max-w-[760px] mx-auto px-5 py-8">
+        <BackLink />
         <h1 className="text-2xl font-bold text-foreground mb-6">Cleaning Address</h1>
         <div className="bg-card rounded-2xl border border-border shadow-sm p-6 space-y-5">
           <div className="space-y-2">

@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import { FORM_LIMITS } from "@/lib/form-limits";
+import BackLink from "@/components/BackLink";
 
 const CleaningAddress = () => {
   const { user, updateUser } = useAuth();

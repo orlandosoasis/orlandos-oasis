@@ -5,14 +5,12 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/hooks/use-toast";
 import BackLink from "@/components/BackLink";
 
 const Preferences = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const [hasPets, setHasPets] = useState(false);
   const [preferredTime, setPreferredTime] = useState("morning");
   
 
@@ -26,14 +24,6 @@ const Preferences = () => {
         <BackLink />
         <h1 className="text-2xl font-bold text-foreground mb-6">Preferences</h1>
         <div className="bg-card rounded-2xl border border-border shadow-sm p-6 space-y-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-[15px] font-semibold text-foreground">Pets on Property</p>
-              <p className="text-sm text-muted-foreground">Let the technician know if you have pets</p>
-            </div>
-            <Switch checked={hasPets} onCheckedChange={setHasPets} />
-          </div>
-
           <div className="space-y-2">
             <Label>Preferred Cleaning Time</Label>
             <Select value={preferredTime} onValueChange={setPreferredTime}>

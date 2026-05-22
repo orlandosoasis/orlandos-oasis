@@ -5,6 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { FORM_LIMITS } from "@/lib/form-limits";
+import BackLink from "@/components/BackLink";
 
 const CleaningNotes = () => {
   const navigate = useNavigate();

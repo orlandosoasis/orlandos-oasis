@@ -54,8 +54,13 @@ const PersonalInfo = () => {
           </div>
           <Button onClick={handleSave} className="mt-2">Save Changes</Button>
         </div>
+
+        <div className="mt-6">
+          <DangerZone />
+        </div>
       </main>
     </>
+
   );
 };
 

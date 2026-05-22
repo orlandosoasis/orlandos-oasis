@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { AlertTriangle, Download, Trash2, Loader2 } from "lucide-react";
+import { Download, Trash2, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -90,67 +90,52 @@ export function DangerZone() {
   };
 
   return (
-    <section
-      aria-labelledby="danger-zone-heading"
-      className="mt-10 rounded-2xl border-2 border-destructive/30 bg-destructive/5 p-5"
-    >
-      <header className="mb-4 flex items-center gap-2">
-        <AlertTriangle className="h-5 w-5 text-destructive" aria-hidden="true" />
-        <h2 id="danger-zone-heading" className="text-lg font-semibold text-destructive">
-          Danger zone
-        </h2>
-      </header>
-
-      <p className="mb-5 text-sm text-muted-foreground">
-        Permanent actions. These cannot be undone.
-      </p>
-
-      <div className="space-y-4">
-        {/* Export */}
-        <div className="flex flex-col gap-3 rounded-xl bg-card p-4 sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <p className="font-medium text-foreground">Export my data</p>
-            <p className="text-sm text-muted-foreground">
-              Download a JSON file with your profile, services, pools, messages, and reviews.
-            </p>
-          </div>
-          <Button
-            variant="outline"
-            onClick={handleExport}
-            disabled={exporting}
-            className="gap-2 sm:shrink-0"
-          >
-            {exporting ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
-            ) : (
-              <Download className="h-4 w-4" />
-            )}
-            {exporting ? "Preparing..." : "Download"}
-          </Button>
+    <section aria-label="Account actions" className="bg-card rounded-2xl border border-border shadow-sm divide-y divide-border overflow-hidden">
+      {/* Export */}
+      <div className="flex flex-col gap-3 p-5 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <p className="font-medium text-foreground">Export my data</p>
+          <p className="text-sm text-muted-foreground">
+            Download a JSON file with your profile, services, pools, messages, and reviews.
+          </p>
         </div>
-
-        {/* Delete */}
-        <div className="flex flex-col gap-3 rounded-xl bg-card p-4 sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <p className="font-medium text-foreground">Delete my account</p>
-            <p className="text-sm text-muted-foreground">
-              Permanently remove your account and all associated data.
-              {user?.role === "admin"
-                ? " Admins must be deleted by another admin."
-                : " Active bookings will be cancelled."}
-            </p>
-          </div>
-          <Button
-            variant="destructive"
-            onClick={() => setDeleteOpen(true)}
-            disabled={user?.role === "admin"}
-            className="gap-2 sm:shrink-0"
-          >
-            <Trash2 className="h-4 w-4" />
-            Delete account
-          </Button>
-        </div>
+        <Button
+          variant="outline"
+          onClick={handleExport}
+          disabled={exporting}
+          className="gap-2 sm:shrink-0"
+        >
+          {exporting ? (
+            <Loader2 className="h-4 w-4 animate-spin" />
+          ) : (
+            <Download className="h-4 w-4" />
+          )}
+          {exporting ? "Preparing..." : "Download"}
+        </Button>
       </div>
+
+      {/* Delete */}
+      <div className="flex flex-col gap-3 p-5 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <p className="font-medium text-foreground">Delete my account</p>
+          <p className="text-sm text-muted-foreground">
+            Permanently remove your account and all associated data.
+            {user?.role === "admin"
+              ? " Admins must be deleted by another admin."
+              : " Active bookings will be cancelled."}
+          </p>
+        </div>
+        <Button
+          variant="outline"
+          onClick={() => setDeleteOpen(true)}
+          disabled={user?.role === "admin"}
+          className="gap-2 sm:shrink-0"
+        >
+          <Trash2 className="h-4 w-4" />
+          Delete account
+        </Button>
+      </div>
+
 
       <AlertDialog open={deleteOpen} onOpenChange={(o) => { setDeleteOpen(o); if (!o) setConfirmText(""); }}>
         <AlertDialogContent>

@@ -180,8 +180,9 @@ const ServiceDetails = () => {
   }
 
   const { selectedPass, scheduleData, technician, frequency, pool } = booking;
-  const poolSizeKey = (pool?.poolSize || checkoutData?.poolSize) as keyof typeof POOL_SIZE_OPTIONS | undefined;
-  const selectedPoolSize = poolSizeKey ? POOL_SIZE_OPTIONS[poolSizeKey] : null;
+  const rawPoolSize = pool?.poolSize || checkoutData?.poolSize || "";
+  const poolSizeKey = rawPoolSize.toLowerCase().split(" ")[0] as keyof typeof POOL_SIZE_OPTIONS;
+  const selectedPoolSize = POOL_SIZE_OPTIONS[poolSizeKey] || null;
   const status = booking.status || "scheduled";
   const isCompleted = status === "completed";
   const isMonthly = frequency === "monthly";

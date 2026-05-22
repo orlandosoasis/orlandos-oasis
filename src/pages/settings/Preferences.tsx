@@ -14,7 +14,7 @@ const Preferences = () => {
   const { toast } = useToast();
   const [hasPets, setHasPets] = useState(false);
   const [preferredTime, setPreferredTime] = useState("morning");
-  const [accessInstructions, setAccessInstructions] = useState("");
+  
 
   const handleSave = () => {
     toast({ title: "Preferences saved.", variant: "success" });
@@ -52,15 +52,6 @@ const Preferences = () => {
             </div>
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="access">Access Instructions</Label>
-            <Input
-              id="access"
-              value={accessInstructions}
-              onChange={(e) => setAccessInstructions(e.target.value)}
-              placeholder="e.g., Use the side gate on the left"
-            />
-          </div>
 
           <Button onClick={handleSave} className="mt-2">Save Changes</Button>
         </div>

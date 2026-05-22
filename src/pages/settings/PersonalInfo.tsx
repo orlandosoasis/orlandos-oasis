@@ -8,6 +8,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useBooking } from "@/contexts/BookingContext";
 import { formatUsPhone } from "@/lib/phone";
 import { FORM_LIMITS } from "@/lib/form-limits";
+import BackLink from "@/components/BackLink";
 
 const PersonalInfo = () => {
   const { user, updateUser } = useAuth();

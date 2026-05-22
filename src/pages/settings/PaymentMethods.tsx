@@ -88,7 +88,7 @@ const PaymentMethods = () => {
   const { data: subscription } = useSubscription();
   const reactivate = useReactivateSubscription();
   const subStatus = subscription?.status ?? "active";
-  const isCancelled = subStatus === "cancelled" || subStatus === "pending_cancellation";
+  const isCancelled = subStatus === "isCancelled" || subStatus === "pending_cancellation";
 
   // ===== Test / dev simulators =====
   const [paymentState, setPaymentState] = useState<PaymentState>("healthy");
@@ -236,7 +236,7 @@ const PaymentMethods = () => {
 
   const handleCancelled = () => {
     toast({
-      title: "Subscription cancelled",
+      title: "Subscription isCancelled",
       description: "Your recurring service will no longer renew.",
       variant: "success",
     });
@@ -353,7 +353,7 @@ const PaymentMethods = () => {
               <Calendar className="h-4 w-4" />
               <p className="text-sm font-medium">Next Billing</p>
             </div>
-            <p className="text-[15px] font-semibold text-foreground">{cancelled ? "-" : nextDateStr}</p>
+            <p className="text-[15px] font-semibold text-foreground">{isCancelled ? "-" : nextDateStr}</p>
             <p className="text-sm text-muted-foreground">
               Estimated: <span className="text-foreground font-semibold">${monthlyTotal}</span>
             </p>
@@ -499,9 +499,9 @@ const PaymentMethods = () => {
           <div className="bg-card rounded-2xl border border-border shadow-sm overflow-hidden">
             {/* Top: status + price */}
             <div className="p-6">
-              {cancelled && (
+              {isCancelled && (
                 <div className="bg-destructive/10 border border-destructive/20 rounded-xl p-4 text-sm mb-4">
-                  <p className="font-medium text-destructive">Your membership has been cancelled.</p>
+                  <p className="font-medium text-destructive">Your membership has been isCancelled.</p>
                   <p className="text-destructive/80 mt-1">No future recurring services will be scheduled.</p>
                 </div>
               )}
@@ -510,11 +510,11 @@ const PaymentMethods = () => {
                 <div className="space-y-1.5">
                   <div className="flex items-center gap-2">
                     <span
-                      className={`h-2 w-2 rounded-full ${cancelled ? "bg-destructive" : "bg-emerald-500"}`}
+                      className={`h-2 w-2 rounded-full ${isCancelled ? "bg-destructive" : "bg-emerald-500"}`}
                       aria-hidden
                     />
-                    <span className={`text-sm font-semibold ${cancelled ? "text-destructive" : "text-emerald-700"}`}>
-                      {cancelled ? "Cancelled" : "Active"}
+                    <span className={`text-sm font-semibold ${isCancelled ? "text-destructive" : "text-emerald-700"}`}>
+                      {isCancelled ? "Cancelled" : "Active"}
                     </span>
                   </div>
                   <p className="text-[15px] font-semibold text-foreground">
@@ -522,8 +522,8 @@ const PaymentMethods = () => {
                   </p>
                   <p className="text-xs text-muted-foreground">
                     {getPoolSizeLabel(membership.poolSize)} ·{" "}
-                    {cancelled ? "Ends after current cycle" : `Renews ${nextDateShort}`} ·{" "}
-                    Auto-renew {cancelled ? "Off" : "On"}
+                    {isCancelled ? "Ends after current cycle" : `Renews ${nextDateShort}`} ·{" "}
+                    Auto-renew {isCancelled ? "Off" : "On"}
                   </p>
                 </div>
                 <div className="text-right">
@@ -535,7 +535,7 @@ const PaymentMethods = () => {
               </div>
 
               {/* Intro discount (contextual) */}
-              {hasIntroDiscount && !cancelled && (
+              {hasIntroDiscount && !isCancelled && (
                 <div className="mt-4 flex items-start gap-2 bg-primary/10 border border-primary/20 rounded-xl px-4 py-3 text-sm">
                   <BadgePercent className="h-4 w-4 text-primary shrink-0 mt-0.5" />
                   <div className="flex-1">
@@ -583,7 +583,7 @@ const PaymentMethods = () => {
             <Separator />
 
             {/* Quick actions */}
-            {!cancelled && (
+            {!isCancelled && (
               <>
                 <div className="p-6 grid grid-cols-2 gap-2">
                   <Button
@@ -611,11 +611,11 @@ const PaymentMethods = () => {
 
             {/* Primary actions */}
             <div className="p-6 space-y-3">
-              <Button className="w-full" disabled={cancelled} onClick={() => setManageOpen(true)}>
+              <Button className="w-full" disabled={isCancelled} onClick={() => setManageOpen(true)}>
                 <Settings2 className="h-4 w-4 mr-2" />
-                {cancelled ? "Membership Cancelled" : "Manage Plan"}
+                {isCancelled ? "Membership Cancelled" : "Manage Plan"}
               </Button>
-              {!cancelled && (
+              {!isCancelled && (
                 <Button
                   variant="outline"
                   className="w-full text-destructive border-destructive/30 hover:bg-destructive hover:text-destructive-foreground hover:border-transparent"

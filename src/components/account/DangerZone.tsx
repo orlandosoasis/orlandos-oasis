@@ -126,7 +126,7 @@ export function DangerZone() {
           </p>
         </div>
         <Button
-          variant="outline"
+          variant="destructive"
           onClick={() => setDeleteOpen(true)}
           disabled={user?.role === "admin"}
           className="gap-2 sm:shrink-0"

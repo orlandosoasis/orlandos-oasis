@@ -312,6 +312,10 @@ export type Database = {
           role: Database["public"]["Enums"]["app_role"]
           state: string | null
           street_address: string | null
+          subscription_cancellation_reason: string | null
+          subscription_cancelled_at: string | null
+          subscription_effective_end_date: string | null
+          subscription_status: Database["public"]["Enums"]["subscription_status"]
           updated_at: string
           zip_code: string | null
         }
@@ -338,6 +342,10 @@ export type Database = {
           role?: Database["public"]["Enums"]["app_role"]
           state?: string | null
           street_address?: string | null
+          subscription_cancellation_reason?: string | null
+          subscription_cancelled_at?: string | null
+          subscription_effective_end_date?: string | null
+          subscription_status?: Database["public"]["Enums"]["subscription_status"]
           updated_at?: string
           zip_code?: string | null
         }
@@ -364,6 +372,10 @@ export type Database = {
           role?: Database["public"]["Enums"]["app_role"]
           state?: string | null
           street_address?: string | null
+          subscription_cancellation_reason?: string | null
+          subscription_cancelled_at?: string | null
+          subscription_effective_end_date?: string | null
+          subscription_status?: Database["public"]["Enums"]["subscription_status"]
           updated_at?: string
           zip_code?: string | null
         }
@@ -498,6 +510,9 @@ export type Database = {
       }
       services: {
         Row: {
+          cancellation_reason: string | null
+          cancelled_at: string | null
+          cancelled_by_homeowner: boolean
           completed_at: string | null
           completed_tasks: string[] | null
           created_at: string
@@ -515,6 +530,9 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          cancellation_reason?: string | null
+          cancelled_at?: string | null
+          cancelled_by_homeowner?: boolean
           completed_at?: string | null
           completed_tasks?: string[] | null
           created_at?: string
@@ -532,6 +550,9 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          cancellation_reason?: string | null
+          cancelled_at?: string | null
+          cancelled_by_homeowner?: boolean
           completed_at?: string | null
           completed_tasks?: string[] | null
           created_at?: string
@@ -628,6 +649,45 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      cancel_subscription: {
+        Args: { p_effective_end: string; p_reason: string }
+        Returns: {
+          avatar_url: string | null
+          city: string | null
+          contract_locked: boolean
+          contract_start_date: string | null
+          created_at: string
+          email: string
+          first_name: string | null
+          full_name: string | null
+          grandfathered_note: string | null
+          id: string
+          is_active: boolean
+          is_freds: boolean
+          is_grandfathered: boolean
+          is_placeholder: boolean
+          last_name: string | null
+          monthly_amount: number | null
+          notifications_enabled: boolean
+          payout_per_pool: number
+          phone: string | null
+          role: Database["public"]["Enums"]["app_role"]
+          state: string | null
+          street_address: string | null
+          subscription_cancellation_reason: string | null
+          subscription_cancelled_at: string | null
+          subscription_effective_end_date: string | null
+          subscription_status: Database["public"]["Enums"]["subscription_status"]
+          updated_at: string
+          zip_code: string | null
+        }
+        SetofOptions: {
+          from: "*"
+          to: "profiles"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
       current_user_role: {
         Args: never
         Returns: Database["public"]["Enums"]["app_role"]
@@ -640,6 +700,45 @@ export type Database = {
         Returns: boolean
       }
       is_admin: { Args: never; Returns: boolean }
+      reactivate_subscription: {
+        Args: never
+        Returns: {
+          avatar_url: string | null
+          city: string | null
+          contract_locked: boolean
+          contract_start_date: string | null
+          created_at: string
+          email: string
+          first_name: string | null
+          full_name: string | null
+          grandfathered_note: string | null
+          id: string
+          is_active: boolean
+          is_freds: boolean
+          is_grandfathered: boolean
+          is_placeholder: boolean
+          last_name: string | null
+          monthly_amount: number | null
+          notifications_enabled: boolean
+          payout_per_pool: number
+          phone: string | null
+          role: Database["public"]["Enums"]["app_role"]
+          state: string | null
+          street_address: string | null
+          subscription_cancellation_reason: string | null
+          subscription_cancelled_at: string | null
+          subscription_effective_end_date: string | null
+          subscription_status: Database["public"]["Enums"]["subscription_status"]
+          updated_at: string
+          zip_code: string | null
+        }
+        SetofOptions: {
+          from: "*"
+          to: "profiles"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
     }
     Enums: {
       admin_note_target: "technician" | "homeowner" | "pool"
@@ -649,6 +748,7 @@ export type Database = {
       review_status: "pending" | "approved" | "rejected"
       service_request_status: "open" | "in_progress" | "resolved" | "cancelled"
       service_status: "scheduled" | "in_progress" | "completed" | "cancelled"
+      subscription_status: "active" | "pending_cancellation" | "cancelled"
       time_window: "morning" | "afternoon" | "evening"
     }
     CompositeTypes: {
@@ -784,6 +884,7 @@ export const Constants = {
       review_status: ["pending", "approved", "rejected"],
       service_request_status: ["open", "in_progress", "resolved", "cancelled"],
       service_status: ["scheduled", "in_progress", "completed", "cancelled"],
+      subscription_status: ["active", "pending_cancellation", "cancelled"],
       time_window: ["morning", "afternoon", "evening"],
     },
   },

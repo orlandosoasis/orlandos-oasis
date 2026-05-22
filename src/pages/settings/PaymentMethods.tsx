@@ -799,14 +799,11 @@ const PaymentMethods = () => {
       <CancelSubscriptionModal
         open={cancelOpen}
         onOpenChange={setCancelOpen}
-        breakdown={{
-          servicesCompleted: usage.visitsCompleted,
-          serviceCharges: basePrice + frequencyUpgradeCost,
-          addOnsCharges: addonsTotal,
-          penalty: 0,
-        }}
+        effectiveEndDate={effectiveEndIso}
+        cycleSummary={{ servicesCompleted: usage.visitsCompleted, upcomingCancelled: 0 }}
         onConfirmed={handleCancelled}
       />
+
     </>
   );
 };

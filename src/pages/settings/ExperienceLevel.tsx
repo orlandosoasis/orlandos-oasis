@@ -4,6 +4,7 @@ import { Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
+import BackLink from "@/components/BackLink";
 
 const levels = [
   {
@@ -35,6 +36,7 @@ const ExperienceLevel = () => {
   return (
     <>
       <main className="max-w-[760px] mx-auto px-5 py-8">
+        <BackLink />
         <h1 className="text-2xl font-bold text-foreground mb-2">Cleaner Experience Level</h1>
         <p className="text-sm text-muted-foreground mb-6">
           Choose your preferred technician experience level. Higher levels may affect pricing or availability.

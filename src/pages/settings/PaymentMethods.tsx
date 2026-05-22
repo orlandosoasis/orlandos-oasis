@@ -19,6 +19,7 @@ import {
   Settings2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import BackLink from "@/components/BackLink";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
@@ -285,7 +286,10 @@ const PaymentMethods = () => {
   return (
     <>
       <main className="max-w-[760px] mx-auto px-5 py-8 pb-16 space-y-8">
-        <h1 className="text-2xl font-bold text-foreground">Payment & Membership</h1>
+        <div>
+          <BackLink />
+          <h1 className="text-2xl font-bold text-foreground">Payment & Membership</h1>
+        </div>
 
         {/* A. Payment Status Banner */}
         {banner && (

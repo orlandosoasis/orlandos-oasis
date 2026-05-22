@@ -1,22 +1,21 @@
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { Checkbox } from "@/components/ui/checkbox";
-import { AlertTriangle } from "lucide-react";
+import { CalendarX, CheckCircle2, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-
-export interface CancelBreakdown {
-  servicesCompleted: number;
-  serviceCharges: number;
-  addOnsCharges: number;
-  penalty: number;
-}
+import { useCancelSubscription, formatEndDate } from "@/hooks/useSubscription";
 
 interface CancelSubscriptionModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  breakdown: CancelBreakdown;
+  /** Last day the homeowner has access — typically the end of the current billing cycle. ISO date (YYYY-MM-DD). */
+  effectiveEndDate: string;
+  /** Optional: shown on the review step so the user knows what they've used this cycle. */
+  cycleSummary?: {
+    servicesCompleted: number;
+    upcomingCancelled: number;
+  };
   onConfirmed: () => void;
 }
 
@@ -29,168 +28,216 @@ const REASONS = [
   "Other",
 ];
 
+type Step = "review" | "confirm" | "success";
+
 /**
- * Simplified single-screen cancel flow.
+ * Two-step cancellation:
+ *   1. review – Explain what will happen. Effective end date prominent. Reason chips below summary.
+ *      Destructive CTA is secondary ("Continue to cancel") until confirm step.
+ *   2. confirm – Final, explicit destructive action with loading state.
+ *   3. success – Confirmation with end date.
  *
- * Previously this was a 3-step retention "fight" (review charges -> ask
- * reason + force consent -> confirm charge). Multi-step cancellation flows
- * are increasingly classified as dark patterns (California AB-2863, FTC
- * click-to-cancel rule) and they erode trust. Pattern now:
- *
- * 1. Show the user exactly what they're about to be charged.
- * 2. Single optional "tell us why" picker (NOT required).
- * 3. One button to cancel. One button to keep.
- *
- * No coerced consent checkbox. No staged steps. Cancellation is the
- * primary action; staying is the secondary one.
+ * Backend: hits the cancel_subscription RPC which marks the profile and
+ * cancels future scheduled services in a single transaction.
  */
-const CancelSubscriptionModal = ({ open, onOpenChange, breakdown, onConfirmed }: CancelSubscriptionModalProps) => {
+const CancelSubscriptionModal = ({
+  open,
+  onOpenChange,
+  effectiveEndDate,
+  cycleSummary,
+  onConfirmed,
+}: CancelSubscriptionModalProps) => {
   const { toast } = useToast();
+  const cancel = useCancelSubscription();
+
+  const [step, setStep] = useState<Step>("review");
   const [reason, setReason] = useState("");
-  const [processing, setProcessing] = useState(false);
 
-  const total = breakdown.serviceCharges + breakdown.addOnsCharges + breakdown.penalty;
+  const endDateLong = useMemo(() => formatEndDate(effectiveEndDate), [effectiveEndDate]);
 
-  const reset = () => {
-    setReason("");
-    setProcessing(false);
+  // Reset state every time the modal opens.
+  useEffect(() => {
+    if (open) {
+      setStep("review");
+      setReason("");
+    }
+  }, [open]);
+
+  const handleClose = (next: boolean) => {
+    if (cancel.isPending) return;
+    onOpenChange(next);
   };
 
-  const handleClose = (isOpen: boolean) => {
-    if (!isOpen) reset();
-    onOpenChange(isOpen);
-  };
-
-  const handleCancel = async () => {
-    if (processing) return;
-    setProcessing(true);
+  const handleConfirm = async () => {
     try {
-      // TODO(payments): when Lovable Payments is wired, charge the breakdown
-      // total here and only finalize cancellation after the charge succeeds.
-      await new Promise((r) => setTimeout(r, 800));
-      // TODO(feedback): persist `reason` to a cancellation_feedback table
-      // so the team can review churn reasons.
-      toast({
-        title: "Subscription cancelled",
-        description: total > 0
-          ? `Final charge of $${total.toFixed(2)} processed.`
-          : "Your membership has been cancelled.",
-        variant: "success",
-      });
+      await cancel.mutateAsync({ reason, effectiveEndDate });
+      setStep("success");
       onConfirmed();
-      handleClose(false);
-    } catch (err: any) {
-      toast({
-        title: "Cancellation failed",
-        description: err?.message ?? "Please try again or contact support.",
-        variant: "destructive",
-      });
-      setProcessing(false);
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "Please try again or contact support.";
+      toast({ title: "Cancellation failed", description: message, variant: "destructive" });
     }
   };
 
   return (
     <Dialog open={open} onOpenChange={handleClose}>
-      <DialogContent className="max-w-[520px] pt-8 max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <div className="flex items-center justify-center h-12 w-12 rounded-full bg-destructive/10 mx-auto mb-2">
-            <AlertTriangle className="h-6 w-6 text-destructive" aria-hidden="true" />
-          </div>
-          <DialogTitle className="text-center text-xl font-bold">Cancel subscription</DialogTitle>
-          <DialogDescription className="text-center">
-            We're sorry to see you go. Here's exactly what will happen.
-          </DialogDescription>
-        </DialogHeader>
+      <DialogContent className="max-w-[520px] pt-10 max-h-[90vh] overflow-y-auto">
+        {step === "review" && (
+          <>
+            <DialogHeader>
+              <DialogTitle className="text-xl font-bold">Cancel subscription</DialogTitle>
+              <DialogDescription>
+                Review what will happen before we cancel your recurring pool service.
+              </DialogDescription>
+            </DialogHeader>
 
-        <div className="space-y-5 mt-2">
-          {/* What you'll be charged */}
-          {total > 0 ? (
-            <div className="bg-muted/50 border border-border rounded-xl p-4 space-y-2 text-sm">
-              <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                Final charge
-              </p>
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">Services completed this cycle</span>
-                <span className="font-medium text-foreground">{breakdown.servicesCompleted}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">Service charges</span>
-                <span className="font-medium text-foreground">${breakdown.serviceCharges.toFixed(2)}</span>
-              </div>
-              {breakdown.addOnsCharges > 0 && (
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Add-ons used</span>
-                  <span className="font-medium text-foreground">${breakdown.addOnsCharges.toFixed(2)}</span>
+            {/* Prominent effective end date */}
+            <div className="mt-2 rounded-2xl border border-primary/20 bg-primary/5 p-5">
+              <div className="flex items-start gap-3">
+                <CalendarX className="h-5 w-5 text-primary shrink-0 mt-0.5" aria-hidden />
+                <div className="min-w-0">
+                  <p className="text-xs font-semibold uppercase tracking-wider text-primary">
+                    You keep service until
+                  </p>
+                  <p className="text-lg font-bold text-foreground leading-tight mt-1">{endDateLong}</p>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Your plan remains active through this date. Cancellation takes effect the day after.
+                  </p>
                 </div>
-              )}
-              {breakdown.penalty > 0 && (
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Early cancellation fee</span>
-                  <span className="font-medium text-destructive">${breakdown.penalty.toFixed(2)}</span>
-                </div>
-              )}
-              <Separator />
-              <div className="flex justify-between text-base pt-1">
-                <span className="font-semibold text-foreground">Total today</span>
-                <span className="font-bold text-foreground">${total.toFixed(2)}</span>
               </div>
-              <p className="text-xs text-muted-foreground pt-1">
-                Charged to your default payment method on file.
-              </p>
             </div>
-          ) : (
-            <div className="bg-muted/50 border border-border rounded-xl p-4 text-center text-sm text-muted-foreground">
-              No charges due. Your membership ends today.
-            </div>
-          )}
 
-          {/* Optional reason picker */}
-          <fieldset className="space-y-2">
-            <legend className="text-sm font-medium text-foreground">
-              Reason for cancelling{" "}
-              <span className="text-xs font-normal text-muted-foreground">(optional)</span>
-            </legend>
-            <div className="flex flex-wrap gap-2">
-              {REASONS.map((r) => (
-                <button
-                  key={r}
-                  type="button"
-                  onClick={() => setReason(reason === r ? "" : r)}
-                  aria-pressed={reason === r}
-                  className={`rounded-full border px-3 py-1.5 text-xs transition-all ${
-                    reason === r
-                      ? "border-primary bg-primary/10 text-primary"
-                      : "border-border bg-card text-muted-foreground hover:border-primary/40 hover:text-foreground"
-                  }`}
-                >
-                  {r}
-                </button>
-              ))}
-            </div>
-          </fieldset>
+            {/* What happens list */}
+            <ul className="space-y-2 text-sm mt-1">
+              <Bullet>Future recurring services stop renewing.</Bullet>
+              <Bullet>Already completed visits remain billed as normal.</Bullet>
+              <Bullet>Upcoming visits after {endDateLong} are cancelled automatically.</Bullet>
+              <Bullet>Your assigned technician is notified.</Bullet>
+            </ul>
 
-          {/* Actions: cancel is primary action, keep is secondary */}
-          <div className="flex flex-col-reverse sm:flex-row gap-2 pt-2">
-            <Button variant="outline" className="flex-1" onClick={() => handleClose(false)} disabled={processing}>
-              Keep my plan
+            {cycleSummary && (cycleSummary.servicesCompleted > 0 || cycleSummary.upcomingCancelled > 0) && (
+              <div className="rounded-xl border border-border bg-muted/40 px-4 py-3 text-sm space-y-1">
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Visits completed this cycle</span>
+                  <span className="font-medium tabular-nums">{cycleSummary.servicesCompleted}</span>
+                </div>
+                {cycleSummary.upcomingCancelled > 0 && (
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Future visits to be cancelled</span>
+                    <span className="font-medium tabular-nums">{cycleSummary.upcomingCancelled}</span>
+                  </div>
+                )}
+              </div>
+            )}
+
+            <Separator className="my-2" />
+
+            {/* Reason picker — below the primary summary */}
+            <fieldset className="space-y-2">
+              <legend className="text-sm font-medium text-foreground">
+                Reason for cancelling{" "}
+                <span className="text-xs font-normal text-muted-foreground">(optional)</span>
+              </legend>
+              <div className="flex flex-wrap gap-2">
+                {REASONS.map((r) => (
+                  <button
+                    key={r}
+                    type="button"
+                    onClick={() => setReason(reason === r ? "" : r)}
+                    aria-pressed={reason === r}
+                    className={`rounded-full border px-3 py-1.5 text-xs transition-all ${
+                      reason === r
+                        ? "border-primary bg-primary/10 text-primary"
+                        : "border-border bg-card text-muted-foreground hover:border-primary/40 hover:text-foreground"
+                    }`}
+                  >
+                    {r}
+                  </button>
+                ))}
+              </div>
+            </fieldset>
+
+            {/* Destructive CTA is secondary at this stage */}
+            <div className="flex flex-col-reverse sm:flex-row gap-2 pt-2">
+              <Button
+                variant="outline"
+                className="flex-1 text-destructive border-destructive/30 hover:bg-destructive/10 hover:text-destructive"
+                onClick={() => setStep("confirm")}
+              >
+                Continue to cancel
+              </Button>
+              <Button className="flex-1" onClick={() => handleClose(false)}>
+                Keep my plan
+              </Button>
+            </div>
+          </>
+        )}
+
+        {step === "confirm" && (
+          <>
+            <DialogHeader>
+              <DialogTitle className="text-xl font-bold">Are you sure?</DialogTitle>
+              <DialogDescription>
+                Your subscription will be cancelled effective <span className="font-medium text-foreground">{endDateLong}</span>.
+                This will stop future renewals and cancel all visits after that date.
+              </DialogDescription>
+            </DialogHeader>
+
+            <div className="flex flex-col-reverse sm:flex-row gap-2 pt-4">
+              <Button
+                variant="outline"
+                className="flex-1"
+                onClick={() => setStep("review")}
+                disabled={cancel.isPending}
+              >
+                Back
+              </Button>
+              <Button
+                variant="destructive"
+                className="flex-1"
+                onClick={handleConfirm}
+                disabled={cancel.isPending}
+              >
+                {cancel.isPending ? (
+                  <>
+                    <Loader2 className="h-4 w-4 mr-2 animate-spin" aria-hidden />
+                    Cancelling…
+                  </>
+                ) : (
+                  "Yes, cancel subscription"
+                )}
+              </Button>
+            </div>
+          </>
+        )}
+
+        {step === "success" && (
+          <>
+            <DialogHeader>
+              <div className="flex items-center justify-center h-12 w-12 rounded-full bg-emerald-50 mx-auto mb-2">
+                <CheckCircle2 className="h-6 w-6 text-emerald-600" aria-hidden />
+              </div>
+              <DialogTitle className="text-center text-xl font-bold">Subscription cancelled</DialogTitle>
+              <DialogDescription className="text-center">
+                You'll keep service through <span className="font-medium text-foreground">{endDateLong}</span>.
+                We've notified your technician and cancelled future visits.
+              </DialogDescription>
+            </DialogHeader>
+            <Button className="w-full mt-4" onClick={() => handleClose(false)}>
+              Done
             </Button>
-            <Button
-              variant="destructive"
-              className="flex-1"
-              onClick={handleCancel}
-              disabled={processing}
-            >
-              {processing
-                ? "Cancelling..."
-                : total > 0
-                ? `Cancel and pay $${total.toFixed(2)}`
-                : "Cancel my subscription"}
-            </Button>
-          </div>
-        </div>
+          </>
+        )}
       </DialogContent>
     </Dialog>
   );
 };
+
+const Bullet = ({ children }: { children: React.ReactNode }) => (
+  <li className="flex items-start gap-2">
+    <span className="mt-2 h-1.5 w-1.5 rounded-full bg-primary shrink-0" aria-hidden />
+    <span className="text-foreground/90">{children}</span>
+  </li>
+);
 
 export default CancelSubscriptionModal;

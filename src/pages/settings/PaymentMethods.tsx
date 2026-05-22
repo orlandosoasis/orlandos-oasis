@@ -38,6 +38,9 @@ import ManageMembershipModal, {
 } from "@/components/ManageMembershipModal";
 import PayNowModal from "@/components/PayNowModal";
 import CancelSubscriptionModal from "@/components/CancelSubscriptionModal";
+import { useSubscription, useReactivateSubscription, formatEndDate } from "@/hooks/useSubscription";
+
+
 
 interface SavedCard {
   id: string;
@@ -80,13 +83,20 @@ const PaymentMethods = () => {
   const [newCard, setNewCard] = useState({ number: "", expiry: "", cvc: "" });
 
   const [manageOpen, setManageOpen] = useState(false);
-  const [cancelled, setCancelled] = useState(false);
+
+  // Subscription state lives in the database; this card just reads it.
+  const { data: subscription } = useSubscription();
+  const reactivate = useReactivateSubscription();
+  const subStatus = subscription?.status ?? "active";
+  const isCancelled = subStatus === "cancelled" || subStatus === "pending_cancellation";
 
   // ===== Test / dev simulators =====
   const [paymentState, setPaymentState] = useState<PaymentState>("healthy");
   const [outstandingBalance, setOutstandingBalance] = useState<number>(0);
   const [payNowOpen, setPayNowOpen] = useState(false);
   const [cancelOpen, setCancelOpen] = useState(false);
+
+
 
   // ===== Single source of truth for membership config =====
   // Initialised from booking/checkout, then mutated via Manage Plan modal.
@@ -225,11 +235,21 @@ const PaymentMethods = () => {
   };
 
   const handleCancelled = () => {
-    setCancelled(true);
     toast({
-      title: "Membership cancelled successfully",
+      title: "Subscription cancelled",
       description: "Your recurring service will no longer renew.",
+      variant: "success",
     });
+  };
+
+  const handleReactivate = async () => {
+    try {
+      await reactivate.mutateAsync();
+      toast({ title: "Subscription reactivated", description: "Your plan is active again.", variant: "success" });
+    } catch (err: unknown) {
+      const m = err instanceof Error ? err.message : "Please try again.";
+      toast({ title: "Couldn't reactivate", description: m, variant: "destructive" });
+    }
   };
 
   const handlePaymentSuccess = () => {
@@ -243,8 +263,15 @@ const PaymentMethods = () => {
 
   const handlePlanSaved = (next: MembershipConfig, _plan: ServicePlan) => {
     setMembership(next);
-    setCancelled(false);
   };
+
+  // Effective end of the current billing cycle (used as cancellation effective date).
+  const effectiveEndIso = useMemo(() => {
+    const end = new Date(nextBilling);
+    end.setDate(end.getDate() - 1);
+    return `${end.getFullYear()}-${String(end.getMonth() + 1).padStart(2, "0")}-${String(end.getDate()).padStart(2, "0")}`;
+  }, [nextBilling]);
+
 
   // ===== Banner config - now amount-aware =====
   const banner: { tone: string; icon: any; title: string; subtitle?: string; cta?: string; onCta?: () => void } | null =
@@ -326,7 +353,7 @@ const PaymentMethods = () => {
               <Calendar className="h-4 w-4" />
               <p className="text-sm font-medium">Next Billing</p>
             </div>
-            <p className="text-[15px] font-semibold text-foreground">{cancelled ? "-" : nextDateStr}</p>
+            <p className="text-[15px] font-semibold text-foreground">{isCancelled ? "-" : nextDateStr}</p>
             <p className="text-sm text-muted-foreground">
               Estimated: <span className="text-foreground font-semibold">${monthlyTotal}</span>
             </p>
@@ -472,22 +499,52 @@ const PaymentMethods = () => {
           <div className="bg-card rounded-2xl border border-border shadow-sm overflow-hidden">
             {/* Top: status + price */}
             <div className="p-6">
-              {cancelled && (
-                <div className="bg-destructive/10 border border-destructive/20 rounded-xl p-4 text-sm mb-4">
-                  <p className="font-medium text-destructive">Your membership has been cancelled.</p>
-                  <p className="text-destructive/80 mt-1">No future recurring services will be scheduled.</p>
+              {isCancelled && (
+                <div className="bg-destructive/5 border border-destructive/20 rounded-xl p-4 text-sm mb-4 space-y-1">
+                  <p className="font-semibold text-destructive">
+                    {subStatus === "pending_cancellation" ? "Cancellation scheduled" : "Subscription cancelled"}
+                  </p>
+                  <p className="text-destructive/80">
+                    {subStatus === "pending_cancellation"
+                      ? `You keep service through ${formatEndDate(subscription?.effectiveEndDate ?? null)}. No future visits will be scheduled after that date.`
+                      : `Ended on ${formatEndDate(subscription?.effectiveEndDate ?? null)}. No recurring service is scheduled.`}
+                  </p>
+                  {subscription?.cancellationReason && (
+                    <p className="text-xs text-muted-foreground pt-1">
+                      Reason: {subscription.cancellationReason}
+                    </p>
+                  )}
                 </div>
               )}
+
 
               <div className="flex items-start justify-between gap-4">
                 <div className="space-y-1.5">
                   <div className="flex items-center gap-2">
                     <span
-                      className={`h-2 w-2 rounded-full ${cancelled ? "bg-destructive" : "bg-emerald-500"}`}
+                      className={`h-2 w-2 rounded-full ${
+                        subStatus === "cancelled"
+                          ? "bg-destructive"
+                          : subStatus === "pending_cancellation"
+                          ? "bg-amber-500"
+                          : "bg-emerald-500"
+                      }`}
                       aria-hidden
                     />
-                    <span className={`text-sm font-semibold ${cancelled ? "text-destructive" : "text-emerald-700"}`}>
-                      {cancelled ? "Cancelled" : "Active"}
+                    <span
+                      className={`text-sm font-semibold ${
+                        subStatus === "cancelled"
+                          ? "text-destructive"
+                          : subStatus === "pending_cancellation"
+                          ? "text-amber-700"
+                          : "text-emerald-700"
+                      }`}
+                    >
+                      {subStatus === "cancelled"
+                        ? "Cancelled"
+                        : subStatus === "pending_cancellation"
+                        ? "Pending cancellation"
+                        : "Active"}
                     </span>
                   </div>
                   <p className="text-[15px] font-semibold text-foreground">
@@ -495,10 +552,11 @@ const PaymentMethods = () => {
                   </p>
                   <p className="text-xs text-muted-foreground">
                     {getPoolSizeLabel(membership.poolSize)} ·{" "}
-                    {cancelled ? "Ends after current cycle" : `Renews ${nextDateShort}`} ·{" "}
-                    Auto-renew {cancelled ? "Off" : "On"}
+                    {isCancelled ? "Ends after current cycle" : `Renews ${nextDateShort}`} ·{" "}
+                    Auto-renew {isCancelled ? "Off" : "On"}
                   </p>
                 </div>
+
                 <div className="text-right">
                   <p className="text-3xl font-bold text-foreground tabular-nums leading-none">
                     ${monthlyTotal}
@@ -508,7 +566,7 @@ const PaymentMethods = () => {
               </div>
 
               {/* Intro discount (contextual) */}
-              {hasIntroDiscount && !cancelled && (
+              {hasIntroDiscount && !isCancelled && (
                 <div className="mt-4 flex items-start gap-2 bg-primary/10 border border-primary/20 rounded-xl px-4 py-3 text-sm">
                   <BadgePercent className="h-4 w-4 text-primary shrink-0 mt-0.5" />
                   <div className="flex-1">
@@ -556,7 +614,7 @@ const PaymentMethods = () => {
             <Separator />
 
             {/* Quick actions */}
-            {!cancelled && (
+            {!isCancelled && (
               <>
                 <div className="p-6 grid grid-cols-2 gap-2">
                   <Button
@@ -584,11 +642,20 @@ const PaymentMethods = () => {
 
             {/* Primary actions */}
             <div className="p-6 space-y-3">
-              <Button className="w-full" disabled={cancelled} onClick={() => setManageOpen(true)}>
+              <Button className="w-full" disabled={isCancelled} onClick={() => setManageOpen(true)}>
                 <Settings2 className="h-4 w-4 mr-2" />
-                {cancelled ? "Membership Cancelled" : "Manage Plan"}
+                {isCancelled ? "Membership Cancelled" : "Manage Plan"}
               </Button>
-              {!cancelled && (
+              {isCancelled ? (
+                <Button
+                  variant="outline"
+                  className="w-full"
+                  onClick={handleReactivate}
+                  disabled={reactivate.isPending}
+                >
+                  {reactivate.isPending ? "Reactivating…" : "Reactivate plan"}
+                </Button>
+              ) : (
                 <Button
                   variant="outline"
                   className="w-full text-destructive border-destructive/30 hover:bg-destructive hover:text-destructive-foreground hover:border-transparent"
@@ -598,6 +665,7 @@ const PaymentMethods = () => {
                 </Button>
               )}
             </div>
+
           </div>
         </section>
 
@@ -731,14 +799,11 @@ const PaymentMethods = () => {
       <CancelSubscriptionModal
         open={cancelOpen}
         onOpenChange={setCancelOpen}
-        breakdown={{
-          servicesCompleted: usage.visitsCompleted,
-          serviceCharges: basePrice + frequencyUpgradeCost,
-          addOnsCharges: addonsTotal,
-          penalty: 0,
-        }}
+        effectiveEndDate={effectiveEndIso}
+        cycleSummary={{ servicesCompleted: usage.visitsCompleted, upcomingCancelled: 0 }}
         onConfirmed={handleCancelled}
       />
+
     </>
   );
 };

@@ -76,14 +76,13 @@ const toMembershipPoolSize = (s?: string): PoolSize => {
 const PaymentMethods = () => {
   const { toast } = useToast();
   const { booking, checkoutData } = useBooking();
+  const navigate = useNavigate();
 
   const [cards, setCards] = useState<SavedCard[]>([
     { id: "card-1", last4: "4242", brand: "Visa", expiry: "12/27", isDefault: true },
   ]);
   const [showAdd, setShowAdd] = useState(false);
   const [newCard, setNewCard] = useState({ number: "", expiry: "", cvc: "" });
-
-  const [manageOpen, setManageOpen] = useState(false);
 
   // Subscription state lives in the database; this card just reads it.
   const { data: subscription } = useSubscription();
@@ -97,15 +96,44 @@ const PaymentMethods = () => {
   const [payNowOpen, setPayNowOpen] = useState(false);
   const [cancelOpen, setCancelOpen] = useState(false);
 
-
-
   // ===== Single source of truth for membership config =====
-  // Initialised from booking/checkout, then mutated via Manage Plan modal.
-  const [membership, setMembership] = useState<MembershipConfig>({
-    poolSize: toMembershipPoolSize(checkoutData?.poolSize),
-    frequency: toMembershipFrequency(checkoutData?.frequency || booking?.frequency),
-    activeAddonIds: ["tile-cleaning", "pool-inspections"], // mock active add-ons
+  // Initialised from stored config (set by Manage Plan page) or booking/checkout fallback.
+  const readStoredMembership = (): MembershipConfig | null => {
+    try {
+      const raw = localStorage.getItem(MEMBERSHIP_STORAGE_KEY);
+      if (!raw) return null;
+      const parsed = JSON.parse(raw) as MembershipConfig;
+      if (!parsed?.poolSize || !parsed?.frequency || !Array.isArray(parsed?.activeAddonIds)) return null;
+      return parsed;
+    } catch {
+      return null;
+    }
+  };
+
+  const [membership, setMembership] = useState<MembershipConfig>(() => {
+    return (
+      readStoredMembership() ?? {
+        poolSize: toMembershipPoolSize(checkoutData?.poolSize),
+        frequency: toMembershipFrequency(checkoutData?.frequency || booking?.frequency),
+        activeAddonIds: ["tile-cleaning", "pool-inspections"], // mock active add-ons
+      }
+    );
   });
+
+  // Re-sync when the Manage Plan page saves, or when the tab regains focus.
+  useEffect(() => {
+    const refresh = () => {
+      const stored = readStoredMembership();
+      if (stored) setMembership(stored);
+    };
+    window.addEventListener("oo:membership-updated", refresh);
+    window.addEventListener("focus", refresh);
+    return () => {
+      window.removeEventListener("oo:membership-updated", refresh);
+      window.removeEventListener("focus", refresh);
+    };
+  }, []);
+
 
   // Cycle progress (mock - would come from service_completions)
   const [usage] = useState({

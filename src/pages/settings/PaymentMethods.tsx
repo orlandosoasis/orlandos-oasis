@@ -646,7 +646,16 @@ const PaymentMethods = () => {
                 <Settings2 className="h-4 w-4 mr-2" />
                 {isCancelled ? "Membership Cancelled" : "Manage Plan"}
               </Button>
-              {!isCancelled && (
+              {isCancelled ? (
+                <Button
+                  variant="outline"
+                  className="w-full"
+                  onClick={handleReactivate}
+                  disabled={reactivate.isPending}
+                >
+                  {reactivate.isPending ? "Reactivating…" : "Reactivate plan"}
+                </Button>
+              ) : (
                 <Button
                   variant="outline"
                   className="w-full text-destructive border-destructive/30 hover:bg-destructive hover:text-destructive-foreground hover:border-transparent"
@@ -656,6 +665,7 @@ const PaymentMethods = () => {
                 </Button>
               )}
             </div>
+
           </div>
         </section>
 

@@ -407,8 +407,9 @@ const TechnicianApplication = () => {
                 hint="PDF, DOC, DOCX accepted"
                 accept=".pdf,.doc,.docx"
                 value={resume}
-                onChange={setResume}
+                onChange={(f) => { setResume(f); clearError("resume"); }}
               />
+              {errors.resume && <p className="text-xs text-destructive mt-2">{errors.resume}</p>}
             </div>
 
             {/* Certifications */}

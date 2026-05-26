@@ -18,6 +18,7 @@ import {
   PlusCircle,
   Settings2,
 } from "lucide-react";
+import { EmptyState } from "@/components/EmptyState";
 import { Button } from "@/components/ui/button";
 import BackLink from "@/components/BackLink";
 import { Input } from "@/components/ui/input";

@@ -9,6 +9,7 @@ import {
   Star, Mail, Check, X, LogOut, User, Menu, FileText, Download, Waves, MessageSquare, Megaphone,
   Plus, MoreHorizontal, Pencil, Trash2, CalendarClock, CreditCard, BadgeCheck
 } from "lucide-react";
+import { EmptyState } from "@/components/EmptyState";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";

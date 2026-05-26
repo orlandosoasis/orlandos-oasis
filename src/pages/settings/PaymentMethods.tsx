@@ -431,6 +431,17 @@ const PaymentMethods = () => {
         <section id="payment-methods-section" className="space-y-3">
           <h2 className="text-[17px] font-bold text-foreground">Payment Methods</h2>
           <div className="space-y-3">
+            {cards.length === 0 && !showAdd && (
+              <div className="bg-card rounded-2xl border border-border">
+                <EmptyState
+                  icon={CreditCard}
+                  title="No payment method on file"
+                  description="Add a card to keep recurring services running without interruption."
+                  actionLabel="Add Card"
+                  onAction={() => setShowAdd(true)}
+                />
+              </div>
+            )}
             {cards.map((card) => (
               <div
                 key={card.id}

@@ -469,15 +469,13 @@ const TechnicianApplication = () => {
             <div className="bg-card rounded-2xl border border-border p-6 shadow-sm">
               <p className="text-[11px] font-semibold tracking-[0.8px] uppercase text-muted-foreground mb-3">AGREEMENT</p>
               <div
-                onClick={() => setAgreed(!agreed)}
+                onClick={() => { setAgreed(!agreed); clearError("agreed"); }}
                 className={`flex items-start gap-3 p-4 rounded-xl cursor-pointer transition-all ${
-              agreed
-                    ? "bg-primary/5"
-                    : "hover:bg-muted/30"
+                  agreed ? "bg-primary/5" : errors.agreed ? "bg-destructive/5 ring-1 ring-destructive/40" : "hover:bg-muted/30"
                 }`}
               >
                 <div className={`w-5 h-5 rounded-md border-2 flex items-center justify-center shrink-0 mt-0.5 transition-all ${
-                  agreed ? "bg-primary border-primary" : "border-border bg-background"
+                  agreed ? "bg-primary border-primary" : errors.agreed ? "border-destructive bg-background" : "border-border bg-background"
                 }`}>
                   {agreed && <Check className="h-3 w-3 text-primary-foreground" />}
                 </div>
@@ -485,6 +483,7 @@ const TechnicianApplication = () => {
                   I confirm that the information provided is accurate and I agree to be contacted by Orlando's Oasis regarding this application.
                 </span>
               </div>
+              {errors.agreed && <p className="text-xs text-destructive mt-2">{errors.agreed}</p>}
               <div className="mt-4">
                 <TurnstileWidget onVerify={setCaptchaToken} />
               </div>

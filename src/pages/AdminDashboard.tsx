@@ -1658,17 +1658,22 @@ const AdminDashboard = () => {
 
         <AdminNotesPanel targetType="technician" targetId={tech.id} />
 
-        {tech.reviews.filter(r => r.status === "Approved").length > 0 && (
-          <Card><CardHeader><CardTitle className="text-sm">Approved Reviews</CardTitle></CardHeader>
-            <CardContent className="p-0">
+        <Card><CardHeader><CardTitle className="text-sm">Approved Reviews</CardTitle></CardHeader>
+          <CardContent className="p-0">
+            {tech.reviews.filter(r => r.status === "Approved").length === 0 ? (
+              <div className="py-8 text-center text-sm text-muted-foreground">
+                No approved reviews yet. Reviews left by homeowners will appear here once an admin approves them.
+              </div>
+            ) : (
               <Table><TableHeader><TableRow>
                 <TableHead>Reviewer</TableHead><TableHead>Rating</TableHead><TableHead>Review</TableHead><TableHead>Date</TableHead>
               </TableRow></TableHeader>
               <TableBody>{tech.reviews.filter(r => r.status === "Approved").map((r, i) => (
                 <TableRow key={i}><TableCell className="font-semibold">{r.reviewer}</TableCell><TableCell><Stars rating={r.rating} /></TableCell><TableCell className="text-muted-foreground max-w-[300px] truncate">{r.message}</TableCell><TableCell className="whitespace-nowrap">{r.date}</TableCell></TableRow>
               ))}</TableBody></Table>
-            </CardContent></Card>
-        )}
+            )}
+          </CardContent></Card>
+
       </div>
     );
   };

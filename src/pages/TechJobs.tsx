@@ -225,7 +225,12 @@ const TechJobs = () => {
           {tab === "active" && (
             <section>
               {todayActive.length === 0 ? (
-                <EmptyState message="No active jobs for today." />
+                <EmptyState
+                  icon={Calendar}
+                  title="No active jobs today"
+                  description="Enjoy the downtime — new assignments from your manager will appear here as soon as they're scheduled."
+                />
+
               ) : (
                 <div className="space-y-3">
                   {todayActive.map((svc) => (

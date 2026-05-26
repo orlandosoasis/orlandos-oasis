@@ -57,8 +57,12 @@ const TechMessages = () => {
       {isLoading ? (
         <Skeleton className="h-[500px] w-full rounded-2xl" />
       ) : homeowners.length === 0 ? (
-        <div className="bg-card rounded-2xl p-8 text-center border border-border">
-          <p className="text-muted-foreground">No homeowner conversations yet.</p>
+        <div className="bg-card rounded-2xl border border-border">
+          <EmptyState
+            icon={MessageCircle}
+            title="No homeowner conversations yet"
+            description="Once homeowners are assigned to you, you'll be able to message them here."
+          />
         </div>
       ) : (
         <div className="bg-card rounded-2xl border border-border shadow-sm overflow-hidden flex" style={{ height: "500px" }}>

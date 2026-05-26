@@ -690,8 +690,12 @@ const PaymentMethods = () => {
         <section className="space-y-3">
           <h2 className="text-[17px] font-bold text-foreground">Payment History</h2>
           {invoices.length === 0 ? (
-            <div className="bg-card rounded-2xl border border-border p-8 text-center text-muted-foreground text-sm">
-              No invoices yet.
+            <div className="bg-card rounded-2xl border border-border">
+              <EmptyState
+                icon={Receipt}
+                title="No payment history yet"
+                description="Your first invoice will appear here after your initial billing cycle."
+              />
             </div>
           ) : (
             <div className="bg-card rounded-2xl border border-border shadow-sm overflow-hidden">

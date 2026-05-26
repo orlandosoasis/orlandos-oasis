@@ -2117,7 +2117,11 @@ const AdminDashboard = () => {
                 <TableHeader><TableRow>
                   <TableHead>Address</TableHead><TableHead>Size</TableHead><TableHead>Assigned Technician</TableHead><TableHead>Next Service</TableHead>
                 </TableRow></TableHeader>
-                <TableBody>{ho.pools.map((p, i) => (
+                <TableBody>{ho.pools.length === 0 ? (
+                  <TableRow><TableCell colSpan={4} className="text-center text-sm text-muted-foreground py-8">
+                    No pools on file for this homeowner yet. Pools are added automatically once the customer completes onboarding.
+                  </TableCell></TableRow>
+                ) : ho.pools.map((p, i) => (
                   <TableRow key={i}>
                     <TableCell className="font-semibold">{p.address}</TableCell>
                     <TableCell>{p.size}</TableCell>
@@ -2149,6 +2153,7 @@ const AdminDashboard = () => {
                     <TableCell>{p.nextService}</TableCell>
                   </TableRow>
                 ))}</TableBody>
+
               </Table>
             </CardContent>
           </Card>

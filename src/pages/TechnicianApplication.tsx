@@ -326,20 +326,24 @@ const TechnicianApplication = () => {
               <div className="grid grid-cols-2 gap-3 mb-3">
                 <div className="space-y-1.5">
                   <Label className="text-xs font-medium text-muted-foreground">First Name</Label>
-                  <Input name="given-name" autoComplete="given-name" maxLength={FORM_LIMITS.firstName} placeholder="John" value={firstName} onChange={(e) => setFirstName(e.target.value)} className="h-10 rounded-lg border border-border bg-muted/30 text-sm" />
+                  <Input name="given-name" autoComplete="given-name" maxLength={FORM_LIMITS.firstName} placeholder="Enter your first name" value={firstName} onChange={(e) => { setFirstName(e.target.value); clearError("firstName"); }} className={`h-10 rounded-lg border bg-muted/30 text-sm ${errors.firstName ? "border-destructive" : "border-border"}`} />
+                  {errors.firstName && <p className="text-xs text-destructive">{errors.firstName}</p>}
                 </div>
                 <div className="space-y-1.5">
                   <Label className="text-xs font-medium text-muted-foreground">Last Name</Label>
-                  <Input name="family-name" autoComplete="family-name" maxLength={FORM_LIMITS.lastName} placeholder="Doe" value={lastName} onChange={(e) => setLastName(e.target.value)} className="h-10 rounded-lg border border-border bg-muted/30 text-sm" />
+                  <Input name="family-name" autoComplete="family-name" maxLength={FORM_LIMITS.lastName} placeholder="Enter your last name" value={lastName} onChange={(e) => { setLastName(e.target.value); clearError("lastName"); }} className={`h-10 rounded-lg border bg-muted/30 text-sm ${errors.lastName ? "border-destructive" : "border-border"}`} />
+                  {errors.lastName && <p className="text-xs text-destructive">{errors.lastName}</p>}
                 </div>
               </div>
               <div className="space-y-1.5 mb-3">
                 <Label className="text-xs font-medium text-muted-foreground">Email Address</Label>
-                <Input name="email" type="email" inputMode="email" autoComplete="email" autoCapitalize="none" autoCorrect="off" spellCheck={false} maxLength={FORM_LIMITS.email} placeholder="john.doe@email.com" value={email} onChange={(e) => setEmail(e.target.value)} className="h-10 rounded-lg border border-border bg-muted/30 text-sm" />
+                <Input name="email" type="email" inputMode="email" autoComplete="email" autoCapitalize="none" autoCorrect="off" spellCheck={false} maxLength={FORM_LIMITS.email} placeholder="Enter your email" value={email} onChange={(e) => { setEmail(e.target.value); clearError("email"); }} className={`h-10 rounded-lg border bg-muted/30 text-sm ${errors.email ? "border-destructive" : "border-border"}`} />
+                {errors.email && <p className="text-xs text-destructive">{errors.email}</p>}
               </div>
               <div className="space-y-1.5">
                 <Label className="text-xs font-medium text-muted-foreground">Phone Number</Label>
-                <Input name="phone" type="tel" inputMode="tel" autoComplete="tel" maxLength={FORM_LIMITS.phone} placeholder="(407) 555-0100" value={phone} onChange={(e) => setPhone(e.target.value)} onBlur={(e) => setPhone(formatUsPhone(e.target.value))} className="h-10 rounded-lg border border-border bg-muted/30 text-sm" />
+                <Input name="phone" type="tel" inputMode="tel" autoComplete="tel" maxLength={FORM_LIMITS.phone} placeholder="(000) 000-0000" value={phone} onChange={(e) => { setPhone(e.target.value); clearError("phone"); }} onBlur={(e) => setPhone(formatUsPhone(e.target.value))} className={`h-10 rounded-lg border bg-muted/30 text-sm ${errors.phone ? "border-destructive" : "border-border"}`} />
+                {errors.phone && <p className="text-xs text-destructive">{errors.phone}</p>}
               </div>
             </div>
 
@@ -349,15 +353,18 @@ const TechnicianApplication = () => {
               <div className="grid grid-cols-3 gap-3 mb-3">
                 <div className="space-y-1.5">
                   <Label className="text-xs font-medium text-muted-foreground">City</Label>
-                  <Input name="city" autoComplete="address-level2" maxLength={FORM_LIMITS.city} placeholder="Orlando" value={city} onChange={(e) => setCity(e.target.value)} className="h-10 rounded-lg border border-border bg-muted/30 text-sm" />
+                  <Input name="city" autoComplete="address-level2" maxLength={FORM_LIMITS.city} placeholder="Enter city" value={city} onChange={(e) => { setCity(e.target.value); clearError("city"); }} className={`h-10 rounded-lg border bg-muted/30 text-sm ${errors.city ? "border-destructive" : "border-border"}`} />
+                  {errors.city && <p className="text-xs text-destructive">{errors.city}</p>}
                 </div>
                 <div className="space-y-1.5">
                   <Label className="text-xs font-medium text-muted-foreground">State</Label>
-                  <Input name="state" autoComplete="address-level1" maxLength={2} placeholder="FL" value={state} onChange={(e) => setState(e.target.value.toUpperCase())} className="h-10 rounded-lg border border-border bg-muted/30 text-sm" />
+                  <Input name="state" autoComplete="address-level1" maxLength={2} placeholder="Enter state" value={state} onChange={(e) => { setState(e.target.value.toUpperCase()); clearError("state"); }} className={`h-10 rounded-lg border bg-muted/30 text-sm ${errors.state ? "border-destructive" : "border-border"}`} />
+                  {errors.state && <p className="text-xs text-destructive">{errors.state}</p>}
                 </div>
                 <div className="space-y-1.5">
                   <Label className="text-xs font-medium text-muted-foreground">ZIP Code</Label>
-                  <Input name="postal-code" inputMode="numeric" autoComplete="postal-code" maxLength={5} placeholder="32801" value={zip} onChange={(e) => setZip(e.target.value.replace(/\D/g, ""))} className="h-10 rounded-lg border border-border bg-muted/30 text-sm" />
+                  <Input name="postal-code" inputMode="numeric" autoComplete="postal-code" maxLength={5} placeholder="Enter ZIP code" value={zip} onChange={(e) => { setZip(e.target.value.replace(/\D/g, "")); clearError("zip"); }} className={`h-10 rounded-lg border bg-muted/30 text-sm ${errors.zip ? "border-destructive" : "border-border"}`} />
+                  {errors.zip && <p className="text-xs text-destructive">{errors.zip}</p>}
                 </div>
               </div>
             </div>
@@ -367,8 +374,8 @@ const TechnicianApplication = () => {
               <p className="text-[11px] font-semibold tracking-[0.8px] uppercase text-muted-foreground mb-3">EXPERIENCE</p>
               <div className="space-y-1.5">
                 <Label className="text-xs font-medium text-muted-foreground">Years of Pool Service Experience</Label>
-                <Select value={yearsExp} onValueChange={setYearsExp}>
-                  <SelectTrigger className="h-10 rounded-lg border border-border bg-muted/30 text-sm">
+                <Select value={yearsExp} onValueChange={(v) => { setYearsExp(v); clearError("yearsExp"); }}>
+                  <SelectTrigger className={`h-10 rounded-lg border bg-muted/30 text-sm ${errors.yearsExp ? "border-destructive" : "border-border"}`}>
                     <SelectValue placeholder="Select range" />
                   </SelectTrigger>
                   <SelectContent>
@@ -378,6 +385,7 @@ const TechnicianApplication = () => {
                     <SelectItem value="5+">5+ years</SelectItem>
                   </SelectContent>
                 </Select>
+                {errors.yearsExp && <p className="text-xs text-destructive">{errors.yearsExp}</p>}
               </div>
             </div>
           </div>

@@ -18,6 +18,7 @@ import {
   PlusCircle,
   Settings2,
 } from "lucide-react";
+import { EmptyState } from "@/components/EmptyState";
 import { Button } from "@/components/ui/button";
 import BackLink from "@/components/BackLink";
 import { Input } from "@/components/ui/input";
@@ -430,6 +431,17 @@ const PaymentMethods = () => {
         <section id="payment-methods-section" className="space-y-3">
           <h2 className="text-[17px] font-bold text-foreground">Payment Methods</h2>
           <div className="space-y-3">
+            {cards.length === 0 && !showAdd && (
+              <div className="bg-card rounded-2xl border border-border">
+                <EmptyState
+                  icon={CreditCard}
+                  title="No payment method on file"
+                  description="Add a card to keep recurring services running without interruption."
+                  actionLabel="Add Card"
+                  onAction={() => setShowAdd(true)}
+                />
+              </div>
+            )}
             {cards.map((card) => (
               <div
                 key={card.id}
@@ -678,8 +690,12 @@ const PaymentMethods = () => {
         <section className="space-y-3">
           <h2 className="text-[17px] font-bold text-foreground">Payment History</h2>
           {invoices.length === 0 ? (
-            <div className="bg-card rounded-2xl border border-border p-8 text-center text-muted-foreground text-sm">
-              No invoices yet.
+            <div className="bg-card rounded-2xl border border-border">
+              <EmptyState
+                icon={Receipt}
+                title="No payment history yet"
+                description="Your first invoice will appear here after your initial billing cycle."
+              />
             </div>
           ) : (
             <div className="bg-card rounded-2xl border border-border shadow-sm overflow-hidden">

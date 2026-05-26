@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
-import { Calendar, ChevronRight, Star, CalendarClock } from "lucide-react";
+import { Calendar, ChevronRight, Star, CalendarClock, CalendarPlus, CheckCircle2 } from "lucide-react";
+import { EmptyState } from "@/components/EmptyState";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
 import PageContainer from "@/components/PageContainer";
@@ -267,43 +268,61 @@ const Dashboard = () => {
         )}
 
         {/* Upcoming Visits */}
-        {remainingUpcoming.length > 0 && (
-          <section className="mb-8">
-            <h2 className="text-lg font-semibold text-foreground mb-3">Upcoming Visits</h2>
-            <div className="bg-card rounded-2xl border border-border shadow-sm divide-y divide-border overflow-hidden">
-              {visibleUpcoming.map((svc) => {
-                return (
+        <section className="mb-8">
+          <h2 className="text-lg font-semibold text-foreground mb-3">Upcoming Visits</h2>
+          {remainingUpcoming.length > 0 ? (
+            <>
+              <div className="bg-card rounded-2xl border border-border shadow-sm divide-y divide-border overflow-hidden">
+                {visibleUpcoming.map((svc) => (
                   <UpcomingRow key={svc.id} service={svc} canReschedule={true} onReschedule={() => setRescheduleService(svc)} />
-                );
-              })}
-            </div>
-            {remainingUpcoming.length > INITIAL_VISIBLE_COUNT && (
-              <div className="mt-3 text-center">
-                {hasMoreUpcoming ? (
-                  <button onClick={() => setVisibleCount(prev => prev + LOAD_MORE_COUNT)} className="text-sm font-semibold text-primary hover:underline">
-                    Load more
-                  </button>
-                ) : (
-                  <button onClick={() => { setVisibleCount(INITIAL_VISIBLE_COUNT); window.scrollTo({ top: 0, behavior: "smooth" }); }} className="text-sm font-semibold text-primary hover:underline">
-                    Show less
-                  </button>
-                )}
+                ))}
               </div>
-            )}
-          </section>
-        )}
+              {remainingUpcoming.length > INITIAL_VISIBLE_COUNT && (
+                <div className="mt-3 text-center">
+                  {hasMoreUpcoming ? (
+                    <button onClick={() => setVisibleCount(prev => prev + LOAD_MORE_COUNT)} className="text-sm font-semibold text-primary hover:underline">
+                      Load more
+                    </button>
+                  ) : (
+                    <button onClick={() => { setVisibleCount(INITIAL_VISIBLE_COUNT); window.scrollTo({ top: 0, behavior: "smooth" }); }} className="text-sm font-semibold text-primary hover:underline">
+                      Show less
+                    </button>
+                  )}
+                </div>
+              )}
+            </>
+          ) : !servicesLoading && !nextService ? (
+            <div className="bg-card rounded-2xl border border-border shadow-sm">
+              <EmptyState
+                icon={CalendarPlus}
+                title="No upcoming visits"
+                description="You're all caught up. Book your next service to keep your pool sparkling."
+                actionLabel="Book a Visit"
+                onAction={() => setShowBooking(true)}
+              />
+            </div>
+          ) : null}
+        </section>
 
         {/* Past Services */}
-        {pastServices.length > 0 && (
-          <section className="mb-8">
-            <h2 className="text-lg font-semibold text-foreground mb-3">Completed Services</h2>
+        <section className="mb-8">
+          <h2 className="text-lg font-semibold text-foreground mb-3">Completed Services</h2>
+          {pastServices.length > 0 ? (
             <div className="bg-card rounded-2xl border border-border shadow-sm divide-y divide-border overflow-hidden">
               {pastServices.map(svc => (
                 <PastRow key={svc.id} service={svc} onViewDetails={() => handleViewDetails(svc)} />
               ))}
             </div>
-          </section>
-        )}
+          ) : !servicesLoading ? (
+            <div className="bg-card rounded-2xl border border-border shadow-sm">
+              <EmptyState
+                icon={CheckCircle2}
+                title="No completed services yet"
+                description="Your service history will appear here after your first visit."
+              />
+            </div>
+          ) : null}
+        </section>
 
         {/* Loading state */}
         {services.length === 0 && servicesLoading && (
@@ -312,13 +331,6 @@ const Dashboard = () => {
           </div>
         )}
 
-        {/* Empty state */}
-        {services.length === 0 && !servicesLoading && !isLoading && (
-          <div className="bg-card rounded-2xl p-8 text-center">
-            <p className="text-muted-foreground">No services yet.</p>
-            <button className="mt-4 text-primary font-bold text-sm hover:underline" onClick={() => setShowBooking(true)}>Book Your First Service</button>
-          </div>
-        )}
 
         {/* Footer */}
         <footer className="text-center text-xs text-muted-foreground mt-10 space-x-3">

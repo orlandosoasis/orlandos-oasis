@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect, useMemo } from "react";
-import { Send } from "lucide-react";
+import { Send, MessageCircle, MessageSquarePlus } from "lucide-react";
+import { EmptyState } from "@/components/EmptyState";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -56,8 +57,12 @@ const TechMessages = () => {
       {isLoading ? (
         <Skeleton className="h-[500px] w-full rounded-2xl" />
       ) : homeowners.length === 0 ? (
-        <div className="bg-card rounded-2xl p-8 text-center border border-border">
-          <p className="text-muted-foreground">No homeowner conversations yet.</p>
+        <div className="bg-card rounded-2xl border border-border">
+          <EmptyState
+            icon={MessageCircle}
+            title="No homeowner conversations yet"
+            description="Once homeowners are assigned to you, you'll be able to message them here."
+          />
         </div>
       ) : (
         <div className="bg-card rounded-2xl border border-border shadow-sm overflow-hidden flex" style={{ height: "500px" }}>
@@ -97,9 +102,14 @@ const TechMessages = () => {
                 <Skeleton className="h-16 w-2/3" />
               ) : messages.length === 0 ? (
                 <div className="h-full flex items-center justify-center">
-                  <p className="text-sm text-muted-foreground">No messages yet. Say hello!</p>
+                  <EmptyState
+                    icon={MessageSquarePlus}
+                    title="No messages yet"
+                    description={`Send the first message to ${selectedHomeowner?.fullName?.split(" ")[0] || "this homeowner"} to start the conversation.`}
+                  />
                 </div>
               ) : (
+
                 messages.map((msg) => {
                   const isTech = msg.senderId === user?.id;
                   const time = new Date(msg.createdAt).toLocaleTimeString("en-US", {

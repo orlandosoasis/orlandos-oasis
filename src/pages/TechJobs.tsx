@@ -225,7 +225,12 @@ const TechJobs = () => {
           {tab === "active" && (
             <section>
               {todayActive.length === 0 ? (
-                <EmptyState message="No active jobs for today." />
+                <EmptyState
+                  icon={Calendar}
+                  title="No active jobs today"
+                  description="Enjoy the downtime — new assignments from your manager will appear here as soon as they're scheduled."
+                />
+
               ) : (
                 <div className="space-y-3">
                   {todayActive.map((svc) => (
@@ -279,12 +284,15 @@ const TechJobs = () => {
 
               {completedList.length === 0 ? (
                 <EmptyState
-                  message={
+                  icon={CheckCircle2}
+                  title={completedScope === "today" ? "No jobs wrapped up today" : "No completed jobs yet"}
+                  description={
                     completedScope === "today"
-                      ? "No completed jobs today yet."
-                      : "No completed jobs yet."
+                      ? "Services you mark as complete today will appear here."
+                      : "Finish your first service and the full history will live here."
                   }
                 />
+
               ) : completedScope === "today" ? (
                 <div className="space-y-3">
                   {completedList.map((svc) => (
@@ -402,11 +410,24 @@ const ScopeButton = ({
   </button>
 );
 
-const EmptyState = ({ message }: { message: string }) => (
-  <div className="bg-card rounded-2xl p-8 text-center border border-border">
-    <p className="text-muted-foreground">{message}</p>
+const EmptyState = ({
+  title,
+  description,
+  icon: Icon = Calendar,
+}: {
+  title: string;
+  description?: string;
+  icon?: typeof Calendar;
+}) => (
+  <div className="bg-card rounded-2xl p-10 text-center border border-border flex flex-col items-center gap-3">
+    <div className="h-14 w-14 rounded-full bg-muted flex items-center justify-center text-muted-foreground">
+      <Icon className="h-7 w-7" aria-hidden="true" />
+    </div>
+    <h3 className="text-base font-semibold text-foreground">{title}</h3>
+    {description && <p className="text-sm text-muted-foreground max-w-sm">{description}</p>}
   </div>
 );
+
 
 const JobCard = ({
   svc,

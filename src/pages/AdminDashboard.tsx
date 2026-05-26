@@ -9,6 +9,7 @@ import {
   Star, Mail, Check, X, LogOut, User, Menu, FileText, Download, Waves, MessageSquare, Megaphone,
   Plus, MoreHorizontal, Pencil, Trash2, CalendarClock, CreditCard, BadgeCheck
 } from "lucide-react";
+import { EmptyState } from "@/components/EmptyState";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -1658,17 +1659,22 @@ const AdminDashboard = () => {
 
         <AdminNotesPanel targetType="technician" targetId={tech.id} />
 
-        {tech.reviews.filter(r => r.status === "Approved").length > 0 && (
-          <Card><CardHeader><CardTitle className="text-sm">Approved Reviews</CardTitle></CardHeader>
-            <CardContent className="p-0">
+        <Card><CardHeader><CardTitle className="text-sm">Approved Reviews</CardTitle></CardHeader>
+          <CardContent className="p-0">
+            {tech.reviews.filter(r => r.status === "Approved").length === 0 ? (
+              <div className="py-8 text-center text-sm text-muted-foreground">
+                No approved reviews yet. Reviews left by homeowners will appear here once an admin approves them.
+              </div>
+            ) : (
               <Table><TableHeader><TableRow>
                 <TableHead>Reviewer</TableHead><TableHead>Rating</TableHead><TableHead>Review</TableHead><TableHead>Date</TableHead>
               </TableRow></TableHeader>
               <TableBody>{tech.reviews.filter(r => r.status === "Approved").map((r, i) => (
                 <TableRow key={i}><TableCell className="font-semibold">{r.reviewer}</TableCell><TableCell><Stars rating={r.rating} /></TableCell><TableCell className="text-muted-foreground max-w-[300px] truncate">{r.message}</TableCell><TableCell className="whitespace-nowrap">{r.date}</TableCell></TableRow>
               ))}</TableBody></Table>
-            </CardContent></Card>
-        )}
+            )}
+          </CardContent></Card>
+
       </div>
     );
   };
@@ -2117,7 +2123,11 @@ const AdminDashboard = () => {
                 <TableHeader><TableRow>
                   <TableHead>Address</TableHead><TableHead>Size</TableHead><TableHead>Assigned Technician</TableHead><TableHead>Next Service</TableHead>
                 </TableRow></TableHeader>
-                <TableBody>{ho.pools.map((p, i) => (
+                <TableBody>{ho.pools.length === 0 ? (
+                  <TableRow><TableCell colSpan={4} className="text-center text-sm text-muted-foreground py-8">
+                    No pools on file for this homeowner yet. Pools are added automatically once the customer completes onboarding.
+                  </TableCell></TableRow>
+                ) : ho.pools.map((p, i) => (
                   <TableRow key={i}>
                     <TableCell className="font-semibold">{p.address}</TableCell>
                     <TableCell>{p.size}</TableCell>
@@ -2149,6 +2159,7 @@ const AdminDashboard = () => {
                     <TableCell>{p.nextService}</TableCell>
                   </TableRow>
                 ))}</TableBody>
+
               </Table>
             </CardContent>
           </Card>
@@ -2470,7 +2481,13 @@ const AdminDashboard = () => {
       case "dashboard": return <DashboardPage />;
       case "technicians":
         return technicians.length === 0
-          ? <Card><CardContent className="text-center py-12 text-sm text-muted-foreground">No technicians yet. Approve an applicant or seed demo data to get started.</CardContent></Card>
+          ? <Card><CardContent className="p-0"><EmptyState
+              icon={Wrench}
+              title="No technicians on the roster"
+              description="Approve a pending applicant to add your first technician, or seed demo data to explore the dashboard."
+              actionLabel="Review Applicants"
+              onAction={() => nav("applicants")}
+            /></CardContent></Card>
           : <TechniciansPage />;
       case "techDetail": return <TechDetailPage />;
       case "homeowners": return <HomeownersPage />;
@@ -2479,9 +2496,14 @@ const AdminDashboard = () => {
       case "reviews": return <ReviewsPage />;
       case "applicants":
         return applicants.length === 0
-          ? <Card><CardContent className="text-center py-12 text-sm text-muted-foreground">No technician applications yet.</CardContent></Card>
+          ? <Card><CardContent className="p-0"><EmptyState
+              icon={UserPlus}
+              title="No technician applications yet"
+              description="When candidates apply through the public Apply page, you'll be able to review their info, resume, and certifications here."
+            /></CardContent></Card>
           : <ApplicantsPage />;
       case "applicantDetail": return <ApplicantDetailPage />;
+
       default: return <DashboardPage />;
     }
   };

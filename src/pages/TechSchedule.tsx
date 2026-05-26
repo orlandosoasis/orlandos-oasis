@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
-import { Calendar, Clock, MapPin, ChevronRight } from "lucide-react";
+import { Calendar, Clock, MapPin, ChevronRight, CalendarClock } from "lucide-react";
+import { EmptyState } from "@/components/EmptyState";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import TechLayout from "@/components/technician/TechLayout";
@@ -46,8 +47,12 @@ const TechSchedule = () => {
           ))}
         </div>
       ) : grouped.length === 0 ? (
-        <div className="bg-card rounded-2xl p-8 text-center border border-border">
-          <p className="text-muted-foreground">No scheduled services.</p>
+        <div className="bg-card rounded-2xl border border-border">
+          <EmptyState
+            icon={CalendarClock}
+            title="Your schedule is clear"
+            description="New jobs assigned by your manager will appear here as soon as they're booked."
+          />
         </div>
       ) : (
         <div className="space-y-6">

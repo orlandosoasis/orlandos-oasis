@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import { Send } from "lucide-react";
+import { Send, MessageCircle, MessageSquarePlus } from "lucide-react";
+import { EmptyState } from "@/components/EmptyState";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -109,7 +110,13 @@ const Messages = () => {
               <Skeleton className="h-14 rounded-lg" />
             </div>
           ) : threads.length === 0 ? (
-            <p className="px-4 text-sm text-muted-foreground">No conversations yet.</p>
+            <EmptyState
+              icon={MessageCircle}
+              title="No conversations yet"
+              description="Messages from your assigned technician will appear here once your service starts."
+              compact
+            />
+
           ) : (
             threads.map((t) => {
               const p = profiles[t.otherUserId];
@@ -164,12 +171,21 @@ const Messages = () => {
               <Skeleton className="h-16 w-2/3" />
             ) : !activeThread ? (
               <div className="h-full flex items-center justify-center">
-                <p className="text-sm text-muted-foreground">Select a conversation to begin.</p>
+                <EmptyState
+                  icon={MessageCircle}
+                  title="Select a conversation"
+                  description="Pick a thread from the left to view and reply to messages."
+                />
               </div>
             ) : messages.length === 0 ? (
               <div className="h-full flex items-center justify-center">
-                <p className="text-sm text-muted-foreground">No messages yet. Say hello!</p>
+                <EmptyState
+                  icon={MessageSquarePlus}
+                  title="No messages yet"
+                  description="Be the first to say hello — your technician will get a notification."
+                />
               </div>
+
             ) : (
               messages.map((msg) => {
                 const isMe = msg.senderId === user?.id;

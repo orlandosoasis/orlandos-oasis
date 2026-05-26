@@ -151,10 +151,38 @@ const TechnicianApplication = () => {
     setCertifications((prev) => prev.filter((c) => c.id !== id));
   };
 
-  const step1Valid = firstName && lastName && email && phone && city && state && zip && yearsExp;
-  const step2Valid = resume && agreed;
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
-  const canProceed = step === 1 ? !!step1Valid : !!step2Valid;
+  const validateStep1 = () => {
+    const e: Record<string, string> = {};
+    if (!firstName.trim()) e.firstName = "Enter your first name";
+    if (!lastName.trim()) e.lastName = "Enter your last name";
+    if (!email.trim()) e.email = "Enter your email";
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) e.email = "Enter a valid email";
+    if (!phone.trim()) e.phone = "Enter your phone number";
+    else if (phone.replace(/\D/g, "").length < 10) e.phone = "Enter a valid phone number";
+    if (!city.trim()) e.city = "Enter your city";
+    if (!state.trim()) e.state = "Enter your state";
+    else if (state.trim().length !== 2) e.state = "Use 2-letter state code";
+    if (!zip.trim()) e.zip = "Enter your ZIP code";
+    else if (zip.trim().length !== 5) e.zip = "Enter a 5-digit ZIP";
+    if (!yearsExp) e.yearsExp = "Select your years of experience";
+    return e;
+  };
+
+  const validateStep2 = () => {
+    const e: Record<string, string> = {};
+    if (!resume) e.resume = "Upload your resume to continue";
+    if (!agreed) e.agreed = "You must agree before submitting";
+    return e;
+  };
+
+  const clearError = (key: string) => setErrors((prev) => {
+    if (!prev[key]) return prev;
+    const next = { ...prev };
+    delete next[key];
+    return next;
+  });
 
   const uploadToBucket = async (bucket: string, file: File, prefix: string) => {
     const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
@@ -221,6 +249,12 @@ const TechnicianApplication = () => {
   };
 
   const handleNext = () => {
+    const e = step === 1 ? validateStep1() : validateStep2();
+    setErrors(e);
+    if (Object.keys(e).length > 0) {
+      toast({ title: "Please fix the highlighted fields", variant: "destructive" });
+      return;
+    }
     if (step < TOTAL_STEPS) setStep(step + 1);
     else handleSubmit();
   };
@@ -292,20 +326,24 @@ const TechnicianApplication = () => {
               <div className="grid grid-cols-2 gap-3 mb-3">
                 <div className="space-y-1.5">
                   <Label className="text-xs font-medium text-muted-foreground">First Name</Label>
-                  <Input name="given-name" autoComplete="given-name" maxLength={FORM_LIMITS.firstName} placeholder="John" value={firstName} onChange={(e) => setFirstName(e.target.value)} className="h-10 rounded-lg border border-border bg-muted/30 text-sm" />
+                  <Input name="given-name" autoComplete="given-name" maxLength={FORM_LIMITS.firstName} placeholder="Enter your first name" value={firstName} onChange={(e) => { setFirstName(e.target.value); clearError("firstName"); }} className={`h-10 rounded-lg border bg-muted/30 text-sm ${errors.firstName ? "border-destructive" : "border-border"}`} />
+                  {errors.firstName && <p className="text-xs text-destructive">{errors.firstName}</p>}
                 </div>
                 <div className="space-y-1.5">
                   <Label className="text-xs font-medium text-muted-foreground">Last Name</Label>
-                  <Input name="family-name" autoComplete="family-name" maxLength={FORM_LIMITS.lastName} placeholder="Doe" value={lastName} onChange={(e) => setLastName(e.target.value)} className="h-10 rounded-lg border border-border bg-muted/30 text-sm" />
+                  <Input name="family-name" autoComplete="family-name" maxLength={FORM_LIMITS.lastName} placeholder="Enter your last name" value={lastName} onChange={(e) => { setLastName(e.target.value); clearError("lastName"); }} className={`h-10 rounded-lg border bg-muted/30 text-sm ${errors.lastName ? "border-destructive" : "border-border"}`} />
+                  {errors.lastName && <p className="text-xs text-destructive">{errors.lastName}</p>}
                 </div>
               </div>
               <div className="space-y-1.5 mb-3">
                 <Label className="text-xs font-medium text-muted-foreground">Email Address</Label>
-                <Input name="email" type="email" inputMode="email" autoComplete="email" autoCapitalize="none" autoCorrect="off" spellCheck={false} maxLength={FORM_LIMITS.email} placeholder="john.doe@email.com" value={email} onChange={(e) => setEmail(e.target.value)} className="h-10 rounded-lg border border-border bg-muted/30 text-sm" />
+                <Input name="email" type="email" inputMode="email" autoComplete="email" autoCapitalize="none" autoCorrect="off" spellCheck={false} maxLength={FORM_LIMITS.email} placeholder="Enter your email" value={email} onChange={(e) => { setEmail(e.target.value); clearError("email"); }} className={`h-10 rounded-lg border bg-muted/30 text-sm ${errors.email ? "border-destructive" : "border-border"}`} />
+                {errors.email && <p className="text-xs text-destructive">{errors.email}</p>}
               </div>
               <div className="space-y-1.5">
                 <Label className="text-xs font-medium text-muted-foreground">Phone Number</Label>
-                <Input name="phone" type="tel" inputMode="tel" autoComplete="tel" maxLength={FORM_LIMITS.phone} placeholder="(407) 555-0100" value={phone} onChange={(e) => setPhone(e.target.value)} onBlur={(e) => setPhone(formatUsPhone(e.target.value))} className="h-10 rounded-lg border border-border bg-muted/30 text-sm" />
+                <Input name="phone" type="tel" inputMode="tel" autoComplete="tel" maxLength={FORM_LIMITS.phone} placeholder="(000) 000-0000" value={phone} onChange={(e) => { setPhone(e.target.value); clearError("phone"); }} onBlur={(e) => setPhone(formatUsPhone(e.target.value))} className={`h-10 rounded-lg border bg-muted/30 text-sm ${errors.phone ? "border-destructive" : "border-border"}`} />
+                {errors.phone && <p className="text-xs text-destructive">{errors.phone}</p>}
               </div>
             </div>
 
@@ -315,15 +353,18 @@ const TechnicianApplication = () => {
               <div className="grid grid-cols-3 gap-3 mb-3">
                 <div className="space-y-1.5">
                   <Label className="text-xs font-medium text-muted-foreground">City</Label>
-                  <Input name="city" autoComplete="address-level2" maxLength={FORM_LIMITS.city} placeholder="Orlando" value={city} onChange={(e) => setCity(e.target.value)} className="h-10 rounded-lg border border-border bg-muted/30 text-sm" />
+                  <Input name="city" autoComplete="address-level2" maxLength={FORM_LIMITS.city} placeholder="Enter city" value={city} onChange={(e) => { setCity(e.target.value); clearError("city"); }} className={`h-10 rounded-lg border bg-muted/30 text-sm ${errors.city ? "border-destructive" : "border-border"}`} />
+                  {errors.city && <p className="text-xs text-destructive">{errors.city}</p>}
                 </div>
                 <div className="space-y-1.5">
                   <Label className="text-xs font-medium text-muted-foreground">State</Label>
-                  <Input name="state" autoComplete="address-level1" maxLength={2} placeholder="FL" value={state} onChange={(e) => setState(e.target.value.toUpperCase())} className="h-10 rounded-lg border border-border bg-muted/30 text-sm" />
+                  <Input name="state" autoComplete="address-level1" maxLength={2} placeholder="Enter state" value={state} onChange={(e) => { setState(e.target.value.toUpperCase()); clearError("state"); }} className={`h-10 rounded-lg border bg-muted/30 text-sm ${errors.state ? "border-destructive" : "border-border"}`} />
+                  {errors.state && <p className="text-xs text-destructive">{errors.state}</p>}
                 </div>
                 <div className="space-y-1.5">
                   <Label className="text-xs font-medium text-muted-foreground">ZIP Code</Label>
-                  <Input name="postal-code" inputMode="numeric" autoComplete="postal-code" maxLength={5} placeholder="32801" value={zip} onChange={(e) => setZip(e.target.value.replace(/\D/g, ""))} className="h-10 rounded-lg border border-border bg-muted/30 text-sm" />
+                  <Input name="postal-code" inputMode="numeric" autoComplete="postal-code" maxLength={5} placeholder="Enter ZIP code" value={zip} onChange={(e) => { setZip(e.target.value.replace(/\D/g, "")); clearError("zip"); }} className={`h-10 rounded-lg border bg-muted/30 text-sm ${errors.zip ? "border-destructive" : "border-border"}`} />
+                  {errors.zip && <p className="text-xs text-destructive">{errors.zip}</p>}
                 </div>
               </div>
             </div>
@@ -333,8 +374,8 @@ const TechnicianApplication = () => {
               <p className="text-[11px] font-semibold tracking-[0.8px] uppercase text-muted-foreground mb-3">EXPERIENCE</p>
               <div className="space-y-1.5">
                 <Label className="text-xs font-medium text-muted-foreground">Years of Pool Service Experience</Label>
-                <Select value={yearsExp} onValueChange={setYearsExp}>
-                  <SelectTrigger className="h-10 rounded-lg border border-border bg-muted/30 text-sm">
+                <Select value={yearsExp} onValueChange={(v) => { setYearsExp(v); clearError("yearsExp"); }}>
+                  <SelectTrigger className={`h-10 rounded-lg border bg-muted/30 text-sm ${errors.yearsExp ? "border-destructive" : "border-border"}`}>
                     <SelectValue placeholder="Select range" />
                   </SelectTrigger>
                   <SelectContent>
@@ -344,6 +385,7 @@ const TechnicianApplication = () => {
                     <SelectItem value="5+">5+ years</SelectItem>
                   </SelectContent>
                 </Select>
+                {errors.yearsExp && <p className="text-xs text-destructive">{errors.yearsExp}</p>}
               </div>
             </div>
           </div>
@@ -365,8 +407,9 @@ const TechnicianApplication = () => {
                 hint="PDF, DOC, DOCX accepted"
                 accept=".pdf,.doc,.docx"
                 value={resume}
-                onChange={setResume}
+                onChange={(f) => { setResume(f); clearError("resume"); }}
               />
+              {errors.resume && <p className="text-xs text-destructive mt-2">{errors.resume}</p>}
             </div>
 
             {/* Certifications */}
@@ -426,15 +469,13 @@ const TechnicianApplication = () => {
             <div className="bg-card rounded-2xl border border-border p-6 shadow-sm">
               <p className="text-[11px] font-semibold tracking-[0.8px] uppercase text-muted-foreground mb-3">AGREEMENT</p>
               <div
-                onClick={() => setAgreed(!agreed)}
+                onClick={() => { setAgreed(!agreed); clearError("agreed"); }}
                 className={`flex items-start gap-3 p-4 rounded-xl cursor-pointer transition-all ${
-              agreed
-                    ? "bg-primary/5"
-                    : "hover:bg-muted/30"
+                  agreed ? "bg-primary/5" : errors.agreed ? "bg-destructive/5 ring-1 ring-destructive/40" : "hover:bg-muted/30"
                 }`}
               >
                 <div className={`w-5 h-5 rounded-md border-2 flex items-center justify-center shrink-0 mt-0.5 transition-all ${
-                  agreed ? "bg-primary border-primary" : "border-border bg-background"
+                  agreed ? "bg-primary border-primary" : errors.agreed ? "border-destructive bg-background" : "border-border bg-background"
                 }`}>
                   {agreed && <Check className="h-3 w-3 text-primary-foreground" />}
                 </div>
@@ -442,6 +483,7 @@ const TechnicianApplication = () => {
                   I confirm that the information provided is accurate and I agree to be contacted by Orlando's Oasis regarding this application.
                 </span>
               </div>
+              {errors.agreed && <p className="text-xs text-destructive mt-2">{errors.agreed}</p>}
               <div className="mt-4">
                 <TurnstileWidget onVerify={setCaptchaToken} />
               </div>
@@ -460,7 +502,7 @@ const TechnicianApplication = () => {
           )}
           <Button
             onClick={handleNext}
-            disabled={!canProceed || isProcessing}
+            disabled={isProcessing}
             className="flex-1 h-14 text-[17px] font-bold rounded-2xl shadow-lg"
           >
             {isProcessing ? (

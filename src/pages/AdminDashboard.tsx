@@ -2255,15 +2255,49 @@ const AdminDashboard = () => {
   const ApplicantDetailPage = () => {
     const a = applicants.find(ap => ap.id === detailId);
     if (!a) return null;
-    const FileLink = ({ name, file }: { name: string; file: string }) => (
-      <div className="flex items-center justify-between p-3 bg-muted rounded-lg mb-2">
-        <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center text-blue-500 shrink-0"><FileText className="h-4 w-4" /></div>
-          <div><div className="text-sm font-semibold text-foreground">{name}</div><div className="text-[11px] text-muted-foreground">{file}</div></div>
+    const FileLink = ({ name, file, bucket }: { name: string; file: string; bucket: "resumes" | "certifications" }) => {
+      const [busy, setBusy] = useState<null | "view" | "download">(null);
+      const displayName = file ? file.split("/").pop() : "";
+      const openSigned = async (mode: "view" | "download") => {
+        if (!file) {
+          toast({ title: "No file uploaded", variant: "destructive" });
+          return;
+        }
+        setBusy(mode);
+        try {
+          const { data, error } = await supabase.storage
+            .from(bucket)
+            .createSignedUrl(file, 300, mode === "download" ? { download: displayName || true } : undefined);
+          if (error || !data?.signedUrl) throw error ?? new Error("Could not create signed URL");
+          window.open(data.signedUrl, "_blank", "noopener");
+        } catch (e) {
+          toast({ title: "Unable to open file", description: e instanceof Error ? e.message : String(e), variant: "destructive" });
+        } finally {
+          setBusy(null);
+        }
+      };
+      return (
+        <div className="flex items-center justify-between p-3 bg-muted rounded-lg mb-2 gap-3 flex-wrap">
+          <div className="flex items-center gap-2.5 min-w-0">
+            <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center text-blue-500 shrink-0"><FileText className="h-4 w-4" /></div>
+            <div className="min-w-0">
+              <div className="text-sm font-semibold text-foreground truncate">{name}</div>
+              <div className="text-[11px] text-muted-foreground truncate">{displayName || "No file uploaded"}</div>
+            </div>
+          </div>
+          {file && (
+            <div className="flex gap-2 shrink-0">
+              <Button variant="outline" size="sm" className="gap-1.5" disabled={busy !== null} onClick={() => openSigned("view")}>
+                <FileText className="h-3.5 w-3.5" /> {busy === "view" ? "Opening…" : "View"}
+              </Button>
+              <Button variant="outline" size="sm" className="gap-1.5" disabled={busy !== null} onClick={() => openSigned("download")}>
+                <Download className="h-3.5 w-3.5" /> {busy === "download" ? "…" : "Download"}
+              </Button>
+            </div>
+          )}
         </div>
-        <Button variant="outline" size="sm" className="gap-1.5"><Download className="h-3.5 w-3.5" /> View File</Button>
-      </div>
-    );
+      );
+    };
     return (
       <div className="space-y-5">
         <button onClick={() => nav("applicants")} className="inline-flex items-center gap-1.5 text-primary text-sm font-semibold hover:underline">
@@ -2292,16 +2326,21 @@ const AdminDashboard = () => {
           <CardContent>
             <InfoRow label="First Name" value={a.firstName} /><InfoRow label="Last Name" value={a.lastName} />
             <InfoRow label="Email" value={a.email} /><InfoRow label="Phone" value={a.phone} />
+            <InfoRow label="Applied" value={a.appliedDate} />
           </CardContent></Card>
         <Card><CardHeader><CardTitle className="text-sm">Service Area</CardTitle></CardHeader>
           <CardContent><InfoRow label="City" value={a.city} /><InfoRow label="State" value={a.state} /><InfoRow label="ZIP Code" value={a.zip} /></CardContent></Card>
         <Card><CardHeader><CardTitle className="text-sm">Experience</CardTitle></CardHeader>
           <CardContent><InfoRow label="Years" value={a.experience} /></CardContent></Card>
         <Card><CardHeader><CardTitle className="text-sm">Resume</CardTitle></CardHeader>
-          <CardContent><FileLink name="Resume" file={a.resume} /></CardContent></Card>
+          <CardContent>
+            {a.resume
+              ? <FileLink name="Resume" file={a.resume} bucket="resumes" />
+              : <p className="text-sm text-muted-foreground py-4">No resume uploaded.</p>}
+          </CardContent></Card>
         <Card><CardHeader><CardTitle className="text-sm">Certifications</CardTitle></CardHeader>
           <CardContent>
-            {a.certifications.length > 0 ? a.certifications.map((cert, i) => <FileLink key={i} name={cert.name} file={cert.file} />)
+            {a.certifications.length > 0 ? a.certifications.map((cert, i) => <FileLink key={i} name={cert.name} file={cert.file} bucket="certifications" />)
               : <p className="text-sm text-muted-foreground py-4">No certifications uploaded.</p>}
           </CardContent></Card>
         {a.status === "Pending" && (

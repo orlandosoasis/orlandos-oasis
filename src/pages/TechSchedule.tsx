@@ -47,8 +47,12 @@ const TechSchedule = () => {
           ))}
         </div>
       ) : grouped.length === 0 ? (
-        <div className="bg-card rounded-2xl p-8 text-center border border-border">
-          <p className="text-muted-foreground">No scheduled services.</p>
+        <div className="bg-card rounded-2xl border border-border">
+          <EmptyState
+            icon={CalendarClock}
+            title="Your schedule is clear"
+            description="New jobs assigned by your manager will appear here as soon as they're booked."
+          />
         </div>
       ) : (
         <div className="space-y-6">

@@ -249,6 +249,12 @@ const TechnicianApplication = () => {
   };
 
   const handleNext = () => {
+    const e = step === 1 ? validateStep1() : validateStep2();
+    setErrors(e);
+    if (Object.keys(e).length > 0) {
+      toast({ title: "Please fix the highlighted fields", variant: "destructive" });
+      return;
+    }
     if (step < TOTAL_STEPS) setStep(step + 1);
     else handleSubmit();
   };

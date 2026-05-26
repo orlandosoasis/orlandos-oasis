@@ -284,12 +284,15 @@ const TechJobs = () => {
 
               {completedList.length === 0 ? (
                 <EmptyState
-                  message={
+                  icon={CheckCircle2}
+                  title={completedScope === "today" ? "No jobs wrapped up today" : "No completed jobs yet"}
+                  description={
                     completedScope === "today"
-                      ? "No completed jobs today yet."
-                      : "No completed jobs yet."
+                      ? "Services you mark as complete today will appear here."
+                      : "Finish your first service and the full history will live here."
                   }
                 />
+
               ) : completedScope === "today" ? (
                 <div className="space-y-3">
                   {completedList.map((svc) => (

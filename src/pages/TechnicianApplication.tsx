@@ -494,7 +494,7 @@ const TechnicianApplication = () => {
           )}
           <Button
             onClick={handleNext}
-            disabled={!canProceed || isProcessing}
+            disabled={isProcessing}
             className="flex-1 h-14 text-[17px] font-bold rounded-2xl shadow-lg"
           >
             {isProcessing ? (

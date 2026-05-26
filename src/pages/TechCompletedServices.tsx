@@ -8,6 +8,7 @@ import { useServices } from "@/hooks/useServices";
 import { usePools } from "@/hooks/usePools";
 import { useProfilesByIds } from "@/hooks/useProfiles";
 import { formatDateShort, getPoolFullAddress } from "@/types/tech";
+import { EmptyState } from "@/components/EmptyState";
 
 const TechCompletedServices = () => {
   const navigate = useNavigate();

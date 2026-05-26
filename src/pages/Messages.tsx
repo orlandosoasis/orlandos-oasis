@@ -171,12 +171,21 @@ const Messages = () => {
               <Skeleton className="h-16 w-2/3" />
             ) : !activeThread ? (
               <div className="h-full flex items-center justify-center">
-                <p className="text-sm text-muted-foreground">Select a conversation to begin.</p>
+                <EmptyState
+                  icon={MessageCircle}
+                  title="Select a conversation"
+                  description="Pick a thread from the left to view and reply to messages."
+                />
               </div>
             ) : messages.length === 0 ? (
               <div className="h-full flex items-center justify-center">
-                <p className="text-sm text-muted-foreground">No messages yet. Say hello!</p>
+                <EmptyState
+                  icon={MessageSquarePlus}
+                  title="No messages yet"
+                  description="Be the first to say hello — your technician will get a notification."
+                />
               </div>
+
             ) : (
               messages.map((msg) => {
                 const isMe = msg.senderId === user?.id;

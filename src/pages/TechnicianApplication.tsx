@@ -151,10 +151,38 @@ const TechnicianApplication = () => {
     setCertifications((prev) => prev.filter((c) => c.id !== id));
   };
 
-  const step1Valid = firstName && lastName && email && phone && city && state && zip && yearsExp;
-  const step2Valid = resume && agreed;
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
-  const canProceed = step === 1 ? !!step1Valid : !!step2Valid;
+  const validateStep1 = () => {
+    const e: Record<string, string> = {};
+    if (!firstName.trim()) e.firstName = "Enter your first name";
+    if (!lastName.trim()) e.lastName = "Enter your last name";
+    if (!email.trim()) e.email = "Enter your email";
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) e.email = "Enter a valid email";
+    if (!phone.trim()) e.phone = "Enter your phone number";
+    else if (phone.replace(/\D/g, "").length < 10) e.phone = "Enter a valid phone number";
+    if (!city.trim()) e.city = "Enter your city";
+    if (!state.trim()) e.state = "Enter your state";
+    else if (state.trim().length !== 2) e.state = "Use 2-letter state code";
+    if (!zip.trim()) e.zip = "Enter your ZIP code";
+    else if (zip.trim().length !== 5) e.zip = "Enter a 5-digit ZIP";
+    if (!yearsExp) e.yearsExp = "Select your years of experience";
+    return e;
+  };
+
+  const validateStep2 = () => {
+    const e: Record<string, string> = {};
+    if (!resume) e.resume = "Upload your resume to continue";
+    if (!agreed) e.agreed = "You must agree before submitting";
+    return e;
+  };
+
+  const clearError = (key: string) => setErrors((prev) => {
+    if (!prev[key]) return prev;
+    const next = { ...prev };
+    delete next[key];
+    return next;
+  });
 
   const uploadToBucket = async (bucket: string, file: File, prefix: string) => {
     const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");

@@ -110,7 +110,13 @@ const Messages = () => {
               <Skeleton className="h-14 rounded-lg" />
             </div>
           ) : threads.length === 0 ? (
-            <p className="px-4 text-sm text-muted-foreground">No conversations yet.</p>
+            <EmptyState
+              icon={MessageCircle}
+              title="No conversations yet"
+              description="Messages from your assigned technician will appear here once your service starts."
+              compact
+            />
+
           ) : (
             threads.map((t) => {
               const p = profiles[t.otherUserId];

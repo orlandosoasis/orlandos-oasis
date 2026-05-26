@@ -208,11 +208,16 @@ const TechnicianApplication = () => {
         resumePath = await uploadToBucket("resumes", resume, appId);
       }
 
-      const { data: appRow, error: appErr } = await supabase
+      // Generate id client-side because anonymous applicants have no SELECT
+      // policy on technician_applications — using .select() after .insert()
+      // would trigger an RLS error on the RETURNING clause.
+      const applicationId = globalThis.crypto?.randomUUID?.() ?? `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+      const { error: appErr } = await supabase
         .from("technician_applications")
         .insert({
-          first_name: firstName,
-          last_name: lastName,
+          id: applicationId,
+          first_name: firstName.trim(),
+          last_name: lastName.trim(),
           email: email.toLowerCase().trim(),
           phone,
           city,
@@ -221,10 +226,9 @@ const TechnicianApplication = () => {
           experience: yearsExp,
           resume_url: resumePath,
           status: "pending",
-        })
-        .select("id")
-        .single();
+        });
       if (appErr) throw appErr;
+      const appRow = { id: applicationId };
 
       const certRows: { application_id: string; name: string; file_url: string | null }[] = [];
       for (const cert of certifications) {

@@ -30,8 +30,12 @@ const TechPoolList = () => {
           ))}
         </div>
       ) : pools.length === 0 ? (
-        <div className="bg-card rounded-2xl p-8 text-center border border-border">
-          <p className="text-muted-foreground">No pools assigned yet.</p>
+        <div className="bg-card rounded-2xl border border-border">
+          <EmptyState
+            icon={Waves}
+            title="No pools assigned yet"
+            description="Your manager will add pools to your route soon. Check back here once you're assigned."
+          />
         </div>
       ) : (
         <div className="space-y-4">

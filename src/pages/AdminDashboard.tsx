@@ -2481,7 +2481,13 @@ const AdminDashboard = () => {
       case "dashboard": return <DashboardPage />;
       case "technicians":
         return technicians.length === 0
-          ? <Card><CardContent className="text-center py-12 text-sm text-muted-foreground">No technicians yet. Approve an applicant or seed demo data to get started.</CardContent></Card>
+          ? <Card><CardContent className="p-0"><EmptyState
+              icon={Wrench}
+              title="No technicians on the roster"
+              description="Approve a pending applicant to add your first technician, or seed demo data to explore the dashboard."
+              actionLabel="Review Applicants"
+              onAction={() => nav("applicants")}
+            /></CardContent></Card>
           : <TechniciansPage />;
       case "techDetail": return <TechDetailPage />;
       case "homeowners": return <HomeownersPage />;
@@ -2490,9 +2496,14 @@ const AdminDashboard = () => {
       case "reviews": return <ReviewsPage />;
       case "applicants":
         return applicants.length === 0
-          ? <Card><CardContent className="text-center py-12 text-sm text-muted-foreground">No technician applications yet.</CardContent></Card>
+          ? <Card><CardContent className="p-0"><EmptyState
+              icon={UserPlus}
+              title="No technician applications yet"
+              description="When candidates apply through the public Apply page, you'll be able to review their info, resume, and certifications here."
+            /></CardContent></Card>
           : <ApplicantsPage />;
       case "applicantDetail": return <ApplicantDetailPage />;
+
       default: return <DashboardPage />;
     }
   };

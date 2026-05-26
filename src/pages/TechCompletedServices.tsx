@@ -34,8 +34,12 @@ const TechCompletedServices = () => {
           ))}
         </div>
       ) : completed.length === 0 ? (
-        <div className="bg-card rounded-2xl p-8 text-center border border-border">
-          <p className="text-muted-foreground">No completed services yet.</p>
+        <div className="bg-card rounded-2xl border border-border">
+          <EmptyState
+            icon={CheckCircle2}
+            title="No completed services yet"
+            description="Once you finish your first job, the full report and history will appear here."
+          />
         </div>
       ) : (
         <div className="space-y-3">

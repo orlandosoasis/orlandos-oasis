@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
-import { MapPin, Calendar, ChevronRight } from "lucide-react";
+import { MapPin, Calendar, ChevronRight, Waves } from "lucide-react";
+import { EmptyState } from "@/components/EmptyState";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import TechLayout from "@/components/technician/TechLayout";

@@ -102,9 +102,14 @@ const TechMessages = () => {
                 <Skeleton className="h-16 w-2/3" />
               ) : messages.length === 0 ? (
                 <div className="h-full flex items-center justify-center">
-                  <p className="text-sm text-muted-foreground">No messages yet. Say hello!</p>
+                  <EmptyState
+                    icon={MessageSquarePlus}
+                    title="No messages yet"
+                    description={`Send the first message to ${selectedHomeowner?.fullName?.split(" ")[0] || "this homeowner"} to start the conversation.`}
+                  />
                 </div>
               ) : (
+
                 messages.map((msg) => {
                   const isTech = msg.senderId === user?.id;
                   const time = new Date(msg.createdAt).toLocaleTimeString("en-US", {

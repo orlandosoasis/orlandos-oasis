@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
-import { Calendar, ChevronRight, Star, CalendarClock } from "lucide-react";
+import { Calendar, ChevronRight, Star, CalendarClock, CalendarPlus, CheckCircle2 } from "lucide-react";
+import { EmptyState } from "@/components/EmptyState";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
 import PageContainer from "@/components/PageContainer";

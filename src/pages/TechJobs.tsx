@@ -402,11 +402,24 @@ const ScopeButton = ({
   </button>
 );
 
-const EmptyState = ({ message }: { message: string }) => (
-  <div className="bg-card rounded-2xl p-8 text-center border border-border">
-    <p className="text-muted-foreground">{message}</p>
+const EmptyState = ({
+  title,
+  description,
+  icon: Icon = Calendar,
+}: {
+  title: string;
+  description?: string;
+  icon?: typeof Calendar;
+}) => (
+  <div className="bg-card rounded-2xl p-10 text-center border border-border flex flex-col items-center gap-3">
+    <div className="h-14 w-14 rounded-full bg-muted flex items-center justify-center text-muted-foreground">
+      <Icon className="h-7 w-7" aria-hidden="true" />
+    </div>
+    <h3 className="text-base font-semibold text-foreground">{title}</h3>
+    {description && <p className="text-sm text-muted-foreground max-w-sm">{description}</p>}
   </div>
 );
+
 
 const JobCard = ({
   svc,

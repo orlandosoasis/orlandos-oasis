@@ -593,6 +593,39 @@ export type Database = {
           },
         ]
       }
+      subscription_events: {
+        Row: {
+          actor_id: string | null
+          created_at: string
+          effective_end_date: string | null
+          event_type: string
+          homeowner_id: string
+          id: string
+          reason: string | null
+          status_after: Database["public"]["Enums"]["subscription_status"]
+        }
+        Insert: {
+          actor_id?: string | null
+          created_at?: string
+          effective_end_date?: string | null
+          event_type: string
+          homeowner_id: string
+          id?: string
+          reason?: string | null
+          status_after: Database["public"]["Enums"]["subscription_status"]
+        }
+        Update: {
+          actor_id?: string | null
+          created_at?: string
+          effective_end_date?: string | null
+          event_type?: string
+          homeowner_id?: string
+          id?: string
+          reason?: string | null
+          status_after?: Database["public"]["Enums"]["subscription_status"]
+        }
+        Relationships: []
+      }
       technician_applications: {
         Row: {
           applied_date: string

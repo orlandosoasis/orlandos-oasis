@@ -1811,9 +1811,13 @@ const AdminDashboard = () => {
 
     const assignRow = async (h: AdminHomeowner, techId: string | null) => {
       const pool = h.pools?.[0];
-      if (!pool?.id) return;
       try {
-        await assignPoolToTech.mutateAsync({ poolId: pool.id, technicianId: techId });
+        if (pool?.id) {
+          await assignPoolToTech.mutateAsync({ poolId: pool.id, technicianId: techId });
+        } else {
+          // New customer: create a pool record from their profile and assign in one step
+          await assignTechToHomeowner.mutateAsync({ homeownerId: h.id, technicianId: techId });
+        }
         toast({ title: techId ? "Technician assigned" : "Technician unassigned", variant: "success" });
       } catch (e) {
         toast({ title: "Failed", description: e instanceof Error ? e.message : "", variant: "destructive" });

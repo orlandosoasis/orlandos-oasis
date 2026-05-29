@@ -186,6 +186,7 @@ const AdminDashboard = () => {
   const updateApplicationStatus = useUpdateApplicationStatus();
   const updateReviewStatus = useUpdateReviewStatus();
   const assignPoolToTech = useAssignPoolToTech();
+  const assignTechToHomeowner = useAssignTechToHomeowner();
   const updateTechnicianActive = useUpdateTechnicianActive();
   const updateTechnicianProfile = useUpdateTechnicianProfile();
   const toggleFredsTag = useToggleFredsTag();

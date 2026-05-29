@@ -27,6 +27,7 @@ import AdminNotesPanel from "@/components/admin/AdminNotesPanel";
 import TechPoolAssignmentPanel from "@/components/admin/TechPoolAssignmentPanel";
 import TechClientUpdatesPanel from "@/components/admin/TechClientUpdatesPanel";
 import HomeownerBillingPanel from "@/components/admin/HomeownerBillingPanel";
+import MembershipPanel from "@/components/admin/MembershipPanel";
 import HomeownerRequestsPanel from "@/components/admin/HomeownerRequestsPanel";
 import PastServiceDetailModal from "@/components/admin/PastServiceDetailModal";
 import ReportRouteIssueModal, { type RouteService } from "@/components/ReportRouteIssueModal";
@@ -161,6 +162,23 @@ const AdminDashboard = () => {
   // Live data from Supabase
   const techniciansQuery = useAdminTechnicians();
   const homeownersQuery = useAdminHomeowners();
+
+  // Realtime: any profile change (membership status, cancellation, etc.) refreshes the list.
+  useEffect(() => {
+    const ch = supabase
+      .channel("admin-profile-sync")
+      .on("postgres_changes", { event: "*", schema: "public", table: "profiles" }, () => {
+        queryClient.invalidateQueries({ queryKey: ["admin-homeowners"] });
+      })
+      .on("postgres_changes", { event: "INSERT", schema: "public", table: "subscription_events" }, (p) => {
+        const hid = (p.new as { homeowner_id?: string } | null)?.homeowner_id;
+        if (hid) queryClient.invalidateQueries({ queryKey: ["subscription-events", hid] });
+        queryClient.invalidateQueries({ queryKey: ["admin-homeowners"] });
+      })
+      .subscribe();
+    return () => { supabase.removeChannel(ch); };
+  }, []);
+
   const issuesQuery = useAdminIssues();
   const applicationsQuery = useTechnicianApplications();
   const reviewsQuery = useReviews();
@@ -172,7 +190,7 @@ const AdminDashboard = () => {
   const updateTechnicianProfile = useUpdateTechnicianProfile();
   const toggleFredsTag = useToggleFredsTag();
   const [specialTab, setSpecialTab] = useState<"standard" | "grandfathered" | "freds">("standard");
-  const [homeownerFilter, setHomeownerFilter] = useState<"all" | "standard" | "grandfathered" | "freds" | "placeholder">("all");
+  const [homeownerFilter, setHomeownerFilter] = useState<"all" | "standard" | "grandfathered" | "freds" | "placeholder" | "cancelled">("all");
   const [techFilter, setTechFilter] = useState<"all" | "active" | "inactive">("all");
   const [editTechId, setEditTechId] = useState<string | null>(null);
   const [techDraftName, setTechDraftName] = useState("");
@@ -230,6 +248,10 @@ const AdminDashboard = () => {
     grandfatheredNote: h.grandfatheredNote,
     isFreds: h.isFreds,
     notificationsEnabled: h.notificationsEnabled,
+    subscriptionStatus: h.subscriptionStatus,
+    subscriptionCancelledAt: h.subscriptionCancelledAt,
+    subscriptionEffectiveEndDate: h.subscriptionEffectiveEndDate,
+    subscriptionCancellationReason: h.subscriptionCancellationReason,
     pools: h.pools.map((p) => ({
       id: p.id,
       address: p.address,
@@ -320,7 +342,7 @@ const AdminDashboard = () => {
   const [homeownerSuccess, setHomeownerSuccess] = useState(false);
   const [homeownerEditSuccess, setHomeownerEditSuccess] = useState(false);
   const [scheduleTab, setScheduleTab] = useState<"upcoming" | "past">("upcoming");
-  const [detailTab, setDetailTab] = useState<"overview" | "pools" | "schedule" | "requests" | "billing" | "notes">("overview");
+  const [detailTab, setDetailTab] = useState<"overview" | "pools" | "schedule" | "requests" | "billing" | "membership" | "notes">("overview");
   const [pastServiceId, setPastServiceId] = useState<string | null>(null);
 
   const nav = (p: AdminPage, id: string | null = null) => { setPage(p); setDetailId(id); setSidebarOpen(false); };
@@ -1736,6 +1758,8 @@ const AdminDashboard = () => {
     const [bulkApplying, setBulkApplying] = useState(false);
     const activeTechsHo = technicians.filter((t) => t.status === "Active");
 
+    const isCancelledSub = (h: AdminHomeowner) =>
+      h.subscriptionStatus === "cancelled" || h.subscriptionStatus === "pending_cancellation";
     const counts = {
       all: homeowners.length,
       standard: homeowners.filter((h) => {
@@ -1745,6 +1769,7 @@ const AdminDashboard = () => {
       grandfathered: homeowners.filter((h) => (h as { isGrandfathered?: boolean }).isGrandfathered).length,
       freds: homeowners.filter((h) => (h as { isFreds?: boolean }).isFreds).length,
       placeholder: homeowners.filter((h) => (h as { isPlaceholder?: boolean }).isPlaceholder).length,
+      cancelled: homeowners.filter(isCancelledSub).length,
     };
     const filtered = homeowners.filter((h) => {
       const x = h as { isGrandfathered?: boolean; isFreds?: boolean; isPlaceholder?: boolean };
@@ -1753,6 +1778,7 @@ const AdminDashboard = () => {
         case "grandfathered": return Boolean(x.isGrandfathered);
         case "freds": return Boolean(x.isFreds);
         case "placeholder": return Boolean(x.isPlaceholder);
+        case "cancelled": return isCancelledSub(h);
         default: return true;
       }
     });
@@ -1762,7 +1788,9 @@ const AdminDashboard = () => {
       { key: "grandfathered", label: "Grandfathered" },
       { key: "freds", label: "Fred's" },
       { key: "placeholder", label: "Placeholder" },
+      { key: "cancelled", label: "Cancelled" },
     ];
+
 
     const assignableSelected = filtered.filter((h) => selectedIds.has(h.id) && h.pools?.[0]?.id);
     const allAssignableIds = filtered.filter((h) => h.pools?.[0]?.id).map((h) => h.id);
@@ -1942,6 +1970,16 @@ const AdminDashboard = () => {
                                 Fred's
                               </span>
                             )}
+                            {h.subscriptionStatus === "cancelled" && (
+                              <span title="Membership cancelled" className="inline-flex px-1.5 py-0.5 rounded-full text-[9px] font-bold bg-red-100 text-red-700 border border-red-200">
+                                Cancelled
+                              </span>
+                            )}
+                            {h.subscriptionStatus === "pending_cancellation" && (
+                              <span title="Cancellation scheduled" className="inline-flex px-1.5 py-0.5 rounded-full text-[9px] font-bold bg-amber-100 text-amber-700 border border-amber-200">
+                                Pending Cancel
+                              </span>
+                            )}
                           </div>
                         </TableCell>
                         <TableCell className="text-xs text-muted-foreground">{h.email}</TableCell>
@@ -2048,7 +2086,11 @@ const AdminDashboard = () => {
                 <div>
                   <div className="flex items-center gap-2">
                     <h2 className="text-lg font-semibold">{ho.name}</h2>
-                    <StatusBadge status={ho.status || "Active"} />
+                    <StatusBadge status={
+                      ho.subscriptionStatus === "cancelled" ? "Cancelled"
+                        : ho.subscriptionStatus === "pending_cancellation" ? "Pending Cancellation"
+                        : (ho.status || "Active")
+                    } />
                     {ho.manuallyAdded && (
                       <span className="text-[10px] font-medium px-1.5 py-0.5 rounded bg-muted text-muted-foreground border border-border">Manually Added</span>
                     )}
@@ -2100,6 +2142,7 @@ const AdminDashboard = () => {
           <TabBtn id="schedule" label="History" />
           <TabBtn id="requests" label="Requests" />
           <TabBtn id="billing" label="Billing" />
+          <TabBtn id="membership" label="Membership" />
           <TabBtn id="notes" label="Notes" />
         </div>
 
@@ -2206,6 +2249,8 @@ const AdminDashboard = () => {
         {detailTab === "requests" && <HomeownerRequestsPanel homeownerId={ho.id} />}
 
         {detailTab === "billing" && <HomeownerBillingPanel homeownerId={ho.id} />}
+
+        {detailTab === "membership" && <MembershipPanel homeowner={ho} />}
 
         {detailTab === "notes" && <AdminNotesPanel targetType="homeowner" targetId={ho.id} title="Admin Notes (Private)" />}
       </div>

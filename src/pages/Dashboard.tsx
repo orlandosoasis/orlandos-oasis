@@ -122,13 +122,34 @@ const Dashboard = () => {
   const { data: pools = [] } = usePools(user?.id);
   const pool = pools[0] || null;
 
-  const assignedTechIds = useMemo(
-    () => realServices.map((s) => s.technicianId).filter((id): id is string => !!id),
-    [realServices],
-  );
+  // Collect every technician id we may need to display:
+  //  - explicit per-service assignment (services.technician_id)
+  //  - pool-level assignment from admin (pools.assigned_technician_id) — used as
+  //    a fallback for services that haven't had a tech assigned individually yet.
+  const assignedTechIds = useMemo(() => {
+    const ids = new Set<string>();
+    for (const s of realServices) if (s.technicianId) ids.add(s.technicianId);
+    for (const p of pools) if (p.assignedTechnicianId) ids.add(p.assignedTechnicianId);
+    return Array.from(ids);
+  }, [realServices, pools]);
   const { data: techProfiles = {} } = useProfilesByIds(assignedTechIds);
 
   const updateService = useUpdateService();
+
+  // Realtime: when admin reassigns a technician (pools row) or a service is
+  // updated, refresh the homeowner's dashboard immediately so the pending
+  // state flips to the real technician everywhere.
+  useEffect(() => {
+    if (!user?.id) return;
+    const channel = supabase
+      .channel(`homeowner-sync-${user.id}`)
+      .on("postgres_changes", { event: "*", schema: "public", table: "pools", filter: `homeowner_id=eq.${user.id}` },
+        () => { queryClient.invalidateQueries({ queryKey: ["pools"] }); queryClient.invalidateQueries({ queryKey: ["pool"] }); })
+      .on("postgres_changes", { event: "*", schema: "public", table: "services", filter: `homeowner_id=eq.${user.id}` },
+        () => { queryClient.invalidateQueries({ queryKey: ["services"] }); queryClient.invalidateQueries({ queryKey: ["service"] }); })
+      .subscribe();
+    return () => { supabase.removeChannel(channel); };
+  }, [user?.id, queryClient]);
 
   useEffect(() => {
     if (!isLoading && !isAuthenticated && !isPostCheckout) navigate("/login", { replace: true });
@@ -138,7 +159,15 @@ const Dashboard = () => {
   const services = useMemo<ServiceInstance[]>(() => {
     if (!user?.id) return [];
     return realServices.map((s) => {
-      const techProfile = s.technicianId ? techProfiles[s.technicianId] : null;
+      // Prefer service-level tech assignment; fall back to the pool-level
+      // assignment so admin reassignments propagate to scheduled visits that
+      // were created before a technician existed.
+      const effectiveTechId =
+        s.technicianId ||
+        pools.find((p) => p.id === s.poolId)?.assignedTechnicianId ||
+        pool?.assignedTechnicianId ||
+        null;
+      const techProfile = effectiveTechId ? techProfiles[effectiveTechId] : null;
       const techName = techProfile
         ? techProfile.fullName ||
           `${techProfile.firstName ?? ""} ${techProfile.lastName ?? ""}`.trim() ||

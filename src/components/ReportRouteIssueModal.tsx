@@ -8,7 +8,8 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-import { AlertTriangle, Send } from "lucide-react";
+import { AlertTriangle, Send, Loader2 } from "lucide-react";
+import { useSubmitRouteIssue } from "@/hooks/useRouteIssues";
 
 export type RouteIssueType = "sick" | "breakdown" | "late" | "other";
 export type RouteIssueAction = "notify" | "delay" | "reschedule" | "reassign";

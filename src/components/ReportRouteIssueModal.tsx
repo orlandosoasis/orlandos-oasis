@@ -73,8 +73,11 @@ const ReportRouteIssueModal = ({
   services,
   lockedServiceId,
   technicians = [],
+  technicianId,
+  routeDate,
 }: ReportRouteIssueModalProps) => {
   const { toast } = useToast();
+  const submit = useSubmitRouteIssue();
 
   const [issueType, setIssueType] = useState<RouteIssueType | "">("");
   const [otherText, setOtherText] = useState("");

@@ -172,7 +172,7 @@ const AdminDashboard = () => {
   const updateTechnicianProfile = useUpdateTechnicianProfile();
   const toggleFredsTag = useToggleFredsTag();
   const [specialTab, setSpecialTab] = useState<"standard" | "grandfathered" | "freds">("standard");
-  const [homeownerFilter, setHomeownerFilter] = useState<"all" | "standard" | "grandfathered" | "freds" | "placeholder">("all");
+  const [homeownerFilter, setHomeownerFilter] = useState<"all" | "standard" | "grandfathered" | "freds" | "placeholder" | "cancelled">("all");
   const [techFilter, setTechFilter] = useState<"all" | "active" | "inactive">("all");
   const [editTechId, setEditTechId] = useState<string | null>(null);
   const [techDraftName, setTechDraftName] = useState("");

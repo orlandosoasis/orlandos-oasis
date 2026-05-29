@@ -1941,6 +1941,7 @@ const AdminDashboard = () => {
                     const isPlaceholder = Boolean((h as { isPlaceholder?: boolean }).isPlaceholder);
                     const isFreds = Boolean((h as { isFreds?: boolean }).isFreds);
                     const hasTech = Boolean(pool?.technicianId);
+                    const hasPool = Boolean(pool?.id);
                     const canAssign = true; // Admin can always assign — pool is auto-created if missing
                     const stop = (e: React.MouseEvent) => e.stopPropagation();
                     return (

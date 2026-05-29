@@ -94,6 +94,20 @@ const ServiceDetails = () => {
   const effectiveTechId = dbService?.technicianId ?? dbPool?.assignedTechnicianId ?? undefined;
   const { data: dbTech } = useProfile(effectiveTechId);
   const updateService = useUpdateService();
+  const queryClient = useQueryClient();
+
+  // Realtime: update if admin reassigns the technician on this pool or edits the service.
+  useEffect(() => {
+    if (!user?.id) return;
+    const channel = supabase
+      .channel(`service-details-sync-${user.id}`)
+      .on("postgres_changes", { event: "*", schema: "public", table: "pools", filter: `homeowner_id=eq.${user.id}` },
+        () => { queryClient.invalidateQueries({ queryKey: ["pool"] }); queryClient.invalidateQueries({ queryKey: ["pools"] }); })
+      .on("postgres_changes", { event: "*", schema: "public", table: "services", filter: `homeowner_id=eq.${user.id}` },
+        () => { queryClient.invalidateQueries({ queryKey: ["service"] }); queryClient.invalidateQueries({ queryKey: ["services"] }); })
+      .subscribe();
+    return () => { supabase.removeChannel(channel); };
+  }, [user?.id, queryClient]);
 
   // Build a BookingData view from the DB rows (when present), otherwise
   // fall back to the BookingContext set by the dashboard / booking flow.

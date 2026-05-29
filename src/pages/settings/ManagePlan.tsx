@@ -42,8 +42,6 @@ function readStoredMembership(): MembershipConfig | null {
 const ManagePlan = () => {
   const navigate = useNavigate();
   const { booking, checkoutData } = useBooking();
-  const { toast } = useToast();
-  const [cancelOpen, setCancelOpen] = useState(false);
 
   const current: MembershipConfig = useMemo(() => {
     const stored = readStoredMembership();
@@ -76,66 +74,50 @@ const ManagePlan = () => {
   };
 
   return (
-    <>
-      <main className="max-w-[760px] mx-auto px-5 py-6 pb-16">
-        <BackLink to="/account-settings/payment-methods" label="Back to billing" />
+    <main className="max-w-[760px] mx-auto px-5 py-6 pb-16">
+      <BackLink to="/account-settings/payment-methods" label="Back to billing" />
 
-        <header className="mt-4 mb-6 space-y-1.5">
-          <h1 className="text-2xl font-bold text-foreground">Manage Plan</h1>
-          <p className="text-sm text-muted-foreground">
-            Update your service. Changes apply next billing cycle.
-          </p>
-        </header>
+      <header className="mt-4 mb-6 space-y-1.5">
+        <h1 className="text-2xl font-bold text-foreground">Manage Plan</h1>
+        <p className="text-sm text-muted-foreground">
+          Update your service. Changes apply next billing cycle.
+        </p>
+      </header>
 
-        <section className="bg-card border border-border rounded-2xl shadow-sm overflow-hidden">
-          <div className="px-6 pt-6 pb-5 border-b border-border">
-            <div className="flex items-end justify-between gap-3">
-              <div className="space-y-0.5">
-                <p className="text-[13px] text-muted-foreground">
-                  {getFrequencyLabel(current.frequency)} Pool Service · {getPoolSizeLabel(current.poolSize)}
-                </p>
-                <p className="text-[11px] text-muted-foreground">Renews {nextDateStr}</p>
-              </div>
-              <p className="text-2xl font-bold text-foreground tabular-nums">
-                ${currentMonthlyTotal}
-                <span className="text-sm font-medium text-muted-foreground">/mo</span>
+      <section className="bg-card border border-border rounded-2xl shadow-sm overflow-hidden">
+        <div className="px-6 pt-6 pb-5 border-b border-border">
+          <div className="flex items-end justify-between gap-3">
+            <div className="space-y-0.5">
+              <p className="text-[13px] text-muted-foreground">
+                {getFrequencyLabel(current.frequency)} Pool Service · {getPoolSizeLabel(current.poolSize)}
               </p>
+              <p className="text-[11px] text-muted-foreground">Renews {nextDateStr}</p>
             </div>
+            <p className="text-2xl font-bold text-foreground tabular-nums">
+              ${currentMonthlyTotal}
+              <span className="text-sm font-medium text-muted-foreground">/mo</span>
+            </p>
           </div>
+        </div>
 
-          <ManagePlanForm
-            hideHeader
-            nextServiceDate={nextDateStr}
-            current={current}
-            onCancel={() => navigate(-1)}
-            onCancelMembership={() => setCancelOpen(true)}
-            onSaved={handleSaved}
-          />
-        </section>
+        <ManagePlanForm
+          hideHeader
+          nextServiceDate={nextDateStr}
+          current={current}
+          onCancel={() => navigate(-1)}
+          onCancelMembership={() => navigate("/account-settings/cancel-plan")}
+          onSaved={handleSaved}
+        />
+      </section>
 
-        <footer className="text-center text-xs text-muted-foreground mt-10 space-x-3">
-          <Link to="/terms" className="text-primary hover:underline">Terms</Link>
-          <Link to="/privacy" className="text-primary hover:underline">Privacy</Link>
-          <p className="mt-3">© Orlando's Oasis 2015 – 2026</p>
-        </footer>
-      </main>
-
-      <CancelMembershipModal
-        open={cancelOpen}
-        onOpenChange={setCancelOpen}
-        nextServiceDate={nextDateStr}
-        onConfirm={() => {
-          setCancelOpen(false);
-          toast({
-            title: "Subscription cancelled",
-            description: "Your recurring service will no longer renew.",
-            variant: "success",
-          });
-          navigate(-1);
-        }}
-      />
-    </>
+      <footer className="text-center text-xs text-muted-foreground mt-10 space-x-3">
+        <Link to="/terms" className="text-primary hover:underline">Terms</Link>
+        <Link to="/privacy" className="text-primary hover:underline">Privacy</Link>
+        <p className="mt-3">© Orlando's Oasis 2015 – 2026</p>
+      </footer>
+    </main>
   );
 };
+
 
 export default ManagePlan;

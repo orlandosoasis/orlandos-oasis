@@ -28,6 +28,8 @@ export interface AdminTechnicianAggregate {
   }[];
 }
 
+export type AdminSubscriptionStatus = "active" | "pending_cancellation" | "cancelled";
+
 export interface AdminHomeownerAggregate {
   id: string;
   name: string;
@@ -42,9 +44,24 @@ export interface AdminHomeownerAggregate {
   grandfatheredNote: string | null;
   isFreds: boolean;
   notificationsEnabled: boolean;
+  subscriptionStatus: AdminSubscriptionStatus;
+  subscriptionCancelledAt: string | null;
+  subscriptionEffectiveEndDate: string | null;
+  subscriptionCancellationReason: string | null;
   pools: { id: string; address: string; size: string; technicianName: string; technicianId: string | null; nextService: string }[];
   services: { id: string; date: string; serviceDate: string; type: string; technicianName: string; technicianId: string | null; status: "Completed" | "Scheduled"; poolId: string }[];
 }
+
+export interface SubscriptionEvent {
+  id: string;
+  homeownerId: string;
+  eventType: "cancelled" | "reactivated" | "pending_cancellation";
+  reason: string | null;
+  effectiveEndDate: string | null;
+  statusAfter: AdminSubscriptionStatus;
+  createdAt: string;
+}
+
 
 export type IssueStatusDb = "open" | "in_progress" | "resolved";
 
@@ -211,9 +228,10 @@ export function useAdminHomeowners() {
     queryFn: async (): Promise<AdminHomeownerAggregate[]> => {
       const { data: homeowners, error } = await supabase
         .from("profiles")
-        .select("id, full_name, email, phone, street_address, city, state, zip_code, created_at, monthly_amount, is_grandfathered, is_placeholder, grandfathered_note, is_freds, notifications_enabled")
+        .select("id, full_name, email, phone, street_address, city, state, zip_code, created_at, monthly_amount, is_grandfathered, is_placeholder, grandfathered_note, is_freds, notifications_enabled, subscription_status, subscription_cancelled_at, subscription_effective_end_date, subscription_cancellation_reason")
         .eq("role", "homeowner")
         .order("created_at", { ascending: false });
+
       if (error) throw error;
       const homeownerIds = (homeowners ?? []).map((h) => h.id);
       if (homeownerIds.length === 0) return [];
@@ -255,6 +273,11 @@ export function useAdminHomeowners() {
           grandfatheredNote: (h as { grandfathered_note?: string | null }).grandfathered_note ?? null,
           isFreds: Boolean((h as { is_freds?: boolean | null }).is_freds),
           notificationsEnabled: Boolean((h as { notifications_enabled?: boolean | null }).notifications_enabled ?? true),
+          subscriptionStatus: ((h as { subscription_status?: string | null }).subscription_status as AdminSubscriptionStatus) ?? "active",
+          subscriptionCancelledAt: (h as { subscription_cancelled_at?: string | null }).subscription_cancelled_at ?? null,
+          subscriptionEffectiveEndDate: (h as { subscription_effective_end_date?: string | null }).subscription_effective_end_date ?? null,
+          subscriptionCancellationReason: (h as { subscription_cancellation_reason?: string | null }).subscription_cancellation_reason ?? null,
+
           pools: ownerPools.map((p) => {
             const next = ownerServices
               .filter((s) => s.pool_id === p.id && (s.status === "scheduled" || s.status === "in_progress"))

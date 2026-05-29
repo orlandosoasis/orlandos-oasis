@@ -21,6 +21,7 @@ export interface TechPool {
   accessMethod: string;
   accessDetail: string;
   frequency?: string;
+  assignedTechnicianId?: string | null;
 }
 
 export type TechServiceStatus = "scheduled" | "in_progress" | "completed";

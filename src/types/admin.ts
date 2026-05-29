@@ -78,6 +78,10 @@ export interface AdminHomeowner {
   grandfatheredNote?: string | null;
   isFreds?: boolean;
   notificationsEnabled?: boolean;
+  subscriptionStatus?: "active" | "pending_cancellation" | "cancelled";
+  subscriptionCancelledAt?: string | null;
+  subscriptionEffectiveEndDate?: string | null;
+  subscriptionCancellationReason?: string | null;
 }
 
 export type AdminIssueStatus = "Open" | "In Progress" | "Resolved";

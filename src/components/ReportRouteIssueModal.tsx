@@ -457,8 +457,8 @@ const ReportRouteIssueModal = ({
           <Button variant="outline" onClick={() => onOpenChange(false)}>
             Cancel
           </Button>
-          <Button disabled={!isValid} onClick={handleSubmit} className="gap-1.5">
-            <Send className="h-4 w-4" />
+          <Button disabled={!isValid || submit.isPending} onClick={handleSubmit} className="gap-1.5">
+            {submit.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
             {submitLabel}
           </Button>
         </DialogFooter>

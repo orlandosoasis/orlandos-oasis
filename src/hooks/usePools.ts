@@ -16,6 +16,7 @@ type PoolRow = {
   access_method: string | null;
   access_detail: string | null;
   frequency?: string | null;
+  assigned_technician_id?: string | null;
 };
 
 function rowToPool(r: PoolRow): TechPool {
@@ -33,6 +34,7 @@ function rowToPool(r: PoolRow): TechPool {
     accessMethod: r.access_method ?? "",
     accessDetail: r.access_detail ?? "",
     frequency: r.frequency ?? undefined,
+    assignedTechnicianId: r.assigned_technician_id ?? null,
   };
 }
 

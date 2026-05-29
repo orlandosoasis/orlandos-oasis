@@ -44,7 +44,7 @@ import {
 } from "@/hooks/useAdmin";
 import { useReviews, useUpdateReviewStatus } from "@/hooks/useReviews";
 import { useService, useUpdateService } from "@/hooks/useServices";
-import { useAssignPoolToTech } from "@/hooks/useAdminDetails";
+import { useAssignPoolToTech, useAssignTechToHomeowner } from "@/hooks/useAdminDetails";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { format } from "date-fns";
@@ -186,6 +186,7 @@ const AdminDashboard = () => {
   const updateApplicationStatus = useUpdateApplicationStatus();
   const updateReviewStatus = useUpdateReviewStatus();
   const assignPoolToTech = useAssignPoolToTech();
+  const assignTechToHomeowner = useAssignTechToHomeowner();
   const updateTechnicianActive = useUpdateTechnicianActive();
   const updateTechnicianProfile = useUpdateTechnicianProfile();
   const toggleFredsTag = useToggleFredsTag();
@@ -1810,9 +1811,13 @@ const AdminDashboard = () => {
 
     const assignRow = async (h: AdminHomeowner, techId: string | null) => {
       const pool = h.pools?.[0];
-      if (!pool?.id) return;
       try {
-        await assignPoolToTech.mutateAsync({ poolId: pool.id, technicianId: techId });
+        if (pool?.id) {
+          await assignPoolToTech.mutateAsync({ poolId: pool.id, technicianId: techId });
+        } else {
+          // New customer: create a pool record from their profile and assign in one step
+          await assignTechToHomeowner.mutateAsync({ homeownerId: h.id, technicianId: techId });
+        }
         toast({ title: techId ? "Technician assigned" : "Technician unassigned", variant: "success" });
       } catch (e) {
         toast({ title: "Failed", description: e instanceof Error ? e.message : "", variant: "destructive" });
@@ -1936,7 +1941,8 @@ const AdminDashboard = () => {
                     const isPlaceholder = Boolean((h as { isPlaceholder?: boolean }).isPlaceholder);
                     const isFreds = Boolean((h as { isFreds?: boolean }).isFreds);
                     const hasTech = Boolean(pool?.technicianId);
-                    const canAssign = Boolean(pool?.id);
+                    const hasPool = Boolean(pool?.id);
+                    const canAssign = true; // Admin can always assign — pool is auto-created if missing
                     const stop = (e: React.MouseEvent) => e.stopPropagation();
                     return (
                       <TableRow
@@ -1948,7 +1954,7 @@ const AdminDashboard = () => {
                           <Checkbox
                             checked={selectedIds.has(h.id)}
                             onCheckedChange={(v) => toggleOne(h.id, Boolean(v))}
-                            disabled={!canAssign}
+                            disabled={!hasPool}
                             aria-label={`Select ${h.name}`}
                           />
                         </TableCell>

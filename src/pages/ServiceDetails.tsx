@@ -87,7 +87,10 @@ const ServiceDetails = () => {
   const isUuid = !!serviceId && /^[0-9a-f-]{36}$/i.test(serviceId);
   const { data: dbService, isLoading: serviceLoading } = useService(isUuid ? serviceId : undefined);
   const { data: dbPool } = usePool(dbService?.poolId);
-  const { data: dbTech } = useProfile(dbService?.technicianId ?? undefined);
+  // Prefer the service-level technician; fall back to the pool-level
+  // assignment so admin reassignments propagate everywhere instantly.
+  const effectiveTechId = dbService?.technicianId ?? dbPool?.assignedTechnicianId ?? undefined;
+  const { data: dbTech } = useProfile(effectiveTechId);
   const updateService = useUpdateService();
 
   // Build a BookingData view from the DB rows (when present), otherwise

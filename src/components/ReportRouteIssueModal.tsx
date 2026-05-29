@@ -161,24 +161,39 @@ const ReportRouteIssueModal = ({
   const isPendingApproval = role === "technician" && action === "reschedule";
   const submitLabel = isPendingApproval ? "Submit for Approval" : "Confirm & Send";
 
-  const handleSubmit = () => {
-    if (!isValid) return;
+  const handleSubmit = async () => {
+    if (!isValid || submit.isPending) return;
+    try {
+      await submit.mutateAsync({
+        issueType: issueType as RouteIssueType,
+        otherText: issueType === "other" ? otherText : undefined,
+        technicianId: technicianId ?? undefined,
+        routeDate,
+        scope: lockedServiceId ? "specific" : scope,
+        serviceIds: lockedServiceId ? [lockedServiceId] : scope === "specific" ? selectedIds : [],
+        action: action as RouteIssueAction,
+        delayMinutes: action === "delay" ? delayMinutes : undefined,
+        newServiceDate: action === "reschedule" ? newDate : undefined,
+        newTimeWindow: action === "reschedule" ? newTime : undefined,
+        reassignTo: action === "reassign" ? reassignTechId : undefined,
+        message,
+      });
 
-    let toastMsg = "";
-    if (action === "notify") {
-      toastMsg = `Update sent to ${affectedCount} homeowner${affectedCount === 1 ? "" : "s"}`;
-    } else if (action === "delay") {
-      toastMsg = `Services delayed ${delayMinutes} min and homeowners notified`;
-    } else if (action === "reschedule") {
-      toastMsg = isPendingApproval
-        ? "Request submitted for admin approval"
-        : "Services rescheduled and homeowners notified";
-    } else if (action === "reassign") {
-      toastMsg = `Technician reassigned${reassignTechName ? ` to ${reassignTechName}` : ""} successfully`;
+      let toastMsg = "";
+      if (action === "notify") toastMsg = `Update sent to ${affectedCount} homeowner${affectedCount === 1 ? "" : "s"}`;
+      else if (action === "delay") toastMsg = `Services delayed ${delayMinutes} min and homeowners notified`;
+      else if (action === "reschedule")
+        toastMsg = isPendingApproval
+          ? "Request submitted for admin approval"
+          : "Services rescheduled and homeowners notified";
+      else if (action === "reassign")
+        toastMsg = `Technician reassigned${reassignTechName ? ` to ${reassignTechName}` : ""} successfully`;
+
+      toast({ title: toastMsg, variant: "success" as any });
+      onOpenChange(false);
+    } catch (err: any) {
+      toast({ title: "Could not submit", description: err?.message ?? "Please try again.", variant: "destructive" });
     }
-
-    toast({ title: toastMsg, variant: "success" as any });
-    onOpenChange(false);
   };
 
   const formatDelay = () => {

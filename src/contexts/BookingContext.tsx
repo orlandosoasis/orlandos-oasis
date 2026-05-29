@@ -52,6 +52,8 @@ export interface TechnicianInfo {
   initials: string;
   rating: number;
   isAssigned: boolean;
+  firstName?: string;
+  avatarUrl?: string | null;
 }
 
 export interface PoolData {

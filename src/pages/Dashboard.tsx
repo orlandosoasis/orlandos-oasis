@@ -176,6 +176,7 @@ const Dashboard = () => {
           `${techProfile.firstName ?? ""} ${techProfile.lastName ?? ""}`.trim() ||
           "Pool Technician"
         : null;
+      const firstName = techProfile?.firstName || techName?.split(" ")[0] || "";
       const initials = (techName ?? "")
         .split(" ")
         .map((p) => p[0])
@@ -184,7 +185,14 @@ const Dashboard = () => {
         .join("")
         .toUpperCase();
       const technician = techName
-        ? { name: techName, initials: initials || "PT", rating: 5.0, isAssigned: true }
+        ? {
+            name: techName,
+            initials: initials || "PT",
+            rating: 5.0,
+            isAssigned: true,
+            firstName,
+            avatarUrl: techProfile?.avatarUrl ?? null,
+          }
         : UNASSIGNED_TECH;
 
       const frequency = (pool?.frequency || "monthly") as BookingData["frequency"];
@@ -404,14 +412,21 @@ const NextServiceCard = ({ service, onViewDetails }: { service: ServiceInstance;
         </div>
         {technician.isAssigned && (
           <div className="absolute top-3 right-3 bg-card/90 backdrop-blur-sm rounded-xl px-2.5 py-1.5 flex items-center gap-2 shadow-md border border-border">
-            <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-primary to-oasis-aqua flex items-center justify-center text-primary-foreground text-sm font-bold">
-              {technician.initials}
-            </div>
+            {technician.avatarUrl ? (
+              <img
+                src={technician.avatarUrl}
+                alt={technician.name}
+                className="w-9 h-9 rounded-lg object-cover"
+              />
+            ) : (
+              <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-primary to-oasis-aqua flex items-center justify-center text-primary-foreground text-sm font-bold">
+                {technician.initials}
+              </div>
+            )}
             <div className="flex flex-col leading-tight">
-              <span className="text-[0.8rem] font-semibold text-foreground">{technician.name}</span>
-              <span className="text-[0.72rem] text-muted-foreground flex items-center gap-1">
-                <Star className="h-3 w-3 fill-cta-yellow text-cta-yellow" />
-                {technician.rating}
+              <span className="text-[0.72rem] text-muted-foreground">Assigned to</span>
+              <span className="text-[0.8rem] font-semibold text-foreground">
+                {technician.firstName || technician.name}
               </span>
             </div>
           </div>
@@ -456,7 +471,9 @@ const UpcomingRow = ({ service, canReschedule, onReschedule }: { service: Servic
       <div className="flex-1 min-w-0">
         <p className="text-sm font-semibold text-foreground">{booking.selectedPass.label}</p>
         <p className="text-xs text-muted-foreground truncate">
-          {isTechnicianPending ? "Pool Technician to be assigned" : booking.technician.name} · {TIME_LABELS[booking.scheduleData.timeWindow]}
+          {isTechnicianPending
+            ? "Pool Technician to be assigned"
+            : `Assigned to ${booking.technician.firstName || booking.technician.name}`} · {TIME_LABELS[booking.scheduleData.timeWindow]}
         </p>
       </div>
 

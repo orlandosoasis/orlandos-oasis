@@ -125,6 +125,7 @@ const App = () => (
                     <Route path="/account-settings/personal-info" element={<PersonalInfo />} />
                     <Route path="/account-settings/payment-methods" element={<PaymentMethods />} />
                     <Route path="/account-settings/manage-plan" element={<ManagePlan />} />
+                    <Route path="/account-settings/cancel-plan" element={<CancelPlan />} />
                     <Route path="/account-settings/cleaning-address" element={<CleaningAddress />} />
                     <Route path="/account-settings/cleaning-notes" element={<CleaningNotes />} />
                     <Route path="/account-settings/preferences" element={<Preferences />} />

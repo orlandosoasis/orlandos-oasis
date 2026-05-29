@@ -164,7 +164,7 @@ const AdminDashboard = () => {
   const homeownersQuery = useAdminHomeowners();
 
   // Realtime: any profile change (membership status, cancellation, etc.) refreshes the list.
-  React.useEffect(() => {
+  useEffect(() => {
     const ch = supabase
       .channel("admin-profile-sync")
       .on("postgres_changes", { event: "*", schema: "public", table: "profiles" }, () => {

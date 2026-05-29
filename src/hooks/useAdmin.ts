@@ -562,3 +562,28 @@ export function useToggleFredsTag() {
     onSuccess: () => qc.invalidateQueries({ queryKey: ["admin-homeowners"] }),
   });
 }
+
+export function useSubscriptionEvents(homeownerId: string | undefined) {
+  return useQuery({
+    queryKey: ["subscription-events", homeownerId],
+    enabled: !!homeownerId,
+    queryFn: async (): Promise<SubscriptionEvent[]> => {
+      const { data, error } = await supabase
+        .from("subscription_events")
+        .select("id, homeowner_id, event_type, reason, effective_end_date, status_after, created_at")
+        .eq("homeowner_id", homeownerId!)
+        .order("created_at", { ascending: false });
+      if (error) throw error;
+      return (data ?? []).map((r) => ({
+        id: r.id,
+        homeownerId: r.homeowner_id,
+        eventType: r.event_type as SubscriptionEvent["eventType"],
+        reason: r.reason,
+        effectiveEndDate: r.effective_end_date,
+        statusAfter: r.status_after as AdminSubscriptionStatus,
+        createdAt: r.created_at,
+      }));
+    },
+  });
+}
+

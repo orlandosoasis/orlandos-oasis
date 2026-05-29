@@ -324,7 +324,7 @@ const AdminDashboard = () => {
   const [homeownerSuccess, setHomeownerSuccess] = useState(false);
   const [homeownerEditSuccess, setHomeownerEditSuccess] = useState(false);
   const [scheduleTab, setScheduleTab] = useState<"upcoming" | "past">("upcoming");
-  const [detailTab, setDetailTab] = useState<"overview" | "pools" | "schedule" | "requests" | "billing" | "notes">("overview");
+  const [detailTab, setDetailTab] = useState<"overview" | "pools" | "schedule" | "requests" | "billing" | "membership" | "notes">("overview");
   const [pastServiceId, setPastServiceId] = useState<string | null>(null);
 
   const nav = (p: AdminPage, id: string | null = null) => { setPage(p); setDetailId(id); setSidebarOpen(false); };
@@ -2068,7 +2068,11 @@ const AdminDashboard = () => {
                 <div>
                   <div className="flex items-center gap-2">
                     <h2 className="text-lg font-semibold">{ho.name}</h2>
-                    <StatusBadge status={ho.status || "Active"} />
+                    <StatusBadge status={
+                      ho.subscriptionStatus === "cancelled" ? "Cancelled"
+                        : ho.subscriptionStatus === "pending_cancellation" ? "Pending Cancellation"
+                        : (ho.status || "Active")
+                    } />
                     {ho.manuallyAdded && (
                       <span className="text-[10px] font-medium px-1.5 py-0.5 rounded bg-muted text-muted-foreground border border-border">Manually Added</span>
                     )}
@@ -2120,6 +2124,7 @@ const AdminDashboard = () => {
           <TabBtn id="schedule" label="History" />
           <TabBtn id="requests" label="Requests" />
           <TabBtn id="billing" label="Billing" />
+          <TabBtn id="membership" label="Membership" />
           <TabBtn id="notes" label="Notes" />
         </div>
 
@@ -2226,6 +2231,8 @@ const AdminDashboard = () => {
         {detailTab === "requests" && <HomeownerRequestsPanel homeownerId={ho.id} />}
 
         {detailTab === "billing" && <HomeownerBillingPanel homeownerId={ho.id} />}
+
+        {detailTab === "membership" && <MembershipPanel homeowner={ho} />}
 
         {detailTab === "notes" && <AdminNotesPanel targetType="homeowner" targetId={ho.id} title="Admin Notes (Private)" />}
       </div>

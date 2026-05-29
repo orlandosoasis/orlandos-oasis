@@ -2877,13 +2877,13 @@ const AdminDashboard = () => {
         onOpenChange={setReportIssueOpen}
         role="admin"
         services={homeowners.flatMap((h) =>
-          h.services.slice(0, 1).map((s, idx) => ({
-            id: `${h.id}-${idx}`,
+          h.services.map((s) => ({
+            id: s.id ?? "",
             homeowner: h.name,
             type: s.type,
             time: s.date,
           }))
-        ) as RouteService[]}
+        ).filter((s) => !!s.id) as RouteService[]}
         technicians={technicians.map((t) => ({ id: t.id, name: t.name }))}
       />
 

@@ -1954,7 +1954,7 @@ const AdminDashboard = () => {
                           <Checkbox
                             checked={selectedIds.has(h.id)}
                             onCheckedChange={(v) => toggleOne(h.id, Boolean(v))}
-                            disabled={!canAssign}
+                            disabled={!hasPool}
                             aria-label={`Select ${h.name}`}
                           />
                         </TableCell>

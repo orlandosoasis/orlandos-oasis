@@ -17,6 +17,7 @@ import RescheduleModal from "@/components/RescheduleModal";
 import LeaveReviewModal from "@/components/LeaveReviewModal";
 import ServiceReport from "@/components/ServiceReport";
 import ReportIssueModal from "@/components/ReportIssueModal";
+import ServiceRouteIssueCard from "@/components/ServiceRouteIssueCard";
 
 const FULL_DAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 const SHORT_MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];

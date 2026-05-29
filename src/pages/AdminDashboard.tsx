@@ -230,6 +230,10 @@ const AdminDashboard = () => {
     grandfatheredNote: h.grandfatheredNote,
     isFreds: h.isFreds,
     notificationsEnabled: h.notificationsEnabled,
+    subscriptionStatus: h.subscriptionStatus,
+    subscriptionCancelledAt: h.subscriptionCancelledAt,
+    subscriptionEffectiveEndDate: h.subscriptionEffectiveEndDate,
+    subscriptionCancellationReason: h.subscriptionCancellationReason,
     pools: h.pools.map((p) => ({
       id: p.id,
       address: p.address,

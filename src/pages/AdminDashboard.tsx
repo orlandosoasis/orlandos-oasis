@@ -1952,6 +1952,16 @@ const AdminDashboard = () => {
                                 Fred's
                               </span>
                             )}
+                            {h.subscriptionStatus === "cancelled" && (
+                              <span title="Membership cancelled" className="inline-flex px-1.5 py-0.5 rounded-full text-[9px] font-bold bg-red-100 text-red-700 border border-red-200">
+                                Cancelled
+                              </span>
+                            )}
+                            {h.subscriptionStatus === "pending_cancellation" && (
+                              <span title="Cancellation scheduled" className="inline-flex px-1.5 py-0.5 rounded-full text-[9px] font-bold bg-amber-100 text-amber-700 border border-amber-200">
+                                Pending Cancel
+                              </span>
+                            )}
                           </div>
                         </TableCell>
                         <TableCell className="text-xs text-muted-foreground">{h.email}</TableCell>

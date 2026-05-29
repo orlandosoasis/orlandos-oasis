@@ -59,6 +59,7 @@ const AccountSettings = lazy(() => import("./pages/AccountSettings"));
 const PersonalInfo = lazy(() => import("./pages/settings/PersonalInfo"));
 const PaymentMethods = lazy(() => import("./pages/settings/PaymentMethods"));
 const ManagePlan = lazy(() => import("./pages/settings/ManagePlan"));
+const CancelPlan = lazy(() => import("./pages/settings/CancelPlan"));
 const CleaningAddress = lazy(() => import("./pages/settings/CleaningAddress"));
 const CleaningNotes = lazy(() => import("./pages/settings/CleaningNotes"));
 const Preferences = lazy(() => import("./pages/settings/Preferences"));

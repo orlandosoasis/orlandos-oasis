@@ -293,6 +293,7 @@ const Dashboard = () => {
   return (
     <>
       <PageContainer>
+        <RouteIssueBanner />
         {/* Greeting */}
         <div className="flex items-center justify-between mb-8">
           <div>

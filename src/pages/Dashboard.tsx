@@ -7,6 +7,7 @@ import { EmptyState } from "@/components/EmptyState";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
 import PageContainer from "@/components/PageContainer";
+import RouteIssueBanner from "@/components/dashboard/RouteIssueBanner";
 import { useBooking, type BookingData, type TimeWindow, type AccessMethod } from "@/contexts/BookingContext";
 import { useServices, useUpdateService } from "@/hooks/useServices";
 import { usePools } from "@/hooks/usePools";

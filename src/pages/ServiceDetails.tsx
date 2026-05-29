@@ -251,6 +251,7 @@ const ServiceDetails = () => {
 
       {/* Content */}
       <main className="max-w-[760px] mx-auto px-5 py-6 pb-16 space-y-4">
+        <ServiceRouteIssueCard serviceId={serviceId} />
 
         {/* Appointment Details + Technician */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

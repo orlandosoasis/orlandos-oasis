@@ -1740,6 +1740,8 @@ const AdminDashboard = () => {
     const [bulkApplying, setBulkApplying] = useState(false);
     const activeTechsHo = technicians.filter((t) => t.status === "Active");
 
+    const isCancelledSub = (h: AdminHomeowner) =>
+      h.subscriptionStatus === "cancelled" || h.subscriptionStatus === "pending_cancellation";
     const counts = {
       all: homeowners.length,
       standard: homeowners.filter((h) => {
@@ -1749,6 +1751,7 @@ const AdminDashboard = () => {
       grandfathered: homeowners.filter((h) => (h as { isGrandfathered?: boolean }).isGrandfathered).length,
       freds: homeowners.filter((h) => (h as { isFreds?: boolean }).isFreds).length,
       placeholder: homeowners.filter((h) => (h as { isPlaceholder?: boolean }).isPlaceholder).length,
+      cancelled: homeowners.filter(isCancelledSub).length,
     };
     const filtered = homeowners.filter((h) => {
       const x = h as { isGrandfathered?: boolean; isFreds?: boolean; isPlaceholder?: boolean };
@@ -1757,6 +1760,7 @@ const AdminDashboard = () => {
         case "grandfathered": return Boolean(x.isGrandfathered);
         case "freds": return Boolean(x.isFreds);
         case "placeholder": return Boolean(x.isPlaceholder);
+        case "cancelled": return isCancelledSub(h);
         default: return true;
       }
     });
@@ -1766,7 +1770,9 @@ const AdminDashboard = () => {
       { key: "grandfathered", label: "Grandfathered" },
       { key: "freds", label: "Fred's" },
       { key: "placeholder", label: "Placeholder" },
+      { key: "cancelled", label: "Cancelled" },
     ];
+
 
     const assignableSelected = filtered.filter((h) => selectedIds.has(h.id) && h.pools?.[0]?.id);
     const allAssignableIds = filtered.filter((h) => h.pools?.[0]?.id).map((h) => h.id);

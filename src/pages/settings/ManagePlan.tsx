@@ -1,7 +1,6 @@
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useBooking } from "@/contexts/BookingContext";
-import { useToast } from "@/hooks/use-toast";
 import BackLink from "@/components/BackLink";
 import {
   ManagePlanForm,
@@ -13,7 +12,6 @@ import {
   getPoolSizeLabel,
   getMembershipMonthlyPrice,
 } from "@/components/ManageMembershipModal";
-import CancelMembershipModal from "@/components/CancelMembershipModal";
 
 const FULL_DAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 const SHORT_MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];

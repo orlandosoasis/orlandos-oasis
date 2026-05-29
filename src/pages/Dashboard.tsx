@@ -176,6 +176,7 @@ const Dashboard = () => {
           `${techProfile.firstName ?? ""} ${techProfile.lastName ?? ""}`.trim() ||
           "Pool Technician"
         : null;
+      const firstName = techProfile?.firstName || techName?.split(" ")[0] || "";
       const initials = (techName ?? "")
         .split(" ")
         .map((p) => p[0])
@@ -184,7 +185,14 @@ const Dashboard = () => {
         .join("")
         .toUpperCase();
       const technician = techName
-        ? { name: techName, initials: initials || "PT", rating: 5.0, isAssigned: true }
+        ? {
+            name: techName,
+            initials: initials || "PT",
+            rating: 5.0,
+            isAssigned: true,
+            firstName,
+            avatarUrl: techProfile?.avatarUrl ?? null,
+          }
         : UNASSIGNED_TECH;
 
       const frequency = (pool?.frequency || "monthly") as BookingData["frequency"];

@@ -27,6 +27,7 @@ import AdminNotesPanel from "@/components/admin/AdminNotesPanel";
 import TechPoolAssignmentPanel from "@/components/admin/TechPoolAssignmentPanel";
 import TechClientUpdatesPanel from "@/components/admin/TechClientUpdatesPanel";
 import HomeownerBillingPanel from "@/components/admin/HomeownerBillingPanel";
+import MembershipPanel from "@/components/admin/MembershipPanel";
 import HomeownerRequestsPanel from "@/components/admin/HomeownerRequestsPanel";
 import PastServiceDetailModal from "@/components/admin/PastServiceDetailModal";
 import ReportRouteIssueModal, { type RouteService } from "@/components/ReportRouteIssueModal";

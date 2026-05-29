@@ -124,7 +124,14 @@ const ServiceDetails = () => {
         .join("")
         .toUpperCase();
       const technician = techName
-        ? { name: techName, initials: initials || "PT", rating: 5.0, isAssigned: true }
+        ? {
+            name: techName,
+            initials: initials || "PT",
+            rating: 5.0,
+            isAssigned: true,
+            firstName: dbTech?.firstName || techName.split(" ")[0] || "",
+            avatarUrl: dbTech?.avatarUrl ?? null,
+          }
         : { name: "Pool Technician to be assigned", initials: "?", rating: 0, isAssigned: false };
 
       return {
@@ -300,15 +307,19 @@ const ServiceDetails = () => {
               <>
                 <h2 className="text-[17px] font-bold text-foreground mb-4">Your Technician</h2>
                 <div className="flex gap-3.5 items-start">
-                  <div className="w-[56px] h-[56px] rounded-xl bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center text-primary-foreground text-lg font-bold shrink-0">
-                    {technician.initials}
-                  </div>
+                  {technician.avatarUrl ? (
+                    <img
+                      src={technician.avatarUrl}
+                      alt={technician.name}
+                      className="w-[56px] h-[56px] rounded-xl object-cover shrink-0"
+                    />
+                  ) : (
+                    <div className="w-[56px] h-[56px] rounded-xl bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center text-primary-foreground text-lg font-bold shrink-0">
+                      {technician.initials}
+                    </div>
+                  )}
                   <div className="space-y-1">
                     <p className="text-base font-bold text-foreground">{technician.name}</p>
-                    <div className="flex items-center gap-1 text-sm text-muted-foreground">
-                      <Star className="h-3.5 w-3.5 fill-cta-yellow text-cta-yellow" />
-                      <span>{technician.rating}</span>
-                    </div>
                     <p className="text-[13px] text-muted-foreground leading-relaxed">
                       Assigned pool care specialist for this visit.
                     </p>

@@ -32,6 +32,10 @@ interface ReportRouteIssueModalProps {
   lockedServiceId?: string;
   /** Optional list of technicians for reassign action (admin only) */
   technicians?: { id: string | number; name: string }[];
+  /** Technician whose route is affected (required for admin "entire route" scope to filter) */
+  technicianId?: string | null;
+  /** Route date in YYYY-MM-DD (defaults to today) */
+  routeDate?: string;
 }
 
 const ISSUE_OPTIONS: { value: RouteIssueType; label: string }[] = [

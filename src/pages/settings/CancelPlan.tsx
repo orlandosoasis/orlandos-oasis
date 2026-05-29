@@ -1,22 +1,22 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { AlertTriangle } from "lucide-react";
 import { useBooking } from "@/contexts/BookingContext";
+import { useToast } from "@/hooks/use-toast";
 import BackLink from "@/components/BackLink";
+import { Button } from "@/components/ui/button";
 import {
-  ManagePlanForm,
   type MembershipConfig,
   type PoolSize,
   type ServiceFrequency,
-  type ServicePlan,
   getFrequencyLabel,
   getPoolSizeLabel,
   getMembershipMonthlyPrice,
 } from "@/components/ManageMembershipModal";
+import { MEMBERSHIP_STORAGE_KEY } from "./ManagePlan";
 
 const FULL_DAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 const SHORT_MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-
-export const MEMBERSHIP_STORAGE_KEY = "oo_membership_config";
 
 const toMembershipFrequency = (f?: string): ServiceFrequency => {
   if (f === "twice-weekly" || f === "three-weekly") return f;
@@ -39,9 +39,11 @@ function readStoredMembership(): MembershipConfig | null {
   }
 }
 
-const ManagePlan = () => {
+const CancelPlan = () => {
   const navigate = useNavigate();
   const { booking, checkoutData } = useBooking();
+  const { toast } = useToast();
+  const [submitting, setSubmitting] = useState(false);
 
   const current: MembershipConfig = useMemo(() => {
     const stored = readStoredMembership();
@@ -60,27 +62,26 @@ const ManagePlan = () => {
     return next;
   }, [d]);
   const nextDateStr = `${FULL_DAYS[nextBilling.getDay()]}, ${SHORT_MONTHS[nextBilling.getMonth()]} ${nextBilling.getDate()}, ${nextBilling.getFullYear()}`;
-
   const currentMonthlyTotal = getMembershipMonthlyPrice(current);
 
-  const handleSaved = (next: MembershipConfig, _plan: ServicePlan) => {
-    try {
-      localStorage.setItem(MEMBERSHIP_STORAGE_KEY, JSON.stringify(next));
-      window.dispatchEvent(new Event("oo:membership-updated"));
-    } catch {
-      // ignore
-    }
-    navigate(-1);
+  const handleConfirm = () => {
+    setSubmitting(true);
+    toast({
+      title: "Membership cancelled",
+      description: "Your recurring pool service has been cancelled.",
+      variant: "success",
+    });
+    setTimeout(() => navigate("/account-settings/payment-methods"), 200);
   };
 
   return (
     <main className="max-w-[760px] mx-auto px-5 py-6 pb-16">
-      <BackLink to="/account-settings/payment-methods" label="Back to billing" />
+      <BackLink to="/account-settings/manage-plan" label="Back to plan" />
 
       <header className="mt-4 mb-6 space-y-1.5">
-        <h1 className="text-2xl font-bold text-foreground">Manage Plan</h1>
+        <h1 className="text-2xl font-bold text-foreground">Cancel Plan</h1>
         <p className="text-sm text-muted-foreground">
-          Update your service. Changes apply next billing cycle.
+          Review your current membership before cancelling.
         </p>
       </header>
 
@@ -100,14 +101,47 @@ const ManagePlan = () => {
           </div>
         </div>
 
-        <ManagePlanForm
-          hideHeader
-          nextServiceDate={nextDateStr}
-          current={current}
-          onCancel={() => navigate(-1)}
-          onCancelMembership={() => navigate("/account-settings/cancel-plan")}
-          onSaved={handleSaved}
-        />
+        <div className="px-6 py-6 space-y-5">
+          <div className="flex items-start gap-3 rounded-xl border border-destructive/20 bg-destructive/5 p-4">
+            <AlertTriangle className="h-5 w-5 text-destructive shrink-0 mt-0.5" />
+            <div className="space-y-1">
+              <p className="text-sm font-semibold text-foreground">You will lose your scheduled service</p>
+              <p className="text-[13px] text-muted-foreground leading-relaxed">
+                You will no longer receive recurring pool services after your current billing period ends.
+              </p>
+            </div>
+          </div>
+
+          <div className="rounded-xl bg-muted/40 px-4 py-3">
+            <p className="text-sm text-muted-foreground">
+              Your plan will remain active until{" "}
+              <span className="font-medium text-foreground">{nextDateStr}</span>.
+            </p>
+          </div>
+
+          <div className="space-y-2">
+            <p className="text-sm font-semibold text-foreground">What happens next</p>
+            <ul className="space-y-1.5 text-[13px] text-muted-foreground list-disc pl-5">
+              <li>Future services after {nextDateStr} will be cancelled.</li>
+              <li>You will not be charged again after the current period.</li>
+              <li>You can resubscribe anytime from your account settings.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div className="px-6 pb-6 flex flex-col gap-3">
+          <Button className="w-full" onClick={() => navigate(-1)} disabled={submitting}>
+            Keep My Plan
+          </Button>
+          <Button
+            variant="outline"
+            className="w-full text-destructive border-destructive/30 hover:bg-destructive hover:text-destructive-foreground hover:border-transparent"
+            onClick={handleConfirm}
+            disabled={submitting}
+          >
+            Yes, Cancel Membership
+          </Button>
+        </div>
       </section>
 
       <footer className="text-center text-xs text-muted-foreground mt-10 space-x-3">
@@ -119,5 +153,4 @@ const ManagePlan = () => {
   );
 };
 
-
-export default ManagePlan;
+export default CancelPlan;

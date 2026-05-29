@@ -59,6 +59,7 @@ const AccountSettings = lazy(() => import("./pages/AccountSettings"));
 const PersonalInfo = lazy(() => import("./pages/settings/PersonalInfo"));
 const PaymentMethods = lazy(() => import("./pages/settings/PaymentMethods"));
 const ManagePlan = lazy(() => import("./pages/settings/ManagePlan"));
+const CancelPlan = lazy(() => import("./pages/settings/CancelPlan"));
 const CleaningAddress = lazy(() => import("./pages/settings/CleaningAddress"));
 const CleaningNotes = lazy(() => import("./pages/settings/CleaningNotes"));
 const Preferences = lazy(() => import("./pages/settings/Preferences"));
@@ -124,6 +125,7 @@ const App = () => (
                     <Route path="/account-settings/personal-info" element={<PersonalInfo />} />
                     <Route path="/account-settings/payment-methods" element={<PaymentMethods />} />
                     <Route path="/account-settings/manage-plan" element={<ManagePlan />} />
+                    <Route path="/account-settings/cancel-plan" element={<CancelPlan />} />
                     <Route path="/account-settings/cleaning-address" element={<CleaningAddress />} />
                     <Route path="/account-settings/cleaning-notes" element={<CleaningNotes />} />
                     <Route path="/account-settings/preferences" element={<Preferences />} />

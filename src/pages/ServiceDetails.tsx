@@ -17,6 +17,7 @@ import RescheduleModal from "@/components/RescheduleModal";
 import LeaveReviewModal from "@/components/LeaveReviewModal";
 import ServiceReport from "@/components/ServiceReport";
 import ReportIssueModal from "@/components/ReportIssueModal";
+import ServiceRouteIssueCard from "@/components/ServiceRouteIssueCard";
 
 const FULL_DAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 const SHORT_MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -250,6 +251,7 @@ const ServiceDetails = () => {
 
       {/* Content */}
       <main className="max-w-[760px] mx-auto px-5 py-6 pb-16 space-y-4">
+        <ServiceRouteIssueCard serviceId={serviceId} />
 
         {/* Appointment Details + Technician */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

@@ -8,7 +8,8 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-import { AlertTriangle, Send } from "lucide-react";
+import { AlertTriangle, Send, Loader2 } from "lucide-react";
+import { useSubmitRouteIssue } from "@/hooks/useRouteIssues";
 
 export type RouteIssueType = "sick" | "breakdown" | "late" | "other";
 export type RouteIssueAction = "notify" | "delay" | "reschedule" | "reassign";
@@ -31,6 +32,10 @@ interface ReportRouteIssueModalProps {
   lockedServiceId?: string;
   /** Optional list of technicians for reassign action (admin only) */
   technicians?: { id: string | number; name: string }[];
+  /** Technician whose route is affected (required for admin "entire route" scope to filter) */
+  technicianId?: string | null;
+  /** Route date in YYYY-MM-DD (defaults to today) */
+  routeDate?: string;
 }
 
 const ISSUE_OPTIONS: { value: RouteIssueType; label: string }[] = [
@@ -68,8 +73,11 @@ const ReportRouteIssueModal = ({
   services,
   lockedServiceId,
   technicians = [],
+  technicianId,
+  routeDate,
 }: ReportRouteIssueModalProps) => {
   const { toast } = useToast();
+  const submit = useSubmitRouteIssue();
 
   const [issueType, setIssueType] = useState<RouteIssueType | "">("");
   const [otherText, setOtherText] = useState("");
@@ -153,24 +161,39 @@ const ReportRouteIssueModal = ({
   const isPendingApproval = role === "technician" && action === "reschedule";
   const submitLabel = isPendingApproval ? "Submit for Approval" : "Confirm & Send";
 
-  const handleSubmit = () => {
-    if (!isValid) return;
+  const handleSubmit = async () => {
+    if (!isValid || submit.isPending) return;
+    try {
+      await submit.mutateAsync({
+        issueType: issueType as RouteIssueType,
+        otherText: issueType === "other" ? otherText : undefined,
+        technicianId: technicianId ?? undefined,
+        routeDate,
+        scope: lockedServiceId ? "specific" : scope,
+        serviceIds: lockedServiceId ? [lockedServiceId] : scope === "specific" ? selectedIds : [],
+        action: action as RouteIssueAction,
+        delayMinutes: action === "delay" ? delayMinutes : undefined,
+        newServiceDate: action === "reschedule" ? newDate : undefined,
+        newTimeWindow: action === "reschedule" ? newTime : undefined,
+        reassignTo: action === "reassign" ? reassignTechId : undefined,
+        message,
+      });
 
-    let toastMsg = "";
-    if (action === "notify") {
-      toastMsg = `Update sent to ${affectedCount} homeowner${affectedCount === 1 ? "" : "s"}`;
-    } else if (action === "delay") {
-      toastMsg = `Services delayed ${delayMinutes} min and homeowners notified`;
-    } else if (action === "reschedule") {
-      toastMsg = isPendingApproval
-        ? "Request submitted for admin approval"
-        : "Services rescheduled and homeowners notified";
-    } else if (action === "reassign") {
-      toastMsg = `Technician reassigned${reassignTechName ? ` to ${reassignTechName}` : ""} successfully`;
+      let toastMsg = "";
+      if (action === "notify") toastMsg = `Update sent to ${affectedCount} homeowner${affectedCount === 1 ? "" : "s"}`;
+      else if (action === "delay") toastMsg = `Services delayed ${delayMinutes} min and homeowners notified`;
+      else if (action === "reschedule")
+        toastMsg = isPendingApproval
+          ? "Request submitted for admin approval"
+          : "Services rescheduled and homeowners notified";
+      else if (action === "reassign")
+        toastMsg = `Technician reassigned${reassignTechName ? ` to ${reassignTechName}` : ""} successfully`;
+
+      toast({ title: toastMsg, variant: "success" as any });
+      onOpenChange(false);
+    } catch (err: any) {
+      toast({ title: "Could not submit", description: err?.message ?? "Please try again.", variant: "destructive" });
     }
-
-    toast({ title: toastMsg, variant: "success" as any });
-    onOpenChange(false);
   };
 
   const formatDelay = () => {
@@ -434,8 +457,8 @@ const ReportRouteIssueModal = ({
           <Button variant="outline" onClick={() => onOpenChange(false)}>
             Cancel
           </Button>
-          <Button disabled={!isValid} onClick={handleSubmit} className="gap-1.5">
-            <Send className="h-4 w-4" />
+          <Button disabled={!isValid || submit.isPending} onClick={handleSubmit} className="gap-1.5">
+            {submit.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
             {submitLabel}
           </Button>
         </DialogFooter>

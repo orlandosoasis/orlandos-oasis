@@ -109,6 +109,53 @@ export type Database = {
         }
         Relationships: []
       }
+      homeowner_notifications: {
+        Row: {
+          body: string
+          created_at: string
+          cta_route: string | null
+          dismissed_at: string | null
+          homeowner_id: string
+          id: string
+          kind: string
+          route_issue_id: string | null
+          service_id: string | null
+          title: string
+        }
+        Insert: {
+          body?: string
+          created_at?: string
+          cta_route?: string | null
+          dismissed_at?: string | null
+          homeowner_id: string
+          id?: string
+          kind: string
+          route_issue_id?: string | null
+          service_id?: string | null
+          title: string
+        }
+        Update: {
+          body?: string
+          created_at?: string
+          cta_route?: string | null
+          dismissed_at?: string | null
+          homeowner_id?: string
+          id?: string
+          kind?: string
+          route_issue_id?: string | null
+          service_id?: string | null
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "homeowner_notifications_route_issue_id_fkey"
+            columns: ["route_issue_id"]
+            isOneToOne: false
+            referencedRelation: "route_issues"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       issues: {
         Row: {
           admin_notes: string | null
@@ -442,6 +489,116 @@ export type Database = {
           },
         ]
       }
+      route_issue_services: {
+        Row: {
+          created_at: string
+          homeowner_id: string
+          id: string
+          previous_service_date: string | null
+          previous_status: string | null
+          previous_technician_id: string | null
+          previous_time_window: string | null
+          route_issue_id: string
+          service_id: string
+        }
+        Insert: {
+          created_at?: string
+          homeowner_id: string
+          id?: string
+          previous_service_date?: string | null
+          previous_status?: string | null
+          previous_technician_id?: string | null
+          previous_time_window?: string | null
+          route_issue_id: string
+          service_id: string
+        }
+        Update: {
+          created_at?: string
+          homeowner_id?: string
+          id?: string
+          previous_service_date?: string | null
+          previous_status?: string | null
+          previous_technician_id?: string | null
+          previous_time_window?: string | null
+          route_issue_id?: string
+          service_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "route_issue_services_route_issue_id_fkey"
+            columns: ["route_issue_id"]
+            isOneToOne: false
+            referencedRelation: "route_issues"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      route_issues: {
+        Row: {
+          action_taken: string
+          created_at: string
+          delay_minutes: number | null
+          id: string
+          issue_type: string
+          message_to_homeowners: string
+          new_service_date: string | null
+          new_time_window: string | null
+          other_text: string | null
+          reassigned_to_id: string | null
+          reported_by_id: string
+          reported_by_role: string
+          resolved_at: string | null
+          resolved_by_id: string | null
+          route_date: string
+          scope: string
+          status: string
+          technician_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          action_taken: string
+          created_at?: string
+          delay_minutes?: number | null
+          id?: string
+          issue_type: string
+          message_to_homeowners?: string
+          new_service_date?: string | null
+          new_time_window?: string | null
+          other_text?: string | null
+          reassigned_to_id?: string | null
+          reported_by_id: string
+          reported_by_role: string
+          resolved_at?: string | null
+          resolved_by_id?: string | null
+          route_date?: string
+          scope: string
+          status?: string
+          technician_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          action_taken?: string
+          created_at?: string
+          delay_minutes?: number | null
+          id?: string
+          issue_type?: string
+          message_to_homeowners?: string
+          new_service_date?: string | null
+          new_time_window?: string | null
+          other_text?: string | null
+          reassigned_to_id?: string | null
+          reported_by_id?: string
+          reported_by_role?: string
+          resolved_at?: string | null
+          resolved_by_id?: string | null
+          route_date?: string
+          scope?: string
+          status?: string
+          technician_id?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       service_photos: {
         Row: {
           created_at: string
@@ -516,6 +673,7 @@ export type Database = {
           completed_at: string | null
           completed_tasks: string[] | null
           created_at: string
+          delay_minutes: number
           homeowner_id: string
           hours: number
           id: string
@@ -536,6 +694,7 @@ export type Database = {
           completed_at?: string | null
           completed_tasks?: string[] | null
           created_at?: string
+          delay_minutes?: number
           homeowner_id: string
           hours?: number
           id?: string
@@ -556,6 +715,7 @@ export type Database = {
           completed_at?: string | null
           completed_tasks?: string[] | null
           created_at?: string
+          delay_minutes?: number
           homeowner_id?: string
           hours?: number
           id?: string
@@ -725,6 +885,27 @@ export type Database = {
         Args: never
         Returns: Database["public"]["Enums"]["app_role"]
       }
+      dismiss_homeowner_notification: {
+        Args: { p_id: string }
+        Returns: {
+          body: string
+          created_at: string
+          cta_route: string | null
+          dismissed_at: string | null
+          homeowner_id: string
+          id: string
+          kind: string
+          route_issue_id: string | null
+          service_id: string | null
+          title: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "homeowner_notifications"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -771,6 +952,53 @@ export type Database = {
           isOneToOne: true
           isSetofReturn: false
         }
+      }
+      resolve_route_issue: {
+        Args: { p_id: string; p_status: string }
+        Returns: {
+          action_taken: string
+          created_at: string
+          delay_minutes: number | null
+          id: string
+          issue_type: string
+          message_to_homeowners: string
+          new_service_date: string | null
+          new_time_window: string | null
+          other_text: string | null
+          reassigned_to_id: string | null
+          reported_by_id: string
+          reported_by_role: string
+          resolved_at: string | null
+          resolved_by_id: string | null
+          route_date: string
+          scope: string
+          status: string
+          technician_id: string | null
+          updated_at: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "route_issues"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
+      submit_route_issue: {
+        Args: {
+          p_action: string
+          p_delay_minutes: number
+          p_issue_type: string
+          p_message: string
+          p_new_service_date: string
+          p_new_time_window: string
+          p_other_text: string
+          p_reassign_to: string
+          p_route_date: string
+          p_scope: string
+          p_service_ids: string[]
+          p_technician_id: string
+        }
+        Returns: string
       }
     }
     Enums: {

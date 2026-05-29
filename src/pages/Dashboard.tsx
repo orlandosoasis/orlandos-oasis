@@ -1,4 +1,6 @@
 import { useState, useEffect, useMemo, useCallback } from "react";
+import { useQueryClient } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { Calendar, ChevronRight, Star, CalendarClock, CalendarPlus, CheckCircle2 } from "lucide-react";
 import { EmptyState } from "@/components/EmptyState";

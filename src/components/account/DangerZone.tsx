@@ -126,10 +126,10 @@ export function DangerZone() {
           </p>
         </div>
         <Button
-          variant="destructive"
+          variant="ghost"
           onClick={() => setDeleteOpen(true)}
           disabled={user?.role === "admin"}
-          className="gap-2 sm:shrink-0"
+          className="gap-2 sm:shrink-0 bg-transparent hover:bg-transparent text-destructive hover:text-destructive"
         >
           <Trash2 className="h-4 w-4" />
           Delete account

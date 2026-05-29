@@ -151,6 +151,65 @@ export function useAssignPoolToTech() {
   });
 }
 
+/**
+ * Admin helper: assign a technician to a homeowner who hasn't completed onboarding
+ * yet (no pool record). Creates a minimal pool row from the homeowner's profile
+ * address and assigns the technician in one step.
+ */
+export function useAssignTechToHomeowner() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (input: { homeownerId: string; technicianId: string | null }) => {
+      // Look for an existing pool first
+      const { data: existing, error: poolErr } = await supabase
+        .from("pools")
+        .select("id")
+        .eq("homeowner_id", input.homeownerId)
+        .limit(1)
+        .maybeSingle();
+      if (poolErr) throw poolErr;
+
+      let poolId = existing?.id as string | undefined;
+
+      if (!poolId) {
+        // Pull homeowner address to seed the pool
+        const { data: profile, error: profErr } = await supabase
+          .from("profiles")
+          .select("street_address, city, state, zip_code")
+          .eq("id", input.homeownerId)
+          .single();
+        if (profErr) throw profErr;
+
+        const { data: created, error: insErr } = await supabase
+          .from("pools")
+          .insert({
+            homeowner_id: input.homeownerId,
+            address: profile?.street_address || "Address pending",
+            city: profile?.city ?? null,
+            state: profile?.state ?? null,
+            zip: profile?.zip_code ?? null,
+            assigned_technician_id: input.technicianId,
+          })
+          .select("id")
+          .single();
+        if (insErr) throw insErr;
+        poolId = created.id;
+      } else {
+        const { error: updErr } = await supabase
+          .from("pools")
+          .update({ assigned_technician_id: input.technicianId })
+          .eq("id", poolId);
+        if (updErr) throw updErr;
+      }
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["technician-pools"] });
+      qc.invalidateQueries({ queryKey: ["pools-unassigned"] });
+      qc.invalidateQueries({ queryKey: ["admin-homeowners"] });
+    },
+  });
+}
+
 // ─── Tech → Homeowner messages grouped per pool ─────────────
 export interface TechUpdateThread {
   poolId: string | null;

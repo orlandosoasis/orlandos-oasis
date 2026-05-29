@@ -1,4 +1,6 @@
-import { useState, useCallback, useMemo } from "react";
+import { useState, useCallback, useMemo, useEffect } from "react";
+import { useQueryClient } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { Clock, Calendar, MapPin, Star, Key, Droplets, Wrench, Camera, FileText, RefreshCw, CreditCard, MessagesSquare, CalendarClock, CheckCircle2, UserRoundCog, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";

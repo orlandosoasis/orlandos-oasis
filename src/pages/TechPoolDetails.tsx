@@ -56,7 +56,19 @@ const TechPoolDetails = () => {
       <div className="bg-card rounded-2xl border border-border p-6 shadow-sm mb-4">
         <h2 className="text-[17px] font-bold text-foreground mb-4">Homeowner Information</h2>
         <div className="space-y-2.5">
-          <p className="text-sm font-semibold text-foreground">{homeowner.fullName}</p>
+          <div className="flex items-center gap-2 flex-wrap">
+            <p className="text-sm font-semibold text-foreground">{homeowner.fullName}</p>
+            {homeowner.subscriptionStatus === "cancelled" && (
+              <span className="inline-flex px-2 py-0.5 rounded-full text-[10px] font-bold bg-red-50 text-red-700 border border-red-200">
+                Membership Cancelled
+              </span>
+            )}
+            {homeowner.subscriptionStatus === "pending_cancellation" && (
+              <span className="inline-flex px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-50 text-amber-700 border border-amber-200">
+                Pending Cancellation
+              </span>
+            )}
+          </div>
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
             <MapPin className="h-4 w-4 text-primary shrink-0" />
             <span>{getPoolFullAddress(pool)}</span>

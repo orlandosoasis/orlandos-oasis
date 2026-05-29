@@ -14,6 +14,8 @@ export interface PublicProfile {
   city: string | null;
   state: string | null;
   zipCode: string | null;
+  subscriptionStatus?: "active" | "pending_cancellation" | "cancelled";
+  subscriptionEffectiveEndDate?: string | null;
 }
 
 function rowToProfile(r: {
@@ -29,6 +31,8 @@ function rowToProfile(r: {
   city: string | null;
   state: string | null;
   zip_code: string | null;
+  subscription_status?: string | null;
+  subscription_effective_end_date?: string | null;
 }): PublicProfile {
   return {
     id: r.id,
@@ -43,6 +47,8 @@ function rowToProfile(r: {
     city: r.city,
     state: r.state,
     zipCode: r.zip_code,
+    subscriptionStatus: (r.subscription_status as PublicProfile["subscriptionStatus"]) ?? "active",
+    subscriptionEffectiveEndDate: r.subscription_effective_end_date ?? null,
   };
 }
 

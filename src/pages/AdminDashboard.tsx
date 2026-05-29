@@ -162,6 +162,23 @@ const AdminDashboard = () => {
   // Live data from Supabase
   const techniciansQuery = useAdminTechnicians();
   const homeownersQuery = useAdminHomeowners();
+
+  // Realtime: any profile change (membership status, cancellation, etc.) refreshes the list.
+  React.useEffect(() => {
+    const ch = supabase
+      .channel("admin-profile-sync")
+      .on("postgres_changes", { event: "*", schema: "public", table: "profiles" }, () => {
+        queryClient.invalidateQueries({ queryKey: ["admin-homeowners"] });
+      })
+      .on("postgres_changes", { event: "INSERT", schema: "public", table: "subscription_events" }, (p) => {
+        const hid = (p.new as { homeowner_id?: string } | null)?.homeowner_id;
+        if (hid) queryClient.invalidateQueries({ queryKey: ["subscription-events", hid] });
+        queryClient.invalidateQueries({ queryKey: ["admin-homeowners"] });
+      })
+      .subscribe();
+    return () => { supabase.removeChannel(ch); };
+  }, []);
+
   const issuesQuery = useAdminIssues();
   const applicationsQuery = useTechnicianApplications();
   const reviewsQuery = useReviews();

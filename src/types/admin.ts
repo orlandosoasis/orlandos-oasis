@@ -76,6 +76,10 @@ export interface AdminHomeowner {
   notes?: string;
   isGrandfathered?: boolean;
   grandfatheredNote?: string | null;
+  grandfatheredPlanId?: string | null;
+  grandfatheredMonthlyOverride?: number | null;
+  outstandingBalance?: number;
+  balanceDueAfterCancellation?: boolean;
   isFreds?: boolean;
   notificationsEnabled?: boolean;
   subscriptionStatus?: "active" | "pending_cancellation" | "cancelled";

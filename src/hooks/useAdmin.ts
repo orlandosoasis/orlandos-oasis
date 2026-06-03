@@ -484,6 +484,8 @@ export interface HomeownerProfilePatch {
   poolAddress?: string | null;
   isGrandfathered?: boolean;
   grandfatheredNote?: string | null;
+  grandfatheredPlanId?: string | null;
+  grandfatheredMonthlyOverride?: number | null;
   isFreds?: boolean;
   notificationsEnabled?: boolean;
 }

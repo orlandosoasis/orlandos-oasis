@@ -42,6 +42,10 @@ export interface AdminHomeownerAggregate {
   isGrandfathered: boolean;
   isPlaceholder: boolean;
   grandfatheredNote: string | null;
+  grandfatheredPlanId: string | null;
+  grandfatheredMonthlyOverride: number | null;
+  outstandingBalance: number;
+  balanceDueAfterCancellation: boolean;
   isFreds: boolean;
   notificationsEnabled: boolean;
   subscriptionStatus: AdminSubscriptionStatus;

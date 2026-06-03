@@ -45,6 +45,8 @@ import {
 } from "@/hooks/useAdmin";
 import { useReviews, useUpdateReviewStatus } from "@/hooks/useReviews";
 import { useService, useUpdateService } from "@/hooks/useServices";
+import { usePricingPoolSizes, usePricingAddons } from "@/hooks/usePricing";
+import { useAdminServicePricing, useUpdateAdminServicePricing, type ServiceCustomCharge } from "@/hooks/useAdminServicePricing";
 import { useAssignPoolToTech, useAssignTechToHomeowner } from "@/hooks/useAdminDetails";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -117,8 +119,16 @@ const AdminDashboard = () => {
   const [svcDraftDate, setSvcDraftDate] = useState<Date | undefined>(undefined);
   const [svcDraftWindow, setSvcDraftWindow] = useState<"morning" | "afternoon" | "evening">("morning");
   const [svcDraftTechId, setSvcDraftTechId] = useState<string>("");
+  const [svcDraftAddonIds, setSvcDraftAddonIds] = useState<string[]>([]);
+  const [svcDraftCharges, setSvcDraftCharges] = useState<ServiceCustomCharge[]>([]);
+  const [svcChargeName, setSvcChargeName] = useState("");
+  const [svcChargeAmount, setSvcChargeAmount] = useState("");
   const editServiceQuery = useService(editServiceId ?? undefined);
+  const editServicePricingQuery = useAdminServicePricing(editServiceId ?? undefined);
   const updateService = useUpdateService();
+  const updateServicePricing = useUpdateAdminServicePricing();
+  const poolSizesQuery = usePricingPoolSizes();
+  const addonsQuery = usePricingAddons();
 
   useEffect(() => {
     const svc = editServiceQuery.data;
@@ -129,6 +139,38 @@ const AdminDashboard = () => {
       setSvcDraftTechId(svc.technicianId ?? "");
     }
   }, [editServiceQuery.data]);
+
+  useEffect(() => {
+    const p = editServicePricingQuery.data;
+    if (p) {
+      setSvcDraftAddonIds(p.addonIds);
+      setSvcDraftCharges(p.customCharges);
+      setSvcChargeName("");
+      setSvcChargeAmount("");
+    }
+  }, [editServicePricingQuery.data]);
+
+  // Live computed price preview for the edit modal
+  const svcEditBasePrice = (() => {
+    const ps = editServicePricingQuery.data?.poolSize;
+    if (!ps) return editServicePricingQuery.data?.basePrice ?? 0;
+    const row = (poolSizesQuery.data ?? []).find(p => p.size.toLowerCase() === ps.toLowerCase() && p.active);
+    return row?.basePrice ?? editServicePricingQuery.data?.basePrice ?? 0;
+  })();
+  const svcEditAddonsTotal = (addonsQuery.data ?? [])
+    .filter(a => svcDraftAddonIds.includes(a.id))
+    .reduce((s, a) => s + a.price, 0);
+  const svcEditChargesTotal = svcDraftCharges.reduce((s, c) => s + (Number(c.amount) || 0), 0);
+  const svcEditTotal = svcEditBasePrice + svcEditAddonsTotal + svcEditChargesTotal;
+
+  const handleAddSvcCharge = () => {
+    const name = svcChargeName.trim();
+    const amount = Number(svcChargeAmount);
+    if (!name || !Number.isFinite(amount) || amount <= 0) return;
+    setSvcDraftCharges(prev => [...prev, { name, amount }]);
+    setSvcChargeName("");
+    setSvcChargeAmount("");
+  };
 
   const handleSaveService = async () => {
     if (!editServiceId) return;
@@ -141,12 +183,19 @@ const AdminDashboard = () => {
           timeWindow: svcDraftWindow,
         },
       });
-      // Tech reassignment requires direct supabase call (hook patch doesn't include it)
       if (svcDraftTechId !== (editServiceQuery.data?.technicianId ?? "")) {
         await supabase.from("services").update({ technician_id: svcDraftTechId || null }).eq("id", editServiceId);
         await queryClient.invalidateQueries({ queryKey: ["services"] });
         await queryClient.invalidateQueries({ queryKey: ["admin-homeowners"] });
       }
+      // Persist pricing changes (addons + custom charges + computed total)
+      await updateServicePricing.mutateAsync({
+        serviceId: editServiceId,
+        addonIds: svcDraftAddonIds,
+        customCharges: svcDraftCharges,
+        basePrice: svcEditBasePrice,
+        computedPrice: svcEditTotal,
+      });
       await queryClient.invalidateQueries({ queryKey: ["admin-homeowners"] });
       toast({ title: "Service updated", variant: "success" });
       setEditServiceId(null);
@@ -2702,9 +2751,96 @@ const AdminDashboard = () => {
               <div className="text-xs text-muted-foreground bg-muted/50 rounded-md p-2.5">
                 Service: <span className="font-semibold text-foreground">{editServiceQuery.data.serviceType}</span> · {editServiceQuery.data.hours}h
               </div>
+
+              {/* Pricing: base + add-ons + custom charges */}
+              <div className="space-y-3 border-t border-border pt-4">
+                <div>
+                  <div className="flex items-center justify-between">
+                    <label className="text-xs font-semibold text-muted-foreground">Base Service Price</label>
+                    <span className="text-sm font-bold text-foreground tabular-nums">${svcEditBasePrice}</span>
+                  </div>
+                  <p className="text-[11px] text-muted-foreground mt-1">
+                    Derived from pool size{editServicePricingQuery.data?.poolSize ? ` (${editServicePricingQuery.data.poolSize})` : ""}.
+                  </p>
+                </div>
+
+                <div>
+                  <label className="text-xs font-semibold text-muted-foreground mb-2 block">Add-ons</label>
+                  <div className="space-y-1.5 max-h-44 overflow-y-auto pr-1">
+                    {(addonsQuery.data ?? []).filter(a => a.active).map(addon => {
+                      const checked = svcDraftAddonIds.includes(addon.id);
+                      return (
+                        <label key={addon.id} className="flex items-center justify-between gap-3 rounded-md border border-border bg-card px-3 py-2 cursor-pointer hover:border-primary/50">
+                          <div className="flex items-center gap-2 min-w-0">
+                            <input
+                              type="checkbox"
+                              checked={checked}
+                              onChange={() => setSvcDraftAddonIds(prev =>
+                                prev.includes(addon.id) ? prev.filter(i => i !== addon.id) : [...prev, addon.id]
+                              )}
+                              className="h-4 w-4 rounded accent-primary"
+                            />
+                            <span className="text-sm text-foreground truncate">{addon.name}</span>
+                          </div>
+                          <span className="text-sm font-semibold text-foreground tabular-nums shrink-0">${addon.price}</span>
+                        </label>
+                      );
+                    })}
+                    {(addonsQuery.data ?? []).length === 0 && (
+                      <p className="text-xs text-muted-foreground">No add-ons configured.</p>
+                    )}
+                  </div>
+                </div>
+
+                <div>
+                  <label className="text-xs font-semibold text-muted-foreground mb-2 block">Custom One-Time Charges</label>
+                  {svcDraftCharges.length > 0 && (
+                    <div className="space-y-1.5 mb-2">
+                      {svcDraftCharges.map((c, i) => (
+                        <div key={i} className="flex items-center justify-between gap-2 rounded-md border border-border bg-card px-3 py-2">
+                          <span className="text-sm text-foreground truncate">{c.name}</span>
+                          <div className="flex items-center gap-2 shrink-0">
+                            <span className="text-sm font-semibold text-foreground tabular-nums">${c.amount}</span>
+                            <button
+                              type="button"
+                              onClick={() => setSvcDraftCharges(prev => prev.filter((_, idx) => idx !== i))}
+                              className="text-xs text-muted-foreground hover:text-destructive"
+                            >Remove</button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  <div className="grid grid-cols-[1fr_100px_auto] gap-2">
+                    <input
+                      type="text"
+                      placeholder="Charge name"
+                      value={svcChargeName}
+                      onChange={(e) => setSvcChargeName(e.target.value)}
+                      className="text-sm rounded-md border border-input bg-background px-3 py-2 focus-visible:outline-none focus-visible:border-ring"
+                    />
+                    <input
+                      type="number"
+                      min="0"
+                      step="0.01"
+                      placeholder="Amount"
+                      value={svcChargeAmount}
+                      onChange={(e) => setSvcChargeAmount(e.target.value)}
+                      className="text-sm rounded-md border border-input bg-background px-3 py-2 focus-visible:outline-none focus-visible:border-ring tabular-nums"
+                    />
+                    <Button type="button" size="sm" variant="outline" onClick={handleAddSvcCharge}>Add</Button>
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-between rounded-lg bg-primary/5 px-3 py-2.5">
+                  <span className="text-sm font-bold text-foreground">Service Total</span>
+                  <span className="text-base font-extrabold text-primary tabular-nums">${svcEditTotal.toFixed(2)}</span>
+                </div>
+              </div>
+
               <div className="flex gap-2 justify-end pt-2">
                 <Button variant="outline" onClick={() => setEditServiceId(null)}>Cancel</Button>
-                <Button onClick={handleSaveService} disabled={updateService.isPending} className="gap-1.5">
+                <Button onClick={handleSaveService} disabled={updateService.isPending || updateServicePricing.isPending} className="gap-1.5">
                   <Check className="h-4 w-4" /> Save Changes
                 </Button>
               </div>

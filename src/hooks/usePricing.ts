@@ -324,3 +324,39 @@ export function useAdminCancelSubscription() {
     },
   });
 }
+
+// ─── Combined catalog for signup flow ──────────────────────
+// Hardcoded fallbacks ensure the UI keeps working before DB loads or if a row is missing.
+const FALLBACK_POOL_SIZES: PricingPoolSize[] = [
+  { id: "fb-small", size: "small", displayName: "Small Pool", basePrice: 120, sortOrder: 1, active: true },
+  { id: "fb-medium", size: "medium", displayName: "Medium Pool", basePrice: 140, sortOrder: 2, active: true },
+  { id: "fb-large", size: "large", displayName: "Large Pool", basePrice: 170, sortOrder: 3, active: true },
+];
+const FALLBACK_FREQUENCIES: PricingFrequency[] = [
+  { id: "fb-w", frequency: "weekly", displayName: "Weekly Pool Service", priceDelta: 0, multiplier: 1, sortOrder: 1, active: true },
+  { id: "fb-2w", frequency: "twice-weekly", displayName: "Twice Per Week Pool Service", priceDelta: 0, multiplier: 2, sortOrder: 2, active: true },
+  { id: "fb-3w", frequency: "three-weekly", displayName: "Three Times Per Week Pool Service", priceDelta: 0, multiplier: 3, sortOrder: 3, active: true },
+];
+
+export function useCatalog() {
+  const poolSizesQ = usePricingPoolSizes();
+  const frequenciesQ = usePricingFrequencies();
+  const addonsQ = usePricingAddons();
+  const poolSizes = (poolSizesQ.data && poolSizesQ.data.length > 0 ? poolSizesQ.data : FALLBACK_POOL_SIZES).filter(p => p.active);
+  const frequencies = (frequenciesQ.data && frequenciesQ.data.length > 0 ? frequenciesQ.data : FALLBACK_FREQUENCIES).filter(f => f.active);
+  const addons = (addonsQ.data ?? []).filter(a => a.active);
+  return { poolSizes, frequencies, addons, isLoading: poolSizesQ.isLoading || frequenciesQ.isLoading || addonsQ.isLoading };
+}
+
+export function computeMonthly(
+  poolSize: string,
+  frequency: string,
+  poolSizes: PricingPoolSize[],
+  frequencies: PricingFrequency[]
+): number {
+  const base = poolSizes.find(p => p.size === poolSize)?.basePrice ?? 0;
+  const f = frequencies.find(fr => fr.frequency === frequency);
+  const mult = f?.multiplier ?? 1;
+  const delta = f?.priceDelta ?? 0;
+  return Math.round((base * mult + delta) * 100) / 100;
+}

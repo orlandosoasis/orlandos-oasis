@@ -65,7 +65,8 @@ const ServicesSection = () => {
   const sectionRef = useRef<HTMLDivElement>(null);
   const scrollableRef = useRef<HTMLDivElement>(null);
 
-  const selectedPlan = configToPlan(serviceConfig);
+  const { poolSizes, frequencies } = useCatalog();
+  const selectedPlan = buildPlan(serviceConfig, poolSizes, frequencies);
   const serviceName = selectedPlan.label;
 
   useEffect(() => {

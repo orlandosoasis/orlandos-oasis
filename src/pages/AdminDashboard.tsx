@@ -445,6 +445,7 @@ const AdminDashboard = () => {
     { key: "dashboard" as const, label: "Dashboard", icon: LayoutDashboard },
     { key: "technicians" as const, label: "Technicians", icon: Wrench },
     { key: "homeowners" as const, label: "Homeowners", icon: Users },
+    { key: "pricing" as const, label: "Services & Pricing", icon: CreditCard },
     { key: "reviews" as const, label: "Reviews", icon: MessageSquare, badge: pendingReviewCount, badgeColor: "bg-amber-500" },
     { key: "applicants" as const, label: "Applicants", icon: UserPlus, badge: pendingCount, badgeColor: "bg-violet-500" },
     { key: "issues" as const, label: "Reported Issues", icon: AlertCircle, badge: openIssueCount, badgeColor: "bg-destructive" },

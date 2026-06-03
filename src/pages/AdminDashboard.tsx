@@ -45,6 +45,8 @@ import {
 } from "@/hooks/useAdmin";
 import { useReviews, useUpdateReviewStatus } from "@/hooks/useReviews";
 import { useService, useUpdateService } from "@/hooks/useServices";
+import { usePricingPoolSizes, usePricingAddons } from "@/hooks/usePricing";
+import { useAdminServicePricing, useUpdateAdminServicePricing, type ServiceCustomCharge } from "@/hooks/useAdminServicePricing";
 import { useAssignPoolToTech, useAssignTechToHomeowner } from "@/hooks/useAdminDetails";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";

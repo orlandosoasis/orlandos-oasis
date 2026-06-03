@@ -31,6 +31,7 @@ import MembershipPanel from "@/components/admin/MembershipPanel";
 import HomeownerRequestsPanel from "@/components/admin/HomeownerRequestsPanel";
 import PastServiceDetailModal from "@/components/admin/PastServiceDetailModal";
 import ReportRouteIssueModal, { type RouteService } from "@/components/ReportRouteIssueModal";
+import AdminPricingPage from "@/components/admin/AdminPricingPage";
 import type {
   AdminTechnician, AdminApplicant, AdminApplicantCert, AdminIssue,
   AdminTechReview, ReviewStatus, ReviewRejectionReason, AdminHomeowner,

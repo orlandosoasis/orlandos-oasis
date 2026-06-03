@@ -500,6 +500,7 @@ export function useUpdateHomeownerProfile() {
         street_address?: string | null; city?: string | null; state?: string | null; zip_code?: string | null;
         monthly_amount?: number | null;
         is_grandfathered?: boolean; grandfathered_note?: string | null;
+        grandfathered_plan_id?: string | null; grandfathered_monthly_override?: number | null;
         is_freds?: boolean; notifications_enabled?: boolean;
       } = {};
       if (patch.fullName !== undefined) {

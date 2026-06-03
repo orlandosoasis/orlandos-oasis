@@ -5,8 +5,6 @@ import { useBooking } from "@/contexts/BookingContext";
 import BookingStepper from "@/components/BookingStepper";
 import ServiceConfigStep, {
   type ServiceConfig,
-  getMonthlyPrice,
-  getDiscountPrice,
   getFrequencyLabel,
 } from "@/components/ServiceConfigStep";
 import VoucherConfirmationStep from "@/components/dashboard/VoucherConfirmationStep";
@@ -14,6 +12,7 @@ import LandingContactStep, { type LandingFormData } from "@/components/LandingCo
 import LandingPaymentStep from "@/components/LandingPaymentStep";
 import AddonsStep from "@/components/AddonsStep";
 import type { VoucherPlan } from "@/components/dashboard/VoucherSelectionStep";
+import { useCatalog, computeMonthly } from "@/hooks/usePricing";
 
 const STEPS = [
   { label: "Service" },
@@ -23,15 +22,20 @@ const STEPS = [
   { label: "Payment" },
 ];
 
-/** Derive a VoucherPlan-compatible object from ServiceConfig for downstream steps */
-function configToPlan(config: ServiceConfig): VoucherPlan {
-  const monthlyPrice = getMonthlyPrice(config);
-  const discountPrice = getDiscountPrice(config);
-  const label = getFrequencyLabel(config.frequency);
+/** Build a VoucherPlan from current ServiceConfig using live catalog prices */
+function buildPlan(
+  config: ServiceConfig,
+  poolSizes: ReturnType<typeof useCatalog>["poolSizes"],
+  frequencies: ReturnType<typeof useCatalog>["frequencies"],
+): VoucherPlan {
+  const monthlyPrice = computeMonthly(config.poolSize, config.frequency, poolSizes, frequencies);
+  const discountPrice = Math.max(0, monthlyPrice - 25);
+  const label = frequencies.find(f => f.frequency === config.frequency)?.displayName ?? getFrequencyLabel(config.frequency);
+  const poolLabel = poolSizes.find(p => p.size === config.poolSize)?.displayName ?? `${config.poolSize.charAt(0).toUpperCase() + config.poolSize.slice(1)} pool`;
   return {
     id: `${config.poolSize}-${config.frequency}`,
     label,
-    description: `${label} · ${config.poolSize.charAt(0).toUpperCase() + config.poolSize.slice(1)} pool`,
+    description: `${label} · ${poolLabel}`,
     originalPrice: monthlyPrice,
     discountPrice,
     savings: 25,

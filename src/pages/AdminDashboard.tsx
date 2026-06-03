@@ -119,8 +119,16 @@ const AdminDashboard = () => {
   const [svcDraftDate, setSvcDraftDate] = useState<Date | undefined>(undefined);
   const [svcDraftWindow, setSvcDraftWindow] = useState<"morning" | "afternoon" | "evening">("morning");
   const [svcDraftTechId, setSvcDraftTechId] = useState<string>("");
+  const [svcDraftAddonIds, setSvcDraftAddonIds] = useState<string[]>([]);
+  const [svcDraftCharges, setSvcDraftCharges] = useState<ServiceCustomCharge[]>([]);
+  const [svcChargeName, setSvcChargeName] = useState("");
+  const [svcChargeAmount, setSvcChargeAmount] = useState("");
   const editServiceQuery = useService(editServiceId ?? undefined);
+  const editServicePricingQuery = useAdminServicePricing(editServiceId ?? undefined);
   const updateService = useUpdateService();
+  const updateServicePricing = useUpdateAdminServicePricing();
+  const poolSizesQuery = usePricingPoolSizes();
+  const addonsQuery = usePricingAddons();
 
   useEffect(() => {
     const svc = editServiceQuery.data;
@@ -131,6 +139,38 @@ const AdminDashboard = () => {
       setSvcDraftTechId(svc.technicianId ?? "");
     }
   }, [editServiceQuery.data]);
+
+  useEffect(() => {
+    const p = editServicePricingQuery.data;
+    if (p) {
+      setSvcDraftAddonIds(p.addonIds);
+      setSvcDraftCharges(p.customCharges);
+      setSvcChargeName("");
+      setSvcChargeAmount("");
+    }
+  }, [editServicePricingQuery.data]);
+
+  // Live computed price preview for the edit modal
+  const svcEditBasePrice = (() => {
+    const ps = editServicePricingQuery.data?.poolSize;
+    if (!ps) return editServicePricingQuery.data?.basePrice ?? 0;
+    const row = (poolSizesQuery.data ?? []).find(p => p.size.toLowerCase() === ps.toLowerCase() && p.active);
+    return row?.basePrice ?? editServicePricingQuery.data?.basePrice ?? 0;
+  })();
+  const svcEditAddonsTotal = (addonsQuery.data ?? [])
+    .filter(a => svcDraftAddonIds.includes(a.id))
+    .reduce((s, a) => s + a.price, 0);
+  const svcEditChargesTotal = svcDraftCharges.reduce((s, c) => s + (Number(c.amount) || 0), 0);
+  const svcEditTotal = svcEditBasePrice + svcEditAddonsTotal + svcEditChargesTotal;
+
+  const handleAddSvcCharge = () => {
+    const name = svcChargeName.trim();
+    const amount = Number(svcChargeAmount);
+    if (!name || !Number.isFinite(amount) || amount <= 0) return;
+    setSvcDraftCharges(prev => [...prev, { name, amount }]);
+    setSvcChargeName("");
+    setSvcChargeAmount("");
+  };
 
   const handleSaveService = async () => {
     if (!editServiceId) return;
@@ -143,12 +183,19 @@ const AdminDashboard = () => {
           timeWindow: svcDraftWindow,
         },
       });
-      // Tech reassignment requires direct supabase call (hook patch doesn't include it)
       if (svcDraftTechId !== (editServiceQuery.data?.technicianId ?? "")) {
         await supabase.from("services").update({ technician_id: svcDraftTechId || null }).eq("id", editServiceId);
         await queryClient.invalidateQueries({ queryKey: ["services"] });
         await queryClient.invalidateQueries({ queryKey: ["admin-homeowners"] });
       }
+      // Persist pricing changes (addons + custom charges + computed total)
+      await updateServicePricing.mutateAsync({
+        serviceId: editServiceId,
+        addonIds: svcDraftAddonIds,
+        customCharges: svcDraftCharges,
+        basePrice: svcEditBasePrice,
+        computedPrice: svcEditTotal,
+      });
       await queryClient.invalidateQueries({ queryKey: ["admin-homeowners"] });
       toast({ title: "Service updated", variant: "success" });
       setEditServiceId(null);

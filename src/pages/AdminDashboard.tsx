@@ -31,6 +31,7 @@ import MembershipPanel from "@/components/admin/MembershipPanel";
 import HomeownerRequestsPanel from "@/components/admin/HomeownerRequestsPanel";
 import PastServiceDetailModal from "@/components/admin/PastServiceDetailModal";
 import ReportRouteIssueModal, { type RouteService } from "@/components/ReportRouteIssueModal";
+import AdminPricingPage from "@/components/admin/AdminPricingPage";
 import type {
   AdminTechnician, AdminApplicant, AdminApplicantCert, AdminIssue,
   AdminTechReview, ReviewStatus, ReviewRejectionReason, AdminHomeowner,
@@ -51,7 +52,7 @@ import { format } from "date-fns";
 import { BarChart, Bar, XAxis, YAxis, Tooltip as ReTooltip, ResponsiveContainer, Cell, LabelList, PieChart, Pie } from "recharts";
 import { useExpenseItems, useCreateExpenseItem, useUpdateExpenseItem, useDeleteExpenseItem } from "@/hooks/useExpenseItems";
 
-type AdminPage = "dashboard" | "technicians" | "techDetail" | "homeowners" | "homeDetail" | "issues" | "applicants" | "applicantDetail" | "reviews";
+type AdminPage = "dashboard" | "technicians" | "techDetail" | "homeowners" | "homeDetail" | "issues" | "applicants" | "applicantDetail" | "reviews" | "pricing";
 
 const PAGE_TITLES: Record<string, string> = {
   dashboard: "Dashboard",
@@ -63,6 +64,7 @@ const PAGE_TITLES: Record<string, string> = {
   applicants: "Applicants",
   applicantDetail: "Application Details",
   reviews: "Review Moderation",
+  pricing: "Services & Pricing",
 };
 
 const fmtMoney = (n: number) =>
@@ -247,6 +249,10 @@ const AdminDashboard = () => {
     isGrandfathered: h.isGrandfathered,
     isPlaceholder: h.isPlaceholder,
     grandfatheredNote: h.grandfatheredNote,
+    grandfatheredPlanId: h.grandfatheredPlanId,
+    grandfatheredMonthlyOverride: h.grandfatheredMonthlyOverride,
+    outstandingBalance: h.outstandingBalance,
+    balanceDueAfterCancellation: h.balanceDueAfterCancellation,
     isFreds: h.isFreds,
     notificationsEnabled: h.notificationsEnabled,
     subscriptionStatus: h.subscriptionStatus,
@@ -443,6 +449,7 @@ const AdminDashboard = () => {
     { key: "dashboard" as const, label: "Dashboard", icon: LayoutDashboard },
     { key: "technicians" as const, label: "Technicians", icon: Wrench },
     { key: "homeowners" as const, label: "Homeowners", icon: Users },
+    { key: "pricing" as const, label: "Services & Pricing", icon: CreditCard },
     { key: "reviews" as const, label: "Reviews", icon: MessageSquare, badge: pendingReviewCount, badgeColor: "bg-amber-500" },
     { key: "applicants" as const, label: "Applicants", icon: UserPlus, badge: pendingCount, badgeColor: "bg-violet-500" },
     { key: "issues" as const, label: "Reported Issues", icon: AlertCircle, badge: openIssueCount, badgeColor: "bg-destructive" },
@@ -2545,6 +2552,7 @@ const AdminDashboard = () => {
       case "homeDetail": return <HomeDetailPage />;
       case "issues": return <IssuesPage />;
       case "reviews": return <ReviewsPage />;
+      case "pricing": return <AdminPricingPage />;
       case "applicants":
         return applicants.length === 0
           ? <Card><CardContent className="p-0"><EmptyState

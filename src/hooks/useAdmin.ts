@@ -42,6 +42,10 @@ export interface AdminHomeownerAggregate {
   isGrandfathered: boolean;
   isPlaceholder: boolean;
   grandfatheredNote: string | null;
+  grandfatheredPlanId: string | null;
+  grandfatheredMonthlyOverride: number | null;
+  outstandingBalance: number;
+  balanceDueAfterCancellation: boolean;
   isFreds: boolean;
   notificationsEnabled: boolean;
   subscriptionStatus: AdminSubscriptionStatus;
@@ -228,7 +232,7 @@ export function useAdminHomeowners() {
     queryFn: async (): Promise<AdminHomeownerAggregate[]> => {
       const { data: homeowners, error } = await supabase
         .from("profiles")
-        .select("id, full_name, email, phone, street_address, city, state, zip_code, created_at, monthly_amount, is_grandfathered, is_placeholder, grandfathered_note, is_freds, notifications_enabled, subscription_status, subscription_cancelled_at, subscription_effective_end_date, subscription_cancellation_reason")
+        .select("id, full_name, email, phone, street_address, city, state, zip_code, created_at, monthly_amount, is_grandfathered, is_placeholder, grandfathered_note, grandfathered_plan_id, grandfathered_monthly_override, outstanding_balance, balance_due_after_cancellation, is_freds, notifications_enabled, subscription_status, subscription_cancelled_at, subscription_effective_end_date, subscription_cancellation_reason")
         .eq("role", "homeowner")
         .order("created_at", { ascending: false });
 
@@ -271,6 +275,10 @@ export function useAdminHomeowners() {
           isGrandfathered: Boolean((h as { is_grandfathered?: boolean | null }).is_grandfathered),
           isPlaceholder: Boolean((h as { is_placeholder?: boolean | null }).is_placeholder),
           grandfatheredNote: (h as { grandfathered_note?: string | null }).grandfathered_note ?? null,
+          grandfatheredPlanId: (h as { grandfathered_plan_id?: string | null }).grandfathered_plan_id ?? null,
+          grandfatheredMonthlyOverride: (h as { grandfathered_monthly_override?: number | null }).grandfathered_monthly_override ?? null,
+          outstandingBalance: Number((h as { outstanding_balance?: number | null }).outstanding_balance ?? 0),
+          balanceDueAfterCancellation: Boolean((h as { balance_due_after_cancellation?: boolean | null }).balance_due_after_cancellation),
           isFreds: Boolean((h as { is_freds?: boolean | null }).is_freds),
           notificationsEnabled: Boolean((h as { notifications_enabled?: boolean | null }).notifications_enabled ?? true),
           subscriptionStatus: ((h as { subscription_status?: string | null }).subscription_status as AdminSubscriptionStatus) ?? "active",
@@ -484,6 +492,8 @@ export interface HomeownerProfilePatch {
   poolAddress?: string | null;
   isGrandfathered?: boolean;
   grandfatheredNote?: string | null;
+  grandfatheredPlanId?: string | null;
+  grandfatheredMonthlyOverride?: number | null;
   isFreds?: boolean;
   notificationsEnabled?: boolean;
 }
@@ -498,6 +508,7 @@ export function useUpdateHomeownerProfile() {
         street_address?: string | null; city?: string | null; state?: string | null; zip_code?: string | null;
         monthly_amount?: number | null;
         is_grandfathered?: boolean; grandfathered_note?: string | null;
+        grandfathered_plan_id?: string | null; grandfathered_monthly_override?: number | null;
         is_freds?: boolean; notifications_enabled?: boolean;
       } = {};
       if (patch.fullName !== undefined) {
@@ -515,6 +526,8 @@ export function useUpdateHomeownerProfile() {
       if (patch.monthlyAmount !== undefined) dbPatch.monthly_amount = patch.monthlyAmount;
       if (patch.isGrandfathered !== undefined) dbPatch.is_grandfathered = patch.isGrandfathered;
       if (patch.grandfatheredNote !== undefined) dbPatch.grandfathered_note = patch.grandfatheredNote;
+      if (patch.grandfatheredPlanId !== undefined) dbPatch.grandfathered_plan_id = patch.grandfatheredPlanId;
+      if (patch.grandfatheredMonthlyOverride !== undefined) dbPatch.grandfathered_monthly_override = patch.grandfatheredMonthlyOverride;
       if (patch.isFreds !== undefined) {
         dbPatch.is_freds = patch.isFreds;
         // Tagging as Fred's suppresses notifications; untagging re-enables them

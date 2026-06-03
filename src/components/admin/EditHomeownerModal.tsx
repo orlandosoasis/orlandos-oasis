@@ -157,12 +157,31 @@ const EditHomeownerModal = ({ open, onClose, homeowner, onSave }: EditHomeownerM
     return base;
   })();
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!homeowner || !validate()) return;
     const fullAddress = [street, city, state, zip].filter(Boolean).join(", ");
     const poolSizeLabel = POOL_SIZES.find(p => p.value === poolSize)?.label ?? homeowner.pools?.[0]?.size ?? "-";
     const frequencyLabel = FREQUENCY_SHORT[frequency];
     const planLabel = poolSize ? `${poolSizeLabel} · ${frequencyLabel}` : homeowner.plan;
+
+    // Persist grandfathered + tag fields directly to DB (extends the
+    // legacy onSave handler with the new pricing fields).
+    try {
+      await updateProfile.mutateAsync({
+        id: homeowner.id,
+        patch: {
+          isGrandfathered,
+          grandfatheredNote: isGrandfathered ? (grandfatheredNote || null) : null,
+          grandfatheredPlanId: isGrandfathered ? (grandfatheredPlanId || null) : null,
+          grandfatheredMonthlyOverride:
+            isGrandfathered && grandfatheredOverride.trim() !== ""
+              ? Number(grandfatheredOverride)
+              : null,
+        },
+      });
+    } catch {
+      // Surface via parent toast via onSave fallback; continue saving rest below.
+    }
 
     const updated: AdminHomeowner = {
       ...homeowner,
@@ -177,9 +196,13 @@ const EditHomeownerModal = ({ open, onClose, homeowner, onSave }: EditHomeownerM
       notes: poolNotes,
       isGrandfathered,
       grandfatheredNote: isGrandfathered ? (grandfatheredNote || null) : null,
+      grandfatheredPlanId: isGrandfathered ? (grandfatheredPlanId || null) : null,
+      grandfatheredMonthlyOverride:
+        isGrandfathered && grandfatheredOverride.trim() !== ""
+          ? Number(grandfatheredOverride)
+          : null,
       isFreds,
       notificationsEnabled: !isFreds,
-      // Update only the first pool's size; preserve past services & payment history.
       pools: homeowner.pools.map((p, i) =>
         i === 0
           ? { ...p, size: poolSizeLabel, nextService: nextServiceDate ? format(nextServiceDate, "PPP") : p.nextService }

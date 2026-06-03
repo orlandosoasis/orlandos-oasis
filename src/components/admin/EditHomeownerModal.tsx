@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Calendar as CalendarIcon } from "lucide-react";
+import { Calendar as CalendarIcon, AlertTriangle } from "lucide-react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
@@ -15,6 +15,10 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Switch } from "@/components/ui/switch";
 import { ADDONS } from "@/components/AddonsStep";
 import type { AdminHomeowner } from "@/types/admin";
+import CustomChargesPanel from "@/components/admin/CustomChargesPanel";
+import AdminCancelAccountModal from "@/components/admin/AdminCancelAccountModal";
+import { useGrandfatheredPlans, useComputedMonthly } from "@/hooks/usePricing";
+import { useUpdateHomeownerProfile } from "@/hooks/useAdmin";
 
 interface EditHomeownerModalProps {
   open: boolean;

@@ -128,6 +128,10 @@ const EditHomeownerModal = ({ open, onClose, homeowner, onSave }: EditHomeownerM
     setPaymentOption(homeowner.paymentMethod === "Marked as Paid" ? "paid" : "offline");
     setIsGrandfathered(Boolean(homeowner.isGrandfathered));
     setGrandfatheredNote(homeowner.grandfatheredNote ?? "");
+    setGrandfatheredPlanId(homeowner.grandfatheredPlanId ?? "");
+    setGrandfatheredOverride(
+      homeowner.grandfatheredMonthlyOverride != null ? String(homeowner.grandfatheredMonthlyOverride) : ""
+    );
     setIsFreds(Boolean(homeowner.isFreds));
     setErrors({});
   }, [homeowner, open]);

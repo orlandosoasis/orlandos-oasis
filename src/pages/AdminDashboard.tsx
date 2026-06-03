@@ -51,7 +51,7 @@ import { format } from "date-fns";
 import { BarChart, Bar, XAxis, YAxis, Tooltip as ReTooltip, ResponsiveContainer, Cell, LabelList, PieChart, Pie } from "recharts";
 import { useExpenseItems, useCreateExpenseItem, useUpdateExpenseItem, useDeleteExpenseItem } from "@/hooks/useExpenseItems";
 
-type AdminPage = "dashboard" | "technicians" | "techDetail" | "homeowners" | "homeDetail" | "issues" | "applicants" | "applicantDetail" | "reviews";
+type AdminPage = "dashboard" | "technicians" | "techDetail" | "homeowners" | "homeDetail" | "issues" | "applicants" | "applicantDetail" | "reviews" | "pricing";
 
 const PAGE_TITLES: Record<string, string> = {
   dashboard: "Dashboard",
@@ -63,6 +63,7 @@ const PAGE_TITLES: Record<string, string> = {
   applicants: "Applicants",
   applicantDetail: "Application Details",
   reviews: "Review Moderation",
+  pricing: "Services & Pricing",
 };
 
 const fmtMoney = (n: number) =>

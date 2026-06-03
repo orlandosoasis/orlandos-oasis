@@ -518,6 +518,8 @@ export function useUpdateHomeownerProfile() {
       if (patch.monthlyAmount !== undefined) dbPatch.monthly_amount = patch.monthlyAmount;
       if (patch.isGrandfathered !== undefined) dbPatch.is_grandfathered = patch.isGrandfathered;
       if (patch.grandfatheredNote !== undefined) dbPatch.grandfathered_note = patch.grandfatheredNote;
+      if (patch.grandfatheredPlanId !== undefined) dbPatch.grandfathered_plan_id = patch.grandfatheredPlanId;
+      if (patch.grandfatheredMonthlyOverride !== undefined) dbPatch.grandfathered_monthly_override = patch.grandfatheredMonthlyOverride;
       if (patch.isFreds !== undefined) {
         dbPatch.is_freds = patch.isFreds;
         // Tagging as Fred's suppresses notifications; untagging re-enables them

@@ -96,7 +96,14 @@ const EditHomeownerModal = ({ open, onClose, homeowner, onSave }: EditHomeownerM
 
   const [isGrandfathered, setIsGrandfathered] = useState(false);
   const [grandfatheredNote, setGrandfatheredNote] = useState("");
+  const [grandfatheredPlanId, setGrandfatheredPlanId] = useState<string>("");
+  const [grandfatheredOverride, setGrandfatheredOverride] = useState<string>("");
+  const [cancelOpen, setCancelOpen] = useState(false);
   const [isFreds, setIsFreds] = useState(false);
+
+  const { data: gfPlans = [] } = useGrandfatheredPlans();
+  const { data: computedMonthly } = useComputedMonthly(homeowner?.id);
+  const updateProfile = useUpdateHomeownerProfile();
 
   const [errors, setErrors] = useState<Record<string, boolean>>({});
 

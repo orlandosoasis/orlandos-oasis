@@ -2548,6 +2548,7 @@ const AdminDashboard = () => {
       case "homeDetail": return <HomeDetailPage />;
       case "issues": return <IssuesPage />;
       case "reviews": return <ReviewsPage />;
+      case "pricing": return <AdminPricingPage />;
       case "applicants":
         return applicants.length === 0
           ? <Card><CardContent className="p-0"><EmptyState

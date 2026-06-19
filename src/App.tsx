@@ -43,6 +43,7 @@ import TechnicianLanding from "./pages/TechnicianLanding";
 import TechnicianApplication from "./pages/TechnicianApplication";
 import CustomerLayout from "./components/CustomerLayout";
 import RoleRoute from "./components/RoleRoute";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 // ============================================================================
 // Lazy-loaded (large, role-gated, or rarely visited - code-split out of the

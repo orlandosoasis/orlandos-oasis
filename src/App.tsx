@@ -142,7 +142,7 @@ const App = () => (
                   <Route path="/terms" element={<Terms />} />
                   <Route path="/privacy" element={<Privacy />} />
                   <Route path="/technician" element={<TechnicianLanding />} />
-                  <Route path="/technician/apply" element={<TechnicianApplication />} />
+                  <Route path="/technician/apply" element={<ProtectedRoute><TechnicianApplication /></ProtectedRoute>} />
                   <Route path="/contact" element={<Contact />} />
 
                   {/* Technician routes */}

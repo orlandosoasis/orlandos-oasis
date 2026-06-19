@@ -220,7 +220,7 @@ const TechnicianApplication = () => {
           id: applicationId,
           first_name: firstName.trim(),
           last_name: lastName.trim(),
-          email: email.toLowerCase().trim(),
+          email: (user?.email ?? email).toLowerCase().trim(),
           phone,
           city,
           state,

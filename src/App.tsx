@@ -43,6 +43,7 @@ import TechnicianLanding from "./pages/TechnicianLanding";
 import TechnicianApplication from "./pages/TechnicianApplication";
 import CustomerLayout from "./components/CustomerLayout";
 import RoleRoute from "./components/RoleRoute";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 // ============================================================================
 // Lazy-loaded (large, role-gated, or rarely visited - code-split out of the
@@ -142,7 +143,7 @@ const App = () => (
                   <Route path="/terms" element={<Terms />} />
                   <Route path="/privacy" element={<Privacy />} />
                   <Route path="/technician" element={<TechnicianLanding />} />
-                  <Route path="/technician/apply" element={<TechnicianApplication />} />
+                  <Route path="/technician/apply" element={<ProtectedRoute><TechnicianApplication /></ProtectedRoute>} />
                   <Route path="/contact" element={<Contact />} />
 
                   {/* Technician routes */}

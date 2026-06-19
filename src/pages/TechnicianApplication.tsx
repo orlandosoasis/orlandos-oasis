@@ -12,6 +12,7 @@ import { formatUsPhone } from "@/lib/phone";
 import { FORM_LIMITS } from "@/lib/form-limits";
 import TurnstileWidget from "@/components/TurnstileWidget";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/contexts/AuthContext";
 
 /* ── Types ── */
 interface Certification {

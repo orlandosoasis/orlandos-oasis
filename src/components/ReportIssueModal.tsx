@@ -26,7 +26,9 @@ const ReportIssueModal = ({ open, onOpenChange }: ReportIssueModalProps) => {
   const [step, setStep] = useState<Step>("category");
   const [category, setCategory] = useState("");
   const [details, setDetails] = useState("");
+  const [submitting, setSubmitting] = useState(false);
   const { toast } = useToast();
+  const { user } = useAuth();
 
   const handleClose = (val: boolean) => {
     if (!val) {
@@ -34,12 +36,30 @@ const ReportIssueModal = ({ open, onOpenChange }: ReportIssueModalProps) => {
         setStep("category");
         setCategory("");
         setDetails("");
+        setSubmitting(false);
       }, 200);
     }
     onOpenChange(val);
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
+    if (!user) {
+      toast({ title: "Please sign in to report an issue", variant: "destructive" });
+      return;
+    }
+    setSubmitting(true);
+    const label = ISSUE_CATEGORIES.find((c) => c.id === category)?.label ?? "Other";
+    const { error } = await supabase.from("issues").insert({
+      homeowner_id: user.id,
+      type: label,
+      message: details.trim(),
+      status: "open",
+    });
+    setSubmitting(false);
+    if (error) {
+      toast({ title: "Could not submit", description: error.message, variant: "destructive" });
+      return;
+    }
     setStep("submitted");
     toast({ title: "Issue reported successfully", variant: "success" as any });
   };

@@ -196,7 +196,7 @@ function ApproveModal({
                     <div className="px-3 py-2 text-xs text-muted-foreground">No available technicians for these dates.</div>
                   )}
                   {eligibleTechs.map(t => (
-                    <SelectItem key={t.id} value={t.id}>{t.fullName || t.email}</SelectItem>
+                    <SelectItem key={t.id} value={t.id}>{t.name || t.email}</SelectItem>
                   ))}
                 </SelectContent>
               </Select>

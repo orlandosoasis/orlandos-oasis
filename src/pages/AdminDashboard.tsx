@@ -1337,9 +1337,14 @@ const AdminDashboard = () => {
         <Card>
           <CardHeader className="pb-3 flex flex-row items-center justify-between gap-3">
             <CardTitle className="text-sm font-bold">Route Issues</CardTitle>
-            <Button size="sm" variant="outline" className="text-xs" onClick={() => nav("routeIssues")}>
-              View all
-            </Button>
+            <div className="flex items-center gap-2">
+              <Button size="sm" variant="outline" className="gap-1.5 text-xs" onClick={() => setReportIssueOpen(true)}>
+                <AlertCircle className="h-3.5 w-3.5" /> Report Issue
+              </Button>
+              <Button size="sm" variant="outline" className="text-xs" onClick={() => nav("routeIssues")}>
+                View all
+              </Button>
+            </div>
           </CardHeader>
           <CardContent className="p-0">
             <Table>

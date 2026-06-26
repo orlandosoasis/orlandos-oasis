@@ -3,8 +3,10 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { CheckCircle2, AlertTriangle, Droplets, Wrench, SprayCan, HelpCircle } from "lucide-react";
+import { CheckCircle2, AlertTriangle, Droplets, Wrench, SprayCan, HelpCircle, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
 
 const ISSUE_CATEGORIES = [
   { id: "water", label: "Water Quality", icon: Droplets },

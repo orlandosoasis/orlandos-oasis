@@ -180,7 +180,7 @@ export const ManagePlanForm = ({
             <p className="text-xs text-muted-foreground mt-0.5">Affects base monthly price</p>
           </div>
           <div className="space-y-2">
-            {POOL_SIZES.map((size) => {
+            {SHARED_POOL_SIZES.map((size) => {
               const isSelected = size.value === draft.poolSize;
               const delta = sizeDelta(size.value);
               return (

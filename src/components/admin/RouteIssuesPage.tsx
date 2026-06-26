@@ -132,7 +132,6 @@ export function RouteIssuesListPage({ onOpen }: { onOpen: (id: string) => void }
                     {format(new Date(r.created_at), "MMM d, yyyy h:mm a")}
                   </TableCell>
                   <TableCell><StatusPill status={r.status} /></TableCell>
-                  <TableCell><StatusPill status={r.status} /></TableCell>
                 </TableRow>
               ))}
             </TableBody>

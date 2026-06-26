@@ -441,6 +441,8 @@ const AdminDashboard = () => {
 
   const pendingCount = applicants.filter(a => a.status === "Pending").length;
   const openIssueCount = issues.filter(i => i.status === "Open").length;
+  const { data: routeIssueData } = useAdminRouteIssues();
+  const activeRouteIssueCount = (routeIssueData ?? []).filter(r => r.status === "active" || r.status === "pending_approval").length;
 
 
   const menuItems = [
@@ -450,9 +452,14 @@ const AdminDashboard = () => {
     { key: "reviews" as const, label: "Reviews", icon: MessageSquare, badge: pendingReviewCount, badgeColor: "bg-amber-500" },
     { key: "applicants" as const, label: "Applicants", icon: UserPlus, badge: pendingCount, badgeColor: "bg-violet-500" },
     { key: "issues" as const, label: "Reported Issues", icon: AlertCircle, badge: openIssueCount, badgeColor: "bg-destructive" },
+    { key: "routeIssues" as const, label: "Route Issues", icon: CalendarClock, badge: activeRouteIssueCount, badgeColor: "bg-blue-500" },
   ];
 
-  const activeMenu = page === "techDetail" ? "technicians" : page === "homeDetail" ? "homeowners" : page === "applicantDetail" ? "applicants" : page;
+  const activeMenu = page === "techDetail" ? "technicians"
+    : page === "homeDetail" ? "homeowners"
+    : page === "applicantDetail" ? "applicants"
+    : page === "routeIssueDetail" ? "routeIssues"
+    : page;
 
   // ═══════════ SIDEBAR ═══════════
   const Sidebar = () => (

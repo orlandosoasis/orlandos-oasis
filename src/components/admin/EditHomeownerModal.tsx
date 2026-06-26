@@ -147,18 +147,24 @@ const EditHomeownerModal = ({ open, onClose, homeowner, onSave }: EditHomeownerM
   }, [homeowner, open]);
 
   // Sync selections + custom pricing from DB
+  const existingAddonIdsKey = existingAddons.map((a) => a.addon_id).sort().join(",");
   useEffect(() => {
-    setSelectedAddonIds(existingAddons.map((a) => a.addon_id));
-  }, [existingAddons]);
+    setSelectedAddonIds(existingAddonIdsKey ? existingAddonIdsKey.split(",") : []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [existingAddonIdsKey]);
 
   useEffect(() => {
     if (!pricingInfo) return;
-    setUseCustomPricing(pricingInfo.use_custom_pricing);
+    setUseCustomPricing(Boolean(pricingInfo.use_custom_pricing));
     setCustomPrice(
       pricingInfo.custom_monthly_price != null ? String(pricingInfo.custom_monthly_price) : ""
     );
-    setIsGrandfathered(pricingInfo.is_grandfathered);
-  }, [pricingInfo]);
+    setIsGrandfathered(Boolean(pricingInfo.is_grandfathered));
+  }, [
+    pricingInfo?.use_custom_pricing,
+    pricingInfo?.custom_monthly_price,
+    pricingInfo?.is_grandfathered,
+  ]);
 
   const toggleAddon = (id: string) =>
     setSelectedAddonIds((prev) =>

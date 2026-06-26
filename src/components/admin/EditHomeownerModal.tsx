@@ -174,6 +174,17 @@ const EditHomeownerModal = ({ open, onClose, homeowner, onSave }: EditHomeownerM
     .reduce((s, a) => s + Number(a.price), 0);
   const addonsTotal = addonsRecurring + addonsOneTime;
 
+  // Live pricing derived from admin catalog (DB-backed, same source as onboarding).
+  const poolSizeRow = poolSizesCatalog.find((p) => p.size === poolSize);
+  const frequencyRow = frequenciesCatalog.find((f) => f.frequency === frequency);
+  const basePoolPrice = poolSizeRow ? Number(poolSizeRow.base_monthly_price) : 0;
+  const freqMultiplier = frequencyRow ? Number(frequencyRow.multiplier) : 1;
+  const freqDelta = frequencyRow ? Number(frequencyRow.price_delta) : 0;
+  const baseMonthly = basePoolPrice * freqMultiplier + freqDelta;
+  const frequencyAdjustment = baseMonthly - basePoolPrice;
+  const computedMonthly = baseMonthly + addonsRecurring;
+  const effectiveMonthly = useCustomPricing && customPrice ? Number(customPrice) : computedMonthly;
+
   const validate = () => {
     const e: Record<string, boolean> = {};
     if (!fullName.trim()) e.fullName = true;

@@ -86,6 +86,10 @@ export const ManagePlanForm = ({
   hideHeader,
 }: ManagePlanFormProps) => {
   const { toast } = useToast();
+  // Subscribe to live pricing so this form re-renders when admins update prices.
+  usePricingPoolSizes(false);
+  usePricingFrequencies(false);
+  usePricingAddons(false);
 
   const [draft, setDraft] = useState<MembershipConfig>(current);
   const [showAllAddons, setShowAllAddons] = useState(false);

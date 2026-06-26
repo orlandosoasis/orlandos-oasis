@@ -649,7 +649,11 @@ export type Database = {
           monthly_amount: number | null
           notifications_enabled: boolean
           outstanding_balance: number
+          payout_effective_date: string | null
           payout_per_pool: number
+          payout_rate: number | null
+          payout_type: string
+          payout_updated_at: string | null
           phone: string | null
           role: Database["public"]["Enums"]["app_role"]
           state: string | null
@@ -683,7 +687,11 @@ export type Database = {
           monthly_amount?: number | null
           notifications_enabled?: boolean
           outstanding_balance?: number
+          payout_effective_date?: string | null
           payout_per_pool?: number
+          payout_rate?: number | null
+          payout_type?: string
+          payout_updated_at?: string | null
           phone?: string | null
           role?: Database["public"]["Enums"]["app_role"]
           state?: string | null
@@ -717,7 +725,11 @@ export type Database = {
           monthly_amount?: number | null
           notifications_enabled?: boolean
           outstanding_balance?: number
+          payout_effective_date?: string | null
           payout_per_pool?: number
+          payout_rate?: number | null
+          payout_type?: string
+          payout_updated_at?: string | null
           phone?: string | null
           role?: Database["public"]["Enums"]["app_role"]
           state?: string | null
@@ -1335,7 +1347,11 @@ export type Database = {
           monthly_amount: number | null
           notifications_enabled: boolean
           outstanding_balance: number
+          payout_effective_date: string | null
           payout_per_pool: number
+          payout_rate: number | null
+          payout_type: string
+          payout_updated_at: string | null
           phone: string | null
           role: Database["public"]["Enums"]["app_role"]
           state: string | null
@@ -1413,7 +1429,11 @@ export type Database = {
           monthly_amount: number | null
           notifications_enabled: boolean
           outstanding_balance: number
+          payout_effective_date: string | null
           payout_per_pool: number
+          payout_rate: number | null
+          payout_type: string
+          payout_updated_at: string | null
           phone: string | null
           role: Database["public"]["Enums"]["app_role"]
           state: string | null
@@ -1498,7 +1518,11 @@ export type Database = {
           monthly_amount: number | null
           notifications_enabled: boolean
           outstanding_balance: number
+          payout_effective_date: string | null
           payout_per_pool: number
+          payout_rate: number | null
+          payout_type: string
+          payout_updated_at: string | null
           phone: string | null
           role: Database["public"]["Enums"]["app_role"]
           state: string | null

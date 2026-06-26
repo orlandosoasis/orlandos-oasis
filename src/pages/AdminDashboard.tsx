@@ -722,6 +722,7 @@ const AdminDashboard = () => {
     const now = new Date();
     const currentYear = now.getFullYear();
     const [revenueYear, setRevenueYear] = useState<number>(currentYear);
+    const [revenueGroup, setRevenueGroup] = useState<"all" | "standard" | "freds">("all");
     const [payoutYear, setPayoutYear] = useState<number>(currentYear);
 
     // ── Editable supplies (from DB) ──

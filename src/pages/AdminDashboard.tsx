@@ -1303,14 +1303,84 @@ const AdminDashboard = () => {
     const fredsMRR = fredsAccounts.reduce((a, h) => a + (h.monthlyAmount ?? 0), 0);
 
     const now = new Date();
+    const todayStr = now.toISOString().slice(0, 10);
+    const monthKey = now.toISOString().slice(0, 7);
+
+    const activeServicesToday = homeowners.reduce(
+      (a, h) => a + h.services.filter((s) => s.status === "Scheduled" && (s.serviceDate ?? s.date ?? "").startsWith(todayStr)).length,
+      0
+    );
+    const activeServicesTotal = homeowners.reduce(
+      (a, h) => a + h.services.filter((s) => s.status === "Scheduled").length,
+      0
+    );
+    const newHomeownersThisMonth = homeowners.filter((h) => (h.startDate ?? "").startsWith(monthKey)).length;
+    const techsAvailable = technicians.filter((t) => t.status === "Active").length;
+    const techsOnLeave = technicians.length - techsAvailable;
+    const newApplicantsToday = applicants.filter((a) => (a.appliedDate ?? "").startsWith(todayStr)).length;
+
+    const issuesUrgent = openIssueCount > 0;
+    const applicantsUrgent = pendingCount > 0;
 
     const stats = [
-      { label: "Monthly Revenue", value: fmtMoney(totalMRR), icon: CreditCard, color: "text-emerald-600", bg: "bg-emerald-50" },
-      { label: "Total Homeowners", value: homeowners.length, icon: Users, color: "text-primary", bg: "bg-blue-50" },
-      { label: "Pool Technicians", value: technicians.length, icon: Wrench, color: "text-violet-500", bg: "bg-violet-50" },
-      { label: "Active Services", value: homeowners.reduce((a, h) => a + h.services.filter(s => s.status === "Scheduled").length, 0), icon: Waves, color: "text-emerald-500", bg: "bg-emerald-50" },
-      { label: "Reported Issues", value: openIssueCount, icon: AlertCircle, color: "text-amber-500", bg: "bg-amber-50" },
-      { label: "Pending Applicants", value: pendingCount, icon: UserPlus, color: "text-violet-500", bg: "bg-violet-50" },
+      {
+        label: "Monthly Revenue",
+        value: fmtMoney(totalMRR),
+        icon: CreditCard,
+        color: "text-emerald-600",
+        bg: "bg-emerald-50",
+        hint: `${totalPools} active pool${totalPools === 1 ? "" : "s"} · recurring`,
+        onClick: () => document.getElementById("financials-card")?.scrollIntoView({ behavior: "smooth", block: "start" }),
+      },
+      {
+        label: "Total Homeowners",
+        value: homeowners.length,
+        icon: Users,
+        color: "text-primary",
+        bg: "bg-blue-50",
+        hint: `${newHomeownersThisMonth} new this month`,
+        onClick: () => nav("homeowners"),
+      },
+      {
+        label: "Pool Technicians",
+        value: technicians.length,
+        icon: Wrench,
+        color: "text-violet-500",
+        bg: "bg-violet-50",
+        hint: `${techsAvailable} available · ${techsOnLeave} on leave`,
+        onClick: () => nav("technicians"),
+      },
+      {
+        label: "Active Services",
+        value: activeServicesTotal,
+        icon: Waves,
+        color: "text-emerald-500",
+        bg: "bg-emerald-50",
+        hint: `${activeServicesToday} scheduled today`,
+        onClick: () => nav("dashboard"),
+      },
+      {
+        label: "Reported Issues",
+        value: openIssueCount,
+        icon: AlertCircle,
+        color: issuesUrgent ? "text-amber-600" : "text-muted-foreground",
+        bg: issuesUrgent ? "bg-amber-100" : "bg-muted",
+        hint: issuesUrgent ? `${openIssueCount} need attention` : "All clear",
+        urgent: issuesUrgent,
+        onClick: () => nav("issues"),
+      },
+      {
+        label: "Pending Applicants",
+        value: pendingCount,
+        icon: UserPlus,
+        color: applicantsUrgent ? "text-violet-600" : "text-muted-foreground",
+        bg: applicantsUrgent ? "bg-violet-100" : "bg-muted",
+        hint: applicantsUrgent
+          ? `${newApplicantsToday > 0 ? `${newApplicantsToday} new today · ` : ""}${pendingCount} to review`
+          : "No new applications",
+        urgent: applicantsUrgent,
+        onClick: () => nav("applicants"),
+      },
     ];
 
     const recentServices = homeowners.flatMap(h => h.services.map(s => ({ ...s, homeowner: h.name })))
@@ -1321,17 +1391,27 @@ const AdminDashboard = () => {
 
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
           {stats.map((c, i) => (
-            <Card key={i}>
-              <CardContent className="p-5 flex items-center gap-4">
-                <div className={`w-11 h-11 rounded-xl ${c.bg} flex items-center justify-center ${c.color} shrink-0`}>
-                  <c.icon className="h-5 w-5" />
+            <button
+              key={i}
+              type="button"
+              onClick={c.onClick}
+              className={`group relative text-left rounded-lg border bg-card text-card-foreground shadow-sm cursor-pointer transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md hover:border-primary/40 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
+                c.urgent ? "border-amber-300 bg-amber-50/40" : ""
+              }`}
+            >
+              <div className="p-4">
+                <div className="flex items-start justify-between gap-2">
+                  <div className="text-2xl font-extrabold text-foreground tracking-tight leading-none">{c.value}</div>
+                  <div className={`w-7 h-7 rounded-md ${c.bg} flex items-center justify-center ${c.color} shrink-0 opacity-70 group-hover:opacity-100 transition-opacity`}>
+                    <c.icon className="h-3.5 w-3.5" />
+                  </div>
                 </div>
-                <div>
-                  <div className="text-2xl font-extrabold text-foreground tracking-tight">{c.value}</div>
-                  <div className="text-xs text-muted-foreground font-medium mt-1">{c.label}</div>
+                <div className="text-xs text-foreground font-semibold mt-2">{c.label}</div>
+                <div className={`text-[11px] mt-0.5 ${c.urgent ? "text-amber-700 font-medium" : "text-muted-foreground"}`}>
+                  {c.hint}
                 </div>
-              </CardContent>
-            </Card>
+              </div>
+            </button>
           ))}
         </div>
 

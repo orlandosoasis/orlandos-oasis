@@ -2395,13 +2395,16 @@ const AdminDashboard = () => {
         </div>
 
         {detailTab === "overview" && (
-          <Card>
-            <CardHeader><CardTitle className="text-sm">Homeowner Information</CardTitle></CardHeader>
-            <CardContent>
-              <InfoRow label="Name" value={ho.name} /><InfoRow label="Email" value={ho.email} /><InfoRow label="Phone" value={ho.phone} />
-              <InfoRow label="Address" value={ho.address} /><InfoRow label="Plan" value={ho.plan} /><InfoRow label="Start Date" value={ho.startDate} />
-            </CardContent>
-          </Card>
+          <div className="space-y-4">
+            <Card>
+              <CardHeader><CardTitle className="text-sm">Homeowner Information</CardTitle></CardHeader>
+              <CardContent>
+                <InfoRow label="Name" value={ho.name} /><InfoRow label="Email" value={ho.email} /><InfoRow label="Phone" value={ho.phone} />
+                <InfoRow label="Address" value={ho.address} /><InfoRow label="Plan" value={ho.plan} /><InfoRow label="Start Date" value={ho.startDate} />
+              </CardContent>
+            </Card>
+            <HomeownerPricingPanel homeownerId={ho.id} monthlyAmount={ho.monthlyAmount} />
+          </div>
         )}
 
         {detailTab === "pools" && (

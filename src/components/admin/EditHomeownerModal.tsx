@@ -13,7 +13,16 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Switch } from "@/components/ui/switch";
-import { ADDONS } from "@/components/AddonsStep";
+import { useToast } from "@/hooks/use-toast";
+import {
+  usePricingAddons,
+  useHomeownerAddons,
+  useSetHomeownerAddons,
+  useHomeownerPricingInfo,
+  useUpdateCustomPricing,
+  useSnapshotGrandfathered,
+  useClearGrandfathered,
+} from "@/hooks/usePricing";
 import type { AdminHomeowner } from "@/types/admin";
 
 interface EditHomeownerModalProps {
@@ -47,7 +56,6 @@ const TIME_WINDOWS = [
   { value: "evening", label: "Evening (4pm–6pm)" },
 ];
 
-// Reverse lookup helpers - derive form values from the saved label strings.
 const findFrequencyValue = (label?: string) => {
   if (!label) return "weekly";
   const match = Object.entries(FREQUENCY_SHORT).find(([, v]) => label.includes(v));
@@ -56,13 +64,12 @@ const findFrequencyValue = (label?: string) => {
 
 const findPoolSizeValue = (size?: string) => {
   if (!size) return "";
-  const match = POOL_SIZES.find(p => size.toLowerCase().includes(p.value));
+  const match = POOL_SIZES.find((p) => size.toLowerCase().includes(p.value));
   return match?.value ?? "";
 };
 
 const splitAddress = (addr: string) => {
-  // best-effort split for "Street, City, State, ZIP"
-  const parts = addr.split(",").map(s => s.trim());
+  const parts = addr.split(",").map((s) => s.trim());
   return {
     street: parts[0] ?? "",
     city: parts[1] ?? "",
@@ -71,7 +78,11 @@ const splitAddress = (addr: string) => {
   };
 };
 
+const money = (n: number) => `$${n.toFixed(2)}`;
+
 const EditHomeownerModal = ({ open, onClose, homeowner, onSave }: EditHomeownerModalProps) => {
+  const { toast } = useToast();
+
   const [fullName, setFullName] = useState("");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
@@ -83,7 +94,7 @@ const EditHomeownerModal = ({ open, onClose, homeowner, onSave }: EditHomeownerM
   const [poolSize, setPoolSize] = useState("");
   const [poolNotes, setPoolNotes] = useState("");
   const [frequency, setFrequency] = useState("weekly");
-  const [selectedAddons, setSelectedAddons] = useState<string[]>([]);
+  const [selectedAddonIds, setSelectedAddonIds] = useState<string[]>([]);
 
   const [timeWindow, setTimeWindow] = useState("morning");
   const [startDate, setStartDate] = useState("");
@@ -94,7 +105,18 @@ const EditHomeownerModal = ({ open, onClose, homeowner, onSave }: EditHomeownerM
   const [grandfatheredNote, setGrandfatheredNote] = useState("");
   const [isFreds, setIsFreds] = useState(false);
 
+  const [useCustomPricing, setUseCustomPricing] = useState(false);
+  const [customPrice, setCustomPrice] = useState<string>("");
+
   const [errors, setErrors] = useState<Record<string, boolean>>({});
+
+  const { data: pricingAddons = [] } = usePricingAddons(false);
+  const { data: existingAddons = [] } = useHomeownerAddons(homeowner?.id);
+  const { data: pricingInfo } = useHomeownerPricingInfo(homeowner?.id);
+  const setAddons = useSetHomeownerAddons();
+  const updateCustom = useUpdateCustomPricing();
+  const snapshotGrand = useSnapshotGrandfathered();
+  const clearGrand = useClearGrandfathered();
 
   // Pre-fill whenever homeowner changes / modal opens
   useEffect(() => {
@@ -110,7 +132,6 @@ const EditHomeownerModal = ({ open, onClose, homeowner, onSave }: EditHomeownerM
     setPoolSize(findPoolSizeValue(homeowner.pools?.[0]?.size));
     setPoolNotes(homeowner.notes || "");
     setFrequency(findFrequencyValue(homeowner.frequency));
-    setSelectedAddons([]);
     setTimeWindow("morning");
     setStartDate(homeowner.startDate || "");
     setAutoRecurring(true);
@@ -121,14 +142,43 @@ const EditHomeownerModal = ({ open, onClose, homeowner, onSave }: EditHomeownerM
     setErrors({});
   }, [homeowner, open]);
 
+  // Sync selections + custom pricing from DB
+  useEffect(() => {
+    setSelectedAddonIds(existingAddons.map((a) => a.addon_id));
+  }, [existingAddons]);
+
+  useEffect(() => {
+    if (!pricingInfo) return;
+    setUseCustomPricing(pricingInfo.use_custom_pricing);
+    setCustomPrice(
+      pricingInfo.custom_monthly_price != null ? String(pricingInfo.custom_monthly_price) : ""
+    );
+    setIsGrandfathered(pricingInfo.is_grandfathered);
+  }, [pricingInfo]);
+
   const toggleAddon = (id: string) =>
-    setSelectedAddons(prev => prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]);
+    setSelectedAddonIds((prev) =>
+      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
+    );
+
+  const selectedAddonsList = pricingAddons.filter((a) => selectedAddonIds.includes(a.id));
+  const addonsRecurring = selectedAddonsList
+    .filter((a) => a.billing_type === "recurring")
+    .reduce((s, a) => s + Number(a.price), 0);
+  const addonsOneTime = selectedAddonsList
+    .filter((a) => a.billing_type === "one_time")
+    .reduce((s, a) => s + Number(a.price), 0);
+  const addonsTotal = addonsRecurring + addonsOneTime;
 
   const validate = () => {
     const e: Record<string, boolean> = {};
     if (!fullName.trim()) e.fullName = true;
     if (!phone.trim()) e.phone = true;
     if (!email.trim() || !/^\S+@\S+\.\S+$/.test(email)) e.email = true;
+    if (useCustomPricing) {
+      const n = Number(customPrice);
+      if (!customPrice || isNaN(n) || n < 0) e.customPrice = true;
+    }
     setErrors(e);
     return Object.keys(e).length === 0;
   };
@@ -142,12 +192,41 @@ const EditHomeownerModal = ({ open, onClose, homeowner, onSave }: EditHomeownerM
     return base;
   })();
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!homeowner || !validate()) return;
     const fullAddress = [street, city, state, zip].filter(Boolean).join(", ");
-    const poolSizeLabel = POOL_SIZES.find(p => p.value === poolSize)?.label ?? homeowner.pools?.[0]?.size ?? "-";
+    const poolSizeLabel =
+      POOL_SIZES.find((p) => p.value === poolSize)?.label ?? homeowner.pools?.[0]?.size ?? "-";
     const frequencyLabel = FREQUENCY_SHORT[frequency];
     const planLabel = poolSize ? `${poolSizeLabel} · ${frequencyLabel}` : homeowner.plan;
+
+    try {
+      // Persist add-on selections
+      await setAddons.mutateAsync({
+        homeownerId: homeowner.id,
+        addonIds: selectedAddonIds,
+      });
+      // Persist custom pricing
+      await updateCustom.mutateAsync({
+        homeownerId: homeowner.id,
+        useCustom: useCustomPricing,
+        customPrice: useCustomPricing && customPrice ? Number(customPrice) : null,
+      });
+      // Grandfathered toggle: snapshot when turning on, clear when turning off
+      const wasGrand = Boolean(pricingInfo?.is_grandfathered);
+      if (isGrandfathered && !wasGrand) {
+        await snapshotGrand.mutateAsync(homeowner.id);
+      } else if (!isGrandfathered && wasGrand) {
+        await clearGrand.mutateAsync(homeowner.id);
+      }
+    } catch (e) {
+      toast({
+        title: "Save failed",
+        description: e instanceof Error ? e.message : "",
+        variant: "destructive",
+      });
+      return;
+    }
 
     const updated: AdminHomeowner = {
       ...homeowner,
@@ -161,13 +240,16 @@ const EditHomeownerModal = ({ open, onClose, homeowner, onSave }: EditHomeownerM
       paymentMethod: paymentOption === "offline" ? "Pays Offline" : "Marked as Paid",
       notes: poolNotes,
       isGrandfathered,
-      grandfatheredNote: isGrandfathered ? (grandfatheredNote || null) : null,
+      grandfatheredNote: isGrandfathered ? grandfatheredNote || null : null,
       isFreds,
       notificationsEnabled: !isFreds,
-      // Update only the first pool's size; preserve past services & payment history.
       pools: homeowner.pools.map((p, i) =>
         i === 0
-          ? { ...p, size: poolSizeLabel, nextService: nextServiceDate ? format(nextServiceDate, "PPP") : p.nextService }
+          ? {
+              ...p,
+              size: poolSizeLabel,
+              nextService: nextServiceDate ? format(nextServiceDate, "PPP") : p.nextService,
+            }
           : p
       ),
     };
@@ -178,7 +260,8 @@ const EditHomeownerModal = ({ open, onClose, homeowner, onSave }: EditHomeownerM
     <h3 className="text-sm font-semibold text-foreground mb-3">{children}</h3>
   );
 
-  const errClass = (k: string) => errors[k] ? "border-destructive focus-visible:border-destructive" : "";
+  const errClass = (k: string) =>
+    errors[k] ? "border-destructive focus-visible:border-destructive" : "";
 
   if (!homeowner) return null;
 
@@ -195,35 +278,59 @@ const EditHomeownerModal = ({ open, onClose, homeowner, onSave }: EditHomeownerM
               <SectionTitle>Homeowner Info</SectionTitle>
               <div className="space-y-3">
                 <div>
-                  <Label htmlFor="e-fullName" className="mb-1.5 block">Full Name <span className="text-destructive">*</span></Label>
-                  <Input id="e-fullName" value={fullName} onChange={e => setFullName(e.target.value)} className={errClass("fullName")} />
+                  <Label htmlFor="e-fullName" className="mb-1.5 block">
+                    Full Name <span className="text-destructive">*</span>
+                  </Label>
+                  <Input
+                    id="e-fullName"
+                    value={fullName}
+                    onChange={(e) => setFullName(e.target.value)}
+                    className={errClass("fullName")}
+                  />
                 </div>
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <Label htmlFor="e-phone" className="mb-1.5 block">Phone Number <span className="text-destructive">*</span></Label>
-                    <Input id="e-phone" value={phone} onChange={e => setPhone(e.target.value)} className={errClass("phone")} />
+                    <Label htmlFor="e-phone" className="mb-1.5 block">
+                      Phone Number <span className="text-destructive">*</span>
+                    </Label>
+                    <Input
+                      id="e-phone"
+                      value={phone}
+                      onChange={(e) => setPhone(e.target.value)}
+                      className={errClass("phone")}
+                    />
                   </div>
                   <div>
-                    <Label htmlFor="e-email" className="mb-1.5 block">Email <span className="text-destructive">*</span></Label>
-                    <Input id="e-email" type="email" value={email} onChange={e => setEmail(e.target.value)} className={errClass("email")} />
+                    <Label htmlFor="e-email" className="mb-1.5 block">
+                      Email <span className="text-destructive">*</span>
+                    </Label>
+                    <Input
+                      id="e-email"
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      className={errClass("email")}
+                    />
                   </div>
                 </div>
                 <div>
-                  <Label htmlFor="e-street" className="mb-1.5 block">Street Address</Label>
-                  <Input id="e-street" value={street} onChange={e => setStreet(e.target.value)} />
+                  <Label htmlFor="e-street" className="mb-1.5 block">
+                    Street Address
+                  </Label>
+                  <Input id="e-street" value={street} onChange={(e) => setStreet(e.target.value)} />
                 </div>
                 <div className="grid grid-cols-3 gap-3">
                   <div>
                     <Label htmlFor="e-city" className="mb-1.5 block">City</Label>
-                    <Input id="e-city" value={city} onChange={e => setCity(e.target.value)} />
+                    <Input id="e-city" value={city} onChange={(e) => setCity(e.target.value)} />
                   </div>
                   <div>
                     <Label htmlFor="e-state" className="mb-1.5 block">State</Label>
-                    <Input id="e-state" value={state} onChange={e => setState(e.target.value)} />
+                    <Input id="e-state" value={state} onChange={(e) => setState(e.target.value)} />
                   </div>
                   <div>
                     <Label htmlFor="e-zip" className="mb-1.5 block">ZIP</Label>
-                    <Input id="e-zip" value={zip} onChange={e => setZip(e.target.value)} />
+                    <Input id="e-zip" value={zip} onChange={(e) => setZip(e.target.value)} />
                   </div>
                 </div>
               </div>
@@ -236,19 +343,25 @@ const EditHomeownerModal = ({ open, onClose, homeowner, onSave }: EditHomeownerM
                 <div>
                   <Label className="mb-1.5 block">Pool Size</Label>
                   <Select value={poolSize} onValueChange={setPoolSize}>
-                    <SelectTrigger><SelectValue placeholder="Select pool size" /></SelectTrigger>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select pool size" />
+                    </SelectTrigger>
                     <SelectContent>
-                      {POOL_SIZES.map(p => (
-                        <SelectItem key={p.value} value={p.value}>{p.label}</SelectItem>
+                      {POOL_SIZES.map((p) => (
+                        <SelectItem key={p.value} value={p.value}>
+                          {p.label}
+                        </SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
                 </div>
                 <div>
-                  <Label className="mb-1.5 block">Notes <span className="text-muted-foreground text-xs">(optional)</span></Label>
+                  <Label className="mb-1.5 block">
+                    Notes <span className="text-muted-foreground text-xs">(optional)</span>
+                  </Label>
                   <Textarea
                     value={poolNotes}
-                    onChange={e => setPoolNotes(e.target.value)}
+                    onChange={(e) => setPoolNotes(e.target.value)}
                     placeholder="Gate code, preferences, etc."
                     rows={2}
                   />
@@ -256,29 +369,100 @@ const EditHomeownerModal = ({ open, onClose, homeowner, onSave }: EditHomeownerM
                 <div>
                   <Label className="mb-1.5 block">Service Frequency</Label>
                   <Select value={frequency} onValueChange={setFrequency}>
-                    <SelectTrigger><SelectValue placeholder="Select frequency" /></SelectTrigger>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select frequency" />
+                    </SelectTrigger>
                     <SelectContent>
-                      {FREQUENCIES.map(f => (
-                        <SelectItem key={f.value} value={f.value}>{f.label}</SelectItem>
+                      {FREQUENCIES.map((f) => (
+                        <SelectItem key={f.value} value={f.value}>
+                          {f.label}
+                        </SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
                 </div>
                 <div>
-                  <h3 className="text-lg font-semibold mb-2">Add-ons</h3>
+                  <h3 className="text-base font-semibold mb-2">Add-ons</h3>
+                  <p className="text-xs text-muted-foreground mb-3">
+                    Prices come from your Add-ons Catalog and stay frozen for this homeowner once selected.
+                  </p>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                    {ADDONS.map(a => (
-                      <label key={a.id} className="flex items-start gap-2 cursor-pointer p-2 rounded-md border border-input hover:bg-muted/50">
-                        <Checkbox className="mt-0.5" checked={selectedAddons.includes(a.id)} onCheckedChange={() => toggleAddon(a.id)} />
-                        <span className="text-sm leading-snug">{a.title}</span>
+                    {pricingAddons.map((a) => (
+                      <label
+                        key={a.id}
+                        className="flex items-start gap-2 cursor-pointer p-2.5 rounded-md border border-input hover:bg-muted/50"
+                      >
+                        <Checkbox
+                          className="mt-0.5"
+                          checked={selectedAddonIds.includes(a.id)}
+                          onCheckedChange={() => toggleAddon(a.id)}
+                        />
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center justify-between gap-2">
+                            <span className="text-sm font-medium leading-snug">{a.name}</span>
+                            <span className="text-sm font-semibold shrink-0">{money(Number(a.price))}</span>
+                          </div>
+                          <div className="text-[11px] text-muted-foreground">
+                            {a.billing_type === "recurring" ? "Recurring monthly" : "One-time"}
+                          </div>
+                        </div>
                       </label>
                     ))}
                   </div>
+                  {pricingAddons.length === 0 && (
+                    <p className="text-xs text-muted-foreground">No active add-ons in catalog.</p>
+                  )}
                 </div>
               </div>
             </div>
 
-            {/* Section 3: Schedule */}
+            {/* Section 3: Pricing */}
+            <div>
+              <SectionTitle>Pricing</SectionTitle>
+              <div className="space-y-3">
+                <div className="rounded-md border border-border p-3 space-y-2 bg-muted/30">
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-muted-foreground">Add-ons (recurring)</span>
+                    <span className="font-semibold">{money(addonsRecurring)}</span>
+                  </div>
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-muted-foreground">Add-ons (one-time)</span>
+                    <span className="font-semibold">{money(addonsOneTime)}</span>
+                  </div>
+                  <div className="flex items-center justify-between text-sm pt-2 border-t border-border">
+                    <span className="text-foreground font-semibold">Add-ons total</span>
+                    <span className="font-bold">{money(addonsTotal)}</span>
+                  </div>
+                </div>
+
+                <div className="flex items-start justify-between p-3 rounded-md border border-violet-200 bg-violet-50/40 gap-3">
+                  <div>
+                    <div className="text-sm font-medium text-violet-900">Use Custom Pricing</div>
+                    <div className="text-xs text-violet-800/70">
+                      Manually set the monthly amount. Overrides pool/frequency/add-on calculation everywhere.
+                    </div>
+                  </div>
+                  <Switch checked={useCustomPricing} onCheckedChange={setUseCustomPricing} />
+                </div>
+                {useCustomPricing && (
+                  <div>
+                    <Label className="mb-1.5 block">
+                      Monthly Price ($) <span className="text-destructive">*</span>
+                    </Label>
+                    <Input
+                      type="number"
+                      step="0.01"
+                      value={customPrice}
+                      onChange={(e) => setCustomPrice(e.target.value)}
+                      placeholder="0.00"
+                      className={errClass("customPrice")}
+                    />
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Section 4: Schedule */}
             <div>
               <SectionTitle>Schedule</SectionTitle>
               <div className="space-y-3">
@@ -317,10 +501,14 @@ const EditHomeownerModal = ({ open, onClose, homeowner, onSave }: EditHomeownerM
                   <div>
                     <Label className="mb-1.5 block">Arrival Window</Label>
                     <Select value={timeWindow} onValueChange={setTimeWindow}>
-                      <SelectTrigger><SelectValue /></SelectTrigger>
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
                       <SelectContent>
-                        {TIME_WINDOWS.map(t => (
-                          <SelectItem key={t.value} value={t.value}>{t.label}</SelectItem>
+                        {TIME_WINDOWS.map((t) => (
+                          <SelectItem key={t.value} value={t.value}>
+                            {t.label}
+                          </SelectItem>
                         ))}
                       </SelectContent>
                     </Select>
@@ -336,7 +524,7 @@ const EditHomeownerModal = ({ open, onClose, homeowner, onSave }: EditHomeownerM
               </div>
             </div>
 
-            {/* Section 4: Payment */}
+            {/* Section 5: Payment */}
             <div>
               <SectionTitle>Payment</SectionTitle>
               <RadioGroup value={paymentOption} onValueChange={setPaymentOption} className="space-y-2">
@@ -357,20 +545,25 @@ const EditHomeownerModal = ({ open, onClose, homeowner, onSave }: EditHomeownerM
               </RadioGroup>
             </div>
 
-            {/* Section 5: Account Tags */}
+            {/* Section 6: Account Tags */}
             <div>
               <SectionTitle>Account Tags</SectionTitle>
               <div className="space-y-3">
                 <div className="flex items-start justify-between p-3 rounded-md border border-amber-200 bg-amber-50/50 gap-3">
                   <div>
                     <div className="text-sm font-medium text-amber-900">Grandfathered (legacy pricing)</div>
-                    <div className="text-xs text-amber-800/70">Flags this account as a legacy-rate customer.</div>
+                    <div className="text-xs text-amber-800/70">
+                      Turning this ON freezes a snapshot of the current pool/frequency/add-on prices.
+                      Future admin price changes won't affect this account.
+                    </div>
                   </div>
                   <Switch checked={isGrandfathered} onCheckedChange={setIsGrandfathered} />
                 </div>
                 {isGrandfathered && (
                   <div>
-                    <Label className="mb-1.5 block">Grandfathered Note <span className="text-muted-foreground text-xs">(optional)</span></Label>
+                    <Label className="mb-1.5 block">
+                      Grandfathered Note <span className="text-muted-foreground text-xs">(optional)</span>
+                    </Label>
                     <Input
                       value={grandfatheredNote}
                       onChange={(e) => setGrandfatheredNote(e.target.value)}
@@ -381,7 +574,9 @@ const EditHomeownerModal = ({ open, onClose, homeowner, onSave }: EditHomeownerM
                 <div className="flex items-start justify-between p-3 rounded-md border border-violet-200 bg-violet-50/50 gap-3">
                   <div>
                     <div className="text-sm font-medium text-violet-900">Fred's (notifications suppressed)</div>
-                    <div className="text-xs text-violet-800/70">No emails or notifications will be sent. Service data is still tracked.</div>
+                    <div className="text-xs text-violet-800/70">
+                      No emails or notifications will be sent. Service data is still tracked.
+                    </div>
                   </div>
                   <Switch checked={isFreds} onCheckedChange={setIsFreds} />
                 </div>
@@ -391,8 +586,12 @@ const EditHomeownerModal = ({ open, onClose, homeowner, onSave }: EditHomeownerM
 
           {/* Footer */}
           <div className="flex items-center justify-between mt-8 pt-4 border-t border-border">
-            <Button variant="outline" onClick={onClose}>Cancel</Button>
-            <Button onClick={handleSave}>Save Changes</Button>
+            <Button variant="outline" onClick={onClose}>
+              Cancel
+            </Button>
+            <Button onClick={handleSave} disabled={setAddons.isPending || updateCustom.isPending}>
+              Save Changes
+            </Button>
           </div>
         </div>
       </DialogContent>

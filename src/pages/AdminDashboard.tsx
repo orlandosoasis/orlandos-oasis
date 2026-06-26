@@ -3111,7 +3111,7 @@ const AdminDashboard = () => {
       </Dialog>
 
       {/* Edit Compensation */}
-      <Dialog open={!!editCompTechId} onOpenChange={(o) => !o && setEditCompTechId(null)}>
+      <Dialog open={!!editCompTechId} onOpenChange={(o) => { if (!o) { setEditCompTechId(null); setCompError(null); } }}>
         <DialogContent className="pt-10 sm:max-w-md">
           <DialogHeader>
             <DialogTitle>Edit compensation</DialogTitle>
@@ -3148,13 +3148,19 @@ const AdminDashboard = () => {
                 onChange={(e) => setCompDraftEffective(e.target.value)}
               />
             </div>
+            {compError && (
+              <div className="rounded-md border border-destructive/40 bg-destructive/5 px-3 py-2 text-sm text-destructive">
+                {compError}
+              </div>
+            )}
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setEditCompTechId(null)}>Cancel</Button>
+            <Button variant="outline" onClick={() => { setEditCompTechId(null); setCompError(null); }}>Cancel</Button>
             <Button
-              disabled={updateTechnicianCompensation.isPending || !compDraftRate.trim() || Number(compDraftRate) < 0}
+              disabled={updateTechnicianCompensation.isPending || !compDraftRate.trim() || Number(compDraftRate) < 0 || Number.isNaN(Number(compDraftRate))}
               onClick={async () => {
                 if (!editCompTechId) return;
+                setCompError(null);
                 try {
                   await updateTechnicianCompensation.mutateAsync({
                     id: editCompTechId,
@@ -3164,10 +3170,11 @@ const AdminDashboard = () => {
                       payoutEffectiveDate: compDraftEffective || null,
                     },
                   });
-                  toast({ title: "Compensation updated", variant: "success" });
+                  toast({ title: "Technician payout rate updated successfully.", variant: "success" });
                   setEditCompTechId(null);
+                  setCompError(null);
                 } catch (e) {
-                  toast({ title: "Update failed", description: e instanceof Error ? e.message : String(e), variant: "destructive" });
+                  setCompError(e instanceof Error ? e.message : String(e));
                 }
               }}
             >

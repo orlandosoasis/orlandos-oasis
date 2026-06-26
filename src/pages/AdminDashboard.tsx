@@ -2973,6 +2973,20 @@ const AdminDashboard = () => {
         technicians={technicians.map((t) => ({ id: t.id, name: t.name }))}
       />
 
+      {/* Route Issue Details Drawer */}
+      <Sheet open={!!routeIssueDrawerId} onOpenChange={(o) => !o && setRouteIssueDrawerId(null)}>
+        <SheetContent side="right" className="w-full sm:max-w-2xl overflow-y-auto p-0">
+          <div className="p-6">
+            {routeIssueDrawerId && (
+              <RouteIssueDetailPage
+                issueId={routeIssueDrawerId}
+                onBack={() => setRouteIssueDrawerId(null)}
+              />
+            )}
+          </div>
+        </SheetContent>
+      </Sheet>
+
       <AddHomeownerModal
         open={addHomeownerOpen}
         onClose={() => setAddHomeownerOpen(false)}

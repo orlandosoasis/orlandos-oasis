@@ -1,6 +1,8 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 
+export type PayoutType = "hourly" | "per_service" | "daily";
+
 export interface AdminTechnicianAggregate {
   id: string;
   name: string;
@@ -11,6 +13,10 @@ export interface AdminTechnicianAggregate {
   assignedPools: number;
   completedServices: number;
   payoutPerPool: number;
+  payoutType: PayoutType;
+  payoutRate: number | null;
+  payoutEffectiveDate: string | null;
+  payoutUpdatedAt: string | null;
   reviews: {
     id: string;
     reviewer: string;

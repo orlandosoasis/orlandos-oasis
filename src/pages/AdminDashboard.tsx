@@ -2555,6 +2555,11 @@ const AdminDashboard = () => {
       case "homeowners": return <HomeownersPage />;
       case "homeDetail": return <HomeDetailPage />;
       case "issues": return <IssuesPage />;
+      case "routeIssues": return <RouteIssuesListPage onOpen={(id) => nav("routeIssueDetail", id)} />;
+      case "routeIssueDetail":
+        return detailId
+          ? <RouteIssueDetailPage issueId={detailId} onBack={() => nav("routeIssues")} />
+          : <RouteIssuesListPage onOpen={(id) => nav("routeIssueDetail", id)} />;
       case "reviews": return <ReviewsPage />;
       case "applicants":
         return applicants.length === 0

@@ -813,11 +813,22 @@ const AdminDashboard = () => {
       }
       return acc;
     })();
+
+    // Which categories are shown based on selected customer group.
+    const groupKeys: readonly (typeof REVENUE_KEYS[number])[] =
+      revenueGroup === "freds"
+        ? (["freds"] as const)
+        : revenueGroup === "standard"
+          ? (["small", "medium", "large", "grandfathered"] as const)
+          : REVENUE_KEYS;
+    const filteredMRR = groupKeys.reduce((a, k) => a + categoryMRR[k], 0);
+    const filteredPools = groupKeys.reduce((a, k) => a + categoryCount[k], 0);
+
     const revenueMonthly = MONTHS.map((m, i) => {
       const frac = monthFraction(revenueYear, i);
       const row: Record<string, number | string> = { month: m };
       let total = 0;
-      for (const k of REVENUE_KEYS) {
+      for (const k of groupKeys) {
         const v = Math.round(categoryMRR[k] * frac);
         row[k] = v;
         total += v;

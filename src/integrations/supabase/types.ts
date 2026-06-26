@@ -79,6 +79,60 @@ export type Database = {
           },
         ]
       }
+      compensation_events: {
+        Row: {
+          actor_id: string | null
+          created_at: string
+          effective_date: string | null
+          id: string
+          new_payout_rate: number
+          new_payout_type: string
+          previous_payout_rate: number | null
+          previous_payout_type: string | null
+          summary: string | null
+          technician_id: string
+        }
+        Insert: {
+          actor_id?: string | null
+          created_at?: string
+          effective_date?: string | null
+          id?: string
+          new_payout_rate: number
+          new_payout_type: string
+          previous_payout_rate?: number | null
+          previous_payout_type?: string | null
+          summary?: string | null
+          technician_id: string
+        }
+        Update: {
+          actor_id?: string | null
+          created_at?: string
+          effective_date?: string | null
+          id?: string
+          new_payout_rate?: number
+          new_payout_type?: string
+          previous_payout_rate?: number | null
+          previous_payout_type?: string | null
+          summary?: string | null
+          technician_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "compensation_events_actor_id_fkey"
+            columns: ["actor_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "compensation_events_technician_id_fkey"
+            columns: ["technician_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       day_off_request_events: {
         Row: {
           actor_id: string | null
@@ -1591,6 +1645,58 @@ export type Database = {
           p_technician_id: string
         }
         Returns: string
+      }
+      update_technician_compensation: {
+        Args: {
+          p_effective_date: string
+          p_payout_rate: number
+          p_payout_type: string
+          p_technician_id: string
+        }
+        Returns: {
+          avatar_url: string | null
+          balance_due_after_cancellation: boolean
+          city: string | null
+          contract_locked: boolean
+          contract_start_date: string | null
+          created_at: string
+          email: string
+          first_name: string | null
+          full_name: string | null
+          grandfathered_monthly_override: number | null
+          grandfathered_note: string | null
+          grandfathered_plan_id: string | null
+          id: string
+          is_active: boolean
+          is_freds: boolean
+          is_grandfathered: boolean
+          is_placeholder: boolean
+          last_name: string | null
+          monthly_amount: number | null
+          notifications_enabled: boolean
+          outstanding_balance: number
+          payout_effective_date: string | null
+          payout_per_pool: number
+          payout_rate: number | null
+          payout_type: string
+          payout_updated_at: string | null
+          phone: string | null
+          role: Database["public"]["Enums"]["app_role"]
+          state: string | null
+          street_address: string | null
+          subscription_cancellation_reason: string | null
+          subscription_cancelled_at: string | null
+          subscription_effective_end_date: string | null
+          subscription_status: Database["public"]["Enums"]["subscription_status"]
+          updated_at: string
+          zip_code: string | null
+        }
+        SetofOptions: {
+          from: "*"
+          to: "profiles"
+          isOneToOne: true
+          isSetofReturn: false
+        }
       }
     }
     Enums: {

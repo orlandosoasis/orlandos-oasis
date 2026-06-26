@@ -15,6 +15,7 @@ import {
   Briefcase,
   Droplets,
   CalendarDays,
+  CalendarOff,
   MessagesSquare,
   CheckCircle2,
   User,
@@ -31,6 +32,7 @@ const NAV_ITEMS = [
   { label: "Schedule", path: "/tech/schedule", icon: CalendarDays },
   { label: "Messages", path: "/tech/messages", icon: MessagesSquare },
   { label: "Completed", path: "/tech/completed", icon: CheckCircle2 },
+  { label: "Time Off", path: "/tech/time-off", icon: CalendarOff },
 ];
 
 interface TechLayoutProps {

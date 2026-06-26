@@ -2808,6 +2808,7 @@ const AdminDashboard = () => {
             /></CardContent></Card>
           : <ApplicantsPage />;
       case "applicantDetail": return <ApplicantDetailPage />;
+      case "addons": return <AddonsManagementPage />;
 
       default: return <DashboardPage />;
     }

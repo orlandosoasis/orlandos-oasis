@@ -2,7 +2,8 @@ import { useEffect, useState } from "react";
 import { Check, ChevronDown, ChevronUp } from "lucide-react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Badge } from "@/components/ui/badge";
-import { usePricingPoolSizes, usePricingFrequencies } from "@/hooks/usePricing";
+import { usePricingPoolSizes, usePricingFrequencies, usePricingAddons } from "@/hooks/usePricing";
+import { ADDONS } from "@/components/AddonsStep";
 
 export type PoolSize = "small" | "medium" | "large";
 export type ServiceFrequency = "weekly" | "twice-weekly" | "three-weekly";

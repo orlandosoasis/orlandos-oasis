@@ -91,6 +91,17 @@ export function PricingSync() {
       });
     }
   }, [frequencies]);
+  const { data: addons } = usePricingAddons(false);
+  useEffect(() => {
+    if (addons) {
+      addons.forEach((row) => {
+        const match = ADDONS.find(
+          (a) => a.title.toLowerCase() === String(row.name).toLowerCase(),
+        );
+        if (match) match.price = Number(row.price);
+      });
+    }
+  }, [addons]);
   return null;
 }
 

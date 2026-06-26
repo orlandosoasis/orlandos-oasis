@@ -22,6 +22,8 @@ import {
   useUpdateCustomPricing,
   useSnapshotGrandfathered,
   useClearGrandfathered,
+  usePricingPoolSizes,
+  usePricingFrequencies,
 } from "@/hooks/usePricing";
 import type { AdminHomeowner } from "@/types/admin";
 

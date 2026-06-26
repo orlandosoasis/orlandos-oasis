@@ -44,7 +44,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import {
   useAdminTechnicians, useAdminHomeowners, useAdminIssues,
   useTechnicianApplications, useUpdateIssueStatus, useUpdateApplicationStatus,
-  useUpdateTechnicianActive, useUpdateTechnicianProfile, useUpdateHomeownerProfile,
+  useUpdateTechnicianActive, useUpdateTechnicianProfile, useUpdateTechnicianCompensation, useUpdateHomeownerProfile,
   useToggleFredsTag,
 } from "@/hooks/useAdmin";
 import { useReviews, useUpdateReviewStatus } from "@/hooks/useReviews";
@@ -198,6 +198,7 @@ const AdminDashboard = () => {
   const assignTechToHomeowner = useAssignTechToHomeowner();
   const updateTechnicianActive = useUpdateTechnicianActive();
   const updateTechnicianProfile = useUpdateTechnicianProfile();
+  const updateTechnicianCompensation = useUpdateTechnicianCompensation();
   const toggleFredsTag = useToggleFredsTag();
   const [specialTab, setSpecialTab] = useState<"standard" | "grandfathered" | "freds">("standard");
   const [homeownerFilter, setHomeownerFilter] = useState<"all" | "standard" | "grandfathered" | "freds" | "placeholder" | "cancelled">("all");
@@ -207,6 +208,12 @@ const AdminDashboard = () => {
   const [techDraftEmail, setTechDraftEmail] = useState("");
   const [techDraftPhone, setTechDraftPhone] = useState("");
   const [techDraftPayout, setTechDraftPayout] = useState("100");
+
+  // Compensation editor (separate modal)
+  const [editCompTechId, setEditCompTechId] = useState<string | null>(null);
+  const [compDraftType, setCompDraftType] = useState<"hourly" | "per_service" | "daily">("per_service");
+  const [compDraftRate, setCompDraftRate] = useState("");
+  const [compDraftEffective, setCompDraftEffective] = useState("");
 
   const isLoading =
     techniciansQuery.isLoading ||
@@ -226,6 +233,10 @@ const AdminDashboard = () => {
     assignedPools: t.assignedPools,
     completedServices: t.completedServices,
     payoutPerPool: t.payoutPerPool,
+    payoutType: t.payoutType,
+    payoutRate: t.payoutRate,
+    payoutEffectiveDate: t.payoutEffectiveDate,
+    payoutUpdatedAt: t.payoutUpdatedAt,
     reviews: t.reviews.map((r) => ({
       id: r.id,
       reviewer: r.reviewer,
@@ -1750,6 +1761,48 @@ const AdminDashboard = () => {
             <InfoRow label="Email" value={tech.email} /><InfoRow label="Phone" value={tech.phone} /><InfoRow label="Status" value={tech.status} badge />
           </CardContent></Card>
 
+        {(() => {
+          const PAYOUT_LABEL: Record<string, string> = {
+            hourly: "Hourly",
+            per_service: "Per Service",
+            daily: "Daily Rate",
+          };
+          const type = tech.payoutType ?? "per_service";
+          const rate = tech.payoutRate ?? tech.payoutPerPool ?? 0;
+          const updated = tech.payoutUpdatedAt
+            ? new Date(tech.payoutUpdatedAt).toLocaleDateString("en-US", { month: "short", day: "2-digit", year: "numeric" })
+            : "—";
+          const effective = tech.payoutEffectiveDate
+            ? new Date(tech.payoutEffectiveDate + "T00:00:00").toLocaleDateString("en-US", { month: "short", day: "2-digit", year: "numeric" })
+            : null;
+          return (
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between">
+                <CardTitle className="text-sm">Compensation</CardTitle>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="gap-1.5"
+                  onClick={() => {
+                    setCompDraftType(type);
+                    setCompDraftRate(String(rate ?? ""));
+                    setCompDraftEffective(tech.payoutEffectiveDate ?? "");
+                    setEditCompTechId(tech.id);
+                  }}
+                >
+                  <Pencil className="h-3.5 w-3.5" /> Edit Rate
+                </Button>
+              </CardHeader>
+              <CardContent>
+                <InfoRow label="Payout Type" value={PAYOUT_LABEL[type]} />
+                <InfoRow label="Payout Rate" value={`$${Number(rate).toFixed(2)}`} />
+                {effective && <InfoRow label="Effective Date" value={effective} />}
+                <InfoRow label="Last Updated" value={updated} />
+              </CardContent>
+            </Card>
+          );
+        })()}
+
         <TechPoolAssignmentPanel technicianId={tech.id} />
 
         <TechClientUpdatesPanel technicianId={tech.id} />
@@ -3051,6 +3104,73 @@ const AdminDashboard = () => {
               }}
             >
               {updateTechnicianProfile.isPending ? "Saving…" : "Save changes"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Edit Compensation */}
+      <Dialog open={!!editCompTechId} onOpenChange={(o) => !o && setEditCompTechId(null)}>
+        <DialogContent className="pt-10 sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Edit compensation</DialogTitle>
+            <DialogDescription>Update this technician's payout type and rate.</DialogDescription>
+          </DialogHeader>
+          <div className="space-y-3">
+            <div className="space-y-1">
+              <label className="text-xs font-semibold text-muted-foreground">Payout type</label>
+              <Select value={compDraftType} onValueChange={(v) => setCompDraftType(v as typeof compDraftType)}>
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="hourly">Hourly</SelectItem>
+                  <SelectItem value="per_service">Per Service</SelectItem>
+                  <SelectItem value="daily">Daily Rate</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-1">
+              <label className="text-xs font-semibold text-muted-foreground">Payout rate ($)</label>
+              <Input
+                type="number"
+                min="0"
+                step="0.01"
+                value={compDraftRate}
+                onChange={(e) => setCompDraftRate(e.target.value)}
+                placeholder="25.00"
+              />
+            </div>
+            <div className="space-y-1">
+              <label className="text-xs font-semibold text-muted-foreground">Effective date (optional)</label>
+              <Input
+                type="date"
+                value={compDraftEffective}
+                onChange={(e) => setCompDraftEffective(e.target.value)}
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setEditCompTechId(null)}>Cancel</Button>
+            <Button
+              disabled={updateTechnicianCompensation.isPending || !compDraftRate.trim() || Number(compDraftRate) < 0}
+              onClick={async () => {
+                if (!editCompTechId) return;
+                try {
+                  await updateTechnicianCompensation.mutateAsync({
+                    id: editCompTechId,
+                    patch: {
+                      payoutType: compDraftType,
+                      payoutRate: Number(compDraftRate),
+                      payoutEffectiveDate: compDraftEffective || null,
+                    },
+                  });
+                  toast({ title: "Compensation updated", variant: "success" });
+                  setEditCompTechId(null);
+                } catch (e) {
+                  toast({ title: "Update failed", description: e instanceof Error ? e.message : String(e), variant: "destructive" });
+                }
+              }}
+            >
+              {updateTechnicianCompensation.isPending ? "Saving…" : "Save changes"}
             </Button>
           </DialogFooter>
         </DialogContent>

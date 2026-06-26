@@ -34,6 +34,10 @@ export interface AdminTechnician {
   assignedPools: number;
   completedServices: number;
   payoutPerPool?: number;
+  payoutType?: "hourly" | "per_service" | "daily";
+  payoutRate?: number | null;
+  payoutEffectiveDate?: string | null;
+  payoutUpdatedAt?: string | null;
   reviews: AdminTechReview[];
   pools: AdminTechPool[];
 }

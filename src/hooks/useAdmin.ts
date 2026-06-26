@@ -1,6 +1,8 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 
+export type PayoutType = "hourly" | "per_service" | "daily";
+
 export interface AdminTechnicianAggregate {
   id: string;
   name: string;
@@ -11,6 +13,10 @@ export interface AdminTechnicianAggregate {
   assignedPools: number;
   completedServices: number;
   payoutPerPool: number;
+  payoutType: PayoutType;
+  payoutRate: number | null;
+  payoutEffectiveDate: string | null;
+  payoutUpdatedAt: string | null;
   reviews: {
     id: string;
     reviewer: string;
@@ -124,7 +130,7 @@ export function useAdminTechnicians() {
     queryFn: async (): Promise<AdminTechnicianAggregate[]> => {
       const { data: techs, error } = await supabase
         .from("profiles")
-        .select("id, full_name, email, phone, is_active, payout_per_pool")
+        .select("id, full_name, email, phone, is_active, payout_per_pool, payout_type, payout_rate, payout_effective_date, payout_updated_at")
         .eq("role", "technician")
         .order("full_name", { ascending: true });
       if (error) throw error;
@@ -196,6 +202,10 @@ export function useAdminTechnicians() {
           assignedPools: (assignedPoolRows ?? []).filter((p) => p.assigned_technician_id === tech.id).length,
           completedServices: completed,
           payoutPerPool: Number((tech as { payout_per_pool?: number | null }).payout_per_pool ?? 100),
+          payoutType: ((tech as { payout_type?: string | null }).payout_type as PayoutType) ?? "per_service",
+          payoutRate: (tech as { payout_rate?: number | null }).payout_rate ?? null,
+          payoutEffectiveDate: (tech as { payout_effective_date?: string | null }).payout_effective_date ?? null,
+          payoutUpdatedAt: (tech as { payout_updated_at?: string | null }).payout_updated_at ?? null,
           reviews: techReviews
             .sort((a, b) => (b.created_at > a.created_at ? 1 : -1))
             .map((r) => ({
@@ -469,6 +479,33 @@ export function useUpdateTechnicianProfile() {
     onSuccess: () => qc.invalidateQueries({ queryKey: ["admin-technicians"] }),
   });
 }
+
+export interface TechnicianCompensationPatch {
+  payoutType: PayoutType;
+  payoutRate: number;
+  payoutEffectiveDate?: string | null;
+}
+
+export function useUpdateTechnicianCompensation() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ id, patch }: { id: string; patch: TechnicianCompensationPatch }) => {
+      const { error } = await supabase
+        .from("profiles")
+        .update({
+          payout_type: patch.payoutType,
+          payout_rate: patch.payoutRate,
+          payout_effective_date: patch.payoutEffectiveDate ?? null,
+          payout_updated_at: new Date().toISOString(),
+        })
+        .eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["admin-technicians"] }),
+  });
+}
+
+
 
 export interface HomeownerProfilePatch {
   fullName?: string;

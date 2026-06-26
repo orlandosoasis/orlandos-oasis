@@ -79,6 +79,120 @@ export type Database = {
           },
         ]
       }
+      day_off_request_events: {
+        Row: {
+          actor_id: string | null
+          actor_role: string | null
+          created_at: string
+          details: Json | null
+          event_type: string
+          id: string
+          request_id: string
+          summary: string
+        }
+        Insert: {
+          actor_id?: string | null
+          actor_role?: string | null
+          created_at?: string
+          details?: Json | null
+          event_type: string
+          id?: string
+          request_id: string
+          summary: string
+        }
+        Update: {
+          actor_id?: string | null
+          actor_role?: string | null
+          created_at?: string
+          details?: Json | null
+          event_type?: string
+          id?: string
+          request_id?: string
+          summary?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "day_off_request_events_actor_id_fkey"
+            columns: ["actor_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "day_off_request_events_request_id_fkey"
+            columns: ["request_id"]
+            isOneToOne: false
+            referencedRelation: "day_off_requests"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      day_off_requests: {
+        Row: {
+          created_at: string
+          decided_at: string | null
+          decided_by_id: string | null
+          decision_note: string | null
+          end_date: string
+          id: string
+          reason: string | null
+          resolution_action:
+            | Database["public"]["Enums"]["day_off_resolution"]
+            | null
+          start_date: string
+          status: Database["public"]["Enums"]["day_off_status"]
+          technician_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          decided_at?: string | null
+          decided_by_id?: string | null
+          decision_note?: string | null
+          end_date: string
+          id?: string
+          reason?: string | null
+          resolution_action?:
+            | Database["public"]["Enums"]["day_off_resolution"]
+            | null
+          start_date: string
+          status?: Database["public"]["Enums"]["day_off_status"]
+          technician_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          decided_at?: string | null
+          decided_by_id?: string | null
+          decision_note?: string | null
+          end_date?: string
+          id?: string
+          reason?: string | null
+          resolution_action?:
+            | Database["public"]["Enums"]["day_off_resolution"]
+            | null
+          start_date?: string
+          status?: Database["public"]["Enums"]["day_off_status"]
+          technician_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "day_off_requests_decided_by_id_fkey"
+            columns: ["decided_by_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "day_off_requests_technician_id_fkey"
+            columns: ["technician_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       expense_items: {
         Row: {
           category: string
@@ -1037,6 +1151,60 @@ export type Database = {
         }
         Relationships: []
       }
+      tech_notifications: {
+        Row: {
+          body: string | null
+          created_at: string
+          cta_route: string | null
+          dismissed_at: string | null
+          id: string
+          kind: string
+          read_at: string | null
+          request_id: string | null
+          technician_id: string
+          title: string
+        }
+        Insert: {
+          body?: string | null
+          created_at?: string
+          cta_route?: string | null
+          dismissed_at?: string | null
+          id?: string
+          kind: string
+          read_at?: string | null
+          request_id?: string | null
+          technician_id: string
+          title: string
+        }
+        Update: {
+          body?: string | null
+          created_at?: string
+          cta_route?: string | null
+          dismissed_at?: string | null
+          id?: string
+          kind?: string
+          read_at?: string | null
+          request_id?: string | null
+          technician_id?: string
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tech_notifications_request_id_fkey"
+            columns: ["request_id"]
+            isOneToOne: false
+            referencedRelation: "day_off_requests"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tech_notifications_technician_id_fkey"
+            columns: ["technician_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       technician_applications: {
         Row: {
           applied_date: string
@@ -1088,6 +1256,51 @@ export type Database = {
         }
         Relationships: []
       }
+      technician_unavailability: {
+        Row: {
+          created_at: string
+          date: string
+          id: string
+          reason: string | null
+          request_id: string | null
+          source: string
+          technician_id: string
+        }
+        Insert: {
+          created_at?: string
+          date: string
+          id?: string
+          reason?: string | null
+          request_id?: string | null
+          source?: string
+          technician_id: string
+        }
+        Update: {
+          created_at?: string
+          date?: string
+          id?: string
+          reason?: string | null
+          request_id?: string | null
+          source?: string
+          technician_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "technician_unavailability_request_id_fkey"
+            columns: ["request_id"]
+            isOneToOne: false
+            referencedRelation: "day_off_requests"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "technician_unavailability_technician_id_fkey"
+            columns: ["technician_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -1137,6 +1350,41 @@ export type Database = {
         SetofOptions: {
           from: "*"
           to: "profiles"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
+      approve_day_off_request: {
+        Args: {
+          p_action: Database["public"]["Enums"]["day_off_resolution"]
+          p_id: string
+          p_message: string
+          p_reassign_to: string
+          p_reschedule_to: string
+        }
+        Returns: string
+      }
+      cancel_day_off_request: {
+        Args: { p_id: string }
+        Returns: {
+          created_at: string
+          decided_at: string | null
+          decided_by_id: string | null
+          decision_note: string | null
+          end_date: string
+          id: string
+          reason: string | null
+          resolution_action:
+            | Database["public"]["Enums"]["day_off_resolution"]
+            | null
+          start_date: string
+          status: Database["public"]["Enums"]["day_off_status"]
+          technician_id: string
+          updated_at: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "day_off_requests"
           isOneToOne: true
           isSetofReturn: false
         }
@@ -1192,6 +1440,10 @@ export type Database = {
         Args: never
         Returns: Database["public"]["Enums"]["app_role"]
       }
+      deny_day_off_request: {
+        Args: { p_id: string; p_reason: string }
+        Returns: string
+      }
       dismiss_homeowner_notification: {
         Args: { p_id: string }
         Returns: {
@@ -1221,6 +1473,7 @@ export type Database = {
         Returns: boolean
       }
       is_admin: { Args: never; Returns: boolean }
+      preview_day_off_impact: { Args: { p_id: string }; Returns: Json }
       reactivate_subscription: {
         Args: never
         Returns: {
@@ -1294,6 +1547,10 @@ export type Database = {
           isSetofReturn: false
         }
       }
+      submit_day_off_request: {
+        Args: { p_end: string; p_reason: string; p_start: string }
+        Returns: string
+      }
       submit_route_issue: {
         Args: {
           p_action: string
@@ -1316,6 +1573,12 @@ export type Database = {
       admin_note_target: "technician" | "homeowner" | "pool"
       app_role: "homeowner" | "technician" | "admin"
       application_status: "pending" | "approved" | "rejected"
+      day_off_resolution:
+        | "reassign"
+        | "unassigned"
+        | "reschedule"
+        | "notify_only"
+      day_off_status: "pending" | "approved" | "denied" | "cancelled"
       issue_status: "open" | "in_progress" | "resolved"
       review_status: "pending" | "approved" | "rejected"
       service_request_status: "open" | "in_progress" | "resolved" | "cancelled"
@@ -1452,6 +1715,13 @@ export const Constants = {
       admin_note_target: ["technician", "homeowner", "pool"],
       app_role: ["homeowner", "technician", "admin"],
       application_status: ["pending", "approved", "rejected"],
+      day_off_resolution: [
+        "reassign",
+        "unassigned",
+        "reschedule",
+        "notify_only",
+      ],
+      day_off_status: ["pending", "approved", "denied", "cancelled"],
       issue_status: ["open", "in_progress", "resolved"],
       review_status: ["pending", "approved", "rejected"],
       service_request_status: ["open", "in_progress", "resolved", "cancelled"],

@@ -132,7 +132,7 @@ export function RouteIssuesListPage({ onOpen }: { onOpen: (id: string) => void }
                     {format(new Date(r.created_at), "MMM d, yyyy h:mm a")}
                   </TableCell>
                   <TableCell><StatusPill status={r.status} /></TableCell>
-                  <TableCell><Button size="sm" variant="ghost" onClick={(e) => { e.stopPropagation(); onOpen(r.id); }}>View</Button></TableCell>
+                  <TableCell><StatusPill status={r.status} /></TableCell>
                 </TableRow>
               ))}
             </TableBody>

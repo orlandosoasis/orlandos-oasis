@@ -198,6 +198,7 @@ const AdminDashboard = () => {
   const assignTechToHomeowner = useAssignTechToHomeowner();
   const updateTechnicianActive = useUpdateTechnicianActive();
   const updateTechnicianProfile = useUpdateTechnicianProfile();
+  const updateTechnicianCompensation = useUpdateTechnicianCompensation();
   const toggleFredsTag = useToggleFredsTag();
   const [specialTab, setSpecialTab] = useState<"standard" | "grandfathered" | "freds">("standard");
   const [homeownerFilter, setHomeownerFilter] = useState<"all" | "standard" | "grandfathered" | "freds" | "placeholder" | "cancelled">("all");
@@ -207,6 +208,12 @@ const AdminDashboard = () => {
   const [techDraftEmail, setTechDraftEmail] = useState("");
   const [techDraftPhone, setTechDraftPhone] = useState("");
   const [techDraftPayout, setTechDraftPayout] = useState("100");
+
+  // Compensation editor (separate modal)
+  const [editCompTechId, setEditCompTechId] = useState<string | null>(null);
+  const [compDraftType, setCompDraftType] = useState<"hourly" | "per_service" | "daily">("per_service");
+  const [compDraftRate, setCompDraftRate] = useState("");
+  const [compDraftEffective, setCompDraftEffective] = useState("");
 
   const isLoading =
     techniciansQuery.isLoading ||

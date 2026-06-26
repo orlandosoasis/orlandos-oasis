@@ -1,0 +1,1 @@
+ALTER TABLE public.profiles DISABLE TRIGGER USER; UPDATE public.profiles SET role='admin'::public.app_role WHERE email='admin@example.com'; ALTER TABLE public.profiles ENABLE TRIGGER USER;

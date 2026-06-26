@@ -97,7 +97,7 @@ function TimeOffList({ onOpen }: { onOpen: (id: string) => void }) {
                 <div className="flex items-start justify-between gap-3 flex-wrap">
                   <div className="min-w-0">
                     <div className="flex items-center gap-2">
-                      <h3 className="font-semibold text-foreground">{r.technician_name}</h3>
+                      <h3 className="font-semibold text-foreground text-[15px]">{r.technician_name}</h3>
                       <span className={`inline-flex items-center gap-1 text-[11px] font-medium px-2 py-0.5 rounded-full ${meta.color}`}>
                         <StatusIcon className="h-3 w-3" /> {meta.label}
                       </span>

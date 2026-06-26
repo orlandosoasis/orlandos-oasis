@@ -15,6 +15,7 @@ import {
   Briefcase,
   Droplets,
   CalendarDays,
+  CalendarOff,
   MessagesSquare,
   CheckCircle2,
   User,
@@ -24,6 +25,7 @@ import {
 } from "lucide-react";
 import { useState, useEffect, ReactNode } from "react";
 import { cn } from "@/lib/utils";
+import TechNotificationBell from "./TechNotificationBell";
 
 const NAV_ITEMS = [
   { label: "Jobs", path: "/tech/jobs", icon: Briefcase },
@@ -31,6 +33,7 @@ const NAV_ITEMS = [
   { label: "Schedule", path: "/tech/schedule", icon: CalendarDays },
   { label: "Messages", path: "/tech/messages", icon: MessagesSquare },
   { label: "Completed", path: "/tech/completed", icon: CheckCircle2 },
+  { label: "Time Off", path: "/tech/time-off", icon: CalendarOff },
 ];
 
 interface TechLayoutProps {
@@ -82,6 +85,7 @@ export default function TechLayout({ children, title, unreadMessages = 3 }: Tech
             </Link>
           </div>
           <div className="flex items-center gap-3">
+            <TechNotificationBell />
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" size="icon" className="rounded-full h-9 w-9 p-0">

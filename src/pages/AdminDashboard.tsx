@@ -7,7 +7,7 @@ import { Database } from "lucide-react";
 import {
   LayoutDashboard, Wrench, Users, AlertCircle, UserPlus, ChevronLeft,
   Star, Mail, Check, X, LogOut, User, Menu, FileText, Download, Waves, MessageSquare, Megaphone,
-  Plus, MoreHorizontal, Pencil, Trash2, CalendarClock, CreditCard, BadgeCheck
+  Plus, MoreHorizontal, Pencil, Trash2, CalendarClock, CalendarOff, CreditCard, BadgeCheck
 } from "lucide-react";
 import { EmptyState } from "@/components/EmptyState";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -32,7 +32,9 @@ import HomeownerRequestsPanel from "@/components/admin/HomeownerRequestsPanel";
 import PastServiceDetailModal from "@/components/admin/PastServiceDetailModal";
 import ReportRouteIssueModal, { type RouteService } from "@/components/ReportRouteIssueModal";
 import { RouteIssuesListPage, RouteIssueDetailPage } from "@/components/admin/RouteIssuesPage";
+import TimeOffPage from "@/components/admin/TimeOffPage";
 import { useAdminRouteIssues } from "@/hooks/useRouteIssues";
+import { useAllDayOffRequests } from "@/hooks/useDayOffRequests";
 import type {
   AdminTechnician, AdminApplicant, AdminApplicantCert, AdminIssue,
   AdminTechReview, ReviewStatus, ReviewRejectionReason, AdminHomeowner,
@@ -53,7 +55,7 @@ import { format } from "date-fns";
 import { BarChart, Bar, XAxis, YAxis, Tooltip as ReTooltip, ResponsiveContainer, Cell, LabelList, PieChart, Pie } from "recharts";
 import { useExpenseItems, useCreateExpenseItem, useUpdateExpenseItem, useDeleteExpenseItem } from "@/hooks/useExpenseItems";
 
-type AdminPage = "dashboard" | "technicians" | "techDetail" | "homeowners" | "homeDetail" | "issues" | "routeIssues" | "routeIssueDetail" | "applicants" | "applicantDetail" | "reviews";
+type AdminPage = "dashboard" | "technicians" | "techDetail" | "homeowners" | "homeDetail" | "issues" | "routeIssues" | "routeIssueDetail" | "timeOff" | "timeOffDetail" | "applicants" | "applicantDetail" | "reviews";
 
 const PAGE_TITLES: Record<string, string> = {
   dashboard: "Dashboard",
@@ -64,6 +66,8 @@ const PAGE_TITLES: Record<string, string> = {
   issues: "Reported Issues",
   routeIssues: "Route Issues",
   routeIssueDetail: "Route Issue Details",
+  timeOff: "Time Off Requests",
+  timeOffDetail: "Time Off Request",
   applicants: "Applicants",
   applicantDetail: "Application Details",
   reviews: "Review Moderation",
@@ -443,6 +447,8 @@ const AdminDashboard = () => {
   const openIssueCount = issues.filter(i => i.status === "Open").length;
   const { data: routeIssueData } = useAdminRouteIssues();
   const activeRouteIssueCount = (routeIssueData ?? []).filter(r => r.status === "active" || r.status === "pending_approval").length;
+  const { data: dayOffData } = useAllDayOffRequests();
+  const pendingDayOffCount = (dayOffData ?? []).filter(r => r.status === "pending").length;
 
 
   const menuItems = [
@@ -453,12 +459,14 @@ const AdminDashboard = () => {
     { key: "applicants" as const, label: "Applicants", icon: UserPlus, badge: pendingCount, badgeColor: "bg-violet-500" },
     { key: "issues" as const, label: "Reported Issues", icon: AlertCircle, badge: openIssueCount, badgeColor: "bg-destructive" },
     { key: "routeIssues" as const, label: "Route Issues", icon: CalendarClock, badge: activeRouteIssueCount, badgeColor: "bg-blue-500" },
+    { key: "timeOff" as const, label: "Time Off", icon: CalendarOff, badge: pendingDayOffCount, badgeColor: "bg-amber-500" },
   ];
 
   const activeMenu = page === "techDetail" ? "technicians"
     : page === "homeDetail" ? "homeowners"
     : page === "applicantDetail" ? "applicants"
     : page === "routeIssueDetail" ? "routeIssues"
+    : page === "timeOffDetail" ? "timeOff"
     : page;
 
   // ═══════════ SIDEBAR ═══════════
@@ -2560,6 +2568,13 @@ const AdminDashboard = () => {
         return detailId
           ? <RouteIssueDetailPage issueId={detailId} onBack={() => nav("routeIssues")} />
           : <RouteIssuesListPage onOpen={(id) => nav("routeIssueDetail", id)} />;
+      case "timeOff":
+      case "timeOffDetail":
+        return <TimeOffPage
+          detailId={page === "timeOffDetail" ? detailId : null}
+          onOpen={(id) => nav("timeOffDetail", id)}
+          onBack={() => nav("timeOff")}
+        />;
       case "reviews": return <ReviewsPage />;
       case "applicants":
         return applicants.length === 0

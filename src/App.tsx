@@ -74,6 +74,7 @@ const TechCompletedServices = lazy(() => import("./pages/TechCompletedServices")
 const TechJobs = lazy(() => import("./pages/TechJobs"));
 const TechJobDetail = lazy(() => import("./pages/TechJobDetail"));
 const TechMessages = lazy(() => import("./pages/TechMessages"));
+const TechTimeOff = lazy(() => import("./pages/TechTimeOff"));
 
 const AdminDashboard = lazy(() => import("./pages/AdminDashboard"));
 
@@ -155,6 +156,7 @@ const App = () => (
                   <Route path="/tech/jobs" element={<RoleRoute roles={["technician"]}><TechJobs /></RoleRoute>} />
                   <Route path="/tech/jobs/:serviceId" element={<RoleRoute roles={["technician"]}><TechJobDetail /></RoleRoute>} />
                   <Route path="/tech/messages" element={<RoleRoute roles={["technician"]}><TechMessages /></RoleRoute>} />
+                  <Route path="/tech/time-off" element={<RoleRoute roles={["technician"]}><TechTimeOff /></RoleRoute>} />
 
                   {/* Admin routes */}
                   <Route path="/admin-dashboard" element={<RoleRoute roles={["admin"]}><AdminDashboard /></RoleRoute>} />

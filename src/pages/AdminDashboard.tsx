@@ -477,6 +477,7 @@ const AdminDashboard = () => {
     { key: "issues" as const, label: "Reported Issues", icon: AlertCircle, badge: openIssueCount, badgeColor: "bg-destructive" },
     { key: "routeIssues" as const, label: "Route Issues", icon: CalendarClock, badge: activeRouteIssueCount, badgeColor: "bg-blue-500" },
     { key: "timeOff" as const, label: "Time Off", icon: CalendarOff, badge: pendingDayOffCount, badgeColor: "bg-amber-500" },
+    { key: "addons" as const, label: "Add-ons", icon: Package },
   ];
 
   const activeMenu = page === "techDetail" ? "technicians"

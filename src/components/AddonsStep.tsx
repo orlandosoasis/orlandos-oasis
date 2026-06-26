@@ -98,6 +98,8 @@ interface AddonsStepProps {
 }
 
 const AddonsStep = ({ selectedAddons, onToggleAddon, serviceConfig, timeLeft, onChangePlan }: AddonsStepProps) => {
+  // Subscribe so this step re-renders when admins update add-on prices.
+  usePricingAddons(false);
   const monthlyPrice = getMonthlyPrice(serviceConfig);
   const discountPrice = getDiscountPrice(serviceConfig);
 

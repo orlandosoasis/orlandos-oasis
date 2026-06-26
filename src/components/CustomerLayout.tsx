@@ -117,6 +117,7 @@ const PersistentHeader = memo(function PersistentHeader() {
               Book Service
             </Button>
           )}
+          {user && <HomeownerNotificationBell />}
           {user ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>

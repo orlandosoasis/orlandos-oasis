@@ -490,15 +490,12 @@ export function useUpdateTechnicianCompensation() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: async ({ id, patch }: { id: string; patch: TechnicianCompensationPatch }) => {
-      const { error } = await supabase
-        .from("profiles")
-        .update({
-          payout_type: patch.payoutType,
-          payout_rate: patch.payoutRate,
-          payout_effective_date: patch.payoutEffectiveDate ?? null,
-          payout_updated_at: new Date().toISOString(),
-        })
-        .eq("id", id);
+      const { error } = await supabase.rpc("update_technician_compensation", {
+        p_technician_id: id,
+        p_payout_type: patch.payoutType,
+        p_payout_rate: patch.payoutRate,
+        p_effective_date: patch.payoutEffectiveDate ?? null,
+      });
       if (error) throw error;
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: ["admin-technicians"] }),

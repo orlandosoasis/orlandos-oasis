@@ -503,6 +503,9 @@ export function useUpdateTechnicianCompensation() {
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: ["admin-technicians"] }),
   });
+}
+
+
 
 export interface HomeownerProfilePatch {
   fullName?: string;

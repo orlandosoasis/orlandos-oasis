@@ -168,7 +168,7 @@ const ServiceConfigStep = ({ config, onConfigChange }: ServiceConfigStepProps) =
         >
           {FREQUENCIES.map((freq) => {
             const isSelected = config.frequency === freq.value;
-            const addOn = basePrice * (freq.multiplier - 1);
+            const addOn = basePrice * (freq.multiplier - 1) + freq.priceDelta;
             return (
               <label
                 key={freq.value}

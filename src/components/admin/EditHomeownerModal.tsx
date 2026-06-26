@@ -254,6 +254,7 @@ const EditHomeownerModal = ({ open, onClose, homeowner, onSave }: EditHomeownerM
       frequency: frequencyLabel,
       paymentMethod: paymentOption === "offline" ? "Pays Offline" : "Marked as Paid",
       notes: poolNotes,
+      monthlyAmount: effectiveMonthly,
       isGrandfathered,
       grandfatheredNote: isGrandfathered ? grandfatheredNote || null : null,
       isFreds,

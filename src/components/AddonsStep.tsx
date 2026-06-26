@@ -1,6 +1,7 @@
 import { Check, Clock, Pencil } from "lucide-react";
 import type { ServiceConfig } from "@/components/ServiceConfigStep";
 import { getMonthlyPrice, getDiscountPrice } from "@/components/ServiceConfigStep";
+import { usePricingAddons } from "@/hooks/usePricing";
 
 export interface Addon {
   id: string;

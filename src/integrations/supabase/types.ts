@@ -382,7 +382,9 @@ export type Database = {
           dismissed_at: string | null
           homeowner_id: string
           id: string
+          issue_id: string | null
           kind: string
+          read_at: string | null
           route_issue_id: string | null
           service_id: string | null
           title: string
@@ -394,7 +396,9 @@ export type Database = {
           dismissed_at?: string | null
           homeowner_id: string
           id?: string
+          issue_id?: string | null
           kind: string
+          read_at?: string | null
           route_issue_id?: string | null
           service_id?: string | null
           title: string
@@ -406,12 +410,21 @@ export type Database = {
           dismissed_at?: string | null
           homeowner_id?: string
           id?: string
+          issue_id?: string | null
           kind?: string
+          read_at?: string | null
           route_issue_id?: string | null
           service_id?: string | null
           title?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "homeowner_notifications_issue_id_fkey"
+            columns: ["issue_id"]
+            isOneToOne: false
+            referencedRelation: "issues"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "homeowner_notifications_route_issue_id_fkey"
             columns: ["route_issue_id"]
@@ -1604,7 +1617,9 @@ export type Database = {
           dismissed_at: string | null
           homeowner_id: string
           id: string
+          issue_id: string | null
           kind: string
+          read_at: string | null
           route_issue_id: string | null
           service_id: string | null
           title: string
@@ -1624,6 +1639,8 @@ export type Database = {
         Returns: boolean
       }
       is_admin: { Args: never; Returns: boolean }
+      mark_all_notifications_read: { Args: never; Returns: undefined }
+      mark_notification_read: { Args: { p_id: string }; Returns: undefined }
       preview_day_off_impact: { Args: { p_id: string }; Returns: Json }
       reactivate_subscription: {
         Args: never

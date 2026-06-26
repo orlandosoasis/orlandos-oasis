@@ -452,6 +452,24 @@ const EditHomeownerModal = ({ open, onClose, homeowner, onSave }: EditHomeownerM
               <div className="space-y-3">
                 <div className="rounded-md border border-border p-3 space-y-2 bg-muted/30">
                   <div className="flex items-center justify-between text-sm">
+                    <span className="text-muted-foreground">
+                      {poolSizeRow?.display_name ?? "Pool size"} (base)
+                    </span>
+                    <span className="font-semibold">{money(basePoolPrice)}</span>
+                  </div>
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-muted-foreground">
+                      {frequencyRow?.display_name ?? "Frequency"}
+                    </span>
+                    <span className="font-semibold">
+                      {frequencyAdjustment <= 0 ? "Included" : `+${money(frequencyAdjustment)}`}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between text-sm pt-2 border-t border-border">
+                    <span className="text-muted-foreground">Base monthly</span>
+                    <span className="font-semibold">{money(baseMonthly)}</span>
+                  </div>
+                  <div className="flex items-center justify-between text-sm">
                     <span className="text-muted-foreground">Add-ons (recurring)</span>
                     <span className="font-semibold">{money(addonsRecurring)}</span>
                   </div>
@@ -460,9 +478,15 @@ const EditHomeownerModal = ({ open, onClose, homeowner, onSave }: EditHomeownerM
                     <span className="font-semibold">{money(addonsOneTime)}</span>
                   </div>
                   <div className="flex items-center justify-between text-sm pt-2 border-t border-border">
-                    <span className="text-foreground font-semibold">Add-ons total</span>
-                    <span className="font-bold">{money(addonsTotal)}</span>
+                    <span className="text-foreground font-semibold">Monthly total</span>
+                    <span className="font-bold">{money(effectiveMonthly)}</span>
                   </div>
+                  {useCustomPricing && (
+                    <p className="text-[11px] text-violet-700">
+                      Custom pricing override is active — billing uses ${customPrice || "0"}/mo
+                      instead of the calculated ${computedMonthly.toFixed(2)}.
+                    </p>
+                  )}
                 </div>
 
                 <div className="flex items-start justify-between p-3 rounded-md border border-violet-200 bg-violet-50/40 gap-3">

@@ -7,7 +7,7 @@ import { Database } from "lucide-react";
 import {
   LayoutDashboard, Wrench, Users, AlertCircle, UserPlus, ChevronLeft,
   Star, Mail, Check, X, LogOut, User, Menu, FileText, Download, Waves, MessageSquare, Megaphone,
-  Plus, MoreHorizontal, Pencil, Trash2, CalendarClock, CreditCard, BadgeCheck
+  Plus, MoreHorizontal, Pencil, Trash2, CalendarClock, CalendarOff, CreditCard, BadgeCheck
 } from "lucide-react";
 import { EmptyState } from "@/components/EmptyState";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -447,6 +447,8 @@ const AdminDashboard = () => {
   const openIssueCount = issues.filter(i => i.status === "Open").length;
   const { data: routeIssueData } = useAdminRouteIssues();
   const activeRouteIssueCount = (routeIssueData ?? []).filter(r => r.status === "active" || r.status === "pending_approval").length;
+  const { data: dayOffData } = useAllDayOffRequests();
+  const pendingDayOffCount = (dayOffData ?? []).filter(r => r.status === "pending").length;
 
 
   const menuItems = [
@@ -457,12 +459,14 @@ const AdminDashboard = () => {
     { key: "applicants" as const, label: "Applicants", icon: UserPlus, badge: pendingCount, badgeColor: "bg-violet-500" },
     { key: "issues" as const, label: "Reported Issues", icon: AlertCircle, badge: openIssueCount, badgeColor: "bg-destructive" },
     { key: "routeIssues" as const, label: "Route Issues", icon: CalendarClock, badge: activeRouteIssueCount, badgeColor: "bg-blue-500" },
+    { key: "timeOff" as const, label: "Time Off", icon: CalendarOff, badge: pendingDayOffCount, badgeColor: "bg-amber-500" },
   ];
 
   const activeMenu = page === "techDetail" ? "technicians"
     : page === "homeDetail" ? "homeowners"
     : page === "applicantDetail" ? "applicants"
     : page === "routeIssueDetail" ? "routeIssues"
+    : page === "timeOffDetail" ? "timeOff"
     : page;
 
   // ═══════════ SIDEBAR ═══════════

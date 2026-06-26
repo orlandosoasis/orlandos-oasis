@@ -226,6 +226,10 @@ const AdminDashboard = () => {
     assignedPools: t.assignedPools,
     completedServices: t.completedServices,
     payoutPerPool: t.payoutPerPool,
+    payoutType: t.payoutType,
+    payoutRate: t.payoutRate,
+    payoutEffectiveDate: t.payoutEffectiveDate,
+    payoutUpdatedAt: t.payoutUpdatedAt,
     reviews: t.reviews.map((r) => ({
       id: r.id,
       reviewer: r.reviewer,

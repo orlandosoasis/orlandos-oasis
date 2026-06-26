@@ -100,9 +100,12 @@ interface ServiceConfigStepProps {
 
 const ServiceConfigStep = ({ config, onConfigChange }: ServiceConfigStepProps) => {
   const [showAllServices, setShowAllServices] = useState(false);
+  // Subscribe to live pricing so this step re-renders when admins update prices.
+  usePricingPoolSizes(false);
+  usePricingFrequencies(false);
   const basePrice = POOL_SIZES.find((s) => s.value === config.poolSize)!.price;
   const freqOption = FREQUENCIES.find((f) => f.value === config.frequency)!;
-  const extraPrice = basePrice * (freqOption.multiplier - 1);
+  const extraPrice = basePrice * (freqOption.multiplier - 1) + freqOption.priceDelta;
   const monthlyPrice = getMonthlyPrice(config);
   const firstMonthPrice = monthlyPrice - 25;
 

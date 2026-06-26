@@ -128,7 +128,7 @@ export default function TechTimeOff() {
                 <div className="flex items-start justify-between gap-4 flex-wrap">
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-1">
-                      <h3 className="font-semibold text-foreground text-[18px]">
+                      <h3 className="font-semibold text-foreground text-[15px]">
                         {fmt(r.start_date)}{r.start_date !== r.end_date ? ` – ${fmt(r.end_date)}` : ""}
                       </h3>
                       <span className={`inline-flex items-center gap-1 text-[11px] font-medium px-2 py-0.5 rounded-full ${meta.color}`}>

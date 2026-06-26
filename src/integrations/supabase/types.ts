@@ -109,45 +109,6 @@ export type Database = {
         }
         Relationships: []
       }
-      homeowner_custom_charges: {
-        Row: {
-          active: boolean
-          amount: number
-          billing_type: string
-          created_at: string
-          created_by: string | null
-          homeowner_id: string
-          id: string
-          name: string
-          notes: string | null
-          updated_at: string
-        }
-        Insert: {
-          active?: boolean
-          amount?: number
-          billing_type?: string
-          created_at?: string
-          created_by?: string | null
-          homeowner_id: string
-          id?: string
-          name: string
-          notes?: string | null
-          updated_at?: string
-        }
-        Update: {
-          active?: boolean
-          amount?: number
-          billing_type?: string
-          created_at?: string
-          created_by?: string | null
-          homeowner_id?: string
-          id?: string
-          name?: string
-          notes?: string | null
-          updated_at?: string
-        }
-        Relationships: []
-      }
       homeowner_notifications: {
         Row: {
           body: string
@@ -374,148 +335,9 @@ export type Database = {
           },
         ]
       }
-      pricing_addons: {
-        Row: {
-          active: boolean
-          billing_type: string
-          created_at: string
-          description: string | null
-          id: string
-          key: string
-          name: string
-          price: number
-          sort_order: number
-          updated_at: string
-        }
-        Insert: {
-          active?: boolean
-          billing_type?: string
-          created_at?: string
-          description?: string | null
-          id?: string
-          key: string
-          name: string
-          price?: number
-          sort_order?: number
-          updated_at?: string
-        }
-        Update: {
-          active?: boolean
-          billing_type?: string
-          created_at?: string
-          description?: string | null
-          id?: string
-          key?: string
-          name?: string
-          price?: number
-          sort_order?: number
-          updated_at?: string
-        }
-        Relationships: []
-      }
-      pricing_frequencies: {
-        Row: {
-          active: boolean
-          created_at: string
-          display_name: string
-          frequency: string
-          id: string
-          multiplier: number
-          price_delta: number
-          sort_order: number
-          updated_at: string
-        }
-        Insert: {
-          active?: boolean
-          created_at?: string
-          display_name: string
-          frequency: string
-          id?: string
-          multiplier?: number
-          price_delta?: number
-          sort_order?: number
-          updated_at?: string
-        }
-        Update: {
-          active?: boolean
-          created_at?: string
-          display_name?: string
-          frequency?: string
-          id?: string
-          multiplier?: number
-          price_delta?: number
-          sort_order?: number
-          updated_at?: string
-        }
-        Relationships: []
-      }
-      pricing_grandfathered_plans: {
-        Row: {
-          active: boolean
-          created_at: string
-          description: string | null
-          id: string
-          monthly_price: number
-          name: string
-          updated_at: string
-        }
-        Insert: {
-          active?: boolean
-          created_at?: string
-          description?: string | null
-          id?: string
-          monthly_price?: number
-          name: string
-          updated_at?: string
-        }
-        Update: {
-          active?: boolean
-          created_at?: string
-          description?: string | null
-          id?: string
-          monthly_price?: number
-          name?: string
-          updated_at?: string
-        }
-        Relationships: []
-      }
-      pricing_pool_sizes: {
-        Row: {
-          active: boolean
-          base_monthly_price: number
-          created_at: string
-          display_name: string
-          id: string
-          size: string
-          sort_order: number
-          updated_at: string
-        }
-        Insert: {
-          active?: boolean
-          base_monthly_price?: number
-          created_at?: string
-          display_name: string
-          id?: string
-          size: string
-          sort_order?: number
-          updated_at?: string
-        }
-        Update: {
-          active?: boolean
-          base_monthly_price?: number
-          created_at?: string
-          display_name?: string
-          id?: string
-          size?: string
-          sort_order?: number
-          updated_at?: string
-        }
-        Relationships: []
-      }
       profiles: {
         Row: {
           avatar_url: string | null
-          balance_due_after_cancellation: boolean
           city: string | null
           contract_locked: boolean
           contract_start_date: string | null
@@ -523,9 +345,7 @@ export type Database = {
           email: string
           first_name: string | null
           full_name: string | null
-          grandfathered_monthly_override: number | null
           grandfathered_note: string | null
-          grandfathered_plan_id: string | null
           id: string
           is_active: boolean
           is_freds: boolean
@@ -534,7 +354,6 @@ export type Database = {
           last_name: string | null
           monthly_amount: number | null
           notifications_enabled: boolean
-          outstanding_balance: number
           payout_per_pool: number
           phone: string | null
           role: Database["public"]["Enums"]["app_role"]
@@ -549,7 +368,6 @@ export type Database = {
         }
         Insert: {
           avatar_url?: string | null
-          balance_due_after_cancellation?: boolean
           city?: string | null
           contract_locked?: boolean
           contract_start_date?: string | null
@@ -557,9 +375,7 @@ export type Database = {
           email: string
           first_name?: string | null
           full_name?: string | null
-          grandfathered_monthly_override?: number | null
           grandfathered_note?: string | null
-          grandfathered_plan_id?: string | null
           id: string
           is_active?: boolean
           is_freds?: boolean
@@ -568,7 +384,6 @@ export type Database = {
           last_name?: string | null
           monthly_amount?: number | null
           notifications_enabled?: boolean
-          outstanding_balance?: number
           payout_per_pool?: number
           phone?: string | null
           role?: Database["public"]["Enums"]["app_role"]
@@ -583,7 +398,6 @@ export type Database = {
         }
         Update: {
           avatar_url?: string | null
-          balance_due_after_cancellation?: boolean
           city?: string | null
           contract_locked?: boolean
           contract_start_date?: string | null
@@ -591,9 +405,7 @@ export type Database = {
           email?: string
           first_name?: string | null
           full_name?: string | null
-          grandfathered_monthly_override?: number | null
           grandfathered_note?: string | null
-          grandfathered_plan_id?: string | null
           id?: string
           is_active?: boolean
           is_freds?: boolean
@@ -602,7 +414,6 @@ export type Database = {
           last_name?: string | null
           monthly_amount?: number | null
           notifications_enabled?: boolean
-          outstanding_balance?: number
           payout_per_pool?: number
           phone?: string | null
           role?: Database["public"]["Enums"]["app_role"]
@@ -856,16 +667,12 @@ export type Database = {
       }
       services: {
         Row: {
-          addon_ids: string[]
-          base_price: number | null
           cancellation_reason: string | null
           cancelled_at: string | null
           cancelled_by_homeowner: boolean
           completed_at: string | null
           completed_tasks: string[] | null
-          computed_price: number | null
           created_at: string
-          custom_charges: Json
           delay_minutes: number
           homeowner_id: string
           hours: number
@@ -881,16 +688,12 @@ export type Database = {
           updated_at: string
         }
         Insert: {
-          addon_ids?: string[]
-          base_price?: number | null
           cancellation_reason?: string | null
           cancelled_at?: string | null
           cancelled_by_homeowner?: boolean
           completed_at?: string | null
           completed_tasks?: string[] | null
-          computed_price?: number | null
           created_at?: string
-          custom_charges?: Json
           delay_minutes?: number
           homeowner_id: string
           hours?: number
@@ -906,16 +709,12 @@ export type Database = {
           updated_at?: string
         }
         Update: {
-          addon_ids?: string[]
-          base_price?: number | null
           cancellation_reason?: string | null
           cancelled_at?: string | null
           cancelled_by_homeowner?: boolean
           completed_at?: string | null
           completed_tasks?: string[] | null
-          computed_price?: number | null
           created_at?: string
-          custom_charges?: Json
           delay_minutes?: number
           homeowner_id?: string
           hours?: number
@@ -1043,59 +842,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      admin_cancel_subscription: {
-        Args: {
-          p_effective_end: string
-          p_homeowner_id: string
-          p_preserve_balance: boolean
-          p_reason: string
-        }
-        Returns: {
-          avatar_url: string | null
-          balance_due_after_cancellation: boolean
-          city: string | null
-          contract_locked: boolean
-          contract_start_date: string | null
-          created_at: string
-          email: string
-          first_name: string | null
-          full_name: string | null
-          grandfathered_monthly_override: number | null
-          grandfathered_note: string | null
-          grandfathered_plan_id: string | null
-          id: string
-          is_active: boolean
-          is_freds: boolean
-          is_grandfathered: boolean
-          is_placeholder: boolean
-          last_name: string | null
-          monthly_amount: number | null
-          notifications_enabled: boolean
-          outstanding_balance: number
-          payout_per_pool: number
-          phone: string | null
-          role: Database["public"]["Enums"]["app_role"]
-          state: string | null
-          street_address: string | null
-          subscription_cancellation_reason: string | null
-          subscription_cancelled_at: string | null
-          subscription_effective_end_date: string | null
-          subscription_status: Database["public"]["Enums"]["subscription_status"]
-          updated_at: string
-          zip_code: string | null
-        }
-        SetofOptions: {
-          from: "*"
-          to: "profiles"
-          isOneToOne: true
-          isSetofReturn: false
-        }
-      }
       cancel_subscription: {
         Args: { p_effective_end: string; p_reason: string }
         Returns: {
           avatar_url: string | null
-          balance_due_after_cancellation: boolean
           city: string | null
           contract_locked: boolean
           contract_start_date: string | null
@@ -1103,9 +853,7 @@ export type Database = {
           email: string
           first_name: string | null
           full_name: string | null
-          grandfathered_monthly_override: number | null
           grandfathered_note: string | null
-          grandfathered_plan_id: string | null
           id: string
           is_active: boolean
           is_freds: boolean
@@ -1114,7 +862,6 @@ export type Database = {
           last_name: string | null
           monthly_amount: number | null
           notifications_enabled: boolean
-          outstanding_balance: number
           payout_per_pool: number
           phone: string | null
           role: Database["public"]["Enums"]["app_role"]
@@ -1133,10 +880,6 @@ export type Database = {
           isOneToOne: true
           isSetofReturn: false
         }
-      }
-      compute_homeowner_monthly: {
-        Args: { p_homeowner_id: string }
-        Returns: number
       }
       current_user_role: {
         Args: never
@@ -1175,7 +918,6 @@ export type Database = {
         Args: never
         Returns: {
           avatar_url: string | null
-          balance_due_after_cancellation: boolean
           city: string | null
           contract_locked: boolean
           contract_start_date: string | null
@@ -1183,9 +925,7 @@ export type Database = {
           email: string
           first_name: string | null
           full_name: string | null
-          grandfathered_monthly_override: number | null
           grandfathered_note: string | null
-          grandfathered_plan_id: string | null
           id: string
           is_active: boolean
           is_freds: boolean
@@ -1194,7 +934,6 @@ export type Database = {
           last_name: string | null
           monthly_amount: number | null
           notifications_enabled: boolean
-          outstanding_balance: number
           payout_per_pool: number
           phone: string | null
           role: Database["public"]["Enums"]["app_role"]

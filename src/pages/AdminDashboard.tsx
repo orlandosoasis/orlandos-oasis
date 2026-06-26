@@ -2499,9 +2499,19 @@ const AdminDashboard = () => {
 
         {detailTab === "requests" && <HomeownerRequestsPanel homeownerId={ho.id} />}
 
-        {detailTab === "billing" && <HomeownerBillingPanel homeownerId={ho.id} />}
+        {detailTab === "billing" && (
+          <div className="space-y-4">
+            <HomeownerPricingPanel homeownerId={ho.id} monthlyAmount={ho.monthlyAmount} />
+            <HomeownerBillingPanel homeownerId={ho.id} />
+          </div>
+        )}
 
-        {detailTab === "membership" && <MembershipPanel homeowner={ho} />}
+        {detailTab === "membership" && (
+          <div className="space-y-4">
+            <HomeownerPricingPanel homeownerId={ho.id} monthlyAmount={ho.monthlyAmount} />
+            <MembershipPanel homeowner={ho} />
+          </div>
+        )}
 
         {detailTab === "notes" && <AdminNotesPanel targetType="homeowner" targetId={ho.id} title="Admin Notes (Private)" />}
       </div>

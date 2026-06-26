@@ -1372,7 +1372,7 @@ const AdminDashboard = () => {
                     r.status === "resolved" ? "bg-emerald-100 text-emerald-800 border-emerald-200" :
                     "bg-muted text-muted-foreground border-border";
                   return (
-                    <TableRow key={r.id} onClick={() => nav("routeIssueDetail", r.id)} className="cursor-pointer hover:bg-muted/50">
+                    <TableRow key={r.id} onClick={() => setRouteIssueDrawerId(r.id)} className="cursor-pointer hover:bg-muted/50">
                       <TableCell className="whitespace-nowrap text-xs">{format(new Date(r.created_at), "MMM d, h:mm a")}</TableCell>
                       <TableCell className="capitalize">{label}</TableCell>
                       <TableCell>{r.technician_name ?? "—"}</TableCell>

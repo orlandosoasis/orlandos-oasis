@@ -411,6 +411,3 @@ const InfoRow = ({ label, value }: { label: string; value: string }) => (
     <span className="text-sm text-foreground text-right">{value}</span>
   </div>
 );
-
-  </div>
-);

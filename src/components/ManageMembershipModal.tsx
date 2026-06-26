@@ -194,7 +194,7 @@ export const ManagePlanForm = ({
                   <div className="flex items-center justify-between gap-3">
                     <div>
                       <p className="text-[15px] font-semibold text-foreground">{size.label}</p>
-                      <p className="text-xs text-muted-foreground mt-0.5">${size.basePrice}/month base</p>
+                      <p className="text-xs text-muted-foreground mt-0.5">${size.price}/month base</p>
                     </div>
                     <div className="flex items-center gap-3">
                       {delta !== 0 && (

@@ -214,6 +214,7 @@ const AdminDashboard = () => {
   const [compDraftType, setCompDraftType] = useState<"hourly" | "per_service" | "daily">("per_service");
   const [compDraftRate, setCompDraftRate] = useState("");
   const [compDraftEffective, setCompDraftEffective] = useState("");
+  const [compError, setCompError] = useState<string | null>(null);
 
   const isLoading =
     techniciansQuery.isLoading ||

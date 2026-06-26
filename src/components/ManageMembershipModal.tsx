@@ -26,18 +26,9 @@ export interface ServicePlan {
   discountPrice: number;
 }
 
-// ===== Pricing tables (shared with ServiceConfigStep) =====
-const POOL_SIZES: { value: PoolSize; label: string; basePrice: number }[] = [
-  { value: "small", label: "Small Pool", basePrice: 120 },
-  { value: "medium", label: "Medium Pool", basePrice: 140 },
-  { value: "large", label: "Large Pool", basePrice: 170 },
-];
-
-const FREQUENCIES: { value: ServiceFrequency; label: string; multiplier: number }[] = [
-  { value: "weekly", label: "Weekly", multiplier: 1 },
-  { value: "twice-weekly", label: "Twice per week", multiplier: 2 },
-  { value: "three-weekly", label: "Three times per week", multiplier: 3 },
-];
+// ===== Pricing tables (shared with ServiceConfigStep — kept in sync by PricingSync) =====
+import { POOL_SIZES as SHARED_POOL_SIZES, FREQUENCIES as SHARED_FREQUENCIES } from "@/components/ServiceConfigStep";
+import { usePricingPoolSizes, usePricingFrequencies, usePricingAddons } from "@/hooks/usePricing";
 
 // Add-on grouping (reuses checkout catalog)
 const ADDON_GROUPS: { id: string; label: string; ids: string[] }[] = [
@@ -46,28 +37,32 @@ const ADDON_GROUPS: { id: string; label: string; ids: string[] }[] = [
   { id: "deep-cleaning", label: "Deep Cleaning", ids: ["algae-treatment", "tile-cleaning", "acid-washing"] },
 ];
 
-// ===== Helpers =====
+// ===== Helpers (read from shared, live catalog) =====
 function getBasePrice(size: PoolSize) {
-  return POOL_SIZES.find((s) => s.value === size)!.basePrice;
+  return SHARED_POOL_SIZES.find((s) => s.value === size)?.price ?? 0;
 }
 function getFrequencyMultiplier(freq: ServiceFrequency) {
-  return FREQUENCIES.find((f) => f.value === freq)!.multiplier;
+  return SHARED_FREQUENCIES.find((f) => f.value === freq)?.multiplier ?? 1;
+}
+function getFrequencyDelta(freq: ServiceFrequency) {
+  return SHARED_FREQUENCIES.find((f) => f.value === freq)?.priceDelta ?? 0;
 }
 export function getMembershipMonthlyPrice(config: MembershipConfig) {
   const base = getBasePrice(config.poolSize);
   const mult = getFrequencyMultiplier(config.frequency);
+  const delta = getFrequencyDelta(config.frequency);
   const addons = ADDONS.filter((a) => config.activeAddonIds.includes(a.id))
     .reduce((sum, a) => sum + a.price, 0);
-  return base * mult + addons;
+  return base * mult + delta + addons;
 }
 export function getActiveAddons(ids: string[]): Addon[] {
   return ADDONS.filter((a) => ids.includes(a.id));
 }
 export function getFrequencyLabel(freq: ServiceFrequency) {
-  return FREQUENCIES.find((f) => f.value === freq)!.label;
+  return SHARED_FREQUENCIES.find((f) => f.value === freq)?.label ?? "";
 }
 export function getPoolSizeLabel(size: PoolSize) {
-  return POOL_SIZES.find((s) => s.value === size)!.label;
+  return SHARED_POOL_SIZES.find((s) => s.value === size)?.label ?? "";
 }
 
 // ============================================================
@@ -91,6 +86,10 @@ export const ManagePlanForm = ({
   hideHeader,
 }: ManagePlanFormProps) => {
   const { toast } = useToast();
+  // Subscribe to live pricing so this form re-renders when admins update prices.
+  usePricingPoolSizes(false);
+  usePricingFrequencies(false);
+  usePricingAddons(false);
 
   const [draft, setDraft] = useState<MembershipConfig>(current);
   const [showAllAddons, setShowAllAddons] = useState(false);
@@ -185,7 +184,7 @@ export const ManagePlanForm = ({
             <p className="text-xs text-muted-foreground mt-0.5">Affects base monthly price</p>
           </div>
           <div className="space-y-2">
-            {POOL_SIZES.map((size) => {
+            {SHARED_POOL_SIZES.map((size) => {
               const isSelected = size.value === draft.poolSize;
               const delta = sizeDelta(size.value);
               return (
@@ -199,7 +198,7 @@ export const ManagePlanForm = ({
                   <div className="flex items-center justify-between gap-3">
                     <div>
                       <p className="text-[15px] font-semibold text-foreground">{size.label}</p>
-                      <p className="text-xs text-muted-foreground mt-0.5">${size.basePrice}/month base</p>
+                      <p className="text-xs text-muted-foreground mt-0.5">${size.price}/month base</p>
                     </div>
                     <div className="flex items-center gap-3">
                       {delta !== 0 && (
@@ -231,7 +230,7 @@ export const ManagePlanForm = ({
             <p className="text-xs text-muted-foreground mt-0.5">Upgrade for higher usage pools</p>
           </div>
           <div className="space-y-2">
-            {FREQUENCIES.map((freq) => {
+            {SHARED_FREQUENCIES.map((freq) => {
               const isSelected = freq.value === draft.frequency;
               const delta = freqDelta(freq.value);
               const helper = freq.multiplier === 1 ? "Included in base plan" : `+$${delta}/month`;

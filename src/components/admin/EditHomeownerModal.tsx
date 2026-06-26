@@ -22,6 +22,8 @@ import {
   useUpdateCustomPricing,
   useSnapshotGrandfathered,
   useClearGrandfathered,
+  usePricingPoolSizes,
+  usePricingFrequencies,
 } from "@/hooks/usePricing";
 import type { AdminHomeowner } from "@/types/admin";
 
@@ -111,6 +113,8 @@ const EditHomeownerModal = ({ open, onClose, homeowner, onSave }: EditHomeownerM
   const [errors, setErrors] = useState<Record<string, boolean>>({});
 
   const { data: pricingAddons = [] } = usePricingAddons(false);
+  const { data: poolSizesCatalog = [] } = usePricingPoolSizes(false);
+  const { data: frequenciesCatalog = [] } = usePricingFrequencies(false);
   const { data: existingAddons = [] } = useHomeownerAddons(homeowner?.id);
   const { data: pricingInfo } = useHomeownerPricingInfo(homeowner?.id);
   const setAddons = useSetHomeownerAddons();
@@ -169,6 +173,17 @@ const EditHomeownerModal = ({ open, onClose, homeowner, onSave }: EditHomeownerM
     .filter((a) => a.billing_type === "one_time")
     .reduce((s, a) => s + Number(a.price), 0);
   const addonsTotal = addonsRecurring + addonsOneTime;
+
+  // Live pricing derived from admin catalog (DB-backed, same source as onboarding).
+  const poolSizeRow = poolSizesCatalog.find((p) => p.size === poolSize);
+  const frequencyRow = frequenciesCatalog.find((f) => f.frequency === frequency);
+  const basePoolPrice = poolSizeRow ? Number(poolSizeRow.base_monthly_price) : 0;
+  const freqMultiplier = frequencyRow ? Number(frequencyRow.multiplier) : 1;
+  const freqDelta = frequencyRow ? Number(frequencyRow.price_delta) : 0;
+  const baseMonthly = basePoolPrice * freqMultiplier + freqDelta;
+  const frequencyAdjustment = baseMonthly - basePoolPrice;
+  const computedMonthly = baseMonthly + addonsRecurring;
+  const effectiveMonthly = useCustomPricing && customPrice ? Number(customPrice) : computedMonthly;
 
   const validate = () => {
     const e: Record<string, boolean> = {};
@@ -239,6 +254,7 @@ const EditHomeownerModal = ({ open, onClose, homeowner, onSave }: EditHomeownerM
       frequency: frequencyLabel,
       paymentMethod: paymentOption === "offline" ? "Pays Offline" : "Marked as Paid",
       notes: poolNotes,
+      monthlyAmount: effectiveMonthly,
       isGrandfathered,
       grandfatheredNote: isGrandfathered ? grandfatheredNote || null : null,
       isFreds,
@@ -347,11 +363,17 @@ const EditHomeownerModal = ({ open, onClose, homeowner, onSave }: EditHomeownerM
                       <SelectValue placeholder="Select pool size" />
                     </SelectTrigger>
                     <SelectContent>
-                      {POOL_SIZES.map((p) => (
-                        <SelectItem key={p.value} value={p.value}>
-                          {p.label}
-                        </SelectItem>
-                      ))}
+                      {POOL_SIZES.map((p) => {
+                        const row = poolSizesCatalog.find((r) => r.size === p.value);
+                        const price = row ? Number(row.base_monthly_price) : null;
+                        const display = row ? row.display_name : p.label;
+                        return (
+                          <SelectItem key={p.value} value={p.value}>
+                            {display}
+                            {price !== null ? ` — $${price}/mo` : ""}
+                          </SelectItem>
+                        );
+                      })}
                     </SelectContent>
                   </Select>
                 </div>
@@ -373,11 +395,20 @@ const EditHomeownerModal = ({ open, onClose, homeowner, onSave }: EditHomeownerM
                       <SelectValue placeholder="Select frequency" />
                     </SelectTrigger>
                     <SelectContent>
-                      {FREQUENCIES.map((f) => (
-                        <SelectItem key={f.value} value={f.value}>
-                          {f.label}
-                        </SelectItem>
-                      ))}
+                      {FREQUENCIES.map((f) => {
+                        const row = frequenciesCatalog.find((r) => r.frequency === f.value);
+                        const display = row ? row.display_name : f.label;
+                        const mult = row ? Number(row.multiplier) : 1;
+                        const delta = row ? Number(row.price_delta) : 0;
+                        const adjustment = basePoolPrice * (mult - 1) + delta;
+                        const adjLabel =
+                          adjustment <= 0 ? "Included" : `+$${adjustment}/mo`;
+                        return (
+                          <SelectItem key={f.value} value={f.value}>
+                            {display} — {adjLabel}
+                          </SelectItem>
+                        );
+                      })}
                     </SelectContent>
                   </Select>
                 </div>
@@ -422,6 +453,24 @@ const EditHomeownerModal = ({ open, onClose, homeowner, onSave }: EditHomeownerM
               <div className="space-y-3">
                 <div className="rounded-md border border-border p-3 space-y-2 bg-muted/30">
                   <div className="flex items-center justify-between text-sm">
+                    <span className="text-muted-foreground">
+                      {poolSizeRow?.display_name ?? "Pool size"} (base)
+                    </span>
+                    <span className="font-semibold">{money(basePoolPrice)}</span>
+                  </div>
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-muted-foreground">
+                      {frequencyRow?.display_name ?? "Frequency"}
+                    </span>
+                    <span className="font-semibold">
+                      {frequencyAdjustment <= 0 ? "Included" : `+${money(frequencyAdjustment)}`}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between text-sm pt-2 border-t border-border">
+                    <span className="text-muted-foreground">Base monthly</span>
+                    <span className="font-semibold">{money(baseMonthly)}</span>
+                  </div>
+                  <div className="flex items-center justify-between text-sm">
                     <span className="text-muted-foreground">Add-ons (recurring)</span>
                     <span className="font-semibold">{money(addonsRecurring)}</span>
                   </div>
@@ -430,9 +479,15 @@ const EditHomeownerModal = ({ open, onClose, homeowner, onSave }: EditHomeownerM
                     <span className="font-semibold">{money(addonsOneTime)}</span>
                   </div>
                   <div className="flex items-center justify-between text-sm pt-2 border-t border-border">
-                    <span className="text-foreground font-semibold">Add-ons total</span>
-                    <span className="font-bold">{money(addonsTotal)}</span>
+                    <span className="text-foreground font-semibold">Monthly total</span>
+                    <span className="font-bold">{money(effectiveMonthly)}</span>
                   </div>
+                  {useCustomPricing && (
+                    <p className="text-[11px] text-violet-700">
+                      Custom pricing override is active — billing uses ${customPrice || "0"}/mo
+                      instead of the calculated ${computedMonthly.toFixed(2)}.
+                    </p>
+                  )}
                 </div>
 
                 <div className="flex items-start justify-between p-3 rounded-md border border-violet-200 bg-violet-50/40 gap-3">

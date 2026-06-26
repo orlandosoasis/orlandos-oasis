@@ -54,6 +54,42 @@ export interface GrandfatheredSnapshot {
   monthly_total: number;
 }
 
+// ─── Pricing: Pool Sizes & Frequencies (catalog) ──────────
+export function usePricingPoolSizes(includeInactive = false) {
+  return useQuery({
+    queryKey: ["pricing-pool-sizes", includeInactive],
+    queryFn: async (): Promise<PricingPoolSize[]> => {
+      let q = supabase.from("pricing_pool_sizes").select("*").order("sort_order");
+      if (!includeInactive) q = q.eq("active", true);
+      const { data, error } = await q;
+      if (error) throw error;
+      return ((data ?? []) as PricingPoolSize[]).map((r) => ({
+        ...r,
+        base_monthly_price: Number(r.base_monthly_price),
+      }));
+    },
+    staleTime: 60_000,
+  });
+}
+
+export function usePricingFrequencies(includeInactive = false) {
+  return useQuery({
+    queryKey: ["pricing-frequencies", includeInactive],
+    queryFn: async (): Promise<PricingFrequency[]> => {
+      let q = supabase.from("pricing_frequencies").select("*").order("sort_order");
+      if (!includeInactive) q = q.eq("active", true);
+      const { data, error } = await q;
+      if (error) throw error;
+      return ((data ?? []) as PricingFrequency[]).map((r) => ({
+        ...r,
+        price_delta: Number(r.price_delta),
+        multiplier: Number(r.multiplier),
+      }));
+    },
+    staleTime: 60_000,
+  });
+}
+
 // ─── Pricing Addons (catalog) ─────────────────────────────
 export function usePricingAddons(includeInactive = false) {
   return useQuery({

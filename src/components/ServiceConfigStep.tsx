@@ -2,7 +2,6 @@ import { useState } from "react";
 import { Check, ChevronDown, ChevronUp } from "lucide-react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Badge } from "@/components/ui/badge";
-import { useCatalog, computeMonthly } from "@/hooks/usePricing";
 
 export type PoolSize = "small" | "medium" | "large";
 export type ServiceFrequency = "weekly" | "twice-weekly" | "three-weekly";
@@ -12,15 +11,17 @@ export interface ServiceConfig {
   frequency: ServiceFrequency;
 }
 
-// Fallback constants — DB seed should match. Kept so pure helpers below work
-// outside React (e.g. in non-hook utility paths).
-const FALLBACK_POOL_PRICES: Record<PoolSize, number> = { small: 120, medium: 140, large: 170 };
-const FALLBACK_FREQ_MULT: Record<ServiceFrequency, number> = { weekly: 1, "twice-weekly": 2, "three-weekly": 3 };
-const FALLBACK_FREQ_LABELS: Record<ServiceFrequency, string> = {
-  weekly: "Weekly Pool Service",
-  "twice-weekly": "Twice Per Week Pool Service",
-  "three-weekly": "Three Times Per Week Pool Service",
-};
+const POOL_SIZES: { value: PoolSize; label: string; sublabel: string; price: number }[] = [
+  { value: "small", label: "Small Pool", sublabel: "Standard residential", price: 120 },
+  { value: "medium", label: "Medium Pool", sublabel: "Mid-size residential", price: 140 },
+  { value: "large", label: "Large Pool", sublabel: "Large or custom", price: 170 },
+];
+
+const FREQUENCIES: { value: ServiceFrequency; label: string; description: string; priceCopy: string; multiplier: number; isMostPopular: boolean }[] = [
+  { value: "weekly", label: "Weekly Pool Service", description: "Ideal for most residential pools", priceCopy: "Included in base price", multiplier: 1, isMostPopular: true },
+  { value: "twice-weekly", label: "Twice Per Week Pool Service", description: "Add an extra weekly visit for high-use or problem pools", priceCopy: "", multiplier: 2, isMostPopular: false },
+  { value: "three-weekly", label: "Three Times Per Week Pool Service", description: "Add two extra weekly visits for premium care & maximum clarity", priceCopy: "", multiplier: 3, isMostPopular: false },
+];
 
 const KEY_SERVICES = [
   "Surface skimming, wall brushing & vacuuming",
@@ -40,9 +41,10 @@ const ALL_SERVICES = [
   "Water level monitoring",
 ];
 
-/** Pure helper — uses fallback constants. Components that need live pricing should use useCatalog. */
 export function getMonthlyPrice(config: ServiceConfig): number {
-  return FALLBACK_POOL_PRICES[config.poolSize] * FALLBACK_FREQ_MULT[config.frequency];
+  const sizeOption = POOL_SIZES.find((s) => s.value === config.poolSize)!;
+  const freqOption = FREQUENCIES.find((f) => f.value === config.frequency)!;
+  return sizeOption.price * freqOption.multiplier;
 }
 
 export function getDiscountPrice(config: ServiceConfig): number {
@@ -50,7 +52,7 @@ export function getDiscountPrice(config: ServiceConfig): number {
 }
 
 export function getFrequencyLabel(frequency: ServiceFrequency): string {
-  return FALLBACK_FREQ_LABELS[frequency] ?? "";
+  return FREQUENCIES.find((f) => f.value === frequency)?.label ?? "";
 }
 
 interface ServiceConfigStepProps {
@@ -60,18 +62,11 @@ interface ServiceConfigStepProps {
 
 const ServiceConfigStep = ({ config, onConfigChange }: ServiceConfigStepProps) => {
   const [showAllServices, setShowAllServices] = useState(false);
-  const { poolSizes, frequencies } = useCatalog();
-
-  const selectedPool = poolSizes.find(p => p.size === config.poolSize);
-  const selectedFreq = frequencies.find(f => f.frequency === config.frequency);
-  const basePrice = selectedPool?.basePrice ?? FALLBACK_POOL_PRICES[config.poolSize];
-  const freqMultiplier = selectedFreq?.multiplier ?? FALLBACK_FREQ_MULT[config.frequency];
-  const extraPrice = basePrice * (freqMultiplier - 1);
-  const monthlyPrice = computeMonthly(config.poolSize, config.frequency, poolSizes, frequencies) || basePrice * freqMultiplier;
+  const basePrice = POOL_SIZES.find((s) => s.value === config.poolSize)!.price;
+  const freqOption = FREQUENCIES.find((f) => f.value === config.frequency)!;
+  const extraPrice = basePrice * (freqOption.multiplier - 1);
+  const monthlyPrice = getMonthlyPrice(config);
   const firstMonthPrice = monthlyPrice - 25;
-
-  // Most-popular flag stays on weekly by default
-  const isMostPopular = (freq: string) => freq === "weekly";
 
   return (
     <div className="space-y-5 animate-fade-in">
@@ -94,26 +89,26 @@ const ServiceConfigStep = ({ config, onConfigChange }: ServiceConfigStepProps) =
           onValueChange={(val) => onConfigChange({ ...config, poolSize: val as PoolSize })}
           className="space-y-1"
         >
-          {poolSizes.map((size) => {
-            const isSelected = config.poolSize === size.size;
-            const sublabel =
-              size.size === "small" ? "Standard residential"
-              : size.size === "medium" ? "Mid-size residential"
-              : "Large or custom";
+          {POOL_SIZES.map((size) => {
+            const isSelected = config.poolSize === size.value;
             return (
               <label
-                key={size.id}
+                key={size.value}
                 className={`relative flex items-center gap-4 p-4 rounded-xl border cursor-pointer transition-all duration-200 hover:shadow-md ${
-                  isSelected ? "border-primary bg-primary/5 shadow-md" : "border-border bg-card hover:border-primary/50"
+                  isSelected
+                    ? "border-primary bg-primary/5 shadow-md"
+                    : "border-border bg-card hover:border-primary/50"
                 }`}
               >
-                <RadioGroupItem value={size.size} className="shrink-0" />
+                <RadioGroupItem value={size.value} className="shrink-0" />
                 <div className="flex-1 min-w-0">
-                  <p className={`text-sm ${isSelected ? "text-primary" : "text-foreground"} font-bold`}>{size.displayName}</p>
-                  <p className="text-muted-foreground text-sm">{sublabel}</p>
+                  <p className={`text-sm ${isSelected ? "text-primary" : "text-foreground"} font-bold`}>
+                    {size.label}
+                  </p>
+                  <p className="text-muted-foreground text-sm">{size.sublabel}</p>
                 </div>
                 <p className={`text-lg font-bold shrink-0 tabular-nums text-right ${isSelected ? "text-primary" : "text-foreground"}`}>
-                  ${size.basePrice}<span className="text-xs font-medium text-muted-foreground">/mo</span>
+                  ${size.price}<span className="text-xs font-medium text-muted-foreground">/mo</span>
                 </p>
               </label>
             );
@@ -130,30 +125,36 @@ const ServiceConfigStep = ({ config, onConfigChange }: ServiceConfigStepProps) =
           onValueChange={(val) => onConfigChange({ ...config, frequency: val as ServiceFrequency })}
           className="space-y-1"
         >
-          {frequencies.map((freq) => {
-            const isSelected = config.frequency === freq.frequency;
+          {FREQUENCIES.map((freq) => {
+            const isSelected = config.frequency === freq.value;
             const addOn = basePrice * (freq.multiplier - 1);
-            const desc =
-              freq.frequency === "weekly" ? "Ideal for most residential pools"
-              : freq.frequency === "twice-weekly" ? "Add an extra weekly visit for high-use or problem pools"
-              : "Add two extra weekly visits for premium care & maximum clarity";
             return (
               <label
-                key={freq.id}
+                key={freq.value}
                 className={`relative flex items-center gap-4 p-4 rounded-xl border cursor-pointer transition-all duration-200 hover:shadow-md ${
-                  isSelected ? "border-primary bg-primary/5 shadow-md" : "border-border bg-card hover:border-primary/50"
+                  isSelected
+                    ? "border-primary bg-primary/5 shadow-md"
+                    : "border-border bg-card hover:border-primary/50"
                 }`}
               >
-                {isMostPopular(freq.frequency) && (
-                  <Badge className="absolute -top-2.5 left-4 bg-primary text-primary-foreground text-xs">Most Popular</Badge>
+                {freq.isMostPopular && (
+                  <Badge className="absolute -top-2.5 left-4 bg-primary text-primary-foreground text-xs">
+                    Most Popular
+                  </Badge>
                 )}
-                <RadioGroupItem value={freq.frequency} className="shrink-0" />
+                <RadioGroupItem value={freq.value} className="shrink-0" />
                 <div className="flex-1 min-w-0">
-                  <p className={`text-sm ${isSelected ? "text-primary" : "text-foreground"} font-bold font-sans`}>{freq.displayName}</p>
-                  <p className="text-muted-foreground text-sm">{desc}</p>
+                  <p className={`text-sm ${isSelected ? "text-primary" : "text-foreground"} font-bold font-sans`}>
+                    {freq.label}
+                  </p>
+                  <p className="text-muted-foreground text-sm">{freq.description}</p>
                 </div>
-                <p className={`text-sm font-bold shrink-0 tabular-nums text-right min-w-[90px] ${isSelected ? "text-primary" : "text-card-foreground"}`}>
-                  {freq.multiplier === 1 ? "Included" : `+$${addOn}/mo`}
+                <p className={`text-sm font-bold shrink-0 tabular-nums text-right min-w-[90px] ${
+                  isSelected ? "text-primary" : "text-card-foreground"
+                }`}>
+                  {freq.multiplier === 1
+                    ? "Included"
+                    : `+$${addOn}/mo`}
                 </p>
               </label>
             );
@@ -161,7 +162,7 @@ const ServiceConfigStep = ({ config, onConfigChange }: ServiceConfigStepProps) =
         </RadioGroup>
       </div>
 
-      {/* Section C: What's Included */}
+      {/* Section C: What's Included (collapsed) */}
       <div>
         <h3 className="text-lg font-bold text-foreground mb-2">What's Included</h3>
         <div className="bg-card border border-border rounded-2xl p-4 space-y-2.5">
@@ -186,16 +187,24 @@ const ServiceConfigStep = ({ config, onConfigChange }: ServiceConfigStepProps) =
 
       {/* Section D: Pricing Breakdown */}
       <div className="bg-card border border-border rounded-2xl p-5 space-y-3">
-        <p className="text-muted-foreground uppercase tracking-widest text-xs font-bold">Price Breakdown</p>
+        <p className="text-muted-foreground uppercase tracking-widest text-xs font-bold">
+          Price Breakdown
+        </p>
+
+        {/* Line items */}
         <div className="space-y-1.5">
           <div className="flex justify-between items-center text-sm">
-            <p className="text-muted-foreground text-sm">{selectedPool?.displayName ?? config.poolSize}</p>
+            <p className="text-muted-foreground text-sm">
+              {POOL_SIZES.find(s => s.value === config.poolSize)!.label}
+            </p>
             <p className="text-muted-foreground text-sm tabular-nums">${basePrice}/mo</p>
           </div>
           <div className="flex justify-between items-center text-sm">
-            <p className="text-muted-foreground text-sm">{selectedFreq?.displayName ?? config.frequency}</p>
+            <p className="text-muted-foreground text-sm">
+              {freqOption.label}
+            </p>
             <p className="text-muted-foreground text-sm tabular-nums">
-              {freqMultiplier === 1 ? "Included" : `+$${extraPrice}/mo`}
+              {freqOption.multiplier === 1 ? "Included" : `+$${extraPrice}/mo`}
             </p>
           </div>
           <div className="flex justify-between items-center text-sm">
@@ -206,6 +215,7 @@ const ServiceConfigStep = ({ config, onConfigChange }: ServiceConfigStepProps) =
 
         <div className="h-px bg-border" />
 
+        {/* Due today - primary focus */}
         <div className="flex justify-between items-center bg-primary/5 rounded-xl px-4 py-4 -mx-1">
           <div>
             <p className="font-bold text-foreground text-sm">Today you pay</p>

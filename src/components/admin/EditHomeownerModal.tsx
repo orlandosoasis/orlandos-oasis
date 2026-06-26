@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Calendar as CalendarIcon, AlertTriangle } from "lucide-react";
+import { Calendar as CalendarIcon } from "lucide-react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
@@ -15,10 +15,6 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Switch } from "@/components/ui/switch";
 import { ADDONS } from "@/components/AddonsStep";
 import type { AdminHomeowner } from "@/types/admin";
-import CustomChargesPanel from "@/components/admin/CustomChargesPanel";
-import AdminCancelAccountModal from "@/components/admin/AdminCancelAccountModal";
-import { useGrandfatheredPlans, useComputedMonthly } from "@/hooks/usePricing";
-import { useUpdateHomeownerProfile } from "@/hooks/useAdmin";
 
 interface EditHomeownerModalProps {
   open: boolean;
@@ -96,14 +92,7 @@ const EditHomeownerModal = ({ open, onClose, homeowner, onSave }: EditHomeownerM
 
   const [isGrandfathered, setIsGrandfathered] = useState(false);
   const [grandfatheredNote, setGrandfatheredNote] = useState("");
-  const [grandfatheredPlanId, setGrandfatheredPlanId] = useState<string>("");
-  const [grandfatheredOverride, setGrandfatheredOverride] = useState<string>("");
-  const [cancelOpen, setCancelOpen] = useState(false);
   const [isFreds, setIsFreds] = useState(false);
-
-  const { data: gfPlans = [] } = useGrandfatheredPlans();
-  const { data: computedMonthly } = useComputedMonthly(homeowner?.id);
-  const updateProfile = useUpdateHomeownerProfile();
 
   const [errors, setErrors] = useState<Record<string, boolean>>({});
 
@@ -128,10 +117,6 @@ const EditHomeownerModal = ({ open, onClose, homeowner, onSave }: EditHomeownerM
     setPaymentOption(homeowner.paymentMethod === "Marked as Paid" ? "paid" : "offline");
     setIsGrandfathered(Boolean(homeowner.isGrandfathered));
     setGrandfatheredNote(homeowner.grandfatheredNote ?? "");
-    setGrandfatheredPlanId(homeowner.grandfatheredPlanId ?? "");
-    setGrandfatheredOverride(
-      homeowner.grandfatheredMonthlyOverride != null ? String(homeowner.grandfatheredMonthlyOverride) : ""
-    );
     setIsFreds(Boolean(homeowner.isFreds));
     setErrors({});
   }, [homeowner, open]);
@@ -157,31 +142,12 @@ const EditHomeownerModal = ({ open, onClose, homeowner, onSave }: EditHomeownerM
     return base;
   })();
 
-  const handleSave = async () => {
+  const handleSave = () => {
     if (!homeowner || !validate()) return;
     const fullAddress = [street, city, state, zip].filter(Boolean).join(", ");
     const poolSizeLabel = POOL_SIZES.find(p => p.value === poolSize)?.label ?? homeowner.pools?.[0]?.size ?? "-";
     const frequencyLabel = FREQUENCY_SHORT[frequency];
     const planLabel = poolSize ? `${poolSizeLabel} · ${frequencyLabel}` : homeowner.plan;
-
-    // Persist grandfathered + tag fields directly to DB (extends the
-    // legacy onSave handler with the new pricing fields).
-    try {
-      await updateProfile.mutateAsync({
-        id: homeowner.id,
-        patch: {
-          isGrandfathered,
-          grandfatheredNote: isGrandfathered ? (grandfatheredNote || null) : null,
-          grandfatheredPlanId: isGrandfathered ? (grandfatheredPlanId || null) : null,
-          grandfatheredMonthlyOverride:
-            isGrandfathered && grandfatheredOverride.trim() !== ""
-              ? Number(grandfatheredOverride)
-              : null,
-        },
-      });
-    } catch {
-      // Surface via parent toast via onSave fallback; continue saving rest below.
-    }
 
     const updated: AdminHomeowner = {
       ...homeowner,
@@ -196,13 +162,9 @@ const EditHomeownerModal = ({ open, onClose, homeowner, onSave }: EditHomeownerM
       notes: poolNotes,
       isGrandfathered,
       grandfatheredNote: isGrandfathered ? (grandfatheredNote || null) : null,
-      grandfatheredPlanId: isGrandfathered ? (grandfatheredPlanId || null) : null,
-      grandfatheredMonthlyOverride:
-        isGrandfathered && grandfatheredOverride.trim() !== ""
-          ? Number(grandfatheredOverride)
-          : null,
       isFreds,
       notificationsEnabled: !isFreds,
+      // Update only the first pool's size; preserve past services & payment history.
       pools: homeowner.pools.map((p, i) =>
         i === 0
           ? { ...p, size: poolSizeLabel, nextService: nextServiceDate ? format(nextServiceDate, "PPP") : p.nextService }
@@ -395,85 +357,25 @@ const EditHomeownerModal = ({ open, onClose, homeowner, onSave }: EditHomeownerM
               </RadioGroup>
             </div>
 
-            {/* Custom Charges */}
-            <div>
-              <SectionTitle>Custom Services & Charges</SectionTitle>
-              <p className="text-xs text-muted-foreground mb-3">
-                One-time charges appear on the next invoice. Monthly charges are added to recurring billing.
-              </p>
-              <CustomChargesPanel homeownerId={homeowner.id} />
-            </div>
-
-            {/* Billing Summary */}
-            <div>
-              <SectionTitle>Billing Summary</SectionTitle>
-              <div className="p-4 rounded-lg border border-border bg-muted/30 flex items-center justify-between">
-                <div>
-                  <div className="text-xs text-muted-foreground">Computed monthly total</div>
-                  <div className="text-2xl font-bold">
-                    {(computedMonthly ?? 0).toLocaleString("en-US", { style: "currency", currency: "USD" })}
-                  </div>
-                  <div className="text-[11px] text-muted-foreground mt-1">
-                    {isGrandfathered ? "Grandfathered pricing applies." : "Pool size × frequency + recurring add-ons + custom charges."}
-                  </div>
-                </div>
-                {(homeowner.outstandingBalance ?? 0) > 0 && (
-                  <div className="text-right">
-                    <div className="text-xs text-destructive font-semibold flex items-center gap-1 justify-end">
-                      <AlertTriangle className="h-3 w-3" /> Outstanding
-                    </div>
-                    <div className="text-lg font-bold text-destructive">
-                      {(homeowner.outstandingBalance ?? 0).toLocaleString("en-US", { style: "currency", currency: "USD" })}
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
-
             {/* Section 5: Account Tags */}
             <div>
-              <SectionTitle>Account Tags & Pricing Override</SectionTitle>
+              <SectionTitle>Account Tags</SectionTitle>
               <div className="space-y-3">
                 <div className="flex items-start justify-between p-3 rounded-md border border-amber-200 bg-amber-50/50 gap-3">
                   <div>
                     <div className="text-sm font-medium text-amber-900">Grandfathered (legacy pricing)</div>
-                    <div className="text-xs text-amber-800/70">Overrides standard billing calculation.</div>
+                    <div className="text-xs text-amber-800/70">Flags this account as a legacy-rate customer.</div>
                   </div>
                   <Switch checked={isGrandfathered} onCheckedChange={setIsGrandfathered} />
                 </div>
                 {isGrandfathered && (
-                  <div className="space-y-3 p-3 rounded-md border border-amber-200 bg-amber-50/30">
-                    <div>
-                      <Label className="mb-1.5 block text-xs">Grandfathered Plan</Label>
-                      <Select value={grandfatheredPlanId || "none"} onValueChange={(v) => setGrandfatheredPlanId(v === "none" ? "" : v)}>
-                        <SelectTrigger><SelectValue placeholder="Select a plan or enter manual price below" /></SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="none">— No template (manual price) —</SelectItem>
-                          {gfPlans.filter(p => p.active).map(p => (
-                            <SelectItem key={p.id} value={p.id}>
-                              {p.name} · ${p.monthlyPrice}/mo
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    <div>
-                      <Label className="mb-1.5 block text-xs">Manual Monthly Override $ <span className="text-muted-foreground">(blank = use plan or current rate)</span></Label>
-                      <Input
-                        type="number"
-                        value={grandfatheredOverride}
-                        onChange={(e) => setGrandfatheredOverride(e.target.value)}
-                        placeholder="e.g. 125"
-                      />
-                    </div>
-                    <div>
-                      <Label className="mb-1.5 block text-xs">Note (optional)</Label>
-                      <Input
-                        value={grandfatheredNote}
-                        onChange={(e) => setGrandfatheredNote(e.target.value)}
-                        placeholder="e.g. Original 2019 rate"
-                      />
-                    </div>
+                  <div>
+                    <Label className="mb-1.5 block">Grandfathered Note <span className="text-muted-foreground text-xs">(optional)</span></Label>
+                    <Input
+                      value={grandfatheredNote}
+                      onChange={(e) => setGrandfatheredNote(e.target.value)}
+                      placeholder="e.g. Original 2019 rate"
+                    />
                   </div>
                 )}
                 <div className="flex items-start justify-between p-3 rounded-md border border-violet-200 bg-violet-50/50 gap-3">
@@ -489,24 +391,11 @@ const EditHomeownerModal = ({ open, onClose, homeowner, onSave }: EditHomeownerM
 
           {/* Footer */}
           <div className="flex items-center justify-between mt-8 pt-4 border-t border-border">
-            <Button variant="ghost" className="text-destructive hover:text-destructive" onClick={() => setCancelOpen(true)}>
-              Cancel Account
-            </Button>
-            <div className="flex gap-2">
-              <Button variant="outline" onClick={onClose}>Cancel</Button>
-              <Button onClick={handleSave}>Save Changes</Button>
-            </div>
+            <Button variant="outline" onClick={onClose}>Cancel</Button>
+            <Button onClick={handleSave}>Save Changes</Button>
           </div>
         </div>
       </DialogContent>
-
-      <AdminCancelAccountModal
-        open={cancelOpen}
-        onClose={() => setCancelOpen(false)}
-        homeownerId={homeowner.id}
-        homeownerName={homeowner.name}
-        outstandingBalance={homeowner.outstandingBalance ?? 0}
-      />
     </Dialog>
   );
 };

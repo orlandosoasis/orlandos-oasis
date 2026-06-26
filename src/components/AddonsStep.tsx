@@ -1,7 +1,6 @@
 import { Check, Clock, Pencil } from "lucide-react";
 import type { ServiceConfig } from "@/components/ServiceConfigStep";
 import { getMonthlyPrice, getDiscountPrice } from "@/components/ServiceConfigStep";
-import { useCatalog, type PricingAddon } from "@/hooks/usePricing";
 
 export interface Addon {
   id: string;
@@ -10,28 +9,79 @@ export interface Addon {
   price: number;
 }
 
-// Fallback list kept so pure helpers below continue to work outside React.
 export const ADDONS: Addon[] = [
-  { id: "chemical-testing", title: "Chemical Testing & Balancing", description: "Maintain safe and balanced water by adjusting chlorine, pH, and alkalinity.", price: 35 },
-  { id: "filter-cleaning", title: "Filter Cleaning / Salt Cell Cleaning & Backwashing", description: "Improve filtration and circulation by cleaning the system and removing buildup from the salt cell.", price: 45 },
-  { id: "equipment-inspection", title: "Pool Equipment Inspection", description: "Check pumps, motors, valves, and heaters to identify issues early.", price: 25 },
-  { id: "equipment-repair", title: "Pool Equipment Repair", description: "Repair or replace malfunctioning pool equipment such as pumps, motors, or lights.", price: 75 },
-  { id: "algae-treatment", title: "Green-to-Clean / Algae Treatment", description: "Restore green or algae-filled pools using deep cleaning and chemical treatment.", price: 85 },
-  { id: "tile-cleaning", title: "Tile & Surface Cleaning", description: "Remove calcium buildup and stains from tiles and pool surfaces.", price: 50 },
-  { id: "acid-washing", title: "Acid Washing", description: "Deep clean surfaces to remove stubborn stains and embedded algae.", price: 95 },
-  { id: "pool-inspections", title: "Pool Inspections", description: "Evaluate overall pool condition, including water clarity and equipment performance.", price: 30 },
-  { id: "pool-startups", title: "Pool Startups", description: "Prepare newly built or resurfaced pools for use by balancing chemicals and starting equipment.", price: 60 },
+  {
+    id: "chemical-testing",
+    title: "Chemical Testing & Balancing",
+    description: "Maintain safe and balanced water by adjusting chlorine, pH, and alkalinity.",
+    price: 35,
+  },
+  {
+    id: "filter-cleaning",
+    title: "Filter Cleaning / Salt Cell Cleaning & Backwashing",
+    description: "Improve filtration and circulation by cleaning the system and removing buildup from the salt cell.",
+    price: 45,
+  },
+  {
+    id: "equipment-inspection",
+    title: "Pool Equipment Inspection",
+    description: "Check pumps, motors, valves, and heaters to identify issues early.",
+    price: 25,
+  },
+  {
+    id: "equipment-repair",
+    title: "Pool Equipment Repair",
+    description: "Repair or replace malfunctioning pool equipment such as pumps, motors, or lights.",
+    price: 75,
+  },
+  {
+    id: "algae-treatment",
+    title: "Green-to-Clean / Algae Treatment",
+    description: "Restore green or algae-filled pools using deep cleaning and chemical treatment.",
+    price: 85,
+  },
+  {
+    id: "tile-cleaning",
+    title: "Tile & Surface Cleaning",
+    description: "Remove calcium buildup and stains from tiles and pool surfaces.",
+    price: 50,
+  },
+  {
+    id: "acid-washing",
+    title: "Acid Washing",
+    description: "Deep clean surfaces to remove stubborn stains and embedded algae.",
+    price: 95,
+  },
+  {
+    id: "pool-inspections",
+    title: "Pool Inspections",
+    description: "Evaluate overall pool condition, including water clarity and equipment performance.",
+    price: 30,
+  },
+  {
+    id: "pool-startups",
+    title: "Pool Startups",
+    description: "Prepare newly built or resurfaced pools for use by balancing chemicals and starting equipment.",
+    price: 60,
+  },
 ];
 
-/** Pure helpers using the fallback list (kept for downstream callers). */
+/** Calculate total price of selected add-ons */
 export function getAddonsTotal(selectedIds: string[]): number {
   return ADDONS.filter((a) => selectedIds.includes(a.id)).reduce((sum, a) => sum + a.price, 0);
 }
+
+/** Get selected addon objects */
 export function getSelectedAddons(selectedIds: string[]): Addon[] {
   return ADDONS.filter((a) => selectedIds.includes(a.id));
 }
 
-const POOL_SIZE_LABELS: Record<string, string> = { small: "Small Pool", medium: "Medium Pool", large: "Large Pool" };
+const POOL_SIZE_LABELS: Record<string, string> = {
+  small: "Small Pool",
+  medium: "Medium Pool",
+  large: "Large Pool",
+};
+
 const FREQUENCY_LABELS: Record<string, string> = {
   weekly: "Weekly",
   "twice-weekly": "Twice per week",
@@ -49,25 +99,15 @@ interface AddonsStepProps {
 const AddonsStep = ({ selectedAddons, onToggleAddon, serviceConfig, timeLeft, onChangePlan }: AddonsStepProps) => {
   const monthlyPrice = getMonthlyPrice(serviceConfig);
   const discountPrice = getDiscountPrice(serviceConfig);
-  const { addons: catalogAddons } = useCatalog();
-
-  // Render DB add-ons when present, falling back to constants.
-  const items: Array<{ id: string; title: string; description: string; price: number }> =
-    catalogAddons.length > 0
-      ? catalogAddons.map((a: PricingAddon) => ({
-          id: a.key,
-          title: a.name,
-          description: a.description ?? "",
-          price: a.price,
-        }))
-      : ADDONS;
 
   return (
     <div className="space-y-5 animate-fade-in">
       {/* Hold Notice */}
       <div className="flex items-center justify-center gap-2">
         <Clock className="h-4 w-4 text-muted-foreground shrink-0" strokeWidth={1.8} />
-        <p className="text-sm text-muted-foreground">We'll hold it for you for the next</p>
+        <p className="text-sm text-muted-foreground">
+          We'll hold it for you for the next
+        </p>
         <span className="text-sm font-bold text-foreground tabular-nums ml-0.5">
           {String(timeLeft.minutes).padStart(2, "0")}:{String(timeLeft.seconds).padStart(2, "0")}
         </span>
@@ -112,11 +152,13 @@ const AddonsStep = ({ selectedAddons, onToggleAddon, serviceConfig, timeLeft, on
       {/* Heading */}
       <div>
         <h3 className="text-lg font-bold text-foreground mb-0.5">Add-ons</h3>
-        <p className="text-muted-foreground text-sm">Select any additional services you'd like to include.</p>
+        <p className="text-muted-foreground text-sm">
+          Select any additional services you'd like to include.
+        </p>
       </div>
 
       <div className="space-y-3">
-        {items.map((addon) => {
+        {ADDONS.map((addon) => {
           const isSelected = selectedAddons.includes(addon.id);
           return (
             <button
@@ -124,13 +166,17 @@ const AddonsStep = ({ selectedAddons, onToggleAddon, serviceConfig, timeLeft, on
               type="button"
               onClick={() => onToggleAddon(addon.id)}
               className={`w-full text-left rounded-xl border p-4 transition-all ${
-                isSelected ? "border-primary bg-primary/5" : "border-border bg-card hover:border-primary/40"
+                isSelected
+                  ? "border-primary bg-primary/5"
+                  : "border-border bg-card hover:border-primary/40"
               }`}
             >
               <div className="flex items-start gap-3">
                 <div
                   className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-md border-2 transition-colors ${
-                    isSelected ? "border-primary bg-primary text-primary-foreground" : "border-muted-foreground/30"
+                    isSelected
+                      ? "border-primary bg-primary text-primary-foreground"
+                      : "border-muted-foreground/30"
                   }`}
                 >
                   {isSelected && <Check className="h-3.5 w-3.5" />}

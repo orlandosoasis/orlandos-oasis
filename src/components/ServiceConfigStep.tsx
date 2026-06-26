@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Check, ChevronDown, ChevronUp } from "lucide-react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Badge } from "@/components/ui/badge";
+import { usePricingPoolSizes, usePricingFrequencies } from "@/hooks/usePricing";
 
 export type PoolSize = "small" | "medium" | "large";
 export type ServiceFrequency = "weekly" | "twice-weekly" | "three-weekly";
@@ -11,16 +12,19 @@ export interface ServiceConfig {
   frequency: ServiceFrequency;
 }
 
-const POOL_SIZES: { value: PoolSize; label: string; sublabel: string; price: number }[] = [
+// Mutable defaults — kept in sync with the admin pricing catalog by
+// `PricingSync` (mounted at the app root) so that all `getMonthlyPrice`
+// callers reflect updates made in the Pricing settings without a refresh.
+export const POOL_SIZES: { value: PoolSize; label: string; sublabel: string; price: number }[] = [
   { value: "small", label: "Small Pool", sublabel: "Standard residential", price: 120 },
   { value: "medium", label: "Medium Pool", sublabel: "Mid-size residential", price: 140 },
   { value: "large", label: "Large Pool", sublabel: "Large or custom", price: 170 },
 ];
 
-const FREQUENCIES: { value: ServiceFrequency; label: string; description: string; priceCopy: string; multiplier: number; isMostPopular: boolean }[] = [
-  { value: "weekly", label: "Weekly Pool Service", description: "Ideal for most residential pools", priceCopy: "Included in base price", multiplier: 1, isMostPopular: true },
-  { value: "twice-weekly", label: "Twice Per Week Pool Service", description: "Add an extra weekly visit for high-use or problem pools", priceCopy: "", multiplier: 2, isMostPopular: false },
-  { value: "three-weekly", label: "Three Times Per Week Pool Service", description: "Add two extra weekly visits for premium care & maximum clarity", priceCopy: "", multiplier: 3, isMostPopular: false },
+export const FREQUENCIES: { value: ServiceFrequency; label: string; description: string; priceCopy: string; multiplier: number; priceDelta: number; isMostPopular: boolean }[] = [
+  { value: "weekly", label: "Weekly Pool Service", description: "Ideal for most residential pools", priceCopy: "Included in base price", multiplier: 1, priceDelta: 0, isMostPopular: true },
+  { value: "twice-weekly", label: "Twice Per Week Pool Service", description: "Add an extra weekly visit for high-use or problem pools", priceCopy: "", multiplier: 2, priceDelta: 0, isMostPopular: false },
+  { value: "three-weekly", label: "Three Times Per Week Pool Service", description: "Add two extra weekly visits for premium care & maximum clarity", priceCopy: "", multiplier: 3, priceDelta: 0, isMostPopular: false },
 ];
 
 const KEY_SERVICES = [
@@ -41,10 +45,15 @@ const ALL_SERVICES = [
   "Water level monitoring",
 ];
 
+export function getPoolSizePrice(poolSize: PoolSize): number {
+  return POOL_SIZES.find((s) => s.value === poolSize)?.price ?? 0;
+}
+
 export function getMonthlyPrice(config: ServiceConfig): number {
-  const sizeOption = POOL_SIZES.find((s) => s.value === config.poolSize)!;
-  const freqOption = FREQUENCIES.find((f) => f.value === config.frequency)!;
-  return sizeOption.price * freqOption.multiplier;
+  const sizeOption = POOL_SIZES.find((s) => s.value === config.poolSize);
+  const freqOption = FREQUENCIES.find((f) => f.value === config.frequency);
+  if (!sizeOption || !freqOption) return 0;
+  return sizeOption.price * freqOption.multiplier + freqOption.priceDelta;
 }
 
 export function getDiscountPrice(config: ServiceConfig): number {
@@ -53,6 +62,35 @@ export function getDiscountPrice(config: ServiceConfig): number {
 
 export function getFrequencyLabel(frequency: ServiceFrequency): string {
   return FREQUENCIES.find((f) => f.value === frequency)?.label ?? "";
+}
+
+/**
+ * Keeps the module-level POOL_SIZES / FREQUENCIES arrays in sync with the
+ * Pricing settings stored in the database. Mount once at the app root.
+ */
+export function PricingSync() {
+  const { data: poolSizes } = usePricingPoolSizes(false);
+  const { data: frequencies } = usePricingFrequencies(false);
+  useEffect(() => {
+    if (poolSizes) {
+      poolSizes.forEach((row) => {
+        const match = POOL_SIZES.find((p) => p.value === row.size);
+        if (match) match.price = Number(row.base_monthly_price);
+      });
+    }
+  }, [poolSizes]);
+  useEffect(() => {
+    if (frequencies) {
+      frequencies.forEach((row) => {
+        const match = FREQUENCIES.find((f) => f.value === row.frequency);
+        if (match) {
+          match.multiplier = Number(row.multiplier);
+          match.priceDelta = Number(row.price_delta);
+        }
+      });
+    }
+  }, [frequencies]);
+  return null;
 }
 
 interface ServiceConfigStepProps {

@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import { Check, ChevronDown, ChevronUp } from "lucide-react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Badge } from "@/components/ui/badge";
 import { usePricingPoolSizes, usePricingFrequencies, usePricingAddons } from "@/hooks/usePricing";
 import { ADDONS } from "@/components/AddonsStep";
+import { supabase } from "@/integrations/supabase/client";
 
 export type PoolSize = "small" | "medium" | "large";
 export type ServiceFrequency = "weekly" | "twice-weekly" | "three-weekly";

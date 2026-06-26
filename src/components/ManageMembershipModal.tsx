@@ -50,18 +50,19 @@ function getFrequencyDelta(freq: ServiceFrequency) {
 export function getMembershipMonthlyPrice(config: MembershipConfig) {
   const base = getBasePrice(config.poolSize);
   const mult = getFrequencyMultiplier(config.frequency);
+  const delta = getFrequencyDelta(config.frequency);
   const addons = ADDONS.filter((a) => config.activeAddonIds.includes(a.id))
     .reduce((sum, a) => sum + a.price, 0);
-  return base * mult + addons;
+  return base * mult + delta + addons;
 }
 export function getActiveAddons(ids: string[]): Addon[] {
   return ADDONS.filter((a) => ids.includes(a.id));
 }
 export function getFrequencyLabel(freq: ServiceFrequency) {
-  return FREQUENCIES.find((f) => f.value === freq)!.label;
+  return SHARED_FREQUENCIES.find((f) => f.value === freq)?.label ?? "";
 }
 export function getPoolSizeLabel(size: PoolSize) {
-  return POOL_SIZES.find((s) => s.value === size)!.label;
+  return SHARED_POOL_SIZES.find((s) => s.value === size)?.label ?? "";
 }
 
 // ============================================================

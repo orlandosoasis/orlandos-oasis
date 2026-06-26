@@ -99,6 +99,7 @@ const App = () => (
       <AuthProvider>
         <BookingProvider>
           <TooltipProvider>
+            <PricingSync />
             <Toaster />
             <Sonner />
             <BrowserRouter>

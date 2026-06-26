@@ -202,6 +202,10 @@ export function useAdminTechnicians() {
           assignedPools: (assignedPoolRows ?? []).filter((p) => p.assigned_technician_id === tech.id).length,
           completedServices: completed,
           payoutPerPool: Number((tech as { payout_per_pool?: number | null }).payout_per_pool ?? 100),
+          payoutType: ((tech as { payout_type?: string | null }).payout_type as PayoutType) ?? "per_service",
+          payoutRate: (tech as { payout_rate?: number | null }).payout_rate ?? null,
+          payoutEffectiveDate: (tech as { payout_effective_date?: string | null }).payout_effective_date ?? null,
+          payoutUpdatedAt: (tech as { payout_updated_at?: string | null }).payout_updated_at ?? null,
           reviews: techReviews
             .sort((a, b) => (b.created_at > a.created_at ? 1 : -1))
             .map((r) => ({

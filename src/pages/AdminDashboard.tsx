@@ -338,6 +338,7 @@ const AdminDashboard = () => {
 
   const [certModalData, setCertModalData] = useState<{ name: string; certs: AdminApplicantCert[] } | null>(null);
   const [reportIssueOpen, setReportIssueOpen] = useState(false);
+  const [routeIssueDrawerId, setRouteIssueDrawerId] = useState<string | null>(null);
 
   const [rejectionEmailApplicant, setRejectionEmailApplicant] = useState<AdminApplicant | null>(null);
   const [rejectionEmailSubject, setRejectionEmailSubject] = useState("");

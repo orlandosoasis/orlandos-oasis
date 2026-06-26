@@ -104,6 +104,22 @@ export function PricingSync() {
       });
     }
   }, [addons]);
+
+  // Realtime: invalidate pricing queries when admins change pricing anywhere.
+  const qc = useQueryClient();
+  useEffect(() => {
+    const channel = supabase
+      .channel(`pricing-sync-${Math.random().toString(36).slice(2)}`)
+      .on("postgres_changes", { event: "*", schema: "public", table: "pricing_pool_sizes" },
+        () => qc.invalidateQueries({ queryKey: ["pricing-pool-sizes"] }))
+      .on("postgres_changes", { event: "*", schema: "public", table: "pricing_frequencies" },
+        () => qc.invalidateQueries({ queryKey: ["pricing-frequencies"] }))
+      .on("postgres_changes", { event: "*", schema: "public", table: "pricing_addons" },
+        () => qc.invalidateQueries({ queryKey: ["pricing-addons"] }))
+      .subscribe();
+    return () => { supabase.removeChannel(channel); };
+  }, [qc]);
+
   return null;
 }
 

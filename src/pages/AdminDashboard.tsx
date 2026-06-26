@@ -603,9 +603,6 @@ const AdminDashboard = () => {
               </button>
             </div>
           </div>
-          <Button size="sm" variant="outline" className="gap-1.5 text-xs" onClick={() => setReportIssueOpen(true)}>
-            <AlertCircle className="h-3.5 w-3.5" /> Report Issue
-          </Button>
         </CardHeader>
         <CardContent className="p-0">
           <Table>

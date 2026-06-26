@@ -44,7 +44,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import {
   useAdminTechnicians, useAdminHomeowners, useAdminIssues,
   useTechnicianApplications, useUpdateIssueStatus, useUpdateApplicationStatus,
-  useUpdateTechnicianActive, useUpdateTechnicianProfile, useUpdateHomeownerProfile,
+  useUpdateTechnicianActive, useUpdateTechnicianProfile, useUpdateTechnicianCompensation, useUpdateHomeownerProfile,
   useToggleFredsTag,
 } from "@/hooks/useAdmin";
 import { useReviews, useUpdateReviewStatus } from "@/hooks/useReviews";

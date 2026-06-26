@@ -187,45 +187,86 @@ export function RouteIssueDetailPage({ issueId, onBack }: { issueId: string; onB
         )}
       </div>
 
-      <Card>
-        <CardHeader className="border-b">
-          <div className="flex items-start justify-between gap-3 flex-wrap">
-            <div>
-              <CardTitle className="text-lg flex items-center gap-2">
-                <AlertCircle className="h-5 w-5 text-amber-500" />
-                {ISSUE_TYPE_LABEL[issue.issue_type] ?? issue.issue_type}
-              </CardTitle>
-              <div className="text-xs text-muted-foreground mt-1">Issue ID · <span className="font-mono">{issue.id.slice(0,8)}</span></div>
+      {/* Incident hero card */}
+      <Card className="overflow-hidden border-l-4 border-l-amber-500">
+        <CardHeader className="bg-amber-50/40 border-b">
+          <div className="flex items-start gap-3">
+            <div className="h-10 w-10 rounded-full bg-amber-100 flex items-center justify-center shrink-0">
+              <AlertTriangle className="h-5 w-5 text-amber-600" />
             </div>
-            <StatusPill status={issue.status} />
+            <div className="flex-1 min-w-0">
+              <div className="flex flex-wrap items-center gap-2 mb-1.5">
+                <h2 className="text-lg font-semibold text-foreground">
+                  {ISSUE_TYPE_LABEL[issue.issue_type] ?? issue.issue_type}
+                </h2>
+                <Badge variant="outline" className="bg-rose-50 text-rose-700 border-rose-200">
+                  {ISSUE_TYPE_LABEL[issue.issue_type] ?? issue.issue_type}
+                </Badge>
+                <Badge variant="outline" className="bg-violet-50 text-violet-700 border-violet-200">
+                  {ACTION_LABEL[issue.action_taken] ?? issue.action_taken}
+                </Badge>
+                <StatusPill status={issue.status} />
+              </div>
+              <div className="text-sm text-muted-foreground">
+                Reported by <span className="font-medium text-foreground">{issue.reporter_name ?? "—"}</span>
+                {" · "}
+                {format(new Date(issue.created_at), "MMM d, yyyy · h:mm a")}
+              </div>
+              <div className="text-xs text-muted-foreground mt-0.5">
+                Technician: {issue.technician_name ?? "—"} · Route Date: {format(new Date(issue.route_date), "MMM d, yyyy")}
+              </div>
+            </div>
           </div>
         </CardHeader>
-        <CardContent className="p-5 grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-3 text-sm">
-          <InfoRow label="Reported By" value={`${issue.reporter_name ?? "—"} (${issue.reported_by_role})`} />
-          <InfoRow label="Technician" value={issue.technician_name ?? "—"} />
-          <InfoRow label="Route Date" value={format(new Date(issue.route_date), "MMM d, yyyy")} />
-          <InfoRow label="Reported At" value={format(new Date(issue.created_at), "MMM d, yyyy h:mm a")} />
-          <InfoRow label="Scope" value={issue.scope === "all" ? "Entire Route (Today)" : "Selected Services"} />
-          <InfoRow label="Action Taken" value={ACTION_LABEL[issue.action_taken] ?? issue.action_taken} />
-          {issue.action_taken === "delay" && <InfoRow label="Delay" value={`${issue.delay_minutes ?? 0} minutes`} />}
-          {issue.action_taken === "reschedule" && (
-            <>
-              <InfoRow label="New Date" value={issue.new_service_date ? format(new Date(issue.new_service_date), "MMM d, yyyy") : "—"} />
-              <InfoRow label="New Window" value={issue.new_time_window ?? "—"} />
-            </>
+
+        {/* Impact metrics */}
+        <CardContent className="p-0">
+          <div className="grid grid-cols-1 sm:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x border-b">
+            <Metric
+              icon={<Wrench className="h-4 w-4 text-violet-600" />}
+              value={String(issue.affected_service_count)}
+              label={`Service${issue.affected_service_count === 1 ? "" : "s"} Affected`}
+            />
+            <Metric
+              icon={<Users className="h-4 w-4 text-sky-600" />}
+              value={String(issue.affected_homeowner_count)}
+              label={`Homeowner${issue.affected_homeowner_count === 1 ? "" : "s"} Notified`}
+            />
+            <Metric
+              icon={<Clock className="h-4 w-4 text-amber-600" />}
+              value={
+                issue.action_taken === "delay" ? `${issue.delay_minutes ?? 0} min` :
+                issue.action_taken === "reschedule" ? "Rescheduled" :
+                issue.action_taken === "reassign" ? "Reassigned" :
+                "Notify only"
+              }
+              label="Action Applied"
+            />
+          </div>
+
+          {/* Action specifics */}
+          {(issue.action_taken === "reschedule" || issue.action_taken === "reassign" || issue.scope === "selected") && (
+            <div className="px-5 py-3 bg-muted/30 border-b text-xs text-muted-foreground flex flex-wrap gap-x-5 gap-y-1">
+              <span>Scope: <span className="text-foreground font-medium">{issue.scope === "all" ? "Entire Route" : "Selected Services"}</span></span>
+              {issue.action_taken === "reschedule" && issue.new_service_date && (
+                <span>New date: <span className="text-foreground font-medium">{format(new Date(issue.new_service_date), "MMM d, yyyy")}</span></span>
+              )}
+              {issue.action_taken === "reschedule" && issue.new_time_window && (
+                <span>New window: <span className="text-foreground font-medium">{issue.new_time_window}</span></span>
+              )}
+              {issue.action_taken === "reassign" && (
+                <span>Reassigned to: <span className="text-foreground font-medium">{issue.reassigned_to_name ?? "—"}</span></span>
+              )}
+              {issue.resolved_at && (
+                <span>Resolved: <span className="text-foreground font-medium">{format(new Date(issue.resolved_at), "MMM d, yyyy h:mm a")}</span></span>
+              )}
+            </div>
           )}
-          {issue.action_taken === "reassign" && (
-            <InfoRow label="Reassigned To" value={issue.reassigned_to_name ?? "—"} />
-          )}
-          <InfoRow label="Affected Homeowners" value={String(issue.affected_homeowner_count)} />
-          <InfoRow label="Affected Appointments" value={String(issue.affected_service_count)} />
-          {issue.resolved_at && (
-            <InfoRow label="Resolved At" value={format(new Date(issue.resolved_at), "MMM d, yyyy h:mm a")} />
-          )}
+
           {issue.message_to_homeowners && (
-            <div className="md:col-span-2 mt-2 p-3.5 bg-muted rounded-lg">
+            <div className="m-5 p-3.5 bg-muted/50 rounded-lg border border-border">
               <div className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
-                <MessageSquare className="h-3.5 w-3.5" /> Message to Homeowners
+                <MessageSquare className="h-3.5 w-3.5" /> Message Sent to Homeowners
               </div>
               <div className="text-sm text-foreground leading-relaxed whitespace-pre-wrap">{issue.message_to_homeowners}</div>
             </div>
@@ -234,7 +275,11 @@ export function RouteIssueDetailPage({ issueId, onBack }: { issueId: string; onB
       </Card>
 
       <Card>
-        <CardHeader className="border-b"><CardTitle className="text-sm">Affected Appointments</CardTitle></CardHeader>
+        <CardHeader className="border-b">
+          <CardTitle className="text-sm flex items-center gap-2">
+            <Users className="h-4 w-4" /> Affected Homeowners & Appointments
+          </CardTitle>
+        </CardHeader>
         <CardContent className="p-0">
           {issue.affected.length === 0 ? (
             <div className="p-6 text-sm text-muted-foreground text-center">No appointments linked.</div>
@@ -265,7 +310,7 @@ export function RouteIssueDetailPage({ issueId, onBack }: { issueId: string; onB
 
       <Card>
         <CardHeader className="border-b">
-          <CardTitle className="text-sm flex items-center gap-2"><Activity className="h-4 w-4" /> Activity Log</CardTitle>
+          <CardTitle className="text-sm flex items-center gap-2"><Activity className="h-4 w-4" /> Activity Timeline</CardTitle>
         </CardHeader>
         <CardContent className="p-5">
           {eventsLoading ? (
@@ -273,29 +318,9 @@ export function RouteIssueDetailPage({ issueId, onBack }: { issueId: string; onB
           ) : !events || events.length === 0 ? (
             <div className="text-sm text-muted-foreground text-center py-6">No activity recorded yet.</div>
           ) : (
-            <ol className="relative border-l border-border ml-2 space-y-5">
+            <ol className="relative border-l border-border ml-2 space-y-3">
               {events.map(ev => (
-                <li key={ev.id} className="pl-5 relative">
-                  <span className="absolute -left-[9px] top-0.5 h-4 w-4 bg-card border border-border rounded-full flex items-center justify-center">
-                    <EventIcon type={ev.event_type} />
-                  </span>
-                  <div className="flex items-baseline justify-between gap-2 flex-wrap">
-                    <div className="text-sm font-medium text-foreground">{ev.summary}</div>
-                    <div className="text-[11px] text-muted-foreground flex items-center gap-1">
-                      <Clock className="h-3 w-3" />
-                      {format(new Date(ev.created_at), "MMM d, yyyy h:mm:ss a")}
-                    </div>
-                  </div>
-                  <div className="text-xs text-muted-foreground mt-0.5">
-                    {ev.actor_name ? `By ${ev.actor_name}` : ev.actor_role ? `By ${ev.actor_role}` : ""}
-                    {ev.homeowner_name ? ` · Homeowner: ${ev.homeowner_name}` : ""}
-                  </div>
-                  {ev.details && Object.keys(ev.details).length > 0 && (
-                    <pre className="mt-1.5 text-[11px] bg-muted text-muted-foreground rounded p-2 overflow-x-auto leading-relaxed">
-{JSON.stringify(ev.details, null, 2)}
-                    </pre>
-                  )}
-                </li>
+                <TimelineItem key={ev.id} event={ev} />
               ))}
             </ol>
           )}
@@ -305,9 +330,87 @@ export function RouteIssueDetailPage({ issueId, onBack }: { issueId: string; onB
   );
 }
 
+const Metric = ({ icon, value, label }: { icon: React.ReactNode; value: string; label: string }) => (
+  <div className="px-5 py-4 flex items-center gap-3">
+    <div className="h-9 w-9 rounded-lg bg-muted flex items-center justify-center shrink-0">{icon}</div>
+    <div>
+      <div className="text-xl font-semibold text-foreground leading-tight">{value}</div>
+      <div className="text-xs text-muted-foreground">{label}</div>
+    </div>
+  </div>
+);
+
+const EVENT_LABEL: Record<string, string> = {
+  created: "Route issue reported",
+  service_affected: "Service marked as affected",
+  service_updated: "Appointment updated",
+  notification_sent: "Notification sent",
+  status_changed: "Status changed",
+  reschedule_approved: "Reschedule approved",
+};
+
+const formatDetailKey = (k: string) =>
+  k.replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase());
+
+const formatDetailValue = (v: unknown): string => {
+  if (v === null || v === undefined) return "—";
+  if (typeof v === "boolean") return v ? "Yes" : "No";
+  if (typeof v === "string" || typeof v === "number") return String(v);
+  return JSON.stringify(v);
+};
+
+const TimelineItem = ({ event: ev }: { event: RouteIssueEventRow }) => {
+  const [open, setOpen] = useState(false);
+  const hasDetails = ev.details && Object.keys(ev.details).length > 0;
+  const label = EVENT_LABEL[ev.event_type] ?? ev.summary;
+
+  return (
+    <li className="pl-5 relative">
+      <span className="absolute -left-[9px] top-1.5 h-4 w-4 bg-card border border-border rounded-full flex items-center justify-center">
+        <EventIcon type={ev.event_type} />
+      </span>
+      <div className="rounded-lg border border-border bg-card">
+        <button
+          type="button"
+          onClick={() => hasDetails && setOpen(o => !o)}
+          className={`w-full flex items-start gap-3 px-3 py-2.5 text-left ${hasDetails ? "hover:bg-muted/50" : "cursor-default"}`}
+        >
+          <div className="flex-1 min-w-0">
+            <div className="text-sm font-medium text-foreground">{label}</div>
+            <div className="text-[11px] text-muted-foreground mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-0.5">
+              <span className="flex items-center gap-1"><Clock className="h-3 w-3" />{format(new Date(ev.created_at), "MMM d, yyyy · h:mm a")}</span>
+              {ev.actor_name && <span>· By {ev.actor_name}</span>}
+              {ev.homeowner_name && <span>· Homeowner: {ev.homeowner_name}</span>}
+            </div>
+          </div>
+          {hasDetails && (
+            open ? <ChevronDown className="h-4 w-4 text-muted-foreground mt-1" />
+                 : <ChevronRight className="h-4 w-4 text-muted-foreground mt-1" />
+          )}
+        </button>
+        {hasDetails && open && (
+          <div className="px-3 pb-3 pt-1 border-t border-dashed border-border">
+            <dl className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-1.5 text-xs">
+              {Object.entries(ev.details as Record<string, unknown>).map(([k, v]) => (
+                <div key={k} className="flex items-baseline gap-2">
+                  <dt className="text-muted-foreground capitalize shrink-0">{formatDetailKey(k)}:</dt>
+                  <dd className="text-foreground font-medium break-words">{formatDetailValue(v)}</dd>
+                </div>
+              ))}
+            </dl>
+          </div>
+        )}
+      </div>
+    </li>
+  );
+};
+
 const InfoRow = ({ label, value }: { label: string; value: string }) => (
   <div className="flex items-baseline justify-between gap-3 border-b border-dashed border-border py-1.5">
     <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">{label}</span>
     <span className="text-sm text-foreground text-right">{value}</span>
+  </div>
+);
+
   </div>
 );

@@ -15,6 +15,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
+import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -337,6 +338,7 @@ const AdminDashboard = () => {
 
   const [certModalData, setCertModalData] = useState<{ name: string; certs: AdminApplicantCert[] } | null>(null);
   const [reportIssueOpen, setReportIssueOpen] = useState(false);
+  const [routeIssueDrawerId, setRouteIssueDrawerId] = useState<string | null>(null);
 
   const [rejectionEmailApplicant, setRejectionEmailApplicant] = useState<AdminApplicant | null>(null);
   const [rejectionEmailSubject, setRejectionEmailSubject] = useState("");
@@ -1370,7 +1372,7 @@ const AdminDashboard = () => {
                     r.status === "resolved" ? "bg-emerald-100 text-emerald-800 border-emerald-200" :
                     "bg-muted text-muted-foreground border-border";
                   return (
-                    <TableRow key={r.id} onClick={() => nav("routeIssueDetail", r.id)} className="cursor-pointer hover:bg-muted/50">
+                    <TableRow key={r.id} onClick={() => setRouteIssueDrawerId(r.id)} className="cursor-pointer hover:bg-muted/50">
                       <TableCell className="whitespace-nowrap text-xs">{format(new Date(r.created_at), "MMM d, h:mm a")}</TableCell>
                       <TableCell className="capitalize">{label}</TableCell>
                       <TableCell>{r.technician_name ?? "—"}</TableCell>
@@ -2970,6 +2972,20 @@ const AdminDashboard = () => {
         ).filter((s) => !!s.id) as RouteService[]}
         technicians={technicians.map((t) => ({ id: t.id, name: t.name }))}
       />
+
+      {/* Route Issue Details Drawer */}
+      <Sheet open={!!routeIssueDrawerId} onOpenChange={(o) => !o && setRouteIssueDrawerId(null)}>
+        <SheetContent side="right" className="w-full sm:max-w-2xl overflow-y-auto p-0">
+          <div className="p-6">
+            {routeIssueDrawerId && (
+              <RouteIssueDetailPage
+                issueId={routeIssueDrawerId}
+                onBack={() => setRouteIssueDrawerId(null)}
+              />
+            )}
+          </div>
+        </SheetContent>
+      </Sheet>
 
       <AddHomeownerModal
         open={addHomeownerOpen}

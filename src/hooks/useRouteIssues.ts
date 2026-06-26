@@ -262,7 +262,7 @@ export function useAdminRouteIssues() {
 
   useEffect(() => {
     const channel = supabase
-      .channel("admin-route-issues")
+      .channel(`admin-route-issues-${Math.random().toString(36).slice(2)}`)
       .on("postgres_changes", { event: "*", schema: "public", table: "route_issues" }, () =>
         qc.invalidateQueries({ queryKey: ["admin-route-issues"] })
       )

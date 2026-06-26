@@ -2568,6 +2568,13 @@ const AdminDashboard = () => {
         return detailId
           ? <RouteIssueDetailPage issueId={detailId} onBack={() => nav("routeIssues")} />
           : <RouteIssuesListPage onOpen={(id) => nav("routeIssueDetail", id)} />;
+      case "timeOff":
+      case "timeOffDetail":
+        return <TimeOffPage
+          detailId={page === "timeOffDetail" ? detailId : null}
+          onOpen={(id) => nav("timeOffDetail", id)}
+          onBack={() => nav("timeOff")}
+        />;
       case "reviews": return <ReviewsPage />;
       case "applicants":
         return applicants.length === 0

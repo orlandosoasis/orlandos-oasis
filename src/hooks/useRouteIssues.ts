@@ -294,3 +294,75 @@ export function useResolveRouteIssue() {
     },
   });
 }
+
+// ---------- Route issue activity log ----------
+export type RouteIssueEventRow = {
+  id: string;
+  route_issue_id: string;
+  event_type: "created" | "service_affected" | "service_updated" | "notification_sent" | "status_changed" | "reschedule_approved";
+  actor_id: string | null;
+  actor_role: string | null;
+  service_id: string | null;
+  homeowner_id: string | null;
+  notification_id: string | null;
+  summary: string;
+  details: Record<string, unknown>;
+  created_at: string;
+  actor_name?: string | null;
+  homeowner_name?: string | null;
+};
+
+export function useRouteIssueEvents(issueId?: string) {
+  const qc = useQueryClient();
+
+  const query = useQuery({
+    queryKey: ["route-issue-events", issueId],
+    queryFn: async () => {
+      if (!issueId) return [] as RouteIssueEventRow[];
+      const { data, error } = await supabase
+        .from("route_issue_events")
+        .select("*")
+        .eq("route_issue_id", issueId)
+        .order("created_at", { ascending: true });
+      if (error) throw error;
+      const rows = (data ?? []) as RouteIssueEventRow[];
+
+      const ids = new Set<string>();
+      rows.forEach((r) => {
+        if (r.actor_id) ids.add(r.actor_id);
+        if (r.homeowner_id) ids.add(r.homeowner_id);
+      });
+      if (ids.size === 0) return rows;
+      const { data: profiles } = await supabase
+        .from("profiles")
+        .select("id, first_name, last_name, full_name")
+        .in("id", Array.from(ids));
+      const nameOf = (id: string | null) => {
+        if (!id) return null;
+        const p = (profiles ?? []).find((x: any) => x.id === id);
+        if (!p) return null;
+        const composed = [p.first_name, p.last_name].filter(Boolean).join(" ").trim();
+        return composed || p.full_name || null;
+      };
+      return rows.map((r) => ({ ...r, actor_name: nameOf(r.actor_id), homeowner_name: nameOf(r.homeowner_id) }));
+    },
+    enabled: !!issueId,
+  });
+
+  useEffect(() => {
+    if (!issueId) return;
+    const channel = supabase
+      .channel(`route-issue-events-${issueId}`)
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "route_issue_events", filter: `route_issue_id=eq.${issueId}` },
+        () => qc.invalidateQueries({ queryKey: ["route-issue-events", issueId] })
+      )
+      .subscribe();
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [issueId, qc]);
+
+  return query;
+}

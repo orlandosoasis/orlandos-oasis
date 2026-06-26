@@ -113,6 +113,8 @@ const EditHomeownerModal = ({ open, onClose, homeowner, onSave }: EditHomeownerM
   const [errors, setErrors] = useState<Record<string, boolean>>({});
 
   const { data: pricingAddons = [] } = usePricingAddons(false);
+  const { data: poolSizesCatalog = [] } = usePricingPoolSizes(false);
+  const { data: frequenciesCatalog = [] } = usePricingFrequencies(false);
   const { data: existingAddons = [] } = useHomeownerAddons(homeowner?.id);
   const { data: pricingInfo } = useHomeownerPricingInfo(homeowner?.id);
   const setAddons = useSetHomeownerAddons();

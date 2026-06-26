@@ -7,8 +7,10 @@ import { Database } from "lucide-react";
 import {
   LayoutDashboard, Wrench, Users, AlertCircle, UserPlus, ChevronLeft,
   Star, Mail, Check, X, LogOut, User, Menu, FileText, Download, Waves, MessageSquare, Megaphone,
-  Plus, MoreHorizontal, Pencil, Trash2, CalendarClock, CalendarOff, CreditCard, BadgeCheck
+  Plus, MoreHorizontal, Pencil, Trash2, CalendarClock, CalendarOff, CreditCard, BadgeCheck, Package
 } from "lucide-react";
+import AddonsManagementPage from "@/components/admin/AddonsManagementPage";
+import HomeownerPricingPanel from "@/components/admin/HomeownerPricingPanel";
 import { EmptyState } from "@/components/EmptyState";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";

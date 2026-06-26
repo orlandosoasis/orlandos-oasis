@@ -362,11 +362,17 @@ const EditHomeownerModal = ({ open, onClose, homeowner, onSave }: EditHomeownerM
                       <SelectValue placeholder="Select pool size" />
                     </SelectTrigger>
                     <SelectContent>
-                      {POOL_SIZES.map((p) => (
-                        <SelectItem key={p.value} value={p.value}>
-                          {p.label}
-                        </SelectItem>
-                      ))}
+                      {POOL_SIZES.map((p) => {
+                        const row = poolSizesCatalog.find((r) => r.size === p.value);
+                        const price = row ? Number(row.base_monthly_price) : null;
+                        const display = row ? row.display_name : p.label;
+                        return (
+                          <SelectItem key={p.value} value={p.value}>
+                            {display}
+                            {price !== null ? ` — $${price}/mo` : ""}
+                          </SelectItem>
+                        );
+                      })}
                     </SelectContent>
                   </Select>
                 </div>
@@ -388,11 +394,20 @@ const EditHomeownerModal = ({ open, onClose, homeowner, onSave }: EditHomeownerM
                       <SelectValue placeholder="Select frequency" />
                     </SelectTrigger>
                     <SelectContent>
-                      {FREQUENCIES.map((f) => (
-                        <SelectItem key={f.value} value={f.value}>
-                          {f.label}
-                        </SelectItem>
-                      ))}
+                      {FREQUENCIES.map((f) => {
+                        const row = frequenciesCatalog.find((r) => r.frequency === f.value);
+                        const display = row ? row.display_name : f.label;
+                        const mult = row ? Number(row.multiplier) : 1;
+                        const delta = row ? Number(row.price_delta) : 0;
+                        const adjustment = basePoolPrice * (mult - 1) + delta;
+                        const adjLabel =
+                          adjustment <= 0 ? "Included" : `+$${adjustment}/mo`;
+                        return (
+                          <SelectItem key={f.value} value={f.value}>
+                            {display} — {adjLabel}
+                          </SelectItem>
+                        );
+                      })}
                     </SelectContent>
                   </Select>
                 </div>

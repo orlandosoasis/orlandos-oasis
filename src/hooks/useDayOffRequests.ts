@@ -101,7 +101,7 @@ export function useAllDayOffRequests() {
 
   useEffect(() => {
     const ch = supabase
-      .channel("day-off-all")
+      .channel(`day-off-all-${Math.random().toString(36).slice(2)}`)
       .on("postgres_changes", { event: "*", schema: "public", table: "day_off_requests" },
         () => qc.invalidateQueries({ queryKey: ["day-off-requests", "all"] }))
       .subscribe();

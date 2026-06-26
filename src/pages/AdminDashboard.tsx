@@ -3109,6 +3109,73 @@ const AdminDashboard = () => {
         </DialogContent>
       </Dialog>
 
+      {/* Edit Compensation */}
+      <Dialog open={!!editCompTechId} onOpenChange={(o) => !o && setEditCompTechId(null)}>
+        <DialogContent className="pt-10 sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Edit compensation</DialogTitle>
+            <DialogDescription>Update this technician's payout type and rate.</DialogDescription>
+          </DialogHeader>
+          <div className="space-y-3">
+            <div className="space-y-1">
+              <label className="text-xs font-semibold text-muted-foreground">Payout type</label>
+              <Select value={compDraftType} onValueChange={(v) => setCompDraftType(v as typeof compDraftType)}>
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="hourly">Hourly</SelectItem>
+                  <SelectItem value="per_service">Per Service</SelectItem>
+                  <SelectItem value="daily">Daily Rate</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-1">
+              <label className="text-xs font-semibold text-muted-foreground">Payout rate ($)</label>
+              <Input
+                type="number"
+                min="0"
+                step="0.01"
+                value={compDraftRate}
+                onChange={(e) => setCompDraftRate(e.target.value)}
+                placeholder="25.00"
+              />
+            </div>
+            <div className="space-y-1">
+              <label className="text-xs font-semibold text-muted-foreground">Effective date (optional)</label>
+              <Input
+                type="date"
+                value={compDraftEffective}
+                onChange={(e) => setCompDraftEffective(e.target.value)}
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setEditCompTechId(null)}>Cancel</Button>
+            <Button
+              disabled={updateTechnicianCompensation.isPending || !compDraftRate.trim() || Number(compDraftRate) < 0}
+              onClick={async () => {
+                if (!editCompTechId) return;
+                try {
+                  await updateTechnicianCompensation.mutateAsync({
+                    id: editCompTechId,
+                    patch: {
+                      payoutType: compDraftType,
+                      payoutRate: Number(compDraftRate),
+                      payoutEffectiveDate: compDraftEffective || null,
+                    },
+                  });
+                  toast({ title: "Compensation updated", variant: "success" });
+                  setEditCompTechId(null);
+                } catch (e) {
+                  toast({ title: "Update failed", description: e instanceof Error ? e.message : String(e), variant: "destructive" });
+                }
+              }}
+            >
+              {updateTechnicianCompensation.isPending ? "Saving…" : "Save changes"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
       {/* Edit Day Off Request */}
       <Dialog open={!!editDayOffTechId} onOpenChange={(o) => !o && setEditDayOffTechId(null)}>
         <DialogContent className="pt-10 sm:max-w-md">

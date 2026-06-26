@@ -1337,6 +1337,60 @@ const AdminDashboard = () => {
 
         <AppointmentsCard />
 
+        <Card>
+          <CardHeader className="pb-3 flex flex-row items-center justify-between gap-3">
+            <CardTitle className="text-sm font-bold">Route Issues</CardTitle>
+            <Button size="sm" variant="outline" className="text-xs" onClick={() => nav("routeIssues")}>
+              View all
+            </Button>
+          </CardHeader>
+          <CardContent className="p-0">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Reported</TableHead>
+                  <TableHead>Issue</TableHead>
+                  <TableHead>Technician</TableHead>
+                  <TableHead>Action</TableHead>
+                  <TableHead className="text-center">Affected</TableHead>
+                  <TableHead>Status</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {(routeIssueData ?? []).length === 0 ? (
+                  <TableRow>
+                    <TableCell colSpan={6} className="text-center text-muted-foreground text-xs py-8">
+                      No route issues reported.
+                    </TableCell>
+                  </TableRow>
+                ) : (routeIssueData ?? []).slice(0, 5).map((r) => {
+                  const label = r.issue_type === "other" ? (r.other_text || "Other") : r.issue_type;
+                  const statusStyle =
+                    r.status === "active" ? "bg-amber-100 text-amber-800 border-amber-200" :
+                    r.status === "pending_approval" ? "bg-blue-100 text-blue-800 border-blue-200" :
+                    r.status === "resolved" ? "bg-emerald-100 text-emerald-800 border-emerald-200" :
+                    "bg-muted text-muted-foreground border-border";
+                  return (
+                    <TableRow key={r.id} onClick={() => nav("routeIssueDetail", r.id)} className="cursor-pointer hover:bg-muted/50">
+                      <TableCell className="whitespace-nowrap text-xs">{format(new Date(r.created_at), "MMM d, h:mm a")}</TableCell>
+                      <TableCell className="capitalize">{label}</TableCell>
+                      <TableCell>{r.technician_name ?? "—"}</TableCell>
+                      <TableCell className="capitalize">{r.action_taken}</TableCell>
+                      <TableCell className="text-center">{r.affected_service_count}</TableCell>
+                      <TableCell>
+                        <span className={`inline-flex px-2 py-0.5 rounded-full text-[10px] font-semibold border ${statusStyle}`}>
+                          {r.status.replace("_", " ")}
+                        </span>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
+
+
 
 
 

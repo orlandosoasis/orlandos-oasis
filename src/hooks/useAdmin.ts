@@ -480,6 +480,30 @@ export function useUpdateTechnicianProfile() {
   });
 }
 
+export interface TechnicianCompensationPatch {
+  payoutType: PayoutType;
+  payoutRate: number;
+  payoutEffectiveDate?: string | null;
+}
+
+export function useUpdateTechnicianCompensation() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ id, patch }: { id: string; patch: TechnicianCompensationPatch }) => {
+      const { error } = await supabase
+        .from("profiles")
+        .update({
+          payout_type: patch.payoutType,
+          payout_rate: patch.payoutRate,
+          payout_effective_date: patch.payoutEffectiveDate ?? null,
+          payout_updated_at: new Date().toISOString(),
+        })
+        .eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["admin-technicians"] }),
+  });
+
 export interface HomeownerProfilePatch {
   fullName?: string;
   email?: string;

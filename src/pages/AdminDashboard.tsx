@@ -1415,13 +1415,15 @@ const AdminDashboard = () => {
           ))}
         </div>
 
-        <FinancialsCard
-          revenueRows={revenueRows}
-          totalMRR={totalMRR}
-          totalPools={totalPools}
-          technicians={technicians}
-          homeowners={homeowners}
-        />
+        <div id="financials-card" className="scroll-mt-20">
+          <FinancialsCard
+            revenueRows={revenueRows}
+            totalMRR={totalMRR}
+            totalPools={totalPools}
+            technicians={technicians}
+            homeowners={homeowners}
+          />
+        </div>
 
 
 

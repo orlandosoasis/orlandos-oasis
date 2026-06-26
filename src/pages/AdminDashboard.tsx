@@ -1761,6 +1761,48 @@ const AdminDashboard = () => {
             <InfoRow label="Email" value={tech.email} /><InfoRow label="Phone" value={tech.phone} /><InfoRow label="Status" value={tech.status} badge />
           </CardContent></Card>
 
+        {(() => {
+          const PAYOUT_LABEL: Record<string, string> = {
+            hourly: "Hourly",
+            per_service: "Per Service",
+            daily: "Daily Rate",
+          };
+          const type = tech.payoutType ?? "per_service";
+          const rate = tech.payoutRate ?? tech.payoutPerPool ?? 0;
+          const updated = tech.payoutUpdatedAt
+            ? new Date(tech.payoutUpdatedAt).toLocaleDateString("en-US", { month: "short", day: "2-digit", year: "numeric" })
+            : "—";
+          const effective = tech.payoutEffectiveDate
+            ? new Date(tech.payoutEffectiveDate + "T00:00:00").toLocaleDateString("en-US", { month: "short", day: "2-digit", year: "numeric" })
+            : null;
+          return (
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between">
+                <CardTitle className="text-sm">Compensation</CardTitle>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="gap-1.5"
+                  onClick={() => {
+                    setCompDraftType(type);
+                    setCompDraftRate(String(rate ?? ""));
+                    setCompDraftEffective(tech.payoutEffectiveDate ?? "");
+                    setEditCompTechId(tech.id);
+                  }}
+                >
+                  <Pencil className="h-3.5 w-3.5" /> Edit Rate
+                </Button>
+              </CardHeader>
+              <CardContent>
+                <InfoRow label="Payout Type" value={PAYOUT_LABEL[type]} />
+                <InfoRow label="Payout Rate" value={`$${Number(rate).toFixed(2)}`} />
+                {effective && <InfoRow label="Effective Date" value={effective} />}
+                <InfoRow label="Last Updated" value={updated} />
+              </CardContent>
+            </Card>
+          );
+        })()}
+
         <TechPoolAssignmentPanel technicianId={tech.id} />
 
         <TechClientUpdatesPanel technicianId={tech.id} />

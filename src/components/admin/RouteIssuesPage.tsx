@@ -3,6 +3,7 @@ import { format } from "date-fns";
 import {
   AlertCircle, ChevronLeft, Activity, CalendarClock, UserCheck, Bell,
   CheckCircle2, XCircle, Clock, MapPin, MessageSquare, FileText,
+  Users, AlertTriangle, ChevronDown, ChevronRight, Wrench,
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";

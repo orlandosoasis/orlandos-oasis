@@ -1049,6 +1049,14 @@ const AdminDashboard = () => {
                     <div className="text-xs text-muted-foreground">
                       Year total <span className="text-foreground font-semibold">{fmtMoney(revenueYearTotal)}</span>
                     </div>
+                    <Select value={revenueGroup} onValueChange={(v) => setRevenueGroup(v as typeof revenueGroup)}>
+                      <SelectTrigger className="h-8 w-[150px] text-xs"><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">All Customers</SelectItem>
+                        <SelectItem value="standard">Standard</SelectItem>
+                        <SelectItem value="freds">Fred's</SelectItem>
+                      </SelectContent>
+                    </Select>
                     <Select value={String(revenueYear)} onValueChange={(v) => setRevenueYear(Number(v))}>
                       <SelectTrigger className="h-8 w-[110px] text-xs"><SelectValue /></SelectTrigger>
                       <SelectContent>
@@ -1059,37 +1067,47 @@ const AdminDashboard = () => {
                     </Select>
                   </div>
                 </div>
-                <div className="h-[280px] w-full">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <BarChart data={revenueMonthly} margin={{ top: 16, right: 16, left: 8, bottom: 8 }}>
-                      <XAxis dataKey="month" tick={{ fontSize: 12 }} axisLine={false} tickLine={false} />
-                      <YAxis tickFormatter={(v) => `$${v}`} tick={{ fontSize: 11 }} axisLine={false} tickLine={false} width={56} />
-                      <ReTooltip
-                        cursor={{ fill: "hsl(var(--muted))", opacity: 0.4 }}
-                        formatter={(value: number, name) => [fmtMoney(value), REVENUE_LABELS[name as typeof REVENUE_KEYS[number]] ?? String(name)]}
-                        contentStyle={{ borderRadius: 8, fontSize: 12 }}
-                      />
-                      {REVENUE_KEYS.map((k, idx) => (
-                        <Bar
-                          key={k}
-                          dataKey={k}
-                          stackId="rev"
-                          fill={REVENUE_COLORS[k]}
-                          radius={idx === REVENUE_KEYS.length - 1 ? [8, 8, 0, 0] : [0, 0, 0, 0]}
-                        />
-                      ))}
-                    </BarChart>
-                  </ResponsiveContainer>
-                </div>
-                <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted-foreground pt-1">
-                  {REVENUE_KEYS.map((k) => (
-                    <div key={k} className="flex items-center gap-1.5">
-                      <span className="inline-block h-2.5 w-2.5 rounded-sm" style={{ background: REVENUE_COLORS[k] }} />
-                      <span className="text-foreground">{REVENUE_LABELS[k]} ({categoryCount[k]})</span>
-                      <span>· {fmtMoney(categoryMRR[k])}/mo</span>
+                {filteredMRR === 0 ? (
+                  <div className="text-center text-muted-foreground text-xs py-16 border border-dashed rounded-lg">
+                    No revenue for{" "}
+                    {revenueGroup === "freds" ? "Fred's customers" : revenueGroup === "standard" ? "standard customers" : "the selected group"}
+                    {" "}in {revenueYear}.
+                  </div>
+                ) : (
+                  <>
+                    <div className="h-[280px] w-full">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <BarChart data={revenueMonthly} margin={{ top: 16, right: 16, left: 8, bottom: 8 }}>
+                          <XAxis dataKey="month" tick={{ fontSize: 12 }} axisLine={false} tickLine={false} />
+                          <YAxis tickFormatter={(v) => `$${v}`} tick={{ fontSize: 11 }} axisLine={false} tickLine={false} width={56} />
+                          <ReTooltip
+                            cursor={{ fill: "hsl(var(--muted))", opacity: 0.4 }}
+                            formatter={(value: number, name) => [fmtMoney(value), REVENUE_LABELS[name as typeof REVENUE_KEYS[number]] ?? String(name)]}
+                            contentStyle={{ borderRadius: 8, fontSize: 12 }}
+                          />
+                          {groupKeys.map((k, idx) => (
+                            <Bar
+                              key={k}
+                              dataKey={k}
+                              stackId="rev"
+                              fill={REVENUE_COLORS[k]}
+                              radius={idx === groupKeys.length - 1 ? [8, 8, 0, 0] : [0, 0, 0, 0]}
+                            />
+                          ))}
+                        </BarChart>
+                      </ResponsiveContainer>
                     </div>
-                  ))}
-                </div>
+                    <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted-foreground pt-1">
+                      {groupKeys.map((k) => (
+                        <div key={k} className="flex items-center gap-1.5">
+                          <span className="inline-block h-2.5 w-2.5 rounded-sm" style={{ background: REVENUE_COLORS[k] }} />
+                          <span className="text-foreground">{REVENUE_LABELS[k]} ({categoryCount[k]})</span>
+                          <span>· {fmtMoney(categoryMRR[k])}/mo</span>
+                        </div>
+                      ))}
+                    </div>
+                  </>
+                )}
               </div>
             )
           )}

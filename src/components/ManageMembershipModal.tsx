@@ -226,7 +226,7 @@ export const ManagePlanForm = ({
             <p className="text-xs text-muted-foreground mt-0.5">Upgrade for higher usage pools</p>
           </div>
           <div className="space-y-2">
-            {FREQUENCIES.map((freq) => {
+            {SHARED_FREQUENCIES.map((freq) => {
               const isSelected = freq.value === draft.frequency;
               const delta = freqDelta(freq.value);
               const helper = freq.multiplier === 1 ? "Included in base plan" : `+$${delta}/month`;

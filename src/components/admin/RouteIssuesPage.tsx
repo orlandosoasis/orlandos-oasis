@@ -245,7 +245,7 @@ export function RouteIssueDetailPage({ issueId, onBack }: { issueId: string; onB
           </div>
 
           {/* Action specifics */}
-          {(issue.action_taken === "reschedule" || issue.action_taken === "reassign" || issue.scope === "selected") && (
+          {(issue.action_taken === "reschedule" || issue.action_taken === "reassign" || issue.scope !== "all") && (
             <div className="px-5 py-3 bg-muted/30 border-b text-xs text-muted-foreground flex flex-wrap gap-x-5 gap-y-1">
               <span>Scope: <span className="text-foreground font-medium">{issue.scope === "all" ? "Entire Route" : "Selected Services"}</span></span>
               {issue.action_taken === "reschedule" && issue.new_service_date && (

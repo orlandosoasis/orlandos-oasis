@@ -13,6 +13,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
 import { useHomeownerRealtime } from "@/hooks/useHomeownerRealtime";
+import HomeownerNotificationBell from "@/components/HomeownerNotificationBell";
 
 const BACK_TARGETS: Record<string, string> = {
   "/account-settings": "/dashboard",

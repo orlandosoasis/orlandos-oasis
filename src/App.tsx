@@ -8,6 +8,7 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import { BookingProvider } from "@/contexts/BookingContext";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import EmailVerificationBanner from "@/components/EmailVerificationBanner";
+import { PricingSync } from "@/components/ServiceConfigStep";
 import CookieConsent from "@/components/CookieConsent";
 import { initMonitoring } from "@/lib/monitoring";
 

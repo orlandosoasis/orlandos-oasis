@@ -110,7 +110,6 @@ export function RouteIssuesListPage({ onOpen }: { onOpen: (id: string) => void }
                 <TableHead>Affected</TableHead>
                 <TableHead>Reported</TableHead>
                 <TableHead>Status</TableHead>
-                <TableHead className="w-[60px]"></TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>

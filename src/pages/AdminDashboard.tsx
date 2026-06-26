@@ -187,6 +187,9 @@ const AdminDashboard = () => {
         if (hid) queryClient.invalidateQueries({ queryKey: ["subscription-events", hid] });
         queryClient.invalidateQueries({ queryKey: ["admin-homeowners"] });
       })
+      .on("postgres_changes", { event: "*", schema: "public", table: "issues" }, () => {
+        queryClient.invalidateQueries({ queryKey: ["admin-issues"] });
+      })
       .subscribe();
     return () => { supabase.removeChannel(ch); };
   }, []);

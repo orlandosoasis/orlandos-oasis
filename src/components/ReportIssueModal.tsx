@@ -3,8 +3,10 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { CheckCircle2, AlertTriangle, Droplets, Wrench, SprayCan, HelpCircle } from "lucide-react";
+import { CheckCircle2, AlertTriangle, Droplets, Wrench, SprayCan, HelpCircle, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
 
 const ISSUE_CATEGORIES = [
   { id: "water", label: "Water Quality", icon: Droplets },
@@ -24,7 +26,9 @@ const ReportIssueModal = ({ open, onOpenChange }: ReportIssueModalProps) => {
   const [step, setStep] = useState<Step>("category");
   const [category, setCategory] = useState("");
   const [details, setDetails] = useState("");
+  const [submitting, setSubmitting] = useState(false);
   const { toast } = useToast();
+  const { user } = useAuth();
 
   const handleClose = (val: boolean) => {
     if (!val) {
@@ -32,12 +36,30 @@ const ReportIssueModal = ({ open, onOpenChange }: ReportIssueModalProps) => {
         setStep("category");
         setCategory("");
         setDetails("");
+        setSubmitting(false);
       }, 200);
     }
     onOpenChange(val);
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
+    if (!user) {
+      toast({ title: "Please sign in to report an issue", variant: "destructive" });
+      return;
+    }
+    setSubmitting(true);
+    const label = ISSUE_CATEGORIES.find((c) => c.id === category)?.label ?? "Other";
+    const { error } = await supabase.from("issues").insert({
+      homeowner_id: user.id,
+      type: label,
+      message: details.trim(),
+      status: "open",
+    });
+    setSubmitting(false);
+    if (error) {
+      toast({ title: "Could not submit", description: error.message, variant: "destructive" });
+      return;
+    }
     setStep("submitted");
     toast({ title: "Issue reported successfully", variant: "success" as any });
   };
@@ -95,8 +117,8 @@ const ReportIssueModal = ({ open, onOpenChange }: ReportIssueModalProps) => {
                 <Button variant="outline" className="flex-1" onClick={() => setStep("category")}>
                   Back
                 </Button>
-                <Button className="flex-1" disabled={!details.trim()} onClick={handleSubmit}>
-                  Submit Report
+                <Button className="flex-1" disabled={!details.trim() || submitting} onClick={handleSubmit}>
+                  {submitting ? (<><Loader2 className="h-4 w-4 animate-spin mr-2" />Submitting…</>) : "Submit Report"}
                 </Button>
               </div>
             </div>

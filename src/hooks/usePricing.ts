@@ -212,7 +212,7 @@ export function useHomeownerPricingInfo(homeownerId: string | undefined) {
           data?.custom_monthly_price != null ? Number(data.custom_monthly_price) : null,
         is_grandfathered: !!data?.is_grandfathered,
         grandfathered_snapshot:
-          (data?.grandfathered_snapshot as GrandfatheredSnapshot | null) ?? null,
+          (data?.grandfathered_snapshot as unknown as GrandfatheredSnapshot | null) ?? null,
       };
     },
   });

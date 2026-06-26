@@ -26,18 +26,9 @@ export interface ServicePlan {
   discountPrice: number;
 }
 
-// ===== Pricing tables (shared with ServiceConfigStep) =====
-const POOL_SIZES: { value: PoolSize; label: string; basePrice: number }[] = [
-  { value: "small", label: "Small Pool", basePrice: 120 },
-  { value: "medium", label: "Medium Pool", basePrice: 140 },
-  { value: "large", label: "Large Pool", basePrice: 170 },
-];
-
-const FREQUENCIES: { value: ServiceFrequency; label: string; multiplier: number }[] = [
-  { value: "weekly", label: "Weekly", multiplier: 1 },
-  { value: "twice-weekly", label: "Twice per week", multiplier: 2 },
-  { value: "three-weekly", label: "Three times per week", multiplier: 3 },
-];
+// ===== Pricing tables (shared with ServiceConfigStep — kept in sync by PricingSync) =====
+import { POOL_SIZES as SHARED_POOL_SIZES, FREQUENCIES as SHARED_FREQUENCIES } from "@/components/ServiceConfigStep";
+import { usePricingPoolSizes, usePricingFrequencies, usePricingAddons } from "@/hooks/usePricing";
 
 // Add-on grouping (reuses checkout catalog)
 const ADDON_GROUPS: { id: string; label: string; ids: string[] }[] = [
@@ -46,12 +37,15 @@ const ADDON_GROUPS: { id: string; label: string; ids: string[] }[] = [
   { id: "deep-cleaning", label: "Deep Cleaning", ids: ["algae-treatment", "tile-cleaning", "acid-washing"] },
 ];
 
-// ===== Helpers =====
+// ===== Helpers (read from shared, live catalog) =====
 function getBasePrice(size: PoolSize) {
-  return POOL_SIZES.find((s) => s.value === size)!.basePrice;
+  return SHARED_POOL_SIZES.find((s) => s.value === size)?.price ?? 0;
 }
 function getFrequencyMultiplier(freq: ServiceFrequency) {
-  return FREQUENCIES.find((f) => f.value === freq)!.multiplier;
+  return SHARED_FREQUENCIES.find((f) => f.value === freq)?.multiplier ?? 1;
+}
+function getFrequencyDelta(freq: ServiceFrequency) {
+  return SHARED_FREQUENCIES.find((f) => f.value === freq)?.priceDelta ?? 0;
 }
 export function getMembershipMonthlyPrice(config: MembershipConfig) {
   const base = getBasePrice(config.poolSize);

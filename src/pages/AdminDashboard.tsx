@@ -31,6 +31,8 @@ import MembershipPanel from "@/components/admin/MembershipPanel";
 import HomeownerRequestsPanel from "@/components/admin/HomeownerRequestsPanel";
 import PastServiceDetailModal from "@/components/admin/PastServiceDetailModal";
 import ReportRouteIssueModal, { type RouteService } from "@/components/ReportRouteIssueModal";
+import { RouteIssuesListPage, RouteIssueDetailPage } from "@/components/admin/RouteIssuesPage";
+import { useAdminRouteIssues } from "@/hooks/useRouteIssues";
 import type {
   AdminTechnician, AdminApplicant, AdminApplicantCert, AdminIssue,
   AdminTechReview, ReviewStatus, ReviewRejectionReason, AdminHomeowner,
@@ -51,7 +53,7 @@ import { format } from "date-fns";
 import { BarChart, Bar, XAxis, YAxis, Tooltip as ReTooltip, ResponsiveContainer, Cell, LabelList, PieChart, Pie } from "recharts";
 import { useExpenseItems, useCreateExpenseItem, useUpdateExpenseItem, useDeleteExpenseItem } from "@/hooks/useExpenseItems";
 
-type AdminPage = "dashboard" | "technicians" | "techDetail" | "homeowners" | "homeDetail" | "issues" | "applicants" | "applicantDetail" | "reviews";
+type AdminPage = "dashboard" | "technicians" | "techDetail" | "homeowners" | "homeDetail" | "issues" | "routeIssues" | "routeIssueDetail" | "applicants" | "applicantDetail" | "reviews";
 
 const PAGE_TITLES: Record<string, string> = {
   dashboard: "Dashboard",
@@ -60,6 +62,8 @@ const PAGE_TITLES: Record<string, string> = {
   homeowners: "Homeowners",
   homeDetail: "Homeowner Details",
   issues: "Reported Issues",
+  routeIssues: "Route Issues",
+  routeIssueDetail: "Route Issue Details",
   applicants: "Applicants",
   applicantDetail: "Application Details",
   reviews: "Review Moderation",
@@ -437,6 +441,8 @@ const AdminDashboard = () => {
 
   const pendingCount = applicants.filter(a => a.status === "Pending").length;
   const openIssueCount = issues.filter(i => i.status === "Open").length;
+  const { data: routeIssueData } = useAdminRouteIssues();
+  const activeRouteIssueCount = (routeIssueData ?? []).filter(r => r.status === "active" || r.status === "pending_approval").length;
 
 
   const menuItems = [
@@ -446,9 +452,14 @@ const AdminDashboard = () => {
     { key: "reviews" as const, label: "Reviews", icon: MessageSquare, badge: pendingReviewCount, badgeColor: "bg-amber-500" },
     { key: "applicants" as const, label: "Applicants", icon: UserPlus, badge: pendingCount, badgeColor: "bg-violet-500" },
     { key: "issues" as const, label: "Reported Issues", icon: AlertCircle, badge: openIssueCount, badgeColor: "bg-destructive" },
+    { key: "routeIssues" as const, label: "Route Issues", icon: CalendarClock, badge: activeRouteIssueCount, badgeColor: "bg-blue-500" },
   ];
 
-  const activeMenu = page === "techDetail" ? "technicians" : page === "homeDetail" ? "homeowners" : page === "applicantDetail" ? "applicants" : page;
+  const activeMenu = page === "techDetail" ? "technicians"
+    : page === "homeDetail" ? "homeowners"
+    : page === "applicantDetail" ? "applicants"
+    : page === "routeIssueDetail" ? "routeIssues"
+    : page;
 
   // ═══════════ SIDEBAR ═══════════
   const Sidebar = () => (
@@ -2544,6 +2555,11 @@ const AdminDashboard = () => {
       case "homeowners": return <HomeownersPage />;
       case "homeDetail": return <HomeDetailPage />;
       case "issues": return <IssuesPage />;
+      case "routeIssues": return <RouteIssuesListPage onOpen={(id) => nav("routeIssueDetail", id)} />;
+      case "routeIssueDetail":
+        return detailId
+          ? <RouteIssueDetailPage issueId={detailId} onBack={() => nav("routeIssues")} />
+          : <RouteIssuesListPage onOpen={(id) => nav("routeIssueDetail", id)} />;
       case "reviews": return <ReviewsPage />;
       case "applicants":
         return applicants.length === 0

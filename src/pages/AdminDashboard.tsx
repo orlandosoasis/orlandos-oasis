@@ -771,58 +771,56 @@ const AdminDashboard = () => {
     };
 
     // Stacked revenue breakdown per month for the selected year.
-    // Categories: Small / Medium / Large (standard pools) + Grandfathered + Fred's.
-    const REVENUE_KEYS = ["small", "medium", "large", "grandfathered", "freds"] as const;
-    const REVENUE_LABELS: Record<typeof REVENUE_KEYS[number], string> = {
+    // Series are always pool-size buckets (Small / Medium / Large) plus Grandfathered.
+    // The customer-group dropdown narrows the population — it is NOT a series of its own,
+    // so a Fred's customer with a Small Pool counts under "Small Pool".
+    const REVENUE_KEYS = ["small", "medium", "large", "grandfathered"] as const;
+    type RevenueKey = typeof REVENUE_KEYS[number];
+    const REVENUE_LABELS: Record<RevenueKey, string> = {
       small: "Small Pool",
       medium: "Medium Pool",
       large: "Large Pool",
       grandfathered: "Grandfathered",
-      freds: "Fred's",
     };
-    const REVENUE_COLORS: Record<typeof REVENUE_KEYS[number], string> = {
+    const REVENUE_COLORS: Record<RevenueKey, string> = {
       small: "hsl(var(--primary))",
       medium: "hsl(199 89% 48%)",
       large: "hsl(173 80% 40%)",
       grandfathered: "hsl(38 92% 50%)",
-      freds: "hsl(271 76% 53%)",
     };
-    // Compute the steady recurring monthly revenue per category (across all homeowners).
-    const categoryCount = { small: 0, medium: 0, large: 0, grandfathered: 0, freds: 0 };
-    const categoryMRR = (() => {
-      const acc = { small: 0, medium: 0, large: 0, grandfathered: 0, freds: 0 };
-      for (const h of homeowners) {
-        if (h.pools.length === 0) continue;
-        if (h.isFreds) {
-          categoryCount.freds += h.pools.length;
-          if (h.monthlyAmount) acc.freds += h.monthlyAmount;
-          continue;
-        }
-        if (h.isGrandfathered) {
-          categoryCount.grandfathered += h.pools.length;
-          if (h.monthlyAmount) acc.grandfathered += h.monthlyAmount;
-          continue;
-        }
-        const perPool = h.monthlyAmount ? h.monthlyAmount / h.pools.length : 0;
-        for (const p of h.pools) {
-          const s = (p.size ?? "").toLowerCase();
-          const bucket = s.includes("small") ? "small" : s.includes("large") ? "large" : "medium";
-          categoryCount[bucket] += 1;
-          acc[bucket] += perPool;
-        }
-      }
-      return acc;
-    })();
 
-    // Which categories are shown based on selected customer group.
-    const groupKeys: readonly (typeof REVENUE_KEYS[number])[] =
-      revenueGroup === "freds"
-        ? (["freds"] as const)
-        : revenueGroup === "standard"
-          ? (["small", "medium", "large", "grandfathered"] as const)
-          : REVENUE_KEYS;
-    const filteredMRR = groupKeys.reduce((a, k) => a + categoryMRR[k], 0);
-    const filteredPools = groupKeys.reduce((a, k) => a + categoryCount[k], 0);
+    // Population filter — single source of truth for chart, totals, pool counts, and legend.
+    const inGroup = (h: typeof homeowners[number]) => {
+      if (revenueGroup === "freds") return Boolean(h.isFreds);
+      if (revenueGroup === "standard") return !h.isFreds;
+      return true;
+    };
+    const populationHomeowners = homeowners.filter(inGroup);
+
+    // Compute steady recurring monthly revenue per category from the filtered population.
+    const categoryCount: Record<RevenueKey, number> = { small: 0, medium: 0, large: 0, grandfathered: 0 };
+    const categoryMRR: Record<RevenueKey, number> = { small: 0, medium: 0, large: 0, grandfathered: 0 };
+    for (const h of populationHomeowners) {
+      if (h.pools.length === 0) continue;
+      // Grandfathered legacy pricing lives in its own bucket regardless of pool size.
+      if (h.isGrandfathered) {
+        categoryCount.grandfathered += h.pools.length;
+        if (h.monthlyAmount) categoryMRR.grandfathered += h.monthlyAmount;
+        continue;
+      }
+      const perPool = h.monthlyAmount ? h.monthlyAmount / h.pools.length : 0;
+      for (const p of h.pools) {
+        const s = (p.size ?? "").toLowerCase();
+        const bucket: RevenueKey = s.includes("small") ? "small" : s.includes("large") ? "large" : "medium";
+        categoryCount[bucket] += 1;
+        categoryMRR[bucket] += perPool;
+      }
+    }
+
+    // Only render series that have any data so the legend stays clean.
+    const groupKeys: readonly RevenueKey[] = REVENUE_KEYS.filter((k) => categoryCount[k] > 0);
+    const filteredMRR = REVENUE_KEYS.reduce((a, k) => a + categoryMRR[k], 0);
+    const filteredPools = REVENUE_KEYS.reduce((a, k) => a + categoryCount[k], 0);
 
     const revenueMonthly = MONTHS.map((m, i) => {
       const frac = monthFraction(revenueYear, i);

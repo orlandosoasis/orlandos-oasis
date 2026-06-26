@@ -277,6 +277,64 @@ export type Database = {
         }
         Relationships: []
       }
+      homeowner_addons: {
+        Row: {
+          active: boolean
+          addon_id: string
+          billing_type_snapshot: string
+          created_at: string
+          created_by: string | null
+          homeowner_id: string
+          id: string
+          price_snapshot: number
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          addon_id: string
+          billing_type_snapshot?: string
+          created_at?: string
+          created_by?: string | null
+          homeowner_id: string
+          id?: string
+          price_snapshot: number
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          addon_id?: string
+          billing_type_snapshot?: string
+          created_at?: string
+          created_by?: string | null
+          homeowner_id?: string
+          id?: string
+          price_snapshot?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "homeowner_addons_addon_id_fkey"
+            columns: ["addon_id"]
+            isOneToOne: false
+            referencedRelation: "pricing_addons"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "homeowner_addons_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "homeowner_addons_homeowner_id_fkey"
+            columns: ["homeowner_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       homeowner_custom_charges: {
         Row: {
           active: boolean
@@ -688,12 +746,14 @@ export type Database = {
           contract_locked: boolean
           contract_start_date: string | null
           created_at: string
+          custom_monthly_price: number | null
           email: string
           first_name: string | null
           full_name: string | null
           grandfathered_monthly_override: number | null
           grandfathered_note: string | null
           grandfathered_plan_id: string | null
+          grandfathered_snapshot: Json | null
           id: string
           is_active: boolean
           is_freds: boolean
@@ -717,6 +777,7 @@ export type Database = {
           subscription_effective_end_date: string | null
           subscription_status: Database["public"]["Enums"]["subscription_status"]
           updated_at: string
+          use_custom_pricing: boolean
           zip_code: string | null
         }
         Insert: {
@@ -726,12 +787,14 @@ export type Database = {
           contract_locked?: boolean
           contract_start_date?: string | null
           created_at?: string
+          custom_monthly_price?: number | null
           email: string
           first_name?: string | null
           full_name?: string | null
           grandfathered_monthly_override?: number | null
           grandfathered_note?: string | null
           grandfathered_plan_id?: string | null
+          grandfathered_snapshot?: Json | null
           id: string
           is_active?: boolean
           is_freds?: boolean
@@ -755,6 +818,7 @@ export type Database = {
           subscription_effective_end_date?: string | null
           subscription_status?: Database["public"]["Enums"]["subscription_status"]
           updated_at?: string
+          use_custom_pricing?: boolean
           zip_code?: string | null
         }
         Update: {
@@ -764,12 +828,14 @@ export type Database = {
           contract_locked?: boolean
           contract_start_date?: string | null
           created_at?: string
+          custom_monthly_price?: number | null
           email?: string
           first_name?: string | null
           full_name?: string | null
           grandfathered_monthly_override?: number | null
           grandfathered_note?: string | null
           grandfathered_plan_id?: string | null
+          grandfathered_snapshot?: Json | null
           id?: string
           is_active?: boolean
           is_freds?: boolean
@@ -793,6 +859,7 @@ export type Database = {
           subscription_effective_end_date?: string | null
           subscription_status?: Database["public"]["Enums"]["subscription_status"]
           updated_at?: string
+          use_custom_pricing?: boolean
           zip_code?: string | null
         }
         Relationships: []
@@ -1386,12 +1453,14 @@ export type Database = {
           contract_locked: boolean
           contract_start_date: string | null
           created_at: string
+          custom_monthly_price: number | null
           email: string
           first_name: string | null
           full_name: string | null
           grandfathered_monthly_override: number | null
           grandfathered_note: string | null
           grandfathered_plan_id: string | null
+          grandfathered_snapshot: Json | null
           id: string
           is_active: boolean
           is_freds: boolean
@@ -1415,6 +1484,7 @@ export type Database = {
           subscription_effective_end_date: string | null
           subscription_status: Database["public"]["Enums"]["subscription_status"]
           updated_at: string
+          use_custom_pricing: boolean
           zip_code: string | null
         }
         SetofOptions: {
@@ -1468,12 +1538,14 @@ export type Database = {
           contract_locked: boolean
           contract_start_date: string | null
           created_at: string
+          custom_monthly_price: number | null
           email: string
           first_name: string | null
           full_name: string | null
           grandfathered_monthly_override: number | null
           grandfathered_note: string | null
           grandfathered_plan_id: string | null
+          grandfathered_snapshot: Json | null
           id: string
           is_active: boolean
           is_freds: boolean
@@ -1497,6 +1569,7 @@ export type Database = {
           subscription_effective_end_date: string | null
           subscription_status: Database["public"]["Enums"]["subscription_status"]
           updated_at: string
+          use_custom_pricing: boolean
           zip_code: string | null
         }
         SetofOptions: {
@@ -1505,6 +1578,10 @@ export type Database = {
           isOneToOne: true
           isSetofReturn: false
         }
+      }
+      clear_grandfathered_pricing: {
+        Args: { p_homeowner_id: string }
+        Returns: undefined
       }
       compute_homeowner_monthly: {
         Args: { p_homeowner_id: string }
@@ -1557,12 +1634,14 @@ export type Database = {
           contract_locked: boolean
           contract_start_date: string | null
           created_at: string
+          custom_monthly_price: number | null
           email: string
           first_name: string | null
           full_name: string | null
           grandfathered_monthly_override: number | null
           grandfathered_note: string | null
           grandfathered_plan_id: string | null
+          grandfathered_snapshot: Json | null
           id: string
           is_active: boolean
           is_freds: boolean
@@ -1586,6 +1665,7 @@ export type Database = {
           subscription_effective_end_date: string | null
           subscription_status: Database["public"]["Enums"]["subscription_status"]
           updated_at: string
+          use_custom_pricing: boolean
           zip_code: string | null
         }
         SetofOptions: {
@@ -1625,6 +1705,30 @@ export type Database = {
           isSetofReturn: false
         }
       }
+      set_homeowner_addons: {
+        Args: { p_addon_ids: string[]; p_homeowner_id: string }
+        Returns: {
+          active: boolean
+          addon_id: string
+          billing_type_snapshot: string
+          created_at: string
+          created_by: string | null
+          homeowner_id: string
+          id: string
+          price_snapshot: number
+          updated_at: string
+        }[]
+        SetofOptions: {
+          from: "*"
+          to: "homeowner_addons"
+          isOneToOne: false
+          isSetofReturn: true
+        }
+      }
+      snapshot_grandfathered_pricing: {
+        Args: { p_homeowner_id: string }
+        Returns: Json
+      }
       submit_day_off_request: {
         Args: { p_end: string; p_reason: string; p_start: string }
         Returns: string
@@ -1660,12 +1764,14 @@ export type Database = {
           contract_locked: boolean
           contract_start_date: string | null
           created_at: string
+          custom_monthly_price: number | null
           email: string
           first_name: string | null
           full_name: string | null
           grandfathered_monthly_override: number | null
           grandfathered_note: string | null
           grandfathered_plan_id: string | null
+          grandfathered_snapshot: Json | null
           id: string
           is_active: boolean
           is_freds: boolean
@@ -1689,6 +1795,7 @@ export type Database = {
           subscription_effective_end_date: string | null
           subscription_status: Database["public"]["Enums"]["subscription_status"]
           updated_at: string
+          use_custom_pricing: boolean
           zip_code: string | null
         }
         SetofOptions: {

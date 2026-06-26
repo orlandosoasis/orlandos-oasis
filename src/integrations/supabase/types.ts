@@ -678,6 +678,56 @@ export type Database = {
           },
         ]
       }
+      route_issue_events: {
+        Row: {
+          actor_id: string | null
+          actor_role: string | null
+          created_at: string
+          details: Json
+          event_type: string
+          homeowner_id: string | null
+          id: string
+          notification_id: string | null
+          route_issue_id: string
+          service_id: string | null
+          summary: string
+        }
+        Insert: {
+          actor_id?: string | null
+          actor_role?: string | null
+          created_at?: string
+          details?: Json
+          event_type: string
+          homeowner_id?: string | null
+          id?: string
+          notification_id?: string | null
+          route_issue_id: string
+          service_id?: string | null
+          summary?: string
+        }
+        Update: {
+          actor_id?: string | null
+          actor_role?: string | null
+          created_at?: string
+          details?: Json
+          event_type?: string
+          homeowner_id?: string | null
+          id?: string
+          notification_id?: string | null
+          route_issue_id?: string
+          service_id?: string | null
+          summary?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "route_issue_events_route_issue_id_fkey"
+            columns: ["route_issue_id"]
+            isOneToOne: false
+            referencedRelation: "route_issues"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       route_issue_services: {
         Row: {
           created_at: string

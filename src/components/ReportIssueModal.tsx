@@ -117,8 +117,8 @@ const ReportIssueModal = ({ open, onOpenChange }: ReportIssueModalProps) => {
                 <Button variant="outline" className="flex-1" onClick={() => setStep("category")}>
                   Back
                 </Button>
-                <Button className="flex-1" disabled={!details.trim()} onClick={handleSubmit}>
-                  Submit Report
+                <Button className="flex-1" disabled={!details.trim() || submitting} onClick={handleSubmit}>
+                  {submitting ? (<><Loader2 className="h-4 w-4 animate-spin mr-2" />Submitting…</>) : "Submit Report"}
                 </Button>
               </div>
             </div>

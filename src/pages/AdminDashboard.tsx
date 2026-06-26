@@ -7,8 +7,10 @@ import { Database } from "lucide-react";
 import {
   LayoutDashboard, Wrench, Users, AlertCircle, UserPlus, ChevronLeft,
   Star, Mail, Check, X, LogOut, User, Menu, FileText, Download, Waves, MessageSquare, Megaphone,
-  Plus, MoreHorizontal, Pencil, Trash2, CalendarClock, CalendarOff, CreditCard, BadgeCheck
+  Plus, MoreHorizontal, Pencil, Trash2, CalendarClock, CalendarOff, CreditCard, BadgeCheck, Package
 } from "lucide-react";
+import AddonsManagementPage from "@/components/admin/AddonsManagementPage";
+import HomeownerPricingPanel from "@/components/admin/HomeownerPricingPanel";
 import { EmptyState } from "@/components/EmptyState";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -56,7 +58,7 @@ import { format } from "date-fns";
 import { BarChart, Bar, XAxis, YAxis, Tooltip as ReTooltip, ResponsiveContainer, Cell, LabelList, PieChart, Pie } from "recharts";
 import { useExpenseItems, useCreateExpenseItem, useUpdateExpenseItem, useDeleteExpenseItem } from "@/hooks/useExpenseItems";
 
-type AdminPage = "dashboard" | "technicians" | "techDetail" | "homeowners" | "homeDetail" | "issues" | "routeIssues" | "routeIssueDetail" | "timeOff" | "timeOffDetail" | "applicants" | "applicantDetail" | "reviews";
+type AdminPage = "dashboard" | "technicians" | "techDetail" | "homeowners" | "homeDetail" | "issues" | "routeIssues" | "routeIssueDetail" | "timeOff" | "timeOffDetail" | "applicants" | "applicantDetail" | "reviews" | "addons";
 
 const PAGE_TITLES: Record<string, string> = {
   dashboard: "Dashboard",
@@ -72,6 +74,7 @@ const PAGE_TITLES: Record<string, string> = {
   applicants: "Applicants",
   applicantDetail: "Application Details",
   reviews: "Review Moderation",
+  addons: "Add-ons Catalog",
 };
 
 const fmtMoney = (n: number) =>
@@ -474,6 +477,7 @@ const AdminDashboard = () => {
     { key: "issues" as const, label: "Reported Issues", icon: AlertCircle, badge: openIssueCount, badgeColor: "bg-destructive" },
     { key: "routeIssues" as const, label: "Route Issues", icon: CalendarClock, badge: activeRouteIssueCount, badgeColor: "bg-blue-500" },
     { key: "timeOff" as const, label: "Time Off", icon: CalendarOff, badge: pendingDayOffCount, badgeColor: "bg-amber-500" },
+    { key: "addons" as const, label: "Add-ons", icon: Package },
   ];
 
   const activeMenu = page === "techDetail" ? "technicians"
@@ -2391,13 +2395,16 @@ const AdminDashboard = () => {
         </div>
 
         {detailTab === "overview" && (
-          <Card>
-            <CardHeader><CardTitle className="text-sm">Homeowner Information</CardTitle></CardHeader>
-            <CardContent>
-              <InfoRow label="Name" value={ho.name} /><InfoRow label="Email" value={ho.email} /><InfoRow label="Phone" value={ho.phone} />
-              <InfoRow label="Address" value={ho.address} /><InfoRow label="Plan" value={ho.plan} /><InfoRow label="Start Date" value={ho.startDate} />
-            </CardContent>
-          </Card>
+          <div className="space-y-4">
+            <Card>
+              <CardHeader><CardTitle className="text-sm">Homeowner Information</CardTitle></CardHeader>
+              <CardContent>
+                <InfoRow label="Name" value={ho.name} /><InfoRow label="Email" value={ho.email} /><InfoRow label="Phone" value={ho.phone} />
+                <InfoRow label="Address" value={ho.address} /><InfoRow label="Plan" value={ho.plan} /><InfoRow label="Start Date" value={ho.startDate} />
+              </CardContent>
+            </Card>
+            <HomeownerPricingPanel homeownerId={ho.id} monthlyAmount={ho.monthlyAmount} />
+          </div>
         )}
 
         {detailTab === "pools" && (
@@ -2492,9 +2499,19 @@ const AdminDashboard = () => {
 
         {detailTab === "requests" && <HomeownerRequestsPanel homeownerId={ho.id} />}
 
-        {detailTab === "billing" && <HomeownerBillingPanel homeownerId={ho.id} />}
+        {detailTab === "billing" && (
+          <div className="space-y-4">
+            <HomeownerPricingPanel homeownerId={ho.id} monthlyAmount={ho.monthlyAmount} />
+            <HomeownerBillingPanel homeownerId={ho.id} />
+          </div>
+        )}
 
-        {detailTab === "membership" && <MembershipPanel homeowner={ho} />}
+        {detailTab === "membership" && (
+          <div className="space-y-4">
+            <HomeownerPricingPanel homeownerId={ho.id} monthlyAmount={ho.monthlyAmount} />
+            <MembershipPanel homeowner={ho} />
+          </div>
+        )}
 
         {detailTab === "notes" && <AdminNotesPanel targetType="homeowner" targetId={ho.id} title="Admin Notes (Private)" />}
       </div>
@@ -2804,6 +2821,7 @@ const AdminDashboard = () => {
             /></CardContent></Card>
           : <ApplicantsPage />;
       case "applicantDetail": return <ApplicantDetailPage />;
+      case "addons": return <AddonsManagementPage />;
 
       default: return <DashboardPage />;
     }

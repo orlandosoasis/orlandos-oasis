@@ -150,23 +150,10 @@ export function RouteIssueDetailPage({ issueId, onBack }: { issueId: string; onB
   const resolve = useResolveRouteIssue();
   const { toast } = useToast();
 
-  const breadcrumbs = (
-    <nav aria-label="Breadcrumb" className="text-xs text-muted-foreground flex items-center gap-1.5">
-      <button onClick={onBack} className="hover:text-foreground transition-colors">Admin Dashboard</button>
-      <span>/</span>
-      <button onClick={onBack} className="hover:text-foreground transition-colors">Route Issues</button>
-      <span>/</span>
-      <span className="text-foreground font-medium">
-        {issue ? (ISSUE_TYPE_LABEL[issue.issue_type] ?? issue.issue_type) : "Details"}
-      </span>
-    </nav>
-  );
-
   if (!issue) {
     return (
       <div className="space-y-4">
-        {breadcrumbs}
-        <Button variant="outline" size="sm" onClick={onBack}><ChevronLeft className="h-4 w-4 mr-1" /> Back to Route Issues</Button>
+        <Button variant="ghost" size="sm" onClick={onBack}><ChevronLeft className="h-4 w-4 mr-1" /> Back to Route Issues</Button>
         <Card><CardContent className="p-10 text-center text-sm text-muted-foreground">Loading route issue…</CardContent></Card>
       </div>
     );
@@ -185,9 +172,8 @@ export function RouteIssueDetailPage({ issueId, onBack }: { issueId: string; onB
 
   return (
     <div className="space-y-4">
-      {breadcrumbs}
-      <div className="flex items-center justify-between gap-2 flex-wrap">
-        <Button variant="outline" size="sm" onClick={onBack}><ChevronLeft className="h-4 w-4 mr-1" /> Back to Route Issues</Button>
+      <div className="flex items-center justify-between">
+        <Button variant="ghost" size="sm" onClick={onBack}><ChevronLeft className="h-4 w-4 mr-1" /> Back to Route Issues</Button>
         {isOpen && (
           <div className="flex gap-2">
             <Button variant="outline" size="sm" onClick={() => handleResolve("cancelled")} disabled={resolve.isPending}>
@@ -199,7 +185,6 @@ export function RouteIssueDetailPage({ issueId, onBack }: { issueId: string; onB
           </div>
         )}
       </div>
-
 
       <Card>
         <CardHeader className="border-b">

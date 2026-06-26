@@ -1031,7 +1031,7 @@ const AdminDashboard = () => {
             </div>
           </div>
           <div className="text-xs text-muted-foreground">
-            {tab === "revenue" && <>Total <span className="ml-1 text-foreground font-bold">{fmtMoney(totalMRR)}</span> · {totalPools} pools</>}
+            {tab === "revenue" && <>Total <span className="ml-1 text-foreground font-bold">{fmtMoney(filteredMRR)}</span> · {filteredPools} pools</>}
             {tab === "payouts" && <>Total <span className="ml-1 text-foreground font-bold">{fmtMoney(totalPayouts)}</span>/mo</>}
             {tab === "supplies" && <>Total <span className="ml-1 text-foreground font-bold">{fmtMoney(suppliesTotal)}</span> · {allPoolsCount} pools</>}
             {tab === "profit" && <>Net <span className={`ml-1 font-bold ${netProfit >= 0 ? "text-emerald-600" : "text-red-600"}`}>{fmtMoney(netProfit)}</span>/mo</>}

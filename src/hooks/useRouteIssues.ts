@@ -168,6 +168,24 @@ export function useDismissNotification() {
   });
 }
 
+// ---------- Single route issue by ID ----------
+export function useRouteIssueById(id?: string | null) {
+  return useQuery({
+    queryKey: ["route-issue", id],
+    queryFn: async () => {
+      if (!id) return null;
+      const { data, error } = await supabase
+        .from("route_issues")
+        .select("*")
+        .eq("id", id)
+        .maybeSingle();
+      if (error) throw error;
+      return data as RouteIssueRow | null;
+    },
+    enabled: !!id,
+  });
+}
+
 // ---------- Active route issue for a service ----------
 export function useServiceRouteIssue(serviceId?: string) {
   return useQuery({

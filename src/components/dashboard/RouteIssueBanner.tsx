@@ -1,8 +1,11 @@
-import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 import { AlertTriangle, X, Clock, CalendarClock, UserRoundCog, BellRing } from "lucide-react";
 import { useMyNotifications, useDismissNotification, type HomeownerNotificationRow } from "@/hooks/useRouteIssues";
+import RouteIssueDetailModal from "@/components/RouteIssueDetailModal";
 
-const ICON: Record<HomeownerNotificationRow["kind"], any> = {
+const ROUTE_KINDS = new Set(["route_notify", "route_delay", "route_reschedule", "route_reassign"]);
+
+const ICON: Record<string, any> = {
   route_notify: BellRing,
   route_delay: Clock,
   route_reschedule: CalendarClock,
@@ -19,53 +22,62 @@ const formatWhen = (iso: string) => {
 };
 
 const RouteIssueBanner = () => {
-  const navigate = useNavigate();
   const { data: notifications = [] } = useMyNotifications();
   const dismiss = useDismissNotification();
+  const [selected, setSelected] = useState<HomeownerNotificationRow | null>(null);
 
-  if (!notifications.length) return null;
+  const routeNotifs = notifications.filter((n) => ROUTE_KINDS.has(n.kind));
+  if (!routeNotifs.length) return null;
 
   return (
-    <div className="space-y-2 mb-6">
-      {notifications.map((n) => {
-        const Icon = ICON[n.kind] ?? AlertTriangle;
-        return (
-          <div
-            key={n.id}
-            className="relative flex gap-3 rounded-xl border border-primary/30 bg-primary/5 p-4"
-          >
-            <div className="shrink-0 rounded-lg bg-primary/10 p-2 text-primary">
-              <Icon className="h-5 w-5" />
-            </div>
-            <div className="flex-1 min-w-0 pr-6">
-              <p className="text-sm font-semibold text-foreground">{n.title}</p>
-              {n.body && (
-                <p className="text-sm text-muted-foreground mt-0.5 leading-relaxed">{n.body}</p>
-              )}
-              <div className="flex items-center gap-3 mt-2">
-                <span className="text-xs text-muted-foreground">Reported {formatWhen(n.created_at)}</span>
-                {n.cta_route && (
-                  <button
-                    onClick={() => navigate(n.cta_route!)}
-                    className="text-xs font-semibold text-primary hover:underline"
-                  >
-                    View Details
-                  </button>
-                )}
-              </div>
-            </div>
-            <button
-              type="button"
-              aria-label="Dismiss"
-              onClick={() => dismiss.mutate(n.id)}
-              className="absolute top-3 right-3 rounded-md p-1 text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+    <>
+      <div className="space-y-2 mb-6">
+        {routeNotifs.map((n) => {
+          const Icon = ICON[n.kind] ?? AlertTriangle;
+          return (
+            <div
+              key={n.id}
+              className="relative flex gap-3 rounded-xl border border-primary/30 bg-primary/5 p-4"
             >
-              <X className="h-4 w-4" />
-            </button>
-          </div>
-        );
-      })}
-    </div>
+              <div className="shrink-0 rounded-lg bg-primary/10 p-2 text-primary">
+                <Icon className="h-5 w-5" />
+              </div>
+              <div className="flex-1 min-w-0 pr-6">
+                <p className="text-sm font-semibold text-foreground">{n.title}</p>
+                {n.body && (
+                  <p className="text-sm text-muted-foreground mt-0.5 leading-relaxed">{n.body}</p>
+                )}
+                <div className="flex items-center gap-3 mt-2">
+                  <span className="text-xs text-muted-foreground">Reported {formatWhen(n.created_at)}</span>
+                  {n.route_issue_id && (
+                    <button
+                      onClick={() => setSelected(n)}
+                      className="text-xs font-semibold text-primary hover:underline"
+                    >
+                      View Details
+                    </button>
+                  )}
+                </div>
+              </div>
+              <button
+                type="button"
+                aria-label="Dismiss"
+                onClick={() => dismiss.mutate(n.id)}
+                className="absolute top-3 right-3 rounded-md p-1 text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+          );
+        })}
+      </div>
+
+      <RouteIssueDetailModal
+        notification={selected}
+        open={!!selected}
+        onClose={() => setSelected(null)}
+      />
+    </>
   );
 };
 

@@ -119,7 +119,7 @@ export default function AdminMessages() {
       <aside className="w-[280px] bg-card border-r border-border flex flex-col shrink-0 overflow-y-auto">
         <div className="px-4 pt-4 pb-3 border-b border-border">
           <button
-            onClick={() => navigate("/admin")}
+            onClick={() => navigate("/admin-dashboard")}
             className="inline-flex items-center gap-1 text-xs font-medium text-muted-foreground hover:text-primary transition-colors mb-3"
           >
             <ChevronLeft className="h-3.5 w-3.5" />

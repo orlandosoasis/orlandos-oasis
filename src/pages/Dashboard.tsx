@@ -20,6 +20,7 @@ import StatusBadge from "@/components/StatusBadge";
 import RescheduleModal from "@/components/RescheduleModal";
 import { useSubscription, formatEndDate } from "@/hooks/useSubscription";
 import BookCatalogServiceModal from "@/components/BookCatalogServiceModal";
+import ExistingCustomerBookingModal from "@/components/ExistingCustomerBookingModal";
 import { useServiceCatalog } from "@/hooks/useServiceCatalog";
 
 const FULL_DAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
@@ -115,7 +116,13 @@ const Dashboard = () => {
     } catch { /* storage may be unavailable */ }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams, setSearchParams]);
-  const openBooking = useCallback(() => setShowBooking(true), []);
+  const openBooking = useCallback(() => {
+    if (subscription?.status === "active") {
+      setExistingBookingOpen(true);
+    } else {
+      setShowBooking(true);
+    }
+  }, [subscription?.status]);
   useEffect(() => {
     window.addEventListener("open-booking", openBooking);
     return () => window.removeEventListener("open-booking", openBooking);
@@ -125,6 +132,7 @@ const Dashboard = () => {
   const [rescheduleService, setRescheduleService] = useState<ServiceInstance | null>(null);
   const [rescheduleConfirmed, setRescheduleConfirmed] = useState(false);
   const [catalogModalOpen, setCatalogModalOpen] = useState(false);
+  const [existingBookingOpen, setExistingBookingOpen] = useState(false);
   const { data: catalogItems = [] } = useServiceCatalog(false);
   const isPostCheckout = fromCheckout || showBooking || searchParams.get("openBooking") === "true";
 
@@ -465,6 +473,11 @@ const Dashboard = () => {
 
       {showBooking && <BookingFlow onClose={() => { setShowBooking(false); setSelectedServiceInfo(null); }} onComplete={() => { setShowBooking(false); setSelectedServiceInfo(null); }} selectedService={selectedServiceInfo} />}
       <BookCatalogServiceModal open={catalogModalOpen} onOpenChange={setCatalogModalOpen} />
+      <ExistingCustomerBookingModal
+        open={existingBookingOpen}
+        onOpenChange={setExistingBookingOpen}
+        onBookService={() => setCatalogModalOpen(true)}
+      />
 
       {rescheduleService && (
         <RescheduleModal

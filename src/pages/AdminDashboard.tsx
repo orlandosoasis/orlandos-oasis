@@ -483,6 +483,8 @@ const AdminDashboard = () => {
     { key: "addons" as const, label: "Add-ons", icon: Package },
   ];
 
+  const handleMessagesNav = () => navigate("/admin/messages");
+
   const activeMenu = page === "techDetail" ? "technicians"
     : page === "homeDetail" ? "homeowners"
     : page === "applicantDetail" ? "applicants"
@@ -515,6 +517,13 @@ const AdminDashboard = () => {
               </button>
             );
           })}
+          <button
+            onClick={handleMessagesNav}
+            className="flex items-center gap-3 w-full px-3.5 py-2.5 rounded-lg text-[13px] font-medium transition-all text-left text-white/60 hover:bg-white/10 hover:text-white mt-1"
+          >
+            <MessageSquare className="h-[18px] w-[18px]" />
+            Messages
+          </button>
         </nav>
         <div className="p-3 border-t border-white/10">
           <div className="flex items-center gap-2.5 px-2.5 py-2">

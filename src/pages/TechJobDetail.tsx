@@ -11,7 +11,6 @@ import {
   Send,
   CheckCircle2,
   Camera,
-  Image as ImageIcon,
   Circle,
   Loader2,
   AlertTriangle,
@@ -35,6 +34,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useService } from "@/hooks/useServices";
 import { usePool } from "@/hooks/usePools";
 import { useProfile } from "@/hooks/useProfiles";
+import { useMessages, useSendMessage, buildThreadId } from "@/hooks/useMessages";
 import {
   getPoolFullAddress,
   formatDateFull,
@@ -44,10 +44,6 @@ import { cn } from "@/lib/utils";
 import { toast } from "@/hooks/use-toast";
 
 type LocalPhoto = { id: string; src: string; type: "before" | "after"; time: string };
-
-type ChatMsg =
-  | { id: string; sender: "tech" | "homeowner"; kind: "text"; text: string; time: string }
-  | { id: string; sender: "tech"; kind: "photo"; photoType: "before" | "after"; src: string; time: string };
 
 const TechJobDetail = () => {
   const { serviceId } = useParams();
@@ -68,7 +64,9 @@ const TechJobDetail = () => {
   const beforePhotos = photos.filter((p) => p.type === "before");
   const afterPhotos = photos.filter((p) => p.type === "after");
 
-  const [messages, setMessages] = useState<ChatMsg[]>([]);
+  const threadId = user && service?.homeownerId ? buildThreadId(user.id, service.homeownerId) : undefined;
+  const { data: dbMessages = [] } = useMessages(threadId);
+  const sendMessage = useSendMessage();
   const [newMsg, setNewMsg] = useState("");
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [completing, setCompleting] = useState(false);
@@ -78,19 +76,15 @@ const TechJobDetail = () => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  // Seed thread + autofocus on first load
+  // Autofocus input on load
   useEffect(() => {
     if (!homeowner) return;
-    setMessages([
-      { id: "1", sender: "homeowner", kind: "text", text: "Hi! Anything I should know before the visit?", time: "2:27 PM" },
-      { id: "2", sender: "tech", kind: "text", text: "Just make sure the gate is accessible. I'll handle the rest!", time: "4:48 PM" },
-    ]);
     setTimeout(() => inputRef.current?.focus(), 100);
   }, [homeowner?.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
+  }, [dbMessages]);
 
   // Auto-mark in_progress on entry if still scheduled
   useEffect(() => {
@@ -127,12 +121,13 @@ const TechJobDetail = () => {
   }
 
   const handleSend = () => {
-    if (!newMsg.trim()) return;
-    const time = new Date().toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit", hour12: true });
-    setMessages((prev) => [
-      ...prev,
-      { id: `m-${Date.now()}`, sender: "tech", kind: "text", text: newMsg.trim(), time },
-    ]);
+    if (!newMsg.trim() || !user || !service?.homeownerId || !threadId) return;
+    sendMessage.mutate({
+      threadId,
+      senderId: user.id,
+      recipientId: service.homeownerId,
+      body: newMsg.trim(),
+    });
     setNewMsg("");
   };
 
@@ -152,17 +147,6 @@ const TechJobDetail = () => {
     } else {
       setAfterFiles((prev) => [...prev, ...fileArray]);
     }
-    setMessages((prev) => [
-      ...prev,
-      ...newPhotos.map<ChatMsg>((p) => ({
-        id: `photo-${p.id}`,
-        sender: "tech",
-        kind: "photo",
-        photoType: p.type,
-        src: p.src,
-        time: p.time,
-      })),
-    ]);
     toast({
       title: type === "before" ? "Before photos uploaded" : "After photos uploaded",
       description: `${files.length} photo${files.length > 1 ? "s" : ""} added to the thread.`,
@@ -332,33 +316,26 @@ const TechJobDetail = () => {
 
         {/* Thread */}
         <div className="px-5 py-4 bg-muted/30 space-y-2 max-h-[420px] overflow-y-auto">
-          {messages.map((msg) => {
-            const isTech = msg.sender === "tech";
+          {dbMessages.length === 0 ? (
+            <p className="text-center text-xs text-muted-foreground py-6">No messages yet. Say hello!</p>
+          ) : dbMessages.map((msg) => {
+            const isTech = msg.senderId === user?.id;
+            const time = new Date(msg.createdAt).toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit", hour12: true });
             return (
               <div
                 key={msg.id}
                 className={`flex flex-col max-w-[75%] ${isTech ? "self-end items-end ml-auto" : "self-start items-start"}`}
               >
-                {msg.kind === "text" ? (
-                  <div
-                    className={`px-3.5 py-2.5 text-[13.5px] leading-relaxed rounded-2xl ${
-                      isTech
-                        ? "bg-primary text-primary-foreground rounded-br-md"
-                        : "bg-card text-foreground rounded-bl-md border border-border shadow-sm"
-                    }`}
-                  >
-                    {msg.text}
-                  </div>
-                ) : (
-                  <div className="rounded-2xl overflow-hidden border border-border bg-card shadow-sm">
-                    <img src={msg.src} alt={`${msg.photoType} photo`} className="h-40 w-40 object-cover" />
-                    <div className="px-3 py-1.5 flex items-center gap-1.5 text-[11px] font-medium text-muted-foreground">
-                      <ImageIcon className="h-3 w-3" />
-                      <span className="capitalize">{msg.photoType} photo</span>
-                    </div>
-                  </div>
-                )}
-                <span className="text-[11px] text-muted-foreground mt-0.5 px-1">{msg.time}</span>
+                <div
+                  className={`px-3.5 py-2.5 text-[13.5px] leading-relaxed rounded-2xl ${
+                    isTech
+                      ? "bg-primary text-primary-foreground rounded-br-md"
+                      : "bg-card text-foreground rounded-bl-md border border-border shadow-sm"
+                  }`}
+                >
+                  {msg.body}
+                </div>
+                <span className="text-[11px] text-muted-foreground mt-0.5 px-1">{time}</span>
               </div>
             );
           })}
@@ -375,7 +352,7 @@ const TechJobDetail = () => {
               placeholder={`Message ${homeownerName}...`}
               className="flex-1 rounded-xl border-border bg-muted/50 focus-visible:ring-primary"
             />
-            <Button size="icon" onClick={handleSend} disabled={!newMsg.trim()} className="rounded-xl shrink-0">
+            <Button size="icon" onClick={handleSend} disabled={!newMsg.trim() || sendMessage.isPending} className="rounded-xl shrink-0">
               <Send className="h-4 w-4" />
             </Button>
           </div>

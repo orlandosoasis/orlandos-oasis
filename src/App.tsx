@@ -51,6 +51,7 @@ import RoleRoute from "./components/RoleRoute";
 // ============================================================================
 const Dashboard = lazy(() => import("./pages/Dashboard"));
 const Notifications = lazy(() => import("./pages/Notifications"));
+const AdminMessages = lazy(() => import("./pages/AdminMessages"));
 const ServicePass = lazy(() => import("./pages/ServicePass"));
 const ServiceDetails = lazy(() => import("./pages/ServiceDetails"));
 const Messages = lazy(() => import("./pages/Messages"));
@@ -164,6 +165,7 @@ const App = () => (
 
                   {/* Admin routes */}
                   <Route path="/admin-dashboard" element={<RoleRoute roles={["admin"]}><AdminDashboard /></RoleRoute>} />
+                  <Route path="/admin/messages" element={<RoleRoute roles={["admin"]}><AdminMessages /></RoleRoute>} />
 
                   {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                   <Route path="*" element={<NotFound />} />

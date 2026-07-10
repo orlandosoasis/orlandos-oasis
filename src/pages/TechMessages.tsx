@@ -6,6 +6,8 @@ import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import TechLayout from "@/components/technician/TechLayout";
 import { useAuth } from "@/contexts/AuthContext";
+import { useQueryClient } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 import { useServices } from "@/hooks/useServices";
 import { useProfilesByIds } from "@/hooks/useProfiles";
 import { useMessages, useSendMessage, buildThreadId } from "@/hooks/useMessages";
@@ -13,6 +15,7 @@ import { cn } from "@/lib/utils";
 
 const TechMessages = () => {
   const { user } = useAuth();
+  const queryClient = useQueryClient();
   const { data: services = [], isLoading: loadingServices } = useServices({ technicianId: user?.id });
 
   const homeownerIds = useMemo(() => [...new Set(services.map((s) => s.homeownerId))], [services]);
@@ -34,6 +37,20 @@ const TechMessages = () => {
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, selectedHoId]);
+
+  // Realtime subscription
+  useEffect(() => {
+    if (!user?.id) return;
+    const channel = supabase
+      .channel("tech-messages-realtime")
+      .on("postgres_changes", { event: "*", schema: "public", table: "messages" }, (payload) => {
+        const row = (payload.new ?? payload.old) as { thread_id?: string } | null;
+        if (row?.thread_id) queryClient.invalidateQueries({ queryKey: ["messages", row.thread_id] });
+        queryClient.invalidateQueries({ queryKey: ["message-threads", user.id] });
+      })
+      .subscribe();
+    return () => { supabase.removeChannel(channel); };
+  }, [user?.id, queryClient]);
 
   const selectedHomeowner = homeowners.find((h) => h.id === selectedHoId);
 

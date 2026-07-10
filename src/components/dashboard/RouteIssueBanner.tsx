@@ -39,9 +39,7 @@ const RouteIssueBanner = () => {
               key={n.id}
               className="relative flex gap-3 rounded-xl border border-primary/30 bg-primary/5 p-4"
             >
-              <div className="shrink-0 rounded-lg bg-primary/10 p-2 text-primary">
-                <Icon className="h-5 w-5" />
-              </div>
+              <Icon className="h-6 w-6 shrink-0 text-primary" />
               <div className="flex-1 min-w-0 pr-6">
                 <p className="text-sm font-semibold text-foreground">{n.title}</p>
                 {n.body && (

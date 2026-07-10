@@ -12,6 +12,7 @@ import {
 import AddonsManagementPage from "@/components/admin/AddonsManagementPage";
 import ServiceCatalogPage from "@/components/admin/ServiceCatalogPage";
 import HomeownerPricingPanel from "@/components/admin/HomeownerPricingPanel";
+import HomeownerServicesPanel from "@/components/admin/HomeownerServicesPanel";
 import { EmptyState } from "@/components/EmptyState";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -377,7 +378,7 @@ const AdminDashboard = () => {
   const [homeownerSuccess, setHomeownerSuccess] = useState(false);
   const [homeownerEditSuccess, setHomeownerEditSuccess] = useState(false);
   const [scheduleTab, setScheduleTab] = useState<"upcoming" | "past">("upcoming");
-  const [detailTab, setDetailTab] = useState<"overview" | "pools" | "schedule" | "requests" | "billing" | "membership" | "notes">("overview");
+  const [detailTab, setDetailTab] = useState<"overview" | "pools" | "schedule" | "requests" | "billing" | "membership" | "services" | "notes">("overview");
   const [pastServiceId, setPastServiceId] = useState<string | null>(null);
 
   const nav = (p: AdminPage, id: string | null = null) => { setPage(p); setDetailId(id); setSidebarOpen(false); };
@@ -2477,6 +2478,7 @@ const AdminDashboard = () => {
           <TabBtn id="requests" label="Requests" />
           <TabBtn id="billing" label="Billing" />
           <TabBtn id="membership" label="Membership" />
+          <TabBtn id="services" label="Services" />
           <TabBtn id="notes" label="Notes" />
         </div>
 
@@ -2597,6 +2599,10 @@ const AdminDashboard = () => {
             <HomeownerPricingPanel homeownerId={ho.id} monthlyAmount={ho.monthlyAmount} />
             <MembershipPanel homeowner={ho} />
           </div>
+        )}
+
+        {detailTab === "services" && (
+          <HomeownerServicesPanel homeownerId={ho.id} monthlyAmount={ho.monthlyAmount} />
         )}
 
         {detailTab === "notes" && <AdminNotesPanel targetType="homeowner" targetId={ho.id} title="Admin Notes (Private)" />}

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Plus, Pencil, Power, PowerOff, Clock, DollarSign, Tag } from "lucide-react";
+import { Plus, Pencil, Power, PowerOff, Trash2, Clock, DollarSign } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -59,6 +59,7 @@ export default function ServiceCatalogPage() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [form, setForm] = useState<FormState>(EMPTY_FORM);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
 
   const openCreate = () => {
     setEditingId(null);
@@ -128,6 +129,19 @@ export default function ServiceCatalogPage() {
   const active = items.filter((i) => i.active);
   const inactive = items.filter((i) => !i.active);
 
+  const handleDelete = async (item: ServiceCatalogItem) => {
+    if (!confirm(`Delete "${item.name}"? This cannot be undone.`)) return;
+    setDeletingId(item.id);
+    try {
+      await deleteItem.mutateAsync(item.id);
+      toast({ title: "Service deleted", variant: "success" });
+    } catch (e) {
+      toast({ title: "Failed to delete", description: e instanceof Error ? e.message : "Please try again.", variant: "destructive" });
+    } finally {
+      setDeletingId(null);
+    }
+  };
+
   const isPending = createItem.isPending || updateItem.isPending;
 
   return (
@@ -160,7 +174,7 @@ export default function ServiceCatalogPage() {
                 </CardContent>
               </Card>
             ) : active.map((item) => (
-              <ServiceRow key={item.id} item={item} onEdit={openEdit} onToggle={toggleActive} />
+              <ServiceRow key={item.id} item={item} onEdit={openEdit} onToggle={toggleActive} onDelete={handleDelete} isDeleting={deletingId === item.id} />
             ))}
           </div>
 
@@ -169,7 +183,7 @@ export default function ServiceCatalogPage() {
             <div className="space-y-3">
               <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Disabled</p>
               {inactive.map((item) => (
-                <ServiceRow key={item.id} item={item} onEdit={openEdit} onToggle={toggleActive} disabled />
+                <ServiceRow key={item.id} item={item} onEdit={openEdit} onToggle={toggleActive} onDelete={handleDelete} isDeleting={deletingId === item.id} disabled />
               ))}
             </div>
           )}
@@ -279,11 +293,15 @@ function ServiceRow({
   item,
   onEdit,
   onToggle,
+  onDelete,
+  isDeleting = false,
   disabled = false,
 }: {
   item: ServiceCatalogItem;
   onEdit: (item: ServiceCatalogItem) => void;
   onToggle: (item: ServiceCatalogItem) => void;
+  onDelete: (item: ServiceCatalogItem) => void;
+  isDeleting?: boolean;
   disabled?: boolean;
 }) {
   return (
@@ -293,6 +311,11 @@ function ServiceRow({
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 flex-wrap mb-1">
               <p className="text-sm font-semibold">{item.name}</p>
+              {item.active ? (
+                <span className="text-[10px] font-medium px-1.5 py-0 h-4 inline-flex items-center rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">Active</span>
+              ) : (
+                <span className="text-[10px] font-medium px-1.5 py-0 h-4 inline-flex items-center rounded-full bg-muted text-muted-foreground border border-border">Inactive</span>
+              )}
               {item.category && (
                 <Badge variant="outline" className="text-[10px] px-1.5 py-0 h-4">
                   {item.category}
@@ -326,6 +349,16 @@ function ServiceRow({
             >
               {item.active ? <PowerOff className="h-3.5 w-3.5" /> : <Power className="h-3.5 w-3.5" />}
               {item.active ? "Disable" : "Enable"}
+            </Button>
+            <Button
+              size="sm"
+              variant="outline"
+              className="text-destructive border-destructive/30 hover:bg-destructive/5"
+              onClick={() => onDelete(item)}
+              disabled={isDeleting}
+            >
+              <Trash2 className="h-3.5 w-3.5" />
+              Delete
             </Button>
           </div>
         </div>

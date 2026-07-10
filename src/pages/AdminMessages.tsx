@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react";
-import { Send, MessageCircle } from "lucide-react";
+import { Send, MessageCircle, ChevronLeft } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -59,6 +60,7 @@ function initials(name: string) {
 
 export default function AdminMessages() {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { data: threads = [], isLoading } = useAdminThreads();
 
@@ -115,7 +117,14 @@ export default function AdminMessages() {
     <div className="flex h-[calc(100vh-64px)] overflow-hidden">
       {/* Sidebar */}
       <aside className="w-[280px] bg-card border-r border-border flex flex-col shrink-0 overflow-y-auto">
-        <div className="px-4 pt-5 pb-3 border-b border-border">
+        <div className="px-4 pt-4 pb-3 border-b border-border">
+          <button
+            onClick={() => navigate("/admin")}
+            className="inline-flex items-center gap-1 text-xs font-medium text-muted-foreground hover:text-primary transition-colors mb-3"
+          >
+            <ChevronLeft className="h-3.5 w-3.5" />
+            Back to Dashboard
+          </button>
           <h2 className="text-base font-bold">All Conversations</h2>
           <p className="text-xs text-muted-foreground mt-0.5">{threads.length} thread{threads.length !== 1 ? "s" : ""}</p>
         </div>

@@ -186,7 +186,7 @@ export function useRouteIssueById(id?: string | null) {
   });
 }
 
-// ---------- Active route issue for a service ----------
+// ---------- Active route issue for a service (homeowners only see approved/active issues) ----------
 export function useServiceRouteIssue(serviceId?: string) {
   return useQuery({
     queryKey: ["service-route-issue", serviceId],
@@ -196,7 +196,7 @@ export function useServiceRouteIssue(serviceId?: string) {
         .from("route_issue_services")
         .select("route_issue_id, route_issues!inner(*)")
         .eq("service_id", serviceId)
-        .in("route_issues.status", ["active", "pending_approval"])
+        .eq("route_issues.status", "active")
         .order("created_at", { ascending: false })
         .limit(1)
         .maybeSingle();
@@ -318,6 +318,58 @@ export function useResolveRouteIssue() {
       qc.invalidateQueries({ queryKey: ["service-route-issue"] });
       qc.invalidateQueries({ queryKey: ["my-notifications"] });
       qc.invalidateQueries({ queryKey: ["services"] });
+    },
+  });
+}
+
+export function useApproveRouteIssue() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase.rpc("approve_route_issue", { p_id: id });
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["admin-route-issues"] });
+      qc.invalidateQueries({ queryKey: ["service-route-issue"] });
+      qc.invalidateQueries({ queryKey: ["my-notifications"] });
+      qc.invalidateQueries({ queryKey: ["services"] });
+      qc.invalidateQueries({ queryKey: ["tech-route-issues"] });
+    },
+  });
+}
+
+export function useRejectRouteIssue() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ id, reason }: { id: string; reason?: string }) => {
+      const { error } = await supabase.rpc("reject_route_issue", { p_id: id, p_reason: reason ?? "" });
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["admin-route-issues"] });
+      qc.invalidateQueries({ queryKey: ["service-route-issue"] });
+      qc.invalidateQueries({ queryKey: ["tech-route-issues"] });
+    },
+  });
+}
+
+// ---------- Technician: their own submitted route issues ----------
+export function useMyTechRouteIssues() {
+  const { user } = useAuth();
+  return useQuery({
+    queryKey: ["tech-route-issues", user?.id],
+    enabled: !!user,
+    queryFn: async () => {
+      if (!user) return [] as RouteIssueRow[];
+      const { data, error } = await supabase
+        .from("route_issues")
+        .select("*")
+        .eq("reported_by_id", user.id)
+        .order("created_at", { ascending: false })
+        .limit(20);
+      if (error) throw error;
+      return (data ?? []) as RouteIssueRow[];
     },
   });
 }

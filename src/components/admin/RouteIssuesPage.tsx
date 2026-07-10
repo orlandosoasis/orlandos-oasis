@@ -14,6 +14,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/hooks/use-toast";
 import {
   useAdminRouteIssues, useRouteIssueEvents, useResolveRouteIssue,
+  useApproveRouteIssue, useRejectRouteIssue,
   type AdminRouteIssueRow, type RouteIssueEventRow,
 } from "@/hooks/useRouteIssues";
 
@@ -147,6 +148,8 @@ export function RouteIssueDetailPage({ issueId, onBack }: { issueId: string; onB
   const issue: AdminRouteIssueRow | undefined = (list ?? []).find(r => r.id === issueId);
   const { data: events, isLoading: eventsLoading } = useRouteIssueEvents(issueId);
   const resolve = useResolveRouteIssue();
+  const approve = useApproveRouteIssue();
+  const reject = useRejectRouteIssue();
   const { toast } = useToast();
 
   if (!issue) {
@@ -158,7 +161,9 @@ export function RouteIssueDetailPage({ issueId, onBack }: { issueId: string; onB
     );
   }
 
-  const isOpen = issue.status === "active" || issue.status === "pending_approval";
+  const isPending = issue.status === "pending_approval";
+  const isActive = issue.status === "active";
+  const isOpen = isPending || isActive;
 
   const handleResolve = async (status: "resolved" | "cancelled") => {
     try {
@@ -169,21 +174,61 @@ export function RouteIssueDetailPage({ issueId, onBack }: { issueId: string; onB
     }
   };
 
+  const handleApprove = async () => {
+    try {
+      await approve.mutateAsync(issue.id);
+      toast({ title: "Route issue approved", description: "Affected homeowners have been notified.", variant: "success" });
+    } catch (e) {
+      toast({ title: "Approve failed", description: e instanceof Error ? e.message : String(e), variant: "destructive" });
+    }
+  };
+
+  const handleReject = async () => {
+    try {
+      await reject.mutateAsync({ id: issue.id });
+      toast({ title: "Route issue rejected", description: "The technician has been notified. No homeowner notifications sent.", variant: "default" });
+    } catch (e) {
+      toast({ title: "Reject failed", description: e instanceof Error ? e.message : String(e), variant: "destructive" });
+    }
+  };
+
+  const isBusy = resolve.isPending || approve.isPending || reject.isPending;
+
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <Button variant="ghost" size="sm" onClick={onBack}><ChevronLeft className="h-4 w-4 mr-1" /> Back to Route Issues</Button>
         {isOpen && (
           <div className="flex gap-2">
-            <Button variant="outline" size="sm" onClick={() => handleResolve("cancelled")} disabled={resolve.isPending}>
-              <XCircle className="h-4 w-4 mr-1.5" /> Cancel Issue
-            </Button>
-            <Button size="sm" onClick={() => handleResolve("resolved")} disabled={resolve.isPending}>
-              <CheckCircle2 className="h-4 w-4 mr-1.5" /> Mark Resolved
-            </Button>
+            {isPending ? (
+              <>
+                <Button variant="outline" size="sm" onClick={handleReject} disabled={isBusy} className="text-destructive border-destructive/40 hover:bg-destructive/10">
+                  <XCircle className="h-4 w-4 mr-1.5" /> Reject
+                </Button>
+                <Button size="sm" onClick={handleApprove} disabled={isBusy} className="bg-emerald-600 hover:bg-emerald-700">
+                  <CheckCircle2 className="h-4 w-4 mr-1.5" /> Approve &amp; Notify
+                </Button>
+              </>
+            ) : (
+              <>
+                <Button variant="outline" size="sm" onClick={() => handleResolve("cancelled")} disabled={isBusy}>
+                  <XCircle className="h-4 w-4 mr-1.5" /> Cancel Issue
+                </Button>
+                <Button size="sm" onClick={() => handleResolve("resolved")} disabled={isBusy}>
+                  <CheckCircle2 className="h-4 w-4 mr-1.5" /> Mark Resolved
+                </Button>
+              </>
+            )}
           </div>
         )}
       </div>
+      {isPending && (
+        <div className="flex items-start gap-3 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
+          <AlertCircle className="h-4 w-4 mt-0.5 shrink-0 text-amber-600" />
+          <span>This route issue was submitted by a technician and is awaiting your review. Approving will apply the action and notify affected homeowners. Rejecting will close it without any homeowner notifications.</span>
+        </div>
+      )}
+
 
       {/* Incident hero card */}
       <Card className="overflow-hidden border-l-4 border-l-amber-500">
@@ -228,7 +273,7 @@ export function RouteIssueDetailPage({ issueId, onBack }: { issueId: string; onB
             <Metric
               icon={<Users className="h-4 w-4 text-sky-600" />}
               value={String(issue.affected_homeowner_count)}
-              label={`Homeowner${issue.affected_homeowner_count === 1 ? "" : "s"} Notified`}
+              label={isPending ? `Homeowner${issue.affected_homeowner_count === 1 ? "" : "s"} (pending approval)` : `Homeowner${issue.affected_homeowner_count === 1 ? "" : "s"} Notified`}
             />
             <Metric
               icon={<Clock className="h-4 w-4 text-amber-600" />}

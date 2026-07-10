@@ -10,6 +10,7 @@ import {
   ArrowRight,
   X,
   Flame,
+  AlertCircle,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -30,6 +31,8 @@ import {
 } from "@/types/tech";
 import type { PublicProfile } from "@/hooks/useProfiles";
 import { cn } from "@/lib/utils";
+import ReportRouteIssueModal from "@/components/ReportRouteIssueModal";
+import { useMyTechRouteIssues } from "@/hooks/useRouteIssues";
 
 type CompletedBanner = { homeownerName: string; completedAt: string };
 type TabKey = "active" | "completed";
@@ -52,6 +55,8 @@ const TechJobs = () => {
   const [tab, setTab] = useState<TabKey>("active");
   const [completedScope, setCompletedScope] = useState<CompletedScope>("today");
   const [startingId, setStartingId] = useState<string | null>(null);
+  const [showReportIssue, setShowReportIssue] = useState(false);
+  const { data: myRouteIssues = [] } = useMyTechRouteIssues();
 
   const { data: jobs = [], isLoading } = useServices({ technicianId: user?.id });
   const poolIds = useMemo(() => [...new Set(jobs.map((j) => j.poolId))], [jobs]);
@@ -172,11 +177,21 @@ const TechJobs = () => {
       )}
 
       {/* Header */}
-      <div className="mb-4">
-        <h1 className="text-2xl font-bold text-foreground">Jobs</h1>
-        <p className="text-muted-foreground text-sm mt-1">
-          Start, track, and complete your service jobs
-        </p>
+      <div className="mb-4 flex items-start justify-between gap-3">
+        <div>
+          <h1 className="text-2xl font-bold text-foreground">Jobs</h1>
+          <p className="text-muted-foreground text-sm mt-1">
+            Start, track, and complete your service jobs
+          </p>
+        </div>
+        <Button
+          variant="outline"
+          size="sm"
+          className="gap-1.5 shrink-0 mt-1"
+          onClick={() => setShowReportIssue(true)}
+        >
+          <AlertCircle className="h-3.5 w-3.5" /> Report Issue
+        </Button>
       </div>
 
       {/* Today Summary */}
@@ -347,6 +362,64 @@ const TechJobs = () => {
           )}
         </>
       )}
+      {/* My Route Issues */}
+      {myRouteIssues.length > 0 && (
+        <section className="mt-6">
+          <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-2 px-1">
+            My Route Issues
+          </h2>
+          <div className="space-y-2">
+            {myRouteIssues.map((issue) => {
+              const statusStyle =
+                issue.status === "active"
+                  ? "bg-emerald-50 text-emerald-700 border-emerald-200"
+                  : issue.status === "pending_approval"
+                  ? "bg-amber-50 text-amber-700 border-amber-200"
+                  : issue.status === "cancelled"
+                  ? "bg-red-50 text-red-700 border-red-200"
+                  : "bg-muted text-muted-foreground border-border";
+              const statusLabel =
+                issue.status === "active"
+                  ? "Approved"
+                  : issue.status === "pending_approval"
+                  ? "Pending Review"
+                  : issue.status === "cancelled"
+                  ? "Rejected"
+                  : "Resolved";
+              return (
+                <div
+                  key={issue.id}
+                  className="bg-card rounded-xl border border-border px-4 py-3 flex items-center justify-between gap-3 shadow-sm"
+                >
+                  <div className="min-w-0">
+                    <p className="text-sm font-medium text-foreground capitalize">
+                      {issue.issue_type === "other" ? issue.other_text || "Other" : issue.issue_type}
+                    </p>
+                    <p className="text-xs text-muted-foreground mt-0.5">
+                      {new Date(issue.created_at).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
+                    </p>
+                  </div>
+                  <span className={`inline-flex px-2 py-0.5 rounded-full text-[10px] font-semibold border shrink-0 ${statusStyle}`}>
+                    {statusLabel}
+                  </span>
+                </div>
+              );
+            })}
+          </div>
+        </section>
+      )}
+
+      <ReportRouteIssueModal
+        open={showReportIssue}
+        onOpenChange={setShowReportIssue}
+        role="technician"
+        services={todayActive.map((svc) => ({
+          id: svc.id,
+          homeowner: profiles[svc.homeownerId]?.fullName || profiles[svc.homeownerId]?.email || "Homeowner",
+          type: svc.serviceType,
+          time: TIME_LABELS[svc.timeWindow],
+        }))}
+      />
     </TechLayout>
   );
 };

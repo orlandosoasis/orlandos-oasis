@@ -472,6 +472,7 @@ const AdminDashboard = () => {
   const pendingCount = applicants.filter(a => a.status === "Pending").length;
   const openIssueCount = issues.filter(i => i.status === "Open").length;
   const { data: routeIssueData } = useAdminRouteIssues();
+  const pendingRouteIssueCount = (routeIssueData ?? []).filter(r => r.status === "pending_approval").length;
   const activeRouteIssueCount = (routeIssueData ?? []).filter(r => r.status === "active" || r.status === "pending_approval").length;
   const { data: dayOffData } = useAllDayOffRequests();
   const pendingDayOffCount = (dayOffData ?? []).filter(r => r.status === "pending").length;
@@ -484,7 +485,7 @@ const AdminDashboard = () => {
     { key: "reviews" as const, label: "Reviews", icon: MessageSquare, badge: pendingReviewCount, badgeColor: "bg-amber-500" },
     { key: "applicants" as const, label: "Applicants", icon: UserPlus, badge: pendingCount, badgeColor: "bg-violet-500" },
     { key: "issues" as const, label: "Reported Issues", icon: AlertCircle, badge: openIssueCount, badgeColor: "bg-destructive" },
-    { key: "routeIssues" as const, label: "Route Issues", icon: CalendarClock, badge: activeRouteIssueCount, badgeColor: "bg-blue-500" },
+    { key: "routeIssues" as const, label: "Route Issues", icon: CalendarClock, badge: activeRouteIssueCount, badgeColor: pendingRouteIssueCount > 0 ? "bg-amber-500" : "bg-blue-500" },
     { key: "timeOff" as const, label: "Time Off", icon: CalendarOff, badge: pendingDayOffCount, badgeColor: "bg-amber-500" },
     { key: "addons" as const, label: "Add-ons", icon: Package },
     { key: "serviceCatalog" as const, label: "Services Catalog", icon: Wrench },

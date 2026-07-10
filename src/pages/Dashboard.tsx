@@ -249,6 +249,8 @@ const Dashboard = () => {
               },
           status: s.status === "completed"
             ? "completed"
+            : s.status === "in_progress"
+            ? "in_progress"
             : !technician.isAssigned
             ? "technician_to_be_assigned"
             : "scheduled",
@@ -260,7 +262,7 @@ const Dashboard = () => {
   const handleLogout = () => { logout(); navigate("/login", { replace: true }); };
 
   const upcomingServices = useMemo(
-    () => services.filter((s) => s.booking.status === "scheduled" || s.booking.status === "reschedule_requested" || s.booking.status === "technician_to_be_assigned"),
+    () => services.filter((s) => s.booking.status === "scheduled" || s.booking.status === "in_progress" || s.booking.status === "reschedule_requested" || s.booking.status === "technician_to_be_assigned"),
     [services],
   );
   const pastServices = useMemo(() => services.filter((s) => s.booking.status === "completed"), [services]);

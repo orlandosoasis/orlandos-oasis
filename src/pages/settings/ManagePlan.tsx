@@ -12,6 +12,7 @@ import {
   getPoolSizeLabel,
   getMembershipMonthlyPrice,
 } from "@/components/ManageMembershipModal";
+import { useAddons } from "@/components/AddonsStep";
 
 const FULL_DAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 const SHORT_MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -61,7 +62,8 @@ const ManagePlan = () => {
   }, [d]);
   const nextDateStr = `${FULL_DAYS[nextBilling.getDay()]}, ${SHORT_MONTHS[nextBilling.getMonth()]} ${nextBilling.getDate()}, ${nextBilling.getFullYear()}`;
 
-  const currentMonthlyTotal = getMembershipMonthlyPrice(current);
+  const allAddons = useAddons();
+  const currentMonthlyTotal = getMembershipMonthlyPrice(current, allAddons);
 
   const handleSaved = (next: MembershipConfig, _plan: ServicePlan) => {
     try {

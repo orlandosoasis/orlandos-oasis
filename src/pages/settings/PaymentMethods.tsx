@@ -37,6 +37,7 @@ import {
   getFrequencyLabel,
   getPoolSizeLabel,
 } from "@/components/ManageMembershipModal";
+import { useAddons } from "@/components/AddonsStep";
 import { MEMBERSHIP_STORAGE_KEY } from "@/pages/settings/ManagePlan";
 import PayNowModal from "@/components/PayNowModal";
 import CancelSubscriptionModal from "@/components/CancelSubscriptionModal";
@@ -155,9 +156,10 @@ const PaymentMethods = () => {
   const basePrice = POOL_BASE[membership.poolSize];
   const frequencyMultiplier = FREQ_MULT[membership.frequency];
   const frequencyUpgradeCost = basePrice * (frequencyMultiplier - 1);
-  const activeAddons = useMemo(() => getActiveAddons(membership.activeAddonIds), [membership.activeAddonIds]);
+  const allAddons = useAddons();
+  const activeAddons = useMemo(() => getActiveAddons(membership.activeAddonIds, allAddons), [membership.activeAddonIds, allAddons]);
   const addonsTotal = activeAddons.reduce((sum, a) => sum + a.price, 0);
-  const monthlyTotal = getMembershipMonthlyPrice(membership);
+  const monthlyTotal = getMembershipMonthlyPrice(membership, allAddons);
 
   // Voucher detection (intro discount)
   const hasIntroDiscount =

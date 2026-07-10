@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Check, ChevronDown, ChevronUp, X as XIcon, Sparkles } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { ADDONS, type Addon } from "@/components/AddonsStep";
+import { useAddons, type Addon } from "@/components/AddonsStep";
 import CancelMembershipModal from "./CancelMembershipModal";
 
 // ===== Types exported for parent state =====
@@ -30,13 +30,6 @@ export interface ServicePlan {
 import { POOL_SIZES as SHARED_POOL_SIZES, FREQUENCIES as SHARED_FREQUENCIES } from "@/components/ServiceConfigStep";
 import { usePricingPoolSizes, usePricingFrequencies, usePricingAddons } from "@/hooks/usePricing";
 
-// Add-on grouping (reuses checkout catalog)
-const ADDON_GROUPS: { id: string; label: string; ids: string[] }[] = [
-  { id: "maintenance", label: "Maintenance", ids: ["chemical-testing", "filter-cleaning", "equipment-inspection", "pool-inspections"] },
-  { id: "repairs", label: "Repairs", ids: ["equipment-repair", "pool-startups"] },
-  { id: "deep-cleaning", label: "Deep Cleaning", ids: ["algae-treatment", "tile-cleaning", "acid-washing"] },
-];
-
 // ===== Helpers (read from shared, live catalog) =====
 function getBasePrice(size: PoolSize) {
   return SHARED_POOL_SIZES.find((s) => s.value === size)?.price ?? 0;
@@ -47,16 +40,16 @@ function getFrequencyMultiplier(freq: ServiceFrequency) {
 function getFrequencyDelta(freq: ServiceFrequency) {
   return SHARED_FREQUENCIES.find((f) => f.value === freq)?.priceDelta ?? 0;
 }
-export function getMembershipMonthlyPrice(config: MembershipConfig) {
+export function getMembershipMonthlyPrice(config: MembershipConfig, allAddons: Addon[] = []) {
   const base = getBasePrice(config.poolSize);
   const mult = getFrequencyMultiplier(config.frequency);
   const delta = getFrequencyDelta(config.frequency);
-  const addons = ADDONS.filter((a) => config.activeAddonIds.includes(a.id))
+  const addonsTotal = allAddons.filter((a) => config.activeAddonIds.includes(a.id))
     .reduce((sum, a) => sum + a.price, 0);
-  return base * mult + delta + addons;
+  return base * mult + delta + addonsTotal;
 }
-export function getActiveAddons(ids: string[]): Addon[] {
-  return ADDONS.filter((a) => ids.includes(a.id));
+export function getActiveAddons(ids: string[], allAddons: Addon[] = []): Addon[] {
+  return allAddons.filter((a) => ids.includes(a.id));
 }
 export function getFrequencyLabel(freq: ServiceFrequency) {
   return SHARED_FREQUENCIES.find((f) => f.value === freq)?.label ?? "";
@@ -90,10 +83,10 @@ export const ManagePlanForm = ({
   usePricingPoolSizes(false);
   usePricingFrequencies(false);
   usePricingAddons(false);
+  const allAddons = useAddons();
 
   const [draft, setDraft] = useState<MembershipConfig>(current);
   const [showAllAddons, setShowAllAddons] = useState(false);
-  const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
     setDraft(current);
@@ -103,12 +96,12 @@ export const ManagePlanForm = ({
   const draftBase = getBasePrice(draft.poolSize);
 
   const draftMultiplier = getFrequencyMultiplier(draft.frequency);
-  const draftAddonsTotal = ADDONS.filter((a) => draft.activeAddonIds.includes(a.id))
+  const draftAddonsTotal = allAddons.filter((a) => draft.activeAddonIds.includes(a.id))
     .reduce((sum, a) => sum + a.price, 0);
   const draftFreqUpgradeCost = draftBase * (draftMultiplier - 1);
   const draftMonthlyTotal = draftBase + draftFreqUpgradeCost + draftAddonsTotal;
 
-  const currentMonthlyTotal = getMembershipMonthlyPrice(current);
+  const currentMonthlyTotal = getMembershipMonthlyPrice(current, allAddons);
   const totalDelta = draftMonthlyTotal - currentMonthlyTotal;
 
   const hasChanges =
@@ -129,10 +122,10 @@ export const ManagePlanForm = ({
     }));
   };
 
-  const activeAddons = useMemo(() => getActiveAddons(draft.activeAddonIds), [draft.activeAddonIds]);
+  const activeAddons = useMemo(() => getActiveAddons(draft.activeAddonIds, allAddons), [draft.activeAddonIds, allAddons]);
   const activeAddonsTotal = activeAddons.reduce((sum, a) => sum + a.price, 0);
 
-  const availableAddons = ADDONS.filter((a) => !draft.activeAddonIds.includes(a.id));
+  const availableAddons = allAddons.filter((a) => !draft.activeAddonIds.includes(a.id));
   const visibleAvailableFlat = showAllAddons ? availableAddons : availableAddons.slice(0, 3);
 
   const handleSave = () => {
@@ -313,52 +306,11 @@ export const ManagePlanForm = ({
             )}
           </div>
 
-          {!showAllAddons ? (
-            <div className="space-y-2">
-              {visibleAvailableFlat.map((addon) => (
-                <AddonRow key={addon.id} addon={addon} selected={false} onToggle={() => toggleAddon(addon.id)} />
-              ))}
-            </div>
-          ) : (
-            <div className="space-y-4">
-              {ADDON_GROUPS.map((group) => {
-                const groupAddons = availableAddons.filter((a) => group.ids.includes(a.id));
-                if (groupAddons.length === 0) return null;
-                const isOpen = openGroups[group.id] ?? true;
-                return (
-                  <div key={group.id} className="space-y-2">
-                    <button
-                      onClick={() =>
-                        setOpenGroups((g) => ({ ...g, [group.id]: !isOpen }))
-                      }
-                      className="flex items-center justify-between w-full text-left"
-                    >
-                      <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                        {group.label} · {groupAddons.length}
-                      </p>
-                      {isOpen ? (
-                        <ChevronUp className="h-3.5 w-3.5 text-muted-foreground" />
-                      ) : (
-                        <ChevronDown className="h-3.5 w-3.5 text-muted-foreground" />
-                      )}
-                    </button>
-                    {isOpen && (
-                      <div className="space-y-2">
-                        {groupAddons.map((addon) => (
-                          <AddonRow
-                            key={addon.id}
-                            addon={addon}
-                            selected={false}
-                            onToggle={() => toggleAddon(addon.id)}
-                          />
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
-          )}
+          <div className="space-y-2">
+            {visibleAvailableFlat.map((addon) => (
+              <AddonRow key={addon.id} addon={addon} selected={false} onToggle={() => toggleAddon(addon.id)} />
+            ))}
+          </div>
         </section>
       </div>
 

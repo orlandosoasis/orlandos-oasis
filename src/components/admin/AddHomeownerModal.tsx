@@ -14,7 +14,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Switch } from "@/components/ui/switch";
 import { Card, CardContent } from "@/components/ui/card";
-import { ADDONS } from "@/components/AddonsStep";
+import { useAddons } from "@/components/AddonsStep";
 import type { AdminHomeowner } from "@/types/admin";
 
 interface AddHomeownerModalProps {
@@ -81,6 +81,7 @@ const AddHomeownerModal = ({ open, onClose, onCreate }: AddHomeownerModalProps) 
   const [poolNotes, setPoolNotes] = useState("");
   const [frequency, setFrequency] = useState("weekly");
   const [selectedAddons, setSelectedAddons] = useState<string[]>([]);
+  const allAddons = useAddons();
 
   // Step 3
   const [timeWindow, setTimeWindow] = useState("morning");
@@ -124,7 +125,7 @@ const AddHomeownerModal = ({ open, onClose, onCreate }: AddHomeownerModalProps) 
   const poolSizeLabel = POOL_SIZES.find(p => p.value === poolSize)?.label ?? "-";
   const frequencyLabel = FREQUENCY_SHORT[frequency];
   const planLabel = poolSize ? `${poolSizeLabel} · ${frequencyLabel}` : "-";
-  const addonTitles = ADDONS.filter(a => selectedAddons.includes(a.id)).map(a => a.title);
+  const addonTitles = allAddons.filter(a => selectedAddons.includes(a.id)).map(a => a.title);
 
   const nextServiceDate = (() => {
     if (!startDate) return null;
@@ -300,7 +301,7 @@ const AddHomeownerModal = ({ open, onClose, onCreate }: AddHomeownerModalProps) 
                   <div>
                     <h3 className="text-lg font-semibold mb-2">Add-ons</h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                      {ADDONS.map(a => (
+                      {allAddons.map(a => (
                         <label key={a.id} className="flex items-start gap-2 cursor-pointer p-2 rounded-md border border-input hover:bg-muted/50">
                           <Checkbox className="mt-0.5" checked={selectedAddons.includes(a.id)} onCheckedChange={() => toggleAddon(a.id)} />
                           <span className="text-sm leading-snug">{a.title}</span>

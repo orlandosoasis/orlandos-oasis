@@ -1,7 +1,7 @@
 import { Check, Clock } from "lucide-react";
 import type { VoucherPlan } from "./VoucherSelectionStep";
 import type { ServiceConfig } from "@/components/ServiceConfigStep";
-import { ADDONS, getAddonsTotal, getSelectedAddons } from "@/components/AddonsStep";
+import { getAddonsTotal, getSelectedAddons, useAddons } from "@/components/AddonsStep";
 
 const POOL_SIZE_LABELS: Record<string, string> = {
   small: "Small Pool",
@@ -25,8 +25,9 @@ interface VoucherConfirmationStepProps {
 const VoucherConfirmationStep = ({ plan, serviceConfig, selectedAddons = [], timeLeft }: VoucherConfirmationStepProps) => {
   const poolLabel = POOL_SIZE_LABELS[serviceConfig.poolSize] || serviceConfig.poolSize;
   const freqLabel = FREQUENCY_LABELS[serviceConfig.frequency] || serviceConfig.frequency;
-  const addonsTotal = getAddonsTotal(selectedAddons);
-  const selectedAddonObjects = getSelectedAddons(selectedAddons);
+  const addons = useAddons();
+  const addonsTotal = getAddonsTotal(selectedAddons, addons);
+  const selectedAddonObjects = getSelectedAddons(selectedAddons, addons);
   const totalDueToday = plan.discountPrice + addonsTotal;
 
   return (

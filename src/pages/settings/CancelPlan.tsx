@@ -13,6 +13,7 @@ import {
   getPoolSizeLabel,
   getMembershipMonthlyPrice,
 } from "@/components/ManageMembershipModal";
+import { useAddons } from "@/components/AddonsStep";
 import { MEMBERSHIP_STORAGE_KEY } from "./ManagePlan";
 
 const REASONS = [
@@ -79,7 +80,8 @@ const CancelPlan = () => {
     return `${FULL_DAYS[d.getDay()]}, ${SHORT_MONTHS[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`;
   }, [effectiveEndIso]);
 
-  const currentMonthlyTotal = getMembershipMonthlyPrice(current);
+  const allAddons = useAddons();
+  const currentMonthlyTotal = getMembershipMonthlyPrice(current, allAddons);
   const alreadyCancelled = subscription?.status === "cancelled" || subscription?.status === "pending_cancellation";
 
   const handleConfirm = async () => {

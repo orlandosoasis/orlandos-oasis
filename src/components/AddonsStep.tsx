@@ -1,7 +1,7 @@
-import { Check, Clock, Pencil } from "lucide-react";
+import { Check, Clock, Pencil, Loader2 } from "lucide-react";
 import type { ServiceConfig } from "@/components/ServiceConfigStep";
 import { getMonthlyPrice, getDiscountPrice } from "@/components/ServiceConfigStep";
-import { usePricingAddons } from "@/hooks/usePricing";
+import { useServiceCatalog, type ServiceCatalogItem } from "@/hooks/useServiceCatalog";
 
 export interface Addon {
   id: string;
@@ -10,71 +10,33 @@ export interface Addon {
   price: number;
 }
 
-export const ADDONS: Addon[] = [
-  {
-    id: "chemical-testing",
-    title: "Chemical Testing & Balancing",
-    description: "Maintain safe and balanced water by adjusting chlorine, pH, and alkalinity.",
-    price: 35,
-  },
-  {
-    id: "filter-cleaning",
-    title: "Filter Cleaning / Salt Cell Cleaning & Backwashing",
-    description: "Improve filtration and circulation by cleaning the system and removing buildup from the salt cell.",
-    price: 45,
-  },
-  {
-    id: "equipment-inspection",
-    title: "Pool Equipment Inspection",
-    description: "Check pumps, motors, valves, and heaters to identify issues early.",
-    price: 25,
-  },
-  {
-    id: "equipment-repair",
-    title: "Pool Equipment Repair",
-    description: "Repair or replace malfunctioning pool equipment such as pumps, motors, or lights.",
-    price: 75,
-  },
-  {
-    id: "algae-treatment",
-    title: "Green-to-Clean / Algae Treatment",
-    description: "Restore green or algae-filled pools using deep cleaning and chemical treatment.",
-    price: 85,
-  },
-  {
-    id: "tile-cleaning",
-    title: "Tile & Surface Cleaning",
-    description: "Remove calcium buildup and stains from tiles and pool surfaces.",
-    price: 50,
-  },
-  {
-    id: "acid-washing",
-    title: "Acid Washing",
-    description: "Deep clean surfaces to remove stubborn stains and embedded algae.",
-    price: 95,
-  },
-  {
-    id: "pool-inspections",
-    title: "Pool Inspections",
-    description: "Evaluate overall pool condition, including water clarity and equipment performance.",
-    price: 30,
-  },
-  {
-    id: "pool-startups",
-    title: "Pool Startups",
-    description: "Prepare newly built or resurfaced pools for use by balancing chemicals and starting equipment.",
-    price: 60,
-  },
-];
+/** Maps a catalog item to the Addon interface used throughout the booking flow */
+function catalogToAddon(item: ServiceCatalogItem): Addon {
+  return {
+    id: item.id,
+    title: item.name,
+    description: item.description ?? "",
+    price: item.price,
+  };
+}
+
+/**
+ * Hook that returns live add-ons from the service_catalog table.
+ * Falls back to an empty array while loading.
+ */
+export function useAddons(): Addon[] {
+  const { data = [] } = useServiceCatalog(false);
+  return data.map(catalogToAddon);
+}
 
 /** Calculate total price of selected add-ons */
-export function getAddonsTotal(selectedIds: string[]): number {
-  return ADDONS.filter((a) => selectedIds.includes(a.id)).reduce((sum, a) => sum + a.price, 0);
+export function getAddonsTotal(selectedIds: string[], addons: Addon[]): number {
+  return addons.filter((a) => selectedIds.includes(a.id)).reduce((sum, a) => sum + a.price, 0);
 }
 
 /** Get selected addon objects */
-export function getSelectedAddons(selectedIds: string[]): Addon[] {
-  return ADDONS.filter((a) => selectedIds.includes(a.id));
+export function getSelectedAddons(selectedIds: string[], addons: Addon[]): Addon[] {
+  return addons.filter((a) => selectedIds.includes(a.id));
 }
 
 const POOL_SIZE_LABELS: Record<string, string> = {
@@ -98,8 +60,8 @@ interface AddonsStepProps {
 }
 
 const AddonsStep = ({ selectedAddons, onToggleAddon, serviceConfig, timeLeft, onChangePlan }: AddonsStepProps) => {
-  // Subscribe so this step re-renders when admins update add-on prices.
-  usePricingAddons(false);
+  const { data: catalogItems = [], isLoading } = useServiceCatalog(false);
+  const addons = catalogItems.map(catalogToAddon);
   const monthlyPrice = getMonthlyPrice(serviceConfig);
   const discountPrice = getDiscountPrice(serviceConfig);
 
@@ -160,42 +122,53 @@ const AddonsStep = ({ selectedAddons, onToggleAddon, serviceConfig, timeLeft, on
         </p>
       </div>
 
-      <div className="space-y-3">
-        {ADDONS.map((addon) => {
-          const isSelected = selectedAddons.includes(addon.id);
-          return (
-            <button
-              key={addon.id}
-              type="button"
-              onClick={() => onToggleAddon(addon.id)}
-              className={`w-full text-left rounded-xl border p-4 transition-all ${
-                isSelected
-                  ? "border-primary bg-primary/5"
-                  : "border-border bg-card hover:border-primary/40"
-              }`}
-            >
-              <div className="flex items-start gap-3">
-                <div
-                  className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-md border-2 transition-colors ${
-                    isSelected
-                      ? "border-primary bg-primary text-primary-foreground"
-                      : "border-muted-foreground/30"
-                  }`}
-                >
-                  {isSelected && <Check className="h-3.5 w-3.5" />}
-                </div>
-                <div className="space-y-0.5 flex-1">
-                  <div className="flex items-start justify-between gap-2">
-                    <p className="text-sm font-semibold text-foreground leading-snug">{addon.title}</p>
-                    <span className="text-sm font-bold text-foreground shrink-0">${addon.price}</span>
+      {isLoading ? (
+        <div className="flex items-center justify-center py-10 gap-2 text-muted-foreground">
+          <Loader2 className="h-4 w-4 animate-spin" />
+          <span className="text-sm">Loading add-ons…</span>
+        </div>
+      ) : addons.length === 0 ? (
+        <p className="text-sm text-muted-foreground text-center py-6">No add-ons available at this time.</p>
+      ) : (
+        <div className="space-y-3">
+          {addons.map((addon) => {
+            const isSelected = selectedAddons.includes(addon.id);
+            return (
+              <button
+                key={addon.id}
+                type="button"
+                onClick={() => onToggleAddon(addon.id)}
+                className={`w-full text-left rounded-xl border p-4 transition-all ${
+                  isSelected
+                    ? "border-primary bg-primary/5"
+                    : "border-border bg-card hover:border-primary/40"
+                }`}
+              >
+                <div className="flex items-start gap-3">
+                  <div
+                    className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-md border-2 transition-colors ${
+                      isSelected
+                        ? "border-primary bg-primary text-primary-foreground"
+                        : "border-muted-foreground/30"
+                    }`}
+                  >
+                    {isSelected && <Check className="h-3.5 w-3.5" />}
                   </div>
-                  <p className="text-xs text-muted-foreground leading-relaxed">{addon.description}</p>
+                  <div className="space-y-0.5 flex-1">
+                    <div className="flex items-start justify-between gap-2">
+                      <p className="text-sm font-semibold text-foreground leading-snug">{addon.title}</p>
+                      <span className="text-sm font-bold text-foreground shrink-0">${addon.price}</span>
+                    </div>
+                    {addon.description && (
+                      <p className="text-xs text-muted-foreground leading-relaxed">{addon.description}</p>
+                    )}
+                  </div>
                 </div>
-              </div>
-            </button>
-          );
-        })}
-      </div>
+              </button>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 };

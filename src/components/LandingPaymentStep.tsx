@@ -3,7 +3,7 @@ import { Clock, Pencil, Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import type { VoucherPlan } from "@/components/dashboard/VoucherSelectionStep";
-import { getAddonsTotal, getSelectedAddons } from "@/components/AddonsStep";
+import { getAddonsTotal, getSelectedAddons, useAddons } from "@/components/AddonsStep";
 
 interface LandingPaymentStepProps {
   selectedPlan: VoucherPlan;
@@ -46,10 +46,11 @@ const LandingPaymentStep = ({ selectedPlan, timeLeft, email, onChangePlan, onCon
     if (touched) setErrors((prev) => ({ ...prev, [field]: undefined as any }));
   };
 
+  const addons = useAddons();
   const serviceName = selectedPlan.label.replace("Most Popular – ", "");
   const pctOff = Math.round(((selectedPlan.originalPrice - selectedPlan.discountPrice) / selectedPlan.originalPrice) * 100);
-  const addonsTotal = getAddonsTotal(selectedAddons);
-  const selectedAddonObjects = getSelectedAddons(selectedAddons);
+  const addonsTotal = getAddonsTotal(selectedAddons, addons);
+  const selectedAddonObjects = getSelectedAddons(selectedAddons, addons);
   const totalDueToday = selectedPlan.discountPrice + addonsTotal;
 
   return (

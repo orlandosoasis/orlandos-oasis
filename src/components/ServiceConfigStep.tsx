@@ -4,7 +4,6 @@ import { Check, ChevronDown, ChevronUp } from "lucide-react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Badge } from "@/components/ui/badge";
 import { usePricingPoolSizes, usePricingFrequencies, usePricingAddons } from "@/hooks/usePricing";
-import { ADDONS } from "@/components/AddonsStep";
 import { supabase } from "@/integrations/supabase/client";
 
 export type PoolSize = "small" | "medium" | "large";
@@ -93,17 +92,7 @@ export function PricingSync() {
       });
     }
   }, [frequencies]);
-  const { data: addons } = usePricingAddons(false);
-  useEffect(() => {
-    if (addons) {
-      addons.forEach((row) => {
-        const match = ADDONS.find(
-          (a) => a.title.toLowerCase() === String(row.name).toLowerCase(),
-        );
-        if (match) match.price = Number(row.price);
-      });
-    }
-  }, [addons]);
+  usePricingAddons(false); // keep subscription alive for realtime price sync
 
   // Realtime: invalidate pricing queries when admins change pricing anywhere.
   const qc = useQueryClient();

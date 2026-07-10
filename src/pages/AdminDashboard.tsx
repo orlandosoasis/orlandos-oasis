@@ -10,6 +10,7 @@ import {
   Plus, MoreHorizontal, Pencil, Trash2, CalendarClock, CalendarOff, CreditCard, BadgeCheck, Package
 } from "lucide-react";
 import AddonsManagementPage from "@/components/admin/AddonsManagementPage";
+import ServiceCatalogPage from "@/components/admin/ServiceCatalogPage";
 import HomeownerPricingPanel from "@/components/admin/HomeownerPricingPanel";
 import { EmptyState } from "@/components/EmptyState";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -58,7 +59,7 @@ import { format } from "date-fns";
 import { BarChart, Bar, XAxis, YAxis, Tooltip as ReTooltip, ResponsiveContainer, Cell, LabelList, PieChart, Pie } from "recharts";
 import { useExpenseItems, useCreateExpenseItem, useUpdateExpenseItem, useDeleteExpenseItem } from "@/hooks/useExpenseItems";
 
-type AdminPage = "dashboard" | "technicians" | "techDetail" | "homeowners" | "homeDetail" | "issues" | "routeIssues" | "routeIssueDetail" | "timeOff" | "timeOffDetail" | "applicants" | "applicantDetail" | "reviews" | "addons";
+type AdminPage = "dashboard" | "technicians" | "techDetail" | "homeowners" | "homeDetail" | "issues" | "routeIssues" | "routeIssueDetail" | "timeOff" | "timeOffDetail" | "applicants" | "applicantDetail" | "reviews" | "addons" | "serviceCatalog";
 
 const PAGE_TITLES: Record<string, string> = {
   dashboard: "Dashboard",
@@ -481,6 +482,7 @@ const AdminDashboard = () => {
     { key: "routeIssues" as const, label: "Route Issues", icon: CalendarClock, badge: activeRouteIssueCount, badgeColor: "bg-blue-500" },
     { key: "timeOff" as const, label: "Time Off", icon: CalendarOff, badge: pendingDayOffCount, badgeColor: "bg-amber-500" },
     { key: "addons" as const, label: "Add-ons", icon: Package },
+    { key: "serviceCatalog" as const, label: "Services Catalog", icon: Wrench },
   ];
 
   const handleMessagesNav = () => navigate("/admin/messages");
@@ -2900,6 +2902,7 @@ const AdminDashboard = () => {
           : <ApplicantsPage />;
       case "applicantDetail": return <ApplicantDetailPage />;
       case "addons": return <AddonsManagementPage />;
+      case "serviceCatalog": return <ServiceCatalogPage />;
 
       default: return <DashboardPage />;
     }

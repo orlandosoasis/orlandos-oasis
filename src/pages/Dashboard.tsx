@@ -19,6 +19,8 @@ import BookingFlow from "@/components/dashboard/BookingFlow";
 import StatusBadge from "@/components/StatusBadge";
 import RescheduleModal from "@/components/RescheduleModal";
 import { useSubscription, formatEndDate } from "@/hooks/useSubscription";
+import BookCatalogServiceModal from "@/components/BookCatalogServiceModal";
+import { useServiceCatalog } from "@/hooks/useServiceCatalog";
 
 const FULL_DAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 const SHORT_MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -122,6 +124,8 @@ const Dashboard = () => {
   const [visibleCount, setVisibleCount] = useState(INITIAL_VISIBLE_COUNT);
   const [rescheduleService, setRescheduleService] = useState<ServiceInstance | null>(null);
   const [rescheduleConfirmed, setRescheduleConfirmed] = useState(false);
+  const [catalogModalOpen, setCatalogModalOpen] = useState(false);
+  const { data: catalogItems = [] } = useServiceCatalog(false);
   const isPostCheckout = fromCheckout || showBooking || searchParams.get("openBooking") === "true";
 
   // Live data sources
@@ -420,6 +424,34 @@ const Dashboard = () => {
         )}
 
 
+        {/* Specialty Services */}
+        {catalogItems.length > 0 && (
+          <section className="mb-8">
+            <div className="flex items-center justify-between mb-3">
+              <h2 className="text-lg font-semibold text-foreground">Specialty Services</h2>
+              <Button size="sm" variant="outline" onClick={() => setCatalogModalOpen(true)}>
+                View All
+              </Button>
+            </div>
+            <div className="bg-card rounded-2xl border border-border shadow-sm divide-y divide-border overflow-hidden">
+              {catalogItems.slice(0, 3).map((item) => (
+                <div key={item.id} className="flex items-center justify-between px-4 py-3 gap-3">
+                  <div className="min-w-0">
+                    <p className="text-sm font-semibold truncate">{item.name}</p>
+                    {item.description && (
+                      <p className="text-xs text-muted-foreground truncate mt-0.5">{item.description}</p>
+                    )}
+                  </div>
+                  <div className="flex items-center gap-3 shrink-0">
+                    <span className="text-sm font-semibold">${item.price.toFixed(2)}</span>
+                    <Button size="sm" onClick={() => setCatalogModalOpen(true)}>Book</Button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
+
         {/* Footer */}
         <footer className="text-center text-xs text-muted-foreground mt-10 space-x-3">
           <Link to="/terms" className="text-primary hover:underline">Terms</Link>
@@ -430,6 +462,7 @@ const Dashboard = () => {
       </PageContainer>
 
       {showBooking && <BookingFlow onClose={() => { setShowBooking(false); setSelectedServiceInfo(null); }} onComplete={() => { setShowBooking(false); setSelectedServiceInfo(null); }} selectedService={selectedServiceInfo} />}
+      <BookCatalogServiceModal open={catalogModalOpen} onOpenChange={setCatalogModalOpen} />
 
       {rescheduleService && (
         <RescheduleModal

@@ -102,6 +102,9 @@ export interface AdminApplicantRow {
   appliedDate: string;
   status: "pending" | "approved" | "rejected";
   certifications: { id: string; name: string; fileUrl: string | null }[];
+  generatedEmail: string | null;
+  generatedPassword: string | null;
+  technicianProfileId: string | null;
 }
 
 const fmtDate = (iso: string | null) => {
@@ -421,6 +424,9 @@ export function useTechnicianApplications() {
         certifications: (certs ?? [])
           .filter((c) => c.application_id === a.id)
           .map((c) => ({ id: c.id, name: c.name, fileUrl: c.file_url })),
+        generatedEmail: (a as Record<string, unknown>).generated_email as string | null ?? null,
+        generatedPassword: (a as Record<string, unknown>).generated_password as string | null ?? null,
+        technicianProfileId: (a as Record<string, unknown>).technician_profile_id as string | null ?? null,
       }));
     },
   });
@@ -437,6 +443,34 @@ export function useUpdateApplicationStatus() {
       if (error) throw error;
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: ["technician-applications"] }),
+  });
+}
+
+export function useApproveTechnician() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (applicationId: string): Promise<{ email: string; password: string; profileId: string; alreadyApproved: boolean }> => {
+      const { data: { session } } = await supabase.auth.getSession();
+      const token = session?.access_token;
+      if (!token) throw new Error("Not authenticated");
+      const url = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/approve-technician`;
+      const res = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
+          "apikey": import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
+        },
+        body: JSON.stringify({ applicationId }),
+      });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error ?? "Approval failed");
+      return json;
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["technician-applications"] });
+      qc.invalidateQueries({ queryKey: ["admin-technicians"] });
+    },
   });
 }
 

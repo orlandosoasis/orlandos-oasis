@@ -46,7 +46,7 @@ import type {
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   useAdminTechnicians, useAdminHomeowners, useAdminIssues,
-  useTechnicianApplications, useUpdateIssueStatus, useUpdateApplicationStatus,
+  useTechnicianApplications, useUpdateIssueStatus, useUpdateApplicationStatus, useApproveTechnician,
   useUpdateTechnicianActive, useUpdateTechnicianProfile, useUpdateTechnicianCompensation, useUpdateHomeownerProfile,
   useToggleFredsTag,
 } from "@/hooks/useAdmin";
@@ -166,6 +166,7 @@ const AdminDashboard = () => {
     }
   };
   const [confirmAction, setConfirmAction] = useState<{ type: "approve" | "reject"; applicant: AdminApplicant } | null>(null);
+  const [approvedCredentials, setApprovedCredentials] = useState<{ email: string; password: string; name: string } | null>(null);
   const { logout, user } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -200,6 +201,7 @@ const AdminDashboard = () => {
   const reviewsQuery = useReviews();
   const updateIssueStatus = useUpdateIssueStatus();
   const updateApplicationStatus = useUpdateApplicationStatus();
+  const approveTechnician = useApproveTechnician();
   const updateReviewStatus = useUpdateReviewStatus();
   const assignPoolToTech = useAssignPoolToTech();
   const assignTechToHomeowner = useAssignTechToHomeowner();
@@ -333,6 +335,9 @@ const AdminDashboard = () => {
     })),
     appliedDate: a.appliedDate,
     status: (a.status.charAt(0).toUpperCase() + a.status.slice(1)) as AdminApplicant["status"],
+    generatedEmail: a.generatedEmail ?? null,
+    generatedPassword: a.generatedPassword ?? null,
+    technicianProfileId: a.technicianProfileId ?? null,
   }));
 
   // Cross-tech reviews list (drives Reviews moderation page + badge).
@@ -379,10 +384,10 @@ const AdminDashboard = () => {
 
   const handleApprove = async (applicant: AdminApplicant) => {
     try {
-      await updateApplicationStatus.mutateAsync({ id: applicant.id, status: "approved" });
+      const result = await approveTechnician.mutateAsync(applicant.id);
       setConfirmAction(null);
-      toast({ title: "Applicant Approved", description: `${applicant.firstName} ${applicant.lastName} approved.`, variant: "success" });
-      if (page === "applicantDetail") nav("applicants");
+      setApprovedCredentials({ email: result.email, password: result.password, name: `${applicant.firstName} ${applicant.lastName}` });
+      toast({ title: "Applicant Approved", description: `${applicant.firstName} ${applicant.lastName} approved and account created.`, variant: "success" });
     } catch (e) {
       toast({ title: "Approve failed", description: e instanceof Error ? e.message : String(e), variant: "destructive" });
     }
@@ -2713,12 +2718,43 @@ const AdminDashboard = () => {
             </div>
             {a.status === "Pending" && (
               <div className="flex gap-2">
-                <Button className="bg-emerald-500 hover:bg-emerald-600 text-white gap-1.5" size="sm" onClick={() => setConfirmAction({ type: "approve", applicant: a })}><Check className="h-3.5 w-3.5" /> Approve</Button>
+                <Button className="bg-emerald-500 hover:bg-emerald-600 text-white gap-1.5" size="sm" disabled={approveTechnician.isPending} onClick={() => setConfirmAction({ type: "approve", applicant: a })}>
+                  <Check className="h-3.5 w-3.5" /> Approve
+                </Button>
                 <Button variant="outline" size="sm" className="text-destructive border-destructive/40 hover:bg-destructive/10 gap-1.5" onClick={() => setConfirmAction({ type: "reject", applicant: a })}><X className="h-3.5 w-3.5" /> Reject</Button>
               </div>
             )}
           </CardContent>
         </Card>
+
+        {/* Generated credentials card — only shown after approval */}
+        {a.status === "Approved" && a.generatedEmail && a.generatedPassword && (
+          <Card className="border-emerald-200 bg-emerald-50/30">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm flex items-center gap-2 text-emerald-700">
+                <Check className="h-4 w-4" /> Technician Account Credentials
+              </CardTitle>
+              <p className="text-xs text-muted-foreground">These credentials were generated when the application was approved. Share them securely with the technician.</p>
+            </CardHeader>
+            <CardContent className="space-y-2">
+              <div className="flex items-center justify-between rounded-md border border-border bg-background px-4 py-2.5 gap-3">
+                <div>
+                  <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wide">Login Email</p>
+                  <p className="text-sm font-mono font-medium">{a.generatedEmail}</p>
+                </div>
+                <Button size="sm" variant="outline" onClick={() => { navigator.clipboard.writeText(a.generatedEmail!); toast({ title: "Copied", variant: "success" }); }}>Copy</Button>
+              </div>
+              <div className="flex items-center justify-between rounded-md border border-border bg-background px-4 py-2.5 gap-3">
+                <div>
+                  <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wide">Temporary Password</p>
+                  <p className="text-sm font-mono font-medium">{a.generatedPassword}</p>
+                </div>
+                <Button size="sm" variant="outline" onClick={() => { navigator.clipboard.writeText(a.generatedPassword!); toast({ title: "Copied", variant: "success" }); }}>Copy</Button>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
         <Card><CardHeader><CardTitle className="text-sm">Personal Details</CardTitle></CardHeader>
           <CardContent>
             <InfoRow label="First Name" value={a.firstName} /><InfoRow label="Last Name" value={a.lastName} />
@@ -3074,9 +3110,11 @@ const AdminDashboard = () => {
                   </DialogDescription>
                 </DialogHeader>
                 <DialogFooter className="gap-2">
-                  <Button variant="outline" onClick={() => setConfirmAction(null)}>Cancel</Button>
+                  <Button variant="outline" onClick={() => setConfirmAction(null)} disabled={approveTechnician.isPending}>Cancel</Button>
                   {isApprove
-                    ? <Button className="bg-emerald-500 hover:bg-emerald-600 text-white gap-1.5" onClick={() => handleApprove(a)}><Check className="h-4 w-4" /> Approve</Button>
+                    ? <Button className="bg-emerald-500 hover:bg-emerald-600 text-white gap-1.5" disabled={approveTechnician.isPending} onClick={() => handleApprove(a)}>
+                        <Check className="h-4 w-4" /> {approveTechnician.isPending ? "Creating account…" : "Approve"}
+                      </Button>
                     : <Button variant="destructive" className="gap-1.5" onClick={() => handleReject(a)}><X className="h-4 w-4" /> Reject</Button>}
                 </DialogFooter>
               </>
@@ -3115,6 +3153,51 @@ const AdminDashboard = () => {
             <Button className="gap-1.5" onClick={handleSendRejectionEmail}>
               <Mail className="h-4 w-4" /> Send Email
             </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Approved Technician Credentials Modal */}
+      <Dialog open={!!approvedCredentials} onOpenChange={(open) => !open && setApprovedCredentials(null)}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-2 bg-emerald-50 text-emerald-500">
+              <Check className="h-6 w-6" />
+            </div>
+            <DialogTitle>Account Created Successfully</DialogTitle>
+            <DialogDescription>
+              A technician account has been created for {approvedCredentials?.name}. Share these credentials securely.
+            </DialogDescription>
+          </DialogHeader>
+          {approvedCredentials && (
+            <div className="space-y-3 py-2">
+              <div className="rounded-lg border border-border bg-muted/40 divide-y divide-border">
+                <div className="flex items-center justify-between px-4 py-3 gap-3">
+                  <div>
+                    <p className="text-xs font-semibold text-muted-foreground">Login Email</p>
+                    <p className="text-sm font-mono font-medium mt-0.5">{approvedCredentials.email}</p>
+                  </div>
+                  <Button size="sm" variant="outline" className="shrink-0" onClick={() => { navigator.clipboard.writeText(approvedCredentials.email); toast({ title: "Email copied", variant: "success" }); }}>
+                    Copy
+                  </Button>
+                </div>
+                <div className="flex items-center justify-between px-4 py-3 gap-3">
+                  <div>
+                    <p className="text-xs font-semibold text-muted-foreground">Temporary Password</p>
+                    <p className="text-sm font-mono font-medium mt-0.5">{approvedCredentials.password}</p>
+                  </div>
+                  <Button size="sm" variant="outline" className="shrink-0" onClick={() => { navigator.clipboard.writeText(approvedCredentials.password); toast({ title: "Password copied", variant: "success" }); }}>
+                    Copy
+                  </Button>
+                </div>
+              </div>
+              <p className="text-xs text-muted-foreground">
+                The technician should log in and change their password. Credentials are also saved on their applicant record.
+              </p>
+            </div>
+          )}
+          <DialogFooter>
+            <Button onClick={() => setApprovedCredentials(null)}>Done</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

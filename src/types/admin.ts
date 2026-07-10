@@ -123,4 +123,7 @@ export interface AdminApplicant {
   certifications: AdminApplicantCert[];
   appliedDate: string;
   status: "Pending" | "Approved" | "Rejected";
+  generatedEmail: string | null;
+  generatedPassword: string | null;
+  technicianProfileId: string | null;
 }

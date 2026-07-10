@@ -9,6 +9,8 @@ export interface MessageRow {
   body: string;
   readAt: string | null;
   createdAt: string;
+  imageUrl: string | null;
+  imageType: "before" | "after" | null;
 }
 
 function rowToMessage(r: {
@@ -19,6 +21,8 @@ function rowToMessage(r: {
   body: string;
   read_at: string | null;
   created_at: string;
+  image_url?: string | null;
+  image_type?: string | null;
 }): MessageRow {
   return {
     id: r.id,
@@ -28,6 +32,8 @@ function rowToMessage(r: {
     body: r.body,
     readAt: r.read_at,
     createdAt: r.created_at,
+    imageUrl: r.image_url ?? null,
+    imageType: (r.image_type as "before" | "after" | null) ?? null,
   };
 }
 
@@ -81,7 +87,14 @@ export function useMessageThreads(userId: string | undefined) {
 export function useSendMessage() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: async (input: { threadId: string; senderId: string; recipientId: string; body: string }) => {
+    mutationFn: async (input: {
+      threadId: string;
+      senderId: string;
+      recipientId: string;
+      body: string;
+      imageUrl?: string;
+      imageType?: "before" | "after";
+    }) => {
       const { data, error } = await supabase
         .from("messages")
         .insert({
@@ -89,6 +102,8 @@ export function useSendMessage() {
           sender_id: input.senderId,
           recipient_id: input.recipientId,
           body: input.body,
+          image_url: input.imageUrl ?? null,
+          image_type: input.imageType ?? null,
         })
         .select()
         .single();

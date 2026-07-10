@@ -144,7 +144,9 @@ const Messages = () => {
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-bold text-foreground truncate">{name}</p>
                     <p className="text-xs text-muted-foreground truncate mt-0.5">
-                      {t.lastMessage.body}
+                      {t.lastMessage.imageUrl
+                        ? `📷 ${t.lastMessage.imageType === "before" ? "Before" : t.lastMessage.imageType === "after" ? "After" : ""} photo`
+                        : t.lastMessage.body}
                     </p>
                   </div>
                 </button>
@@ -194,6 +196,7 @@ const Messages = () => {
                   minute: "2-digit",
                   hour12: true,
                 });
+                const date = new Date(msg.createdAt).toLocaleDateString("en-US", { month: "short", day: "numeric" });
                 return (
                   <div
                     key={msg.id}
@@ -201,16 +204,30 @@ const Messages = () => {
                       isMe ? "self-end items-end ml-auto" : "self-start items-start"
                     }`}
                   >
-                    <div
-                      className={`px-3.5 py-2.5 text-[13.5px] leading-relaxed ${
-                        isMe
-                          ? "bg-primary text-primary-foreground rounded-2xl rounded-br-md"
-                          : "bg-card text-foreground rounded-2xl rounded-bl-md border border-border shadow-sm"
-                      }`}
-                    >
-                      {msg.body}
-                    </div>
-                    <span className="text-[11px] text-muted-foreground mt-0.5 px-1">{time}</span>
+                    {msg.imageUrl ? (
+                      <div className={`rounded-2xl overflow-hidden border shadow-sm ${isMe ? "border-primary/20" : "border-border"}`}>
+                        <div className={`px-2 pt-1.5 pb-0.5 text-[10px] font-semibold uppercase tracking-wide ${isMe ? "bg-primary text-primary-foreground" : "bg-card text-muted-foreground"}`}>
+                          {msg.imageType === "before" ? "Before Photo" : msg.imageType === "after" ? "After Photo" : "Photo"} · from your technician
+                        </div>
+                        <img
+                          src={msg.imageUrl}
+                          alt={msg.imageType ?? "photo"}
+                          className="max-w-[220px] max-h-[220px] object-cover w-full cursor-pointer"
+                          onClick={() => window.open(msg.imageUrl!, "_blank")}
+                        />
+                      </div>
+                    ) : (
+                      <div
+                        className={`px-3.5 py-2.5 text-[13.5px] leading-relaxed ${
+                          isMe
+                            ? "bg-primary text-primary-foreground rounded-2xl rounded-br-md"
+                            : "bg-card text-foreground rounded-2xl rounded-bl-md border border-border shadow-sm"
+                        }`}
+                      >
+                        {msg.body}
+                      </div>
+                    )}
+                    <span className="text-[11px] text-muted-foreground mt-0.5 px-1">{date} · {time}</span>
                   </div>
                 );
               })

@@ -176,6 +176,18 @@ const ServiceDetails = () => {
           id: dbService.id,
           patch: { serviceDate: newDate, timeWindow: newTimeWindow },
         });
+        // Notify assigned technician
+        if (dbService.technicianId) {
+          const dateStr = newDate.toLocaleDateString(undefined, { weekday: "short", month: "short", day: "numeric" });
+          const timeStr = TIME_LABELS[newTimeWindow] ?? newTimeWindow;
+          await supabase.from("tech_notifications").insert({
+            technician_id: dbService.technicianId,
+            kind: "service_rescheduled",
+            title: "Service Rescheduled by Homeowner",
+            body: `A homeowner has rescheduled their service to ${dateStr}, ${timeStr}.`,
+            cta_route: `/tech/jobs/${dbService.id}`,
+          });
+        }
       } catch (err) {
         toast({ title: "Reschedule failed. Please try again.", variant: "destructive" });
       }

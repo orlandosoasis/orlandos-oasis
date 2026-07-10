@@ -55,7 +55,7 @@ export interface AdminHomeownerAggregate {
   subscriptionEffectiveEndDate: string | null;
   subscriptionCancellationReason: string | null;
   pools: { id: string; address: string; size: string; technicianName: string; technicianId: string | null; nextService: string }[];
-  services: { id: string; date: string; serviceDate: string; type: string; technicianName: string; technicianId: string | null; status: "Completed" | "Scheduled"; poolId: string; createdAt: string }[];
+  services: { id: string; date: string; serviceDate: string; type: string; technicianName: string; technicianId: string | null; status: "Completed" | "Scheduled"; poolId: string; createdAt: string; updatedAt: string }[];
 }
 
 export interface SubscriptionEvent {
@@ -314,6 +314,7 @@ export function useAdminHomeowners() {
               status: (s.status === "completed" ? "Completed" : "Scheduled") as "Completed" | "Scheduled",
               poolId: s.pool_id,
               createdAt: s.created_at,
+              updatedAt: s.updated_at,
             })),
         };
       });

@@ -277,6 +277,19 @@ const Dashboard = () => {
         id: rescheduleService.id,
         patch: { serviceDate: newDate, timeWindow: newTimeWindow },
       });
+      // Notify assigned technician
+      const svc = realServices.find((s) => s.id === rescheduleService.id);
+      if (svc?.technicianId) {
+        const dateStr = newDate.toLocaleDateString(undefined, { weekday: "short", month: "short", day: "numeric" });
+        const timeStr = TIME_LABELS[newTimeWindow] ?? newTimeWindow;
+        await supabase.from("tech_notifications").insert({
+          technician_id: svc.technicianId,
+          kind: "service_rescheduled",
+          title: "Service Rescheduled by Homeowner",
+          body: `A homeowner has rescheduled their service to ${dateStr}, ${timeStr}.`,
+          cta_route: `/tech/jobs/${rescheduleService.id}`,
+        });
+      }
     } catch (err) {
       console.warn("Reschedule failed", err);
     }

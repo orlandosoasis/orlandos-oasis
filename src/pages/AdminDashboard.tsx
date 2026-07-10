@@ -568,7 +568,7 @@ const AdminDashboard = () => {
     type Row = {
       id: string; date: Date; dateLabel: string; homeowner: string; address: string;
       poolSize: string; type: string; status: string; technicianId: string | null; technicianName: string;
-      isGrandfathered: boolean; grandfatheredNote: string | null; createdAt: string;
+      isGrandfathered: boolean; grandfatheredNote: string | null; createdAt: string; updatedAt: string;
     };
     const upcoming: Row[] = [];
     const past: Row[] = [];
@@ -592,6 +592,7 @@ const AdminDashboard = () => {
           isGrandfathered: Boolean((h as { isGrandfathered?: boolean }).isGrandfathered),
           grandfatheredNote: (h as { grandfatheredNote?: string | null }).grandfatheredNote ?? null,
           createdAt: s.createdAt,
+          updatedAt: s.updatedAt,
         };
         if (s.status === "Scheduled" && d >= today) upcoming.push(row);
         else if (s.status === "Completed" || d < today) past.push(row);
@@ -608,6 +609,10 @@ const AdminDashboard = () => {
       r.status === "Scheduled" &&
       new Date(r.createdAt) >= sevenDaysAgo &&
       !seenIds.has(r.id);
+    const isRescheduled = (r: Row) =>
+      r.status === "Scheduled" &&
+      r.updatedAt &&
+      new Date(r.updatedAt).getTime() - new Date(r.createdAt).getTime() > 60_000;
     const unseenCount = upcoming.filter(isNew).length;
 
     const handleAssign = async (serviceId: string, techId: string) => {
@@ -699,6 +704,11 @@ const AdminDashboard = () => {
                       {isNew(r) && (
                         <span className="inline-flex px-1.5 py-0.5 rounded-full text-[9px] font-bold bg-sky-100 text-sky-700 border border-sky-200">
                           New
+                        </span>
+                      )}
+                      {isRescheduled(r) && (
+                        <span className="inline-flex px-1.5 py-0.5 rounded-full text-[9px] font-bold bg-violet-100 text-violet-700 border border-violet-200">
+                          Rescheduled
                         </span>
                       )}
                     </div>

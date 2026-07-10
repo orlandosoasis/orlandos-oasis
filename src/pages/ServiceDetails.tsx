@@ -375,7 +375,13 @@ const ServiceDetails = () => {
           </div>
         </div>
         {/* Service Report (completed only) */}
-        {isCompleted && <ServiceReport />}
+        {isCompleted && (
+          <ServiceReport
+            serviceId={isUuid ? serviceId : undefined}
+            completedTasks={dbService?.completedTasks ?? undefined}
+            techNotes={dbService?.techNotes ?? null}
+          />
+        )}
 
         {/* Your Pool (scheduled only) */}
         {!isCompleted && (

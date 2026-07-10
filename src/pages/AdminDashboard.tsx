@@ -550,10 +550,25 @@ const AdminDashboard = () => {
 
   const AppointmentsCard = () => {
     const today = new Date(); today.setHours(0, 0, 0, 0);
+    const SEEN_KEY = "oo_admin_seen_services";
+    const getSeenIds = (): Set<string> => {
+      try { return new Set(JSON.parse(localStorage.getItem(SEEN_KEY) ?? "[]")); } catch { return new Set(); }
+    };
+    const markSeen = (id: string) => {
+      const s = getSeenIds(); s.add(id);
+      localStorage.setItem(SEEN_KEY, JSON.stringify([...s]));
+    };
+    const [seenIds, setSeenIds] = useState<Set<string>>(getSeenIds);
+    const sevenDaysAgo = new Date(today); sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+    const handleRowClick = (id: string) => {
+      markSeen(id);
+      setSeenIds(getSeenIds());
+      setPastServiceId(id);
+    };
     type Row = {
       id: string; date: Date; dateLabel: string; homeowner: string; address: string;
       poolSize: string; type: string; status: string; technicianId: string | null; technicianName: string;
-      isGrandfathered: boolean; grandfatheredNote: string | null;
+      isGrandfathered: boolean; grandfatheredNote: string | null; createdAt: string;
     };
     const upcoming: Row[] = [];
     const past: Row[] = [];
@@ -576,6 +591,7 @@ const AdminDashboard = () => {
           technicianName: s.technician || pool?.technician || "Unassigned",
           isGrandfathered: Boolean((h as { isGrandfathered?: boolean }).isGrandfathered),
           grandfatheredNote: (h as { grandfatheredNote?: string | null }).grandfatheredNote ?? null,
+          createdAt: s.createdAt,
         };
         if (s.status === "Scheduled" && d >= today) upcoming.push(row);
         else if (s.status === "Completed" || d < today) past.push(row);
@@ -588,6 +604,11 @@ const AdminDashboard = () => {
     const totalPages = Math.max(1, Math.ceil(rows.length / PAGE_SIZE));
     const page = Math.min(apptPage, totalPages);
     const visible = rows.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+    const isNew = (r: Row) =>
+      r.status === "Scheduled" &&
+      new Date(r.createdAt) >= sevenDaysAgo &&
+      !seenIds.has(r.id);
+    const unseenCount = upcoming.filter(isNew).length;
 
     const handleAssign = async (serviceId: string, techId: string) => {
       try {
@@ -596,6 +617,21 @@ const AdminDashboard = () => {
         if (error) throw error;
         await queryClient.invalidateQueries({ queryKey: ["services"] });
         await queryClient.invalidateQueries({ queryKey: ["admin-homeowners"] });
+        // Insert homeowner notification
+        const ownerEntry = fetchedHomeowners.find((h) => h.services.some((s) => s.id === serviceId));
+        if (ownerEntry) {
+          const techName = newTech ? (technicians.find((t) => t.id === newTech)?.name ?? "Your technician") : null;
+          await supabase.from("homeowner_notifications").insert({
+            homeowner_id: ownerEntry.id,
+            service_id: serviceId,
+            kind: newTech ? "technician_assigned" : "technician_unassigned",
+            title: newTech ? "Technician Assigned" : "Technician Unassigned",
+            body: newTech
+              ? `${techName} has been assigned to your upcoming service.`
+              : "The technician for your upcoming service has been unassigned. We'll assign a new one soon.",
+            cta_route: `/service/${serviceId}`,
+          });
+        }
         toast({ title: newTech ? "Technician assigned" : "Technician unassigned", variant: "success" });
       } catch (e) {
         toast({ title: "Update failed", description: e instanceof Error ? e.message : String(e), variant: "destructive" });
@@ -608,7 +644,14 @@ const AdminDashboard = () => {
       <Card>
         <CardHeader className="pb-3 flex flex-row items-center justify-between gap-3 flex-wrap">
           <div className="flex items-center gap-3">
-            <CardTitle className="text-sm font-bold">Appointments</CardTitle>
+            <CardTitle className="text-sm font-bold flex items-center gap-2">
+              Appointments
+              {unseenCount > 0 && (
+                <span className="inline-flex items-center justify-center h-5 min-w-[20px] px-1.5 rounded-full bg-sky-500 text-white text-[10px] font-bold">
+                  {unseenCount}
+                </span>
+              )}
+            </CardTitle>
             <div className="flex items-center gap-1 rounded-md bg-muted p-0.5">
               <button
                 onClick={() => setApptTab("upcoming")}
@@ -645,8 +688,21 @@ const AdminDashboard = () => {
                   </TableCell>
                 </TableRow>
               ) : visible.map((r) => (
-                <TableRow key={r.id}>
-                  <TableCell className="font-medium whitespace-nowrap">{r.dateLabel}</TableCell>
+                <TableRow
+                  key={r.id}
+                  className={`cursor-pointer hover:bg-muted/50 transition-colors${isNew(r) ? " bg-sky-50/60" : ""}`}
+                  onClick={() => handleRowClick(r.id)}
+                >
+                  <TableCell className="font-medium whitespace-nowrap">
+                    <div className="flex items-center gap-2">
+                      {r.dateLabel}
+                      {isNew(r) && (
+                        <span className="inline-flex px-1.5 py-0.5 rounded-full text-[9px] font-bold bg-sky-100 text-sky-700 border border-sky-200">
+                          New
+                        </span>
+                      )}
+                    </div>
+                  </TableCell>
                   <TableCell>
                     <div className="flex items-center gap-1.5">
                       <span>{r.homeowner}</span>
@@ -660,7 +716,7 @@ const AdminDashboard = () => {
                   <TableCell className="text-muted-foreground">{r.address}</TableCell>
                   <TableCell className="text-xs">{r.poolSize}</TableCell>
                   <TableCell>{r.type}</TableCell>
-                  <TableCell>
+                  <TableCell onClick={(e) => e.stopPropagation()}>
                     {apptTab === "upcoming" ? (
                       <Select
                         value={r.technicianId ?? "unassigned"}

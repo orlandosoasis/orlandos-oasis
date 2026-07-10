@@ -1,8 +1,12 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { useSubscriptionEvents } from "@/hooks/useAdmin";
 import { formatEndDate } from "@/hooks/useSubscription";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 import type { AdminHomeowner } from "@/types/admin";
-import { CalendarX, CheckCircle2, Clock } from "lucide-react";
+import { CalendarX, CheckCircle2, Clock, RefreshCw } from "lucide-react";
 
 const StatusPill = ({ status }: { status?: string }) => {
   const map: Record<string, string> = {
@@ -36,14 +40,67 @@ const fmtDateTime = (iso: string | null) => {
   });
 };
 
+function useAdminReactivate(homeownerId: string) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async () => {
+      const { error } = await supabase
+        .from("profiles")
+        .update({
+          subscription_status: "active",
+          subscription_cancelled_at: null,
+          subscription_effective_end_date: null,
+          subscription_cancellation_reason: null,
+        })
+        .eq("id", homeownerId);
+      if (error) throw error;
+      await supabase.from("subscription_events").insert({
+        homeowner_id: homeownerId,
+        event_type: "reactivated",
+        reason: "Reactivated by admin",
+        effective_end_date: null,
+        status_after: "active",
+      });
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["admin-homeowners"] });
+      qc.invalidateQueries({ queryKey: ["subscription-events", homeownerId] });
+    },
+  });
+}
+
 const MembershipPanel = ({ homeowner }: { homeowner: AdminHomeowner }) => {
   const { data: events = [], isLoading } = useSubscriptionEvents(homeowner.id);
+  const { toast } = useToast();
+  const reactivate = useAdminReactivate(homeowner.id);
   const status = homeowner.subscriptionStatus ?? "active";
 
   return (
     <div className="space-y-4">
       <Card>
-        <CardHeader><CardTitle className="text-sm">Membership Status</CardTitle></CardHeader>
+        <CardHeader className="flex flex-row items-center justify-between">
+          <CardTitle className="text-sm">Membership Status</CardTitle>
+          {(status === "cancelled" || status === "pending_cancellation") && (
+            <Button
+              size="sm"
+              variant="outline"
+              className="gap-1.5 text-emerald-700 border-emerald-300 hover:bg-emerald-50"
+              disabled={reactivate.isPending}
+              onClick={async () => {
+                try {
+                  await reactivate.mutateAsync();
+                  toast({ title: "Subscription reactivated", description: `${homeowner.name}'s plan is active again.`, variant: "success" });
+                } catch (err: unknown) {
+                  const m = err instanceof Error ? err.message : "Please try again.";
+                  toast({ title: "Reactivation failed", description: m, variant: "destructive" });
+                }
+              }}
+            >
+              <RefreshCw className="h-3.5 w-3.5" />
+              {reactivate.isPending ? "Reactivating…" : "Reactivate"}
+            </Button>
+          )}
+        </CardHeader>
         <CardContent>
           <Row label="Current Status" value={<StatusPill status={status} />} />
           <Row label="Plan" value={homeowner.plan} />

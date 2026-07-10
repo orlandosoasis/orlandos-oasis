@@ -11,18 +11,9 @@ import ReportRouteIssueModal, { type RouteService } from "@/components/ReportRou
 import { useService, useUpdateService } from "@/hooks/useServices";
 import { usePool } from "@/hooks/usePools";
 import { useProfile } from "@/hooks/useProfiles";
-import { useUploadServicePhoto } from "@/hooks/useServicePhotos";
+import { useUploadServicePhoto, useServicePhotos } from "@/hooks/useServicePhotos";
 import { useAuth } from "@/contexts/AuthContext";
 import { getPoolFullAddress, formatDateFull, TIME_LABELS, SERVICE_TASKS } from "@/types/tech";
-import poolBefore1 from "@/assets/pool-before-1.jpg";
-import poolBefore2 from "@/assets/pool-before-2.jpg";
-import poolBefore3 from "@/assets/pool-before-3.jpg";
-import poolAfter1 from "@/assets/pool-after-1.jpg";
-import poolAfter2 from "@/assets/pool-after-2.jpg";
-import poolAfter3 from "@/assets/pool-after-3.jpg";
-
-const FALLBACK_BEFORE = [poolBefore1, poolBefore2, poolBefore3];
-const FALLBACK_AFTER = [poolAfter1, poolAfter2, poolAfter3];
 
 const TechServiceDetails = () => {
   const { serviceId } = useParams();
@@ -34,6 +25,7 @@ const TechServiceDetails = () => {
   const { data: homeowner, isLoading: loadingHomeowner } = useProfile(service?.homeownerId);
   const updateService = useUpdateService();
   const uploadPhoto = useUploadServicePhoto();
+  const { data: servicePhotos = [] } = useServicePhotos(isCompleted ? serviceId : undefined);
 
   const [showReschedule, setShowReschedule] = useState(false);
   const [showCompletion, setShowCompletion] = useState(false);
@@ -200,35 +192,29 @@ const TechServiceDetails = () => {
             </div>
           )}
 
-          <div className="mb-4">
-            <div className="flex items-center gap-2 mb-3">
-              <Camera className="h-4 w-4 text-muted-foreground" />
-              <span className="text-sm font-semibold text-foreground">Before Photos</span>
-            </div>
-            <div className="grid grid-cols-3 gap-3">
-              {FALLBACK_BEFORE.map((src, i) => (
-                <div key={i} className="rounded-xl overflow-hidden border border-border">
-                  <img src={src} alt="Pool before cleaning" className="h-[110px] w-full object-cover" />
+          {(["before", "after"] as const).map((photoType) => {
+            const photos = servicePhotos.filter((p) => p.type === photoType);
+            return (
+              <div key={photoType} className="mb-4">
+                <div className="flex items-center gap-2 mb-3">
+                  <Camera className="h-4 w-4 text-muted-foreground" />
+                  <span className="text-sm font-semibold text-foreground capitalize">{photoType} Photos</span>
                 </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="border-t border-border my-4" />
-
-          <div className="mb-4">
-            <div className="flex items-center gap-2 mb-3">
-              <Camera className="h-4 w-4 text-muted-foreground" />
-              <span className="text-sm font-semibold text-foreground">After Photos</span>
-            </div>
-            <div className="grid grid-cols-3 gap-3">
-              {FALLBACK_AFTER.map((src, i) => (
-                <div key={i} className="rounded-xl overflow-hidden border border-border">
-                  <img src={src} alt="Pool after cleaning" className="h-[110px] w-full object-cover" />
-                </div>
-              ))}
-            </div>
-          </div>
+                {photos.length > 0 ? (
+                  <div className="grid grid-cols-3 gap-3">
+                    {photos.map((p) => (
+                      <div key={p.id} className="rounded-xl overflow-hidden border border-border">
+                        <img src={p.url} alt={`Pool ${photoType} cleaning`} className="h-[110px] w-full object-cover" />
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-sm text-muted-foreground italic">No {photoType} photos uploaded.</p>
+                )}
+                {photoType === "before" && <div className="border-t border-border my-4" />}
+              </div>
+            );
+          })}
 
           <div className="border-t border-border my-4" />
 

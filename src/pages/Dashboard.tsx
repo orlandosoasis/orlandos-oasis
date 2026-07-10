@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo, useCallback } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
-import { Calendar, ChevronRight, Star, CalendarClock, CalendarPlus, CheckCircle2 } from "lucide-react";
+import { Calendar, ChevronRight, Star, CalendarClock, CalendarPlus, CheckCircle2, AlertTriangle } from "lucide-react";
 import { EmptyState } from "@/components/EmptyState";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
@@ -18,6 +18,7 @@ import PoolSceneHero from "@/components/dashboard/PoolSceneHero";
 import BookingFlow from "@/components/dashboard/BookingFlow";
 import StatusBadge from "@/components/StatusBadge";
 import RescheduleModal from "@/components/RescheduleModal";
+import { useSubscription, formatEndDate } from "@/hooks/useSubscription";
 
 const FULL_DAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 const SHORT_MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -80,6 +81,8 @@ const Dashboard = () => {
 
   // State for selected service info from checkout
   const [selectedServiceInfo, setSelectedServiceInfo] = useState<{ title: string; description: string } | null>(null);
+
+  const { data: subscription } = useSubscription();
 
   // Migrate any client-only onboarding data into Supabase exactly once.
   useEnsureHomeownerData();
@@ -294,6 +297,36 @@ const Dashboard = () => {
     <>
       <PageContainer>
         <RouteIssueBanner />
+
+        {/* Subscription cancellation banner */}
+        {(subscription?.status === "pending_cancellation" || subscription?.status === "cancelled") && (
+          <div className="flex items-start gap-3 rounded-2xl border border-amber-200 bg-amber-50 p-4 shadow-sm mb-6">
+            <AlertTriangle className="h-5 w-5 text-amber-600 shrink-0 mt-0.5" aria-hidden />
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-semibold text-amber-900">
+                {subscription.status === "pending_cancellation"
+                  ? "Your subscription is scheduled to cancel"
+                  : "Your subscription has been cancelled"}
+              </p>
+              <p className="text-xs text-amber-800/80 mt-0.5">
+                {subscription.status === "pending_cancellation" && subscription.effectiveEndDate
+                  ? `You'll keep service through ${formatEndDate(subscription.effectiveEndDate)}. No new visits will be scheduled after that date.`
+                  : subscription.status === "cancelled"
+                  ? "Your recurring pool service has ended. Reactivate anytime from billing settings."
+                  : "No new visits will be scheduled."}
+              </p>
+            </div>
+            <Button
+              size="sm"
+              variant="outline"
+              className="shrink-0 border-amber-300 text-amber-900 hover:bg-amber-100"
+              onClick={() => navigate("/account-settings/payment-methods")}
+            >
+              {subscription.status === "cancelled" ? "Reactivate" : "Manage"}
+            </Button>
+          </div>
+        )}
+
         {/* Greeting */}
         <div className="flex items-center justify-between mb-8">
           <div>

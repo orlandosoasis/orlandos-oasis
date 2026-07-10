@@ -43,10 +43,19 @@ export type HomeownerNotificationRow = {
   homeowner_id: string;
   route_issue_id: string | null;
   service_id: string | null;
-  kind: "route_notify" | "route_delay" | "route_reschedule" | "route_reassign";
+  kind:
+    | "route_notify"
+    | "route_delay"
+    | "route_reschedule"
+    | "route_reassign"
+    | "technician_assigned"
+    | "technician_unassigned"
+    | "service_completed"
+    | string;
   title: string;
   body: string;
   cta_route: string | null;
+  read_at: string | null;
   dismissed_at: string | null;
   created_at: string;
 };

@@ -460,8 +460,20 @@ const JobCard = ({
         </div>
       )}
       <div className="flex items-start justify-between mb-3">
-        <div>
-          <p className="font-semibold text-foreground">{homeownerName}</p>
+        <div className="min-w-0 flex-1 pr-3">
+          <div className="flex items-center gap-2 flex-wrap">
+            <p className="font-semibold text-foreground">{homeownerName}</p>
+            {homeowner?.subscriptionStatus === "pending_cancellation" && (
+              <span className="inline-flex px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-50 text-amber-700 border border-amber-200 shrink-0">
+                Cancelling
+              </span>
+            )}
+            {homeowner?.subscriptionStatus === "cancelled" && (
+              <span className="inline-flex px-2 py-0.5 rounded-full text-[10px] font-bold bg-red-50 text-red-700 border border-red-200 shrink-0">
+                Cancelled
+              </span>
+            )}
+          </div>
           <p className="text-sm text-muted-foreground">{svc.serviceType}</p>
         </div>
         <StatusBadge status={svc.status} />

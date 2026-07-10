@@ -50,6 +50,7 @@ import RoleRoute from "./components/RoleRoute";
 // main bundle to keep initial load fast for marketing pages)
 // ============================================================================
 const Dashboard = lazy(() => import("./pages/Dashboard"));
+const Notifications = lazy(() => import("./pages/Notifications"));
 const ServicePass = lazy(() => import("./pages/ServicePass"));
 const ServiceDetails = lazy(() => import("./pages/ServiceDetails"));
 const Messages = lazy(() => import("./pages/Messages"));
@@ -117,6 +118,7 @@ const App = () => (
                   {/* Customer pages with persistent header (homeowner only) */}
                   <Route element={<RoleRoute roles={["homeowner"]}><CustomerLayout /></RoleRoute>}>
                     <Route path="/dashboard" element={<Dashboard />} />
+                    <Route path="/notifications" element={<Notifications />} />
                     <Route path="/passes" element={<ServicePass />} />
                     <Route path="/service/:serviceId" element={<ServiceDetails />} />
                     <Route path="/service-details" element={<ServiceDetails />} />

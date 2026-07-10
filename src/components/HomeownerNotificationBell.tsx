@@ -83,13 +83,13 @@ export default function HomeownerNotificationBell() {
           )}
         </div>
         <DropdownMenuSeparator />
-        <div className="max-h-96 overflow-auto">
+        <div className="max-h-80 overflow-auto">
           {notifs.length === 0 ? (
             <div className="px-4 py-6 text-center text-xs text-muted-foreground">
               You're all caught up.
             </div>
           ) : (
-            notifs.map((n: any) => (
+            notifs.slice(0, 5).map((n: any) => (
               <button
                 key={n.id}
                 onClick={() => handleClick(n)}
@@ -116,6 +116,13 @@ export default function HomeownerNotificationBell() {
             ))
           )}
         </div>
+        <DropdownMenuSeparator />
+        <button
+          onClick={() => navigate("/notifications")}
+          className="w-full text-center text-xs font-medium text-primary hover:underline py-3"
+        >
+          View all notifications
+        </button>
       </DropdownMenuContent>
     </DropdownMenu>
   );

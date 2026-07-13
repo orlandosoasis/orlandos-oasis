@@ -409,9 +409,32 @@ const AdminDashboard = () => {
     }
   };
 
-  const handleSendRejectionEmail = () => {
+  const handleSendRejectionEmail = async () => {
     if (!rejectionEmailApplicant) return;
-    toast({ title: "Email Sent", description: `Rejection email sent to ${rejectionEmailApplicant.email}.`, variant: "success" });
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const token = session?.access_token;
+      if (!token) throw new Error("Not authenticated");
+      const res = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/send-rejection-email`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
+          "apikey": import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
+        },
+        body: JSON.stringify({
+          toEmail: rejectionEmailApplicant.email,
+          toName: `${rejectionEmailApplicant.firstName} ${rejectionEmailApplicant.lastName}`,
+          subject: rejectionEmailSubject,
+          body: rejectionEmailBody,
+        }),
+      });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error ?? "Failed to send email");
+      toast({ title: "Email Sent", description: `Rejection email sent to ${rejectionEmailApplicant.email}.`, variant: "success" });
+    } catch (e) {
+      toast({ title: "Email failed", description: e instanceof Error ? e.message : String(e), variant: "destructive" });
+    }
     setRejectionEmailApplicant(null);
   };
 

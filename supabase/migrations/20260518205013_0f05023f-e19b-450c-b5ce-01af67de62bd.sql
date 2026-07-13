@@ -1,1 +1,2 @@
+
 ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS payout_per_pool numeric NOT NULL DEFAULT 100;

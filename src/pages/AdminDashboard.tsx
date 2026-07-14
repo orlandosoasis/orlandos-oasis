@@ -2796,7 +2796,7 @@ const AdminDashboard = () => {
                 <Button className="bg-emerald-500 hover:bg-emerald-600 text-white gap-1.5" size="sm" disabled={approveTechnician.isPending} onClick={() => setConfirmAction({ type: "approve", applicant: a })}>
                   <Check className="h-3.5 w-3.5" /> Approve
                 </Button>
-                <Button variant="outline" size="sm" className="text-destructive border-destructive/40 hover:bg-destructive/10 gap-1.5" onClick={() => setConfirmAction({ type: "reject", applicant: a })}><X className="h-3.5 w-3.5" /> Reject</Button>
+                <Button size="sm" className="bg-red-600 text-white hover:bg-red-700 gap-1.5" onClick={() => setConfirmAction({ type: "reject", applicant: a })}><X className="h-3.5 w-3.5" /> Reject</Button>
               </div>
             )}
           </CardContent>
@@ -2854,7 +2854,7 @@ const AdminDashboard = () => {
         {a.status === "Pending" && (
           <div className="flex gap-3 justify-end">
             <Button className="bg-emerald-500 hover:bg-emerald-600 text-white gap-1.5" onClick={() => setConfirmAction({ type: "approve", applicant: a })}><Check className="h-4 w-4" /> Approve Technician</Button>
-            <Button variant="outline" className="text-destructive border-destructive/40 hover:bg-destructive hover:text-white gap-1.5" onClick={() => setConfirmAction({ type: "reject", applicant: a })}><X className="h-4 w-4" /> Reject Application</Button>
+            <Button className="bg-red-600 text-white hover:bg-red-700 gap-1.5" onClick={() => setConfirmAction({ type: "reject", applicant: a })}><X className="h-4 w-4" /> Reject Application</Button>
           </div>
         )}
       </div>

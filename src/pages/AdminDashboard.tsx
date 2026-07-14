@@ -2651,55 +2651,83 @@ const AdminDashboard = () => {
   };
 
   // ═══════════ APPLICANTS ═══════════
-  const ApplicantsPage = () => (
-    <Card>
-      <CardContent className="p-0">
-        <div className="overflow-x-auto">
-          <Table>
-            <TableHeader><TableRow>
-              <TableHead>Name</TableHead><TableHead>Email</TableHead><TableHead>Phone</TableHead><TableHead>City</TableHead><TableHead>Experience</TableHead>
-              <TableHead>Resume</TableHead><TableHead>Certs</TableHead><TableHead>Applied</TableHead><TableHead>Status</TableHead><TableHead>Actions</TableHead>
-            </TableRow></TableHeader>
-            <TableBody>
-              {applicants.map(a => (
-                <TableRow key={a.id}>
-                  <TableCell className="font-semibold whitespace-nowrap">{a.firstName} {a.lastName}</TableCell>
-                  <TableCell>{a.email}</TableCell>
-                  <TableCell className="whitespace-nowrap">{a.phone}</TableCell>
-                  <TableCell className="whitespace-nowrap">{a.city}, {a.state}</TableCell>
-                  <TableCell className="whitespace-nowrap">{a.experience}</TableCell>
-                  <TableCell><span className="text-primary font-semibold text-xs cursor-pointer inline-flex items-center gap-1"><FileText className="h-3 w-3" /> View</span></TableCell>
-                  <TableCell>
-                    {a.certifications.length > 0 ? (
-                      <button
-                        onClick={() => setCertModalData({ name: `${a.firstName} ${a.lastName}`, certs: a.certifications })}
-                        className="text-primary font-semibold text-xs cursor-pointer inline-flex items-center gap-1 hover:underline"
-                      >
-                        <FileText className="h-3 w-3" /> {a.certifications.length} uploaded
-                      </button>
-                    ) : (
-                      <span className="text-xs text-muted-foreground">None</span>
-                    )}
-                  </TableCell>
-                  <TableCell className="whitespace-nowrap">{a.appliedDate}</TableCell>
-                  <TableCell><StatusBadge status={a.status} /></TableCell>
-                  <TableCell>
-                    <div className="flex gap-1.5 flex-nowrap">
-                      <Button size="sm" variant="outline" onClick={() => nav("applicantDetail", a.id)}>View</Button>
-                      {a.status === "Pending" && <>
-                        <Button size="sm" className="bg-emerald-500 hover:bg-emerald-600 text-white" onClick={() => setConfirmAction({ type: "approve", applicant: a })}><Check className="h-3.5 w-3.5" /></Button>
-                        <Button size="sm" variant="outline" className="text-destructive border-destructive/40 hover:bg-destructive/10" onClick={() => setConfirmAction({ type: "reject", applicant: a })}><X className="h-3.5 w-3.5" /></Button>
-                      </>}
-                    </div>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+  const ApplicantsPage = () => {
+    const [applicantTab, setApplicantTab] = useState<"pending" | "approved" | "rejected">("pending");
+    const pendingApplicants = applicants.filter(a => a.status === "Pending");
+    const approvedApplicants = applicants.filter(a => a.status === "approved");
+    const rejectedApplicants = applicants.filter(a => a.status === "rejected");
+    const visibleApplicants = applicantTab === "pending" ? pendingApplicants : applicantTab === "approved" ? approvedApplicants : rejectedApplicants;
+
+    return (
+      <div className="space-y-4">
+        <div className="flex gap-2">
+          {([
+            { key: "pending", label: "Pending", count: pendingApplicants.length, color: "bg-amber-500" },
+            { key: "approved", label: "Approved", count: approvedApplicants.length, color: "bg-emerald-500" },
+            { key: "rejected", label: "Rejected", count: rejectedApplicants.length, color: "bg-destructive" },
+          ] as const).map(t => (
+            <button
+              key={t.key}
+              onClick={() => setApplicantTab(t.key)}
+              className={`px-4 py-1.5 rounded-full text-sm font-semibold border transition-colors flex items-center gap-2 ${applicantTab === t.key ? "bg-foreground text-background border-foreground" : "bg-background text-muted-foreground border-border hover:border-foreground/40"}`}
+            >
+              {t.label}
+              <span className={`${t.color} text-white text-xs rounded-full px-1.5 py-0.5 min-w-[20px] text-center`}>{t.count}</span>
+            </button>
+          ))}
         </div>
-      </CardContent>
-    </Card>
-  );
+        <Card>
+          <CardContent className="p-0">
+            <div className="overflow-x-auto">
+              <Table>
+                <TableHeader><TableRow>
+                  <TableHead>Name</TableHead><TableHead>Email</TableHead><TableHead>Phone</TableHead><TableHead>City</TableHead><TableHead>Experience</TableHead>
+                  <TableHead>Resume</TableHead><TableHead>Certs</TableHead><TableHead>Applied</TableHead><TableHead>Status</TableHead><TableHead>Actions</TableHead>
+                </TableRow></TableHeader>
+                <TableBody>
+                  {visibleApplicants.length === 0 ? (
+                    <TableRow><TableCell colSpan={10} className="text-center text-muted-foreground py-8">No {applicantTab} applications.</TableCell></TableRow>
+                  ) : visibleApplicants.map(a => (
+                    <TableRow key={a.id}>
+                      <TableCell className="font-semibold whitespace-nowrap">{a.firstName} {a.lastName}</TableCell>
+                      <TableCell>{a.email}</TableCell>
+                      <TableCell className="whitespace-nowrap">{a.phone}</TableCell>
+                      <TableCell className="whitespace-nowrap">{a.city}, {a.state}</TableCell>
+                      <TableCell className="whitespace-nowrap">{a.experience}</TableCell>
+                      <TableCell><span className="text-primary font-semibold text-xs cursor-pointer inline-flex items-center gap-1"><FileText className="h-3 w-3" /> View</span></TableCell>
+                      <TableCell>
+                        {a.certifications.length > 0 ? (
+                          <button
+                            onClick={() => setCertModalData({ name: `${a.firstName} ${a.lastName}`, certs: a.certifications })}
+                            className="text-primary font-semibold text-xs cursor-pointer inline-flex items-center gap-1 hover:underline"
+                          >
+                            <FileText className="h-3 w-3" /> {a.certifications.length} uploaded
+                          </button>
+                        ) : (
+                          <span className="text-xs text-muted-foreground">None</span>
+                        )}
+                      </TableCell>
+                      <TableCell className="whitespace-nowrap">{a.appliedDate}</TableCell>
+                      <TableCell><StatusBadge status={a.status} /></TableCell>
+                      <TableCell>
+                        <div className="flex gap-1.5 flex-nowrap">
+                          <Button size="sm" variant="outline" onClick={() => nav("applicantDetail", a.id)}>View</Button>
+                          {a.status === "Pending" && <>
+                            <Button size="sm" className="bg-emerald-500 hover:bg-emerald-600 text-white" onClick={() => setConfirmAction({ type: "approve", applicant: a })}><Check className="h-3.5 w-3.5" /></Button>
+                            <Button size="sm" variant="outline" className="text-destructive border-destructive/40 hover:bg-destructive hover:text-white" onClick={() => setConfirmAction({ type: "reject", applicant: a })}><X className="h-3.5 w-3.5" /></Button>
+                          </>}
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  };
 
   const ApplicantDetailPage = () => {
     const a = applicants.find(ap => ap.id === detailId);

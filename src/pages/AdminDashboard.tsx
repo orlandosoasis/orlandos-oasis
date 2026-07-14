@@ -400,10 +400,27 @@ const AdminDashboard = () => {
     try {
       await updateApplicationStatus.mutateAsync({ id: applicant.id, status: "rejected" });
       setConfirmAction(null);
-      setRejectionEmailApplicant(applicant);
-      setRejectionEmailSubject("Thank you for applying");
-      setRejectionEmailBody(DEFAULT_REJECTION_MESSAGE);
       if (page === "applicantDetail") nav("applicants");
+      // Automatically send rejection email
+      const { data: { session } } = await supabase.auth.getSession();
+      const token = session?.access_token;
+      if (token) {
+        await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/send-rejection-email`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`,
+            "apikey": import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
+          },
+          body: JSON.stringify({
+            toEmail: applicant.email,
+            toName: `${applicant.firstName} ${applicant.lastName}`,
+            subject: "Thank you for applying to Orlando's Oasis",
+            body: DEFAULT_REJECTION_MESSAGE,
+          }),
+        });
+      }
+      toast({ title: "Application Rejected", description: `${applicant.firstName} ${applicant.lastName} rejected and notified by email.`, variant: "success" });
     } catch (e) {
       toast({ title: "Reject failed", description: e instanceof Error ? e.message : String(e), variant: "destructive" });
     }
